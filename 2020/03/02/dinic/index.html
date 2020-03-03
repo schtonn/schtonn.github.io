@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideLeftIn"}}};
+  </script>
+
+  <meta name="description" content="前置知识 存图方式（邻接表，邻接矩阵）,图的遍历（dfs，bfs） 引入 我们举个例子吧： 有一个毒瘤水管工，他会造水管，有一天他造了一个水管网络，就像一个图。其中有一个点只有出边，就是起点，还有一个点只有入边，是终点。 点之间有一些管子，这些管子都有单位时间内的容量，现在毒瘤水管工想知道，他的管子在单位时间内在起点终点之间最多能流多少水。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络最大流-Dinic">
+<meta property="og:url" content="http://yoursite.com/2020/03/02/dinic/index.html">
+<meta property="og:site_name" content="Schtonn&#39;s Blog">
+<meta property="og:description" content="前置知识 存图方式（邻接表，邻接矩阵）,图的遍历（dfs，bfs） 引入 我们举个例子吧： 有一个毒瘤水管工，他会造水管，有一天他造了一个水管网络，就像一个图。其中有一个点只有出边，就是起点，还有一个点只有入边，是终点。 点之间有一些管子，这些管子都有单位时间内的容量，现在毒瘤水管工想知道，他的管子在单位时间内在起点终点之间最多能流多少水。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200111112801923.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200111114148208.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200111112801923.png">
+<meta property="og:image" content="file://C:/Users/liangliang/Documents/Gridea/post-images/1582894458914.png">
+<meta property="article:published_time" content="2020-03-02T03:31:22.000Z">
+<meta property="article:modified_time" content="2020-03-03T09:44:34.293Z">
+<meta property="article:author" content="Schtonn">
+<meta property="article:tag" content="graph">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200111112801923.png">
+
+<link rel="canonical" href="http://yoursite.com/2020/03/02/dinic/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>网络最大流-Dinic | Schtonn's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Schtonn's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Schtonn's blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/02/dinic/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Schtonn">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Schtonn's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          网络最大流-Dinic
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-Mar-02 11:31:22" itemprop="dateCreated datePublished" datetime="2020-03-02T11:31:22+08:00">2020-Mar-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-Mar-03 17:44:34" itemprop="dateModified" datetime="2020-03-03T17:44:34+08:00">2020-Mar-03</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.min.css" integrity="sha384-dbVIfZGuN1Yq7/1Ocstc1lUEm+AT+/rCkibIcC/OmWo5f0EA48Vf8CytHzGrSwbQ" crossorigin="anonymous"><h3 id="&#x524D;&#x7F6E;&#x77E5;&#x8BC6;">&#x524D;&#x7F6E;&#x77E5;&#x8BC6;</h3>
+<p>&#x5B58;&#x56FE;&#x65B9;&#x5F0F;&#xFF08;<a href="http://baidu.physton.com/?q=&#x90BB;&#x63A5;&#x8868;" target="_blank" rel="noopener" title="&#x7B80;&#x5355;">&#x90BB;&#x63A5;&#x8868;</a>&#xFF0C;<a href="http://baidu.physton.com/?q=&#x90BB;&#x63A5;&#x77E9;&#x9635;" target="_blank" rel="noopener" title="&#x90FD;&#x592A;&#x7B80;&#x5355;&#x4E86;">&#x90BB;&#x63A5;&#x77E9;&#x9635;</a>&#xFF09;,&#x56FE;&#x7684;&#x904D;&#x5386;&#xFF08;<a href="http://baidu.physton.com/?q=dfs" target="_blank" rel="noopener" title="&#x7B80;&#x5355;">dfs</a>&#xFF0C;<a href="http://baidu.physton.com/?q=bfs" target="_blank" rel="noopener" title="&#x7B80;&#x5355;">bfs</a>&#xFF09;</p>
+<h3 id="&#x5F15;&#x5165;">&#x5F15;&#x5165;</h3>
+<p>&#x6211;&#x4EEC;&#x4E3E;&#x4E2A;&#x4F8B;&#x5B50;&#x5427;&#xFF1A; &#x6709;&#x4E00;&#x4E2A;&#x6BD2;&#x7624;&#x6C34;&#x7BA1;&#x5DE5;&#xFF0C;&#x4ED6;&#x4F1A;&#x9020;&#x6C34;&#x7BA1;&#xFF0C;&#x6709;&#x4E00;&#x5929;&#x4ED6;&#x9020;&#x4E86;&#x4E00;&#x4E2A;&#x6C34;&#x7BA1;&#x7F51;&#x7EDC;&#xFF0C;&#x5C31;&#x50CF;&#x4E00;&#x4E2A;&#x56FE;&#x3002;&#x5176;&#x4E2D;&#x6709;&#x4E00;&#x4E2A;&#x70B9;&#x53EA;&#x6709;&#x51FA;&#x8FB9;&#xFF0C;&#x5C31;&#x662F;&#x8D77;&#x70B9;&#xFF0C;&#x8FD8;&#x6709;&#x4E00;&#x4E2A;&#x70B9;&#x53EA;&#x6709;&#x5165;&#x8FB9;&#xFF0C;&#x662F;&#x7EC8;&#x70B9;&#x3002; &#x70B9;&#x4E4B;&#x95F4;&#x6709;&#x4E00;&#x4E9B;&#x7BA1;&#x5B50;&#xFF0C;&#x8FD9;&#x4E9B;&#x7BA1;&#x5B50;&#x90FD;&#x6709;&#x5355;&#x4F4D;&#x65F6;&#x95F4;&#x5185;&#x7684;&#x5BB9;&#x91CF;&#xFF0C;&#x73B0;&#x5728;&#x6BD2;&#x7624;&#x6C34;&#x7BA1;&#x5DE5;&#x60F3;&#x77E5;&#x9053;&#xFF0C;&#x4ED6;&#x7684;&#x7BA1;&#x5B50;&#x5728;<strong>&#x5355;&#x4F4D;&#x65F6;&#x95F4;&#x5185;</strong>&#x5728;&#x8D77;&#x70B9;&#x7EC8;&#x70B9;&#x4E4B;&#x95F4;&#x6700;&#x591A;&#x80FD;&#x6D41;&#x591A;&#x5C11;&#x6C34;&#x3002; <a id="more"></a> ### &#x6982;&#x5FF5;</p>
+<ul>
+<li>&#x6E90;&#x70B9;&#xFF1A;&#x987E;&#x540D;&#x601D;&#x4E49;&#xFF0C;&#x8D77;&#x70B9;&#xFF0C;&#x4E00;&#x822C;&#x7528;s&#x8868;&#x793A;</li>
+<li>&#x6C47;&#x70B9;&#xFF1A;&#x987E;&#x540D;&#x601D;&#x4E49;&#xFF0C;&#x7EC8;&#x70B9;&#xFF0C;&#x4E00;&#x822C;&#x7528;t&#x8868;&#x793A;&#x3002;&#x3002;&#x3002;</li>
+<li>&#x5BB9;&#x91CF;&#xFF1A;&#x987E;&#x540D;&#x601D;&#x4E49;&#x3002;&#x3002;&#x3002;&#x4E00;&#x6761;&#x8FB9;&#x5355;&#x4F4D;&#x65F6;&#x95F4;&#x5185;&#x7684;&#x7684;&#x5BB9;&#x91CF;</li>
+<li>&#x6B8B;&#x4F59;&#x7F51;&#x7EDC;&#xFF1A;&#x8FDB;&#x884C;&#x589E;&#x5E7F;&#x540E;&#x5269;&#x4F59;&#x7684;&#x7F51;&#x7EDC;</li>
+<li>&#x5897;&#x5E7F;&#xFF1A; &gt; &#x5897;&#x5E7F;&#x5C31;&#x662F;&#x5728;&#x6B8B;&#x4F59;&#x7F51;&#x7EDC;&#x4E2D;&#x5BFB;&#x627E;&#x4ECE;&#x6E90;&#x70B9;&#x5230;&#x6C47;&#x70B9;&#x7684;&#x53EF;&#x884C;&#x8DEF;&#x5F84;&#xFF08;&#x5897;&#x5E7F;&#x8DEF;&#xFF09;&#xFF0C;&#x5E76;&#x5C06;&#x8BE5;&#x8DEF;&#x5F84;&#x4E0A;&#x7684;&#x6240;&#x6709;&#x8FB9;&#x7684;&#x5BB9;&#x91CF;&#x51CF;&#x53BB;&#x8DEF;&#x5F84;&#x4E2D;&#x7684;&#x6700;&#x5C0F;&#x5BB9;&#x91CF;&#xFF0C;&#x5F62;&#x6210;&#x65B0;&#x7684;&#x6B8B;&#x4F59;&#x7F51;&#x7EDC;&#xFF0C;<strong>&#x4EBA;&#x8BDD;&#x5C31;&#x662F;&#x627E;&#x4E00;&#x6761;&#x80FD;&#x8D70;&#x7684;&#x8DEF;&#xFF0C;&#x7136;&#x540E;&#x628A;&#x8DEF;&#x8D70;&#x6389;&#x3002;</strong> &#x4F8B;&#x5982;&#xFF1A; <img src="https://img-blog.csdnimg.cn/20200111112801923.png" alt="&#x5728;&#x8FD9;&#x91CC;&#x63D2;&#x5165;&#x56FE;&#x7247;&#x63CF;&#x8FF0;"> &#x5982;&#x679C;&#x5F53;&#x524D;&#x6709;&#x8FD9;&#x6837;&#x4E00;&#x4E2A;&#x6B8B;&#x4F59;&#x7F51;&#x7EDC;&#xFF0C;&#x90A3;&#x4E48;<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>s</mi><mo>&#x2192;</mo><mn>4</mn><mo>&#x2192;</mo><mn>1</mn><mo>&#x2192;</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">s\rightarrow4\rightarrow1\rightarrow t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">s</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">4</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.61508em;vertical-align:0em;"></span><span class="mord mathdefault">t</span></span></span></span>&#x5C31;&#x662F;&#x4E00;&#x6761;&#x5897;&#x5E7F;&#x8DEF;&#xFF0C;&#x6700;&#x5C0F;&#x5BB9;&#x91CF;&#x662F;4&#xFF0C;&#x8FDB;&#x884C;&#x5897;&#x5E7F;&#x8FC7;&#x540E;&#x5C31;&#x5F62;&#x6210;&#x4E86;&#x8FD9;&#x6837;&#x4E00;&#x5F20;&#x56FE;&#xFF1A; <img src="https://img-blog.csdnimg.cn/20200111114148208.png" alt="&#x5728;&#x8FD9;&#x91CC;&#x63D2;&#x5165;&#x56FE;&#x7247;&#x63CF;&#x8FF0;"> &#x5982;&#x4F55;&#x5BFB;&#x627E;&#x5897;&#x5E7F;&#x8DEF;&#xFF1F;&#x76F4;&#x63A5;dfs&#x5373;&#x53EF;&#x3002;</li>
+<li>&#x53CD;&#x5411;&#x8FB9;&#xFF1A; &gt; &#x6709;&#x65F6;&#x5019;&#xFF0C;&#x7A0B;&#x5E8F;&#x5897;&#x5E7F;&#x7684;&#x65F6;&#x5019;&#x4F1A;&#x51FA;&#x73B0;&#x7206;&#x70B8;&#x6027;&#x9519;&#x8BEF;&#xFF0C;&#x4F8B;&#x5982;&#x8FD8;&#x662F;&#x90A3;&#x4E2A;&#x56FE;&#xFF1A; <img src="https://img-blog.csdnimg.cn/20200111112801923.png" alt="&#x5728;&#x8FD9;&#x91CC;&#x63D2;&#x5165;&#x56FE;&#x7247;&#x63CF;&#x8FF0;"> &#x6709;&#x4E24;&#x6761;&#x5897;&#x5E7F;&#x8DEF;&#xFF0C;&#x4E07;&#x4E00;&#x7A0B;&#x5E8F;&#x9009;&#x9519;&#x4E86;&#x600E;&#x4E48;&#x529E;&#xFF1F; &#x8FD9;&#x65F6;&#x5C31;&#x8981;&#x8BF7;&#x51FA;&#x53CD;&#x5411;&#x8FB9;&#x4E86;&#x3002; &#x6BCF;&#x6B21;&#x5897;&#x5E7F;&#x7684;&#x65F6;&#x5019;&#xFF0C;<strong>&#x5728;&#x6B8B;&#x4F59;&#x7F51;&#x7EDC;&#x4E0A;&#x9006;&#x7740;&#x5897;&#x5E7F;&#x8DEF;&#x5F84;&#x5EFA;&#x5BB9;&#x91CF;&#x4E0E;&#x5897;&#x5E7F;&#x8DEF;&#x5F84;&#x6700;&#x5C0F;&#x5BB9;&#x91CF;&#x76F8;&#x7B49;&#x7684;&#x53CD;&#x5411;&#x8FB9;</strong>&#xFF0C;&#x6BD4;&#x5982;&#x521A;&#x624D;&#x90A3;&#x5F20;&#x56FE;&#xFF0C;&#x5C31;&#x987A;&#x7740;<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>t</mi><mo>&#x2192;</mo><mn>1</mn><mo>&#x2192;</mo><mn>4</mn><mo>&#x2192;</mo><mi>s</mi></mrow><annotation encoding="application/x-tex">t\rightarrow1\rightarrow4\rightarrow s</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.61508em;vertical-align:0em;"></span><span class="mord mathdefault">t</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">4</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">s</span></span></span></span>&#x5EFA;&#x5BB9;&#x91CF;&#x4E3A;4&#x7684;&#x8FB9;&#x3002;&#x76F8;&#x5F53;&#x4E8E;&#x628A;&#x539F;&#x6765;&#x7684;&#x90A3;&#x6761;&#x8DEF;&#x62B5;&#x6D88;&#x6389;&#x4E86;&#xFF0C;&#x5982;&#x679C;&#x5897;&#x5E7F;&#x65F6;&#x8D70;&#x8FC7;&#x4E86;&#x53CD;&#x5411;&#x8FB9;&#xFF0C;&#x5C31;&#x76F8;&#x5F53;&#x4E8E;&#x628A;&#x539F;&#x6765;&#x7684;&#x5897;&#x5E7F;&#x64A4;&#x56DE;&#x53BB;&#x4E86;&#x3002; &#x8FD9;&#x5C31;&#x7ED9;&#x4E86;&#x7A0B;&#x5E8F;&#x4E00;&#x4E2A;&#x53CD;&#x6094;&#x7684;&#x673A;&#x4F1A;&#x3002;</li>
+</ul>
+<h3 id="&#x6734;&#x7D20;&#x7B97;&#x6CD5;">&#x6734;&#x7D20;&#x7B97;&#x6CD5;</h3>
+<ol type="1">
+<li>&#x5897;&#x5E7F;</li>
+<li>&#x6CBF;&#x7740;&#x5897;&#x5E7F;&#x8DEF;&#x5F84;&#x5EFA;&#x53CD;&#x5411;&#x8FB9;</li>
+<li>&#x5982;&#x679C;&#x6E90;&#x70B9;&#x4E0E;&#x6C47;&#x70B9;&#x4F9D;&#x7136;&#x8FDE;&#x901A;&#xFF0C;&#x56DE;&#x5230;1 ### Dinic&#x4F18;&#x5316; Dinic&#x7684;&#x4F18;&#x5316;&#x5C31;&#x662F;&#x7528;bfs&#x5EFA;&#x7ACB;&#x4E86;&#x7531;s&#x5F00;&#x59CB;&#x7684;&#x4E00;&#x4E2A;&#x5206;&#x5C42;&#x56FE;&#xFF0C;&#x6BCF;&#x6B21;&#x5BFB;&#x627E;&#x5897;&#x5E7F;&#x8DEF;&#x65F6;&#x5FC5;&#x987B;&#x8BA9;&#x8FB9;&#x4E0A;&#x7684;&#x5C42;&#x6570;&#x4E25;&#x683C;&#x9012;&#x589E;&#xFF0C;&#x5C31;&#x53EF;&#x4EE5;&#x786E;&#x4FDD;&#x6BCF;&#x4E00;&#x6B65;&#x90FD;&#x79BB;&#x6C47;&#x70B9;&#x8FD1;&#x4E86;&#x4E00;&#x4E9B;&#x8FD9;&#x6837;&#x5C31;&#x4E0D;&#x4F1A;&#x9677;&#x5165;&#x6BD2;&#x7624;&#x6570;&#x636E;&#x5361;&#x6210;&#x7684;&#x6B7B;&#x5FAA;&#x73AF;&#xFF0C;&#x6BD4;&#x5982;&#x8FD9;&#x6837;&#x7684;&#x8457;&#x540D;&#x6BD2;&#x7624;&#x6570;&#x636E;&#xFF1A; <img src="file://C:/Users/liangliang/Documents/Gridea/post-images/1582894458914.png">&#x5728;&#x8FD9;&#x4E2A;&#x6570;&#x636E;&#x4E2D;&#xFF0C;&#x5982;&#x679C;&#x7528;&#x6734;&#x7D20;&#x7B97;&#x6CD5;&#xFF0C;&#x5C31;&#x4F1A;&#x8BA9;&#x4E2D;&#x95F4;&#x5BB9;&#x91CF;&#x4E3A;1&#x7684;&#x8FB9;&#x4E0A;&#x4E0B;&#x6296;&#x52A8;&#x62BD;&#x6410;&#xFF0C;&#x7B49;&#x5230;&#x4ED6;&#x62BD;&#x4E86;999&#x6B21;&#x7684;&#x65F6;&#x5019;&#x624D;&#x628A;&#x4E0A;&#x9762;&#x548C;&#x4E0B;&#x9762;&#x7684;999&#x51CF;&#x6CA1;&#x3002;&#x5982;&#x679C;&#x7528;Dinic&#xFF0C;&#x4E24;&#x6B21;&#x76F4;&#x63A5;&#x6C42;&#x51FA;999+999&#x3002; ### &#x4EE3;&#x7801; <a href="https://schtonn.github.io/404.html" target="_blank" rel="noopener"><code>404 Not Found(Click for more information)</code></a> &#x5B8C;&#x7ED3;&#xFF01;</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/graph/" rel="tag"># graph</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/01/min-span-tree/" rel="prev" title="最小生成树">
+      <i class="fa fa-chevron-left"></i> 最小生成树
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/02/ferbonacci/" rel="next" title="斐波那契数列-O(1)">
+      斐波那契数列-O(1) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#&#x524D;&#x7F6E;&#x77E5;&#x8BC6;"><span class="nav-number">1.</span> <span class="nav-text">&amp;#x524D;&amp;#x7F6E;&amp;#x77E5;&amp;#x8BC6;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#&#x5F15;&#x5165;"><span class="nav-number">2.</span> <span class="nav-text">&amp;#x5F15;&amp;#x5165;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#&#x6734;&#x7D20;&#x7B97;&#x6CD5;"><span class="nav-number">3.</span> <span class="nav-text">&amp;#x6734;&amp;#x7D20;&amp;#x7B97;&amp;#x6CD5;</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Schtonn</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+      <div id="treefrog" style="text-align: center;margin-top: 18px;">
+        <!--<object type="application/x-shockwave-flash" style="outline:none;" data="/js/treefrog.swf?up_bodyColor=444444&up_pattern=0&up_flyColor=777777&up_tongueColor=333333&up_patternColor=000000&up_releaseFly=30&up_frogName=Froggie&up_backgroundImage=http://&up_bellySize=.5&up_footColor=444444&up_eyeColor=555555&up_backgroundColor=222222&" width="310" height="600"><param name="movie" value="http://cdn.abowman.com/widgets/treefrog/treefrog.swf?up_bodyColor=444444&up_pattern=0&up_flyColor=777777&up_tongueColor=333333&up_patternColor=000000&up_releaseFly=30&up_frogName=Froggie&up_backgroundImage=http://&up_bellySize=.5&up_footColor=444444&up_eyeColor=555555&up_backgroundColor=222222&"></param><param name="AllowScriptAccess" value="always"></param><param name="wmode" value="opaque"></param><param name="scale" value="noscale"/><param name="salign" value="tl"/></object>-->
+        <object type="application/x-shockwave-flash" style="outline:none;" data="/js/treefrog.swf?up_bodyColor=444444&up_pattern=0&up_flyColor=777777&up_tongueColor=555555&up_patternColor=000000&up_releaseFly=0&up_frogName=Froggie&up_backgroundImage=http://&up_bellySize=.5&up_footColor=444444&up_eyeColor=444444&up_backgroundColor=222222&" width="310" height="600"><param name="movie" value="http://cdn.abowman.com/widgets/treefrog/treefrog.swf?up_bodyColor=444444&up_pattern=0&up_flyColor=777777&up_tongueColor=555555&up_patternColor=000000&up_releaseFly=0&up_frogName=Froggie&up_backgroundImage=http://&up_bellySize=.5&up_footColor=444444&up_eyeColor=444444&up_backgroundColor=222222&"></param><param name="AllowScriptAccess" value="always"></param><param name="wmode" value="opaque"></param><param name="scale" value="noscale"/><param name="salign" value="tl"/></object>
+      </div>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Schtonn</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.7.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
