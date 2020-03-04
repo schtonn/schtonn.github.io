@@ -19,13 +19,13 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideLeftIn"}}};
+    var CONFIG = {"hostname":"schtonn.github.io","root":"/","scheme":"Muse","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideLeftIn"}}};
   </script>
 
   <meta name="description" content="前置知识 存图方式（邻接表，邻接矩阵）,图的遍历（dfs，bfs）  引入 我们举个例子吧： 有一个毒瘤水管工，他会造水管，有一天他造了一个水管网络，就像一个图。其中有一个点只有出边，就是起点，还有一个点只有入边，是终点。 点之间有一些管子，这些管子都有单位时间内的容量，现在毒瘤水管工想知道，他的管子在单位时间内在起点终点之间最多能流多少水。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="网络最大流-Dinic">
-<meta property="og:url" content="http://yoursite.com/2020/03/02/dinic/index.html">
+<meta property="og:url" content="https://schtonn.github.io/2020/03/02/dinic/index.html">
 <meta property="og:site_name" content="Schtonn&#39;s Blog">
 <meta property="og:description" content="前置知识 存图方式（邻接表，邻接矩阵）,图的遍历（dfs，bfs）  引入 我们举个例子吧： 有一个毒瘤水管工，他会造水管，有一天他造了一个水管网络，就像一个图。其中有一个点只有出边，就是起点，还有一个点只有入边，是终点。 点之间有一些管子，这些管子都有单位时间内的容量，现在毒瘤水管工想知道，他的管子在单位时间内在起点终点之间最多能流多少水。">
 <meta property="og:locale" content="en_US">
@@ -39,7 +39,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200111112801923.png">
 
-<link rel="canonical" href="http://yoursite.com/2020/03/02/dinic/">
+<link rel="canonical" href="https://schtonn.github.io/2020/03/02/dinic/">
 
 
 <script id="page-configurations">
@@ -162,7 +162,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/02/dinic/">
+    <link itemprop="mainEntityOfPage" href="https://schtonn.github.io/2020/03/02/dinic/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -252,7 +252,7 @@
 <p>Dinic的优化就是用bfs建立了由s开始的一个分层图，每次寻找増广路时必须让边上的层数严格递增，就可以确保每一步都离汇点近了一些这样就不会陷入毒瘤数据卡成的死循环，比如这样的著名毒瘤数据：<br />
 ![](file://C:/Users/liangliang/Documents/Gridea/post-images/1582894458914.png)在这个数据中，如果用朴素算法，就会让中间容量为1的边上下抖动抽搐，等到他抽了999次的时候才把上面和下面的999减没。如果用Dinic，两次直接求出999+999。</p>
 <h3 id="代码"><a class="markdownIt-Anchor" href="#代码"></a> 代码</h3>
-<p><a href="https://schtonn.github.io/404.html" target="_blank" rel="noopener"><code>404 Not Found(Click for more information)</code></a><br />
+<p><a href="https://schtonn.github.io/404.html"><code>404 Not Found(Click for more information)</code></a><br />
 完结！</p>
 
     </div>
@@ -269,7 +269,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>Post link: </strong>
-    <a href="http://yoursite.com/2020/03/02/dinic/" title="网络最大流-Dinic">http://yoursite.com/2020/03/02/dinic/</a>
+    <a href="https://schtonn.github.io/2020/03/02/dinic/" title="网络最大流-Dinic">https://schtonn.github.io/2020/03/02/dinic/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.

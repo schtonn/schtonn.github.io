@@ -19,13 +19,13 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideLeftIn"}}};
+    var CONFIG = {"hostname":"schtonn.github.io","root":"/","scheme":"Muse","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideLeftIn"}}};
   </script>
 
   <meta name="description" content="前置知识 存图方式（邻接表，邻接矩阵），并查集。 不会的快进入链接学习吧！  引入 生成树，就是从一个图中选中n−1n-1n−1条边，使得这些边构成一棵树，并包含图中的所有节点。 最小生成树，就是找到一种生成树，使得这个生成树的边权和最小。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="最小生成树">
-<meta property="og:url" content="http://yoursite.com/2020/03/01/min-span-tree/index.html">
+<meta property="og:url" content="https://schtonn.github.io/2020/03/01/min-span-tree/index.html">
 <meta property="og:site_name" content="Schtonn&#39;s Blog">
 <meta property="og:description" content="前置知识 存图方式（邻接表，邻接矩阵），并查集。 不会的快进入链接学习吧！  引入 生成树，就是从一个图中选中n−1n-1n−1条边，使得这些边构成一棵树，并包含图中的所有节点。 最小生成树，就是找到一种生成树，使得这个生成树的边权和最小。">
 <meta property="og:locale" content="en_US">
@@ -48,7 +48,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200103203601629.png">
 
-<link rel="canonical" href="http://yoursite.com/2020/03/01/min-span-tree/">
+<link rel="canonical" href="https://schtonn.github.io/2020/03/01/min-span-tree/">
 
 
 <script id="page-configurations">
@@ -171,7 +171,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/01/min-span-tree/">
+    <link itemprop="mainEntityOfPage" href="https://schtonn.github.io/2020/03/01/min-span-tree/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -218,7 +218,7 @@
 
       
         <h3 id="前置知识"><a class="markdownIt-Anchor" href="#前置知识"></a> 前置知识</h3>
-<p>存图方式（<a href="http://baidu.physton.com/?q=%E9%82%BB%E6%8E%A5%E8%A1%A8" target="_blank" rel="noopener" title="简单">邻接表</a>，<a href="http://baidu.physton.com/?q=%E9%82%BB%E6%8E%A5%E7%9F%A9%E9%98%B5" target="_blank" rel="noopener" title="都太简单了，没有一个打得过的">邻接矩阵</a>），<a href="https://schtonn.github.io/2020/03/01/union-find" target="_blank" rel="noopener">并查集</a>。<br />
+<p>存图方式（<a href="http://baidu.physton.com/?q=%E9%82%BB%E6%8E%A5%E8%A1%A8" target="_blank" rel="noopener" title="简单">邻接表</a>，<a href="http://baidu.physton.com/?q=%E9%82%BB%E6%8E%A5%E7%9F%A9%E9%98%B5" target="_blank" rel="noopener" title="都太简单了，没有一个打得过的">邻接矩阵</a>），<a href="https://schtonn.github.io/2020/03/01/union-find">并查集</a>。<br />
 不会的快进入链接学习吧！</p>
 <h3 id="引入"><a class="markdownIt-Anchor" href="#引入"></a> 引入</h3>
 <p>生成树，就是从一个图中选中<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">n-1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathdefault">n</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span>条边，使得这些边构成一棵树，并包含图中的所有节点。<br />
@@ -246,7 +246,7 @@
 <h3 id="生成方式二kruskal"><a class="markdownIt-Anchor" href="#生成方式二kruskal"></a> 生成方式二：kruskal</h3>
 <p>这个算法本质上就是把所有边按照边权排序，然后直接<s>爆炸</s>按顺序判断要不要加进生成树里。<br />
 kruskal算法使用了一种极速闪电致命又自杀的东西：并查集。<br />
-<a href="https://schtonn.github.io/post/union-find-set" target="_blank" rel="noopener">他有多快呢？</a></p>
+<a href="https://schtonn.github.io/post/union-find-set">他有多快呢？</a></p>
 <hr />
 <p>好了我们在建一个图模拟一下吧<br />
 <img src="https://img-blog.csdnimg.cn/20200103215213917.png" alt="在这里插入图片描述" /></p>
@@ -280,7 +280,7 @@ kruskal算法使用了一种极速闪电致命又自杀的东西：并查集。<
   </li>
   <li class="post-copyright-link">
     <strong>Post link: </strong>
-    <a href="http://yoursite.com/2020/03/01/min-span-tree/" title="最小生成树">http://yoursite.com/2020/03/01/min-span-tree/</a>
+    <a href="https://schtonn.github.io/2020/03/01/min-span-tree/" title="最小生成树">https://schtonn.github.io/2020/03/01/min-span-tree/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
