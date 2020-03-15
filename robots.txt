@@ -10,4 +10,4 @@ Disallow: /fonts/
 Disallow: /vendors/
 Disallow: /fancybox/
 
-Sitemap: http://schtonn.github.io/baidusitemap.xml
+Sitemap: https://schtonn.github.io/baidusitemap.xml
