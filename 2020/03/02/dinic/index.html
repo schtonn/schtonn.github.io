@@ -237,9 +237,9 @@
 <blockquote>
 <p>増广就是在残余网络中寻找从源点到汇点的可行路径（増广路），并将该路径上的所有边的容量减去路径中的最小容量，形成新的残余网络，<strong>人话就是找一条能走的路，然后把路走掉。</strong><br />
 例如：<br />
-<img src="https://img-blog.csdnimg.cn/20200111112801923.png" alt="在这里插入图片描述" /><br />
+<img data-src="https://img-blog.csdnimg.cn/20200111112801923.png" alt="在这里插入图片描述" /><br />
 如果当前有这样一个残余网络，那么<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>s</mi><mo>→</mo><mn>4</mn><mo>→</mo><mn>1</mn><mo>→</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">s\rightarrow4\rightarrow1\rightarrow t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">s</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">4</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.61508em;vertical-align:0em;"></span><span class="mord mathdefault">t</span></span></span></span>就是一条増广路，最小容量是4，进行増广过后就形成了这样一张图：<br />
-<img src="https://img-blog.csdnimg.cn/20200111114148208.png" alt="在这里插入图片描述" /><br />
+<img data-src="https://img-blog.csdnimg.cn/20200111114148208.png" alt="在这里插入图片描述" /><br />
 如何寻找増广路？直接dfs即可。</p>
 </blockquote>
 <ul>
@@ -247,7 +247,7 @@
 </ul>
 <blockquote>
 <p>有时候，程序増广的时候会出现爆炸性错误，例如还是那个图：<br />
-<img src="https://img-blog.csdnimg.cn/20200111112801923.png" alt="在这里插入图片描述" /><br />
+<img data-src="https://img-blog.csdnimg.cn/20200111112801923.png" alt="在这里插入图片描述" /><br />
 有两条増广路，万一程序选错了怎么办？<br />
 这时就要请出反向边了。<br />
 每次増广的时候，<strong>在残余网络上逆着増广路径建容量与増广路径最小容量相等的反向边</strong>，比如刚才那张图，就顺着<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>t</mi><mo>→</mo><mn>1</mn><mo>→</mo><mn>4</mn><mo>→</mo><mi>s</mi></mrow><annotation encoding="application/x-tex">t\rightarrow1\rightarrow4\rightarrow s</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.61508em;vertical-align:0em;"></span><span class="mord mathdefault">t</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">4</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">s</span></span></span></span>建容量为4的边。相当于把原来的那条路抵消掉了，如果増广时走过了反向边，就相当于把原来的増广撤回去了。<br />

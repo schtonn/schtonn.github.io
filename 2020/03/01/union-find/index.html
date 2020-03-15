@@ -282,25 +282,25 @@
 <p>我们首先随机造出一些操作：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">10</span><br><span class="line">merge 1 5</span><br><span class="line">merge 5 2</span><br><span class="line">merge 1 3</span><br><span class="line">check 2 3</span><br><span class="line">merge 3 4</span><br><span class="line">merge 6 7</span><br><span class="line">check 1 7</span><br><span class="line">merge 7 8</span><br><span class="line">merge 8 9</span><br><span class="line">merge 1 9</span><br><span class="line">check 7 4</span><br></pre></td></tr></table></figure>
 <p>其中，merge代表合并，check代表查询。<br />
-如果按照刚才所的算法，那么在第一次查询之前，就会出来这样的森林：<img src="https://img-blog.csdnimg.cn/20200105142700396.png" alt="Insert mother fucker" /><br />
+如果按照刚才所的算法，那么在第一次查询之前，就会出来这样的森林：<img data-src="https://img-blog.csdnimg.cn/20200105142700396.png" alt="Insert mother fucker" /><br />
 到最后，就形成了这样一个繁杂的森林，要找到一个点的根，就需要走很长一段路。这就拉长了时间。<br />
-<img src="https://img-blog.csdnimg.cn/20200105142531778.png" alt="Insert mother fucker" /><br />
+<img data-src="https://img-blog.csdnimg.cn/20200105142531778.png" alt="Insert mother fucker" /><br />
 为了缩减时间，超级优化就出现了：路径压缩。<br />
 路径压缩其实也很简单：在<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>g</mi><mi>e</mi><mi>t</mi><mi>f</mi><mo stretchy="false">(</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">getf()</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="mord mathdefault">e</span><span class="mord mathdefault">t</span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mclose">)</span></span></span></span>查找根节点的同时，把自己也链接到根节点上，使得树的深度不超过2。<br />
 代码：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">getf</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(f[x]==x)<span class="keyword">return</span> x;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">return</span> f[x]=getf(f[x]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>发现没有，和之前的代码相比，只改了一个地方，就让时间大大压缩。<br />
 这时我们在模拟一下。<br />
-第一次合并：<img src="https://img-blog.csdnimg.cn/20200105143342729.png" alt="Insert mother fucker" /><br />
+第一次合并：<img data-src="https://img-blog.csdnimg.cn/20200105143342729.png" alt="Insert mother fucker" /><br />
 第二次合并时，首先寻找2,5两个节点的根节点，2的根就是2，5的根是1，于是直接把2链接到1上。<br />
-<img src="https://img-blog.csdnimg.cn/20200105144059847.png" alt="Insert mother fucker" /><br />
+<img data-src="https://img-blog.csdnimg.cn/20200105144059847.png" alt="Insert mother fucker" /><br />
 第三次，第四次合并把3链接到了1上，然后把4顺着3也链接到了1上，第五次连接了6和7。<br />
-<img src="https://img-blog.csdnimg.cn/20200105143532966.png" alt="Insert mother fucker" /><br />
+<img data-src="https://img-blog.csdnimg.cn/20200105143532966.png" alt="Insert mother fucker" /><br />
 第七次第八次链接成了<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>9</mn><mo>→</mo><mn>8</mn><mo>→</mo><mn>7</mn><mo>→</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">9\rightarrow8\rightarrow7\rightarrow6</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">9</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">8</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">7</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">6</span></span></span></span>一长串，然后经过路径压缩都链接到6上了。<br />
-<img src="https://img-blog.csdnimg.cn/20200105143644622.png" alt="Insert mother fucker" /><br />
-最后一次，把9和1链接起来了，这时深度又超过了2，一下还压缩不下去，不过没关系，查询的时候就会把它压缩的。<img src="https://img-blog.csdnimg.cn/20200105143847598.png" alt="Insert mother fucker" /><br />
+<img data-src="https://img-blog.csdnimg.cn/20200105143644622.png" alt="Insert mother fucker" /><br />
+最后一次，把9和1链接起来了，这时深度又超过了2，一下还压缩不下去，不过没关系，查询的时候就会把它压缩的。<img data-src="https://img-blog.csdnimg.cn/20200105143847598.png" alt="Insert mother fucker" /><br />
 比如查询7和4的时候就会分别寻找7和4的根节点，一路递归找上去的时候就直接把路径压缩好了，除了8还链接在6上，其他全部链接到1上了。<br />
-<img src="https://img-blog.csdnimg.cn/20200105144933595.png" alt="Insert mother fucker" /><br />
+<img data-src="https://img-blog.csdnimg.cn/20200105144933595.png" alt="Insert mother fucker" /><br />
 多么有趣啊！</p>
 <h3 id="代码"><a class="markdownIt-Anchor" href="#代码"></a> 代码</h3>
 <p>自己想去吧，核心代码和思路都给出来了。<br />
