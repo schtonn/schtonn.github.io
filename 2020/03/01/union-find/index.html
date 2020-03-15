@@ -179,6 +179,16 @@
       <meta itemprop="name" content="Alex's Blog">
     </span>
       <header class="post-header">
+      <script>
+    (function(){
+        if(''){
+            if (prompt('Enter the password') !== ''){
+                alert('You shall not access this page.');
+                history.back();
+            }
+        }
+    })();
+</script>
         <h1 class="post-title" itemprop="name headline">
           并查集
         </h1>
