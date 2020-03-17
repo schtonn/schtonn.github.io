@@ -1237,7 +1237,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #dacf55;
+  background: #25e2ff;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2379,18 +2379,19 @@ a#download:hover {
   border-radius: 10px;
 }
 .main-inner {
-  border-radius: 10px;
+  border-radius: 30px;
   padding: 60px 90px 60px 60px;
   background: #fff;
   opacity: 0.9;
   min-height: 500px;
 }
 .header-inner {
-  border-radius: 10px;
+  opacity: 0.9;
+  border-radius: 30px;
   background: rgba(255,255,255,0.9);
 }
 body {
-  background: url("/images/download.png");
+  background: url("https://source.unsplash.com/random/1600x900");
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-position: 50% 50%;
