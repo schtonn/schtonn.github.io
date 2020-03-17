@@ -11,27 +11,6 @@
   --table-row-hover-bg-color: #f5f5f5;
   --menu-item-bg-color: #f5f5f5;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --body-bg-color: #121212;
-    --content-bg-color: #1d1d1d;
-    --card-bg-color: #282828;
-    --text-color: #e1e1e1;
-    --link-color: #e1e1e1;
-    --link-hover-color: #fff;
-    --brand-color: #fff;
-    --brand-hover-color: #fff;
-    --table-row-odd-bg-color: #282828;
-    --table-row-hover-bg-color: #363636;
-    --menu-item-bg-color: #333;
-  }
-  img {
-    opacity: 0.75;
-  }
-  img:hover {
-    opacity: 1;
-  }
-}
 html {
   line-height: 1.15; /* 1 */
   -webkit-text-size-adjust: 100%; /* 2 */
@@ -1258,7 +1237,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ff2a4b;
+  background: #13ffe8;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2229,14 +2208,6 @@ ul.breadcrumb li + li:last-child {
 .tag-cloud a:hover {
   color: #222 !important;
 }
-.gt-header a,
-.gt-comments a,
-.gt-popup a {
-  border-bottom: none;
-}
-.gt-container .gt-popup .gt-action.is--active::before {
-  top: 0.7em;
-}
 @media (max-width: 767px) {
   .header-inner,
   .main-inner,
@@ -2390,22 +2361,6 @@ embed {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-code {
-  color: #ddd;
-  background: #222;
-  margin: 2px;
-}
-.highlight,
-pre {
-  margin: 5px 0;
-  padding: 5px;
-  border-radius: 3px;
-}
-.highlight,
-code,
-pre {
-  border: 1px solid #333;
-}
 a#download {
   display: inline-block;
   padding: 0 10px;
@@ -2419,4 +2374,25 @@ a#download {
 a#download:hover {
   background: #000;
   color: #fff;
+}
+.content {
+  border-radius: 10px;
+}
+.main-inner {
+  border-radius: 10px;
+  padding: 60px 90px 60px 60px;
+  background: #fff;
+  opacity: 0.9;
+  min-height: 500px;
+}
+.header-inner {
+  border-radius: 10px;
+  background: rgba(255,255,255,0.9);
+}
+body {
+  background: url("/images/download.png");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: 50% 50%;
+  background-size: cover;
 }
