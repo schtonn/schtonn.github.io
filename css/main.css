@@ -1237,7 +1237,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #25e2ff;
+  background: #54a398;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2368,7 +2368,7 @@ a#download {
   background: transparent;
   border: 2px solid #000;
   border-radius: 2px;
-  transition: all 0.5s ease;
+  transition: all 0.5s ease-out;
   font-weight: bold;
 }
 a#download:hover {
