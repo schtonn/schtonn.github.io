@@ -10,5 +10,4 @@ Disallow: /fonts/
 Disallow: /vendors/
 Disallow: /fancybox/
 
-Sitemap: http://www.zaoanx.com/sitemap.xml
-Sitemap: http://www.zaoanx.com/baidusitemap.xml
+Sitemap: https://schtonn.github.io/baidusitemap.xml
