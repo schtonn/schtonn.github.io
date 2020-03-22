@@ -1,0 +1,175 @@
+@import url("webfont.css");
+
+html, body {
+	background-color: black;
+	color: white;
+	font-family: "8-bit Operator Mono", Fixedsys, sans-serif;
+	font-weight: normal;
+	font-size: 24px;
+}
+
+#gamebox{
+	width: 420px;
+	margin: 40px auto;
+	text-align: center;
+}
+
+#heartbox{
+	width: 320px;
+	margin: auto;
+	padding: 4px;
+	background-color: white;
+}
+
+canvas{
+	background-color: black;
+}
+
+img.sans{
+	position: relative;
+	vertical-align: middle;
+}
+
+div#select_difficulty{
+	transition: all 0.5s ease;
+	overflow: hidden;
+	height: 100px;
+	margin: 20px 0px;
+}
+
+div#select_difficulty.closed{
+	height: 0;
+	margin: 0;
+}
+
+div#select_text{
+	font-size: 16px;
+	margin-bottom: 4px;
+}
+
+div.diff-option{
+	text-align: left;
+	position: relative;
+	left: 24px;
+}
+
+div.diff-option.hidden{
+	display: none;
+}
+
+div.diff-option::before{
+	content: "*";
+	position: absolute;
+	left: -24px;
+}
+
+div.sel.diff-option::before{
+	content: url('../img/heart.png');
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	left: -24px;
+	top: calc(50% - 7px);
+}
+
+
+
+
+div#gameplay_area{
+	transition: all 0.5s ease;
+	overflow: hidden;
+	height: 180px;
+}
+
+div#gameplay_area.closed{
+	height: 0;
+}
+
+
+div.stats{
+	display: inline-block;
+	text-align: left;
+	width: 140px;
+	white-space: nowrap;
+	overflow: visible;
+	font-size: 15px;
+	font-family: "Mars Needs Cunnilingus", monospace;
+	font-weight: normal;
+	letter-spacing: 1px;
+}
+
+span.tag{
+	font-family: Menlo, Consolas, sans-serif;
+	font-size: 10px;
+}
+
+div#hp_bar{
+	display: inline-block;
+	position: relative;
+	top: 3px;
+	width: 20px;
+	height: 15px;
+	background-color: red;
+}
+
+div#hp_yellow_bar{
+	position: absolute;
+	width: 20px;
+	height: 15px;
+	background-color: yellow;
+}
+
+div#speech_bubble{
+	position: relative;
+	display: inline-block;
+	vertical-align: middle;
+	text-align: left;
+	width: 160px;
+	height: 100px;
+	border-radius: 8px;
+	padding: 8px;
+	background-color: white;
+	color: black;
+	font-family: Comic Sans MS, "Comic Relief", sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	transition: all 0.5s ease;
+}
+
+div#speech_bubble.closed{
+	width: 0;
+	padding: 8px 0;
+}
+
+div.bottom-credits{
+	position: absolute;
+	text-align: center;
+	font-size: 12px;
+	line-height: 15px;
+	height: 48px;
+	bottom: 0;
+	left: calc(50% - 300px);
+	width: 600px;
+	padding: 8px 0;
+	overflow: hidden;
+	transition: all 0.3s ease;
+}
+
+
+div.bottom-credits span{
+	display: inline-block;
+}
+
+
+div.bottom-credits:hover{
+	height: 160px;
+}
+
+a{
+	color: #00ffff;
+	text-decoration: none;
+}
+
+a:hover{
+	color: #33cccc;
+}
