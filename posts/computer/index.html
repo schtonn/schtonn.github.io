@@ -566,7 +566,7 @@ your browser does not support the video tag<br />
 NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
   NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
     var GUEST = ['nick', 'mail', 'link'];
-    var guest = 'nick,mail,link';
+    var guest = 'name,mail,link';
     guest = guest.split(',').filter(item => {
       return GUEST.includes(item);
     });
