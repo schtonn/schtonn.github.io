@@ -19,7 +19,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"schtonn.github.io","root":"/","scheme":"Muse","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideLeftIn"}}};
+    var CONFIG = {"hostname":"schtonn.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="引入 想要了解矩阵快速幂，就不得不提到矩阵的概念。矩阵就像一个二维数组，存储了一组数据，如： M&#x3D;[123456789]M&#x3D;\left[  \begin{matrix}   1&amp;2&amp;3\\   4&amp;5&amp;6\\   7&amp;8&amp;9\end{matrix} \right]M&#x3D;⎣⎡​147​258​369​⎦⎤​ 用 Mi,jM_{i,j}Mi,j​ 表示矩">
@@ -43,7 +43,8 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : true
+    isPost : true,
+    lang   : 'en'
   };
 </script>
 
@@ -96,14 +97,12 @@
 
   <div class="site-meta">
 
-    <div>
-      <a href="/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Alex's Blog</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-        <p class="site-subtitle">Middle school OIer</p>
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Alex's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Middle school OIer</p>
   </div>
 
   <div class="site-nav-right">
@@ -113,8 +112,9 @@
 </div>
 
 
+
+
 <nav class="site-nav">
-  
   <ul id="menu" class="menu">
         <li class="menu-item menu-item-home">
 
@@ -142,8 +142,11 @@
 
   </li>
   </ul>
-
 </nav>
+
+
+
+
 </div>
     </header>
 
@@ -160,25 +163,14 @@
         <div class="content-wrap">
           
 
-          <div class="content">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://schtonn.github.io/posts/matrix-pow/">
-<script>
-    (function(){
-        if(''){
-            if (prompt('Password?') !== ''){
-                alert('GOAWAY!');
-                history.back();
-            }
-        }
-    })();
-</script>
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -195,8 +187,6 @@
         </h1>
 
         <div class="post-meta">
-          
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
@@ -387,7 +377,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -396,7 +385,7 @@
 
 <script>
   window.addEventListener('tabs:register', () => {
-    let activeClass = CONFIG.comments.activeClass;
+    let { activeClass } = CONFIG.comments;
     if (CONFIG.comments.storage) {
       activeClass = localStorage.getItem('comments_active') || activeClass;
     }
@@ -468,7 +457,7 @@
         <a href="https://github.com/schtonn" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;schtonn" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="skype:alex?call|chat" title="Skype → skype:alex?call|chat" rel="noopener" target="_blank"><i class="fa fa-fw fa-skype"></i>Skype</a>
+        <a href="mailto:m18519511495@163.com" title="E-Mail → mailto:m18519511495@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
       </span>
   </div>
 
@@ -489,9 +478,13 @@
   </div>
 
       </div>
+
+      
       <div id="treefrog" style="text-align: center;margin-top: 18px;">
-        <object type="application/x-shockwave-flash" style="outline:none;" data="/js/treefrog.swf?up_bodyColor=444444&up_pattern=0&up_flyColor=777777&up_tongueColor=555555&up_patternColor=000000&up_releaseFly=0&up_frogName=Froggie&up_backgroundImage=http://&up_bellySize=.5&up_footColor=444444&up_eyeColor=444444&up_backgroundColor=222222&" width="300" height="600"><param name="movie" value="http://cdn.abowman.com/widgets/treefrog/treefrog.swf?up_bodyColor=444444&up_pattern=0&up_flyColor=777777&up_tongueColor=555555&up_patternColor=000000&up_releaseFly=0&up_frogName=Froggie&up_backgroundImage=http://&up_bellySize=.5&up_footColor=444444&up_eyeColor=444444&up_backgroundColor=222222&"></param><param name="AllowScriptAccess" value="always"></param><param name="wmode" value="opaque"></param><param name="scale" value="noscale"/><param name="salign" value="tl"/></object>
+        <object type="application/x-shockwave-flash" style="outline:none;" data="/flash/treefrog.swf?up_bodyColor=444444&up_pattern=0&up_flyColor=777777&up_tongueColor=555555&up_patternColor=000000&up_releaseFly=0&up_frogName=Froggie&up_backgroundImage=http://&up_bellySize=.5&up_footColor=444444&up_eyeColor=444444&up_backgroundColor=222222&" width="300" height="600"><param name="movie" value="http://cdn.abowman.com/widgets/treefrog/treefrog.swf?up_bodyColor=444444&up_pattern=0&up_flyColor=777777&up_tongueColor=555555&up_patternColor=000000&up_releaseFly=0&up_frogName=Froggie&up_backgroundImage=http://&up_bellySize=.5&up_footColor=444444&up_eyeColor=444444&up_backgroundColor=222222&"></param><param name="AllowScriptAccess" value="always"></param><param name="wmode" value="opaque"></param><param name="scale" value="noscale"/><param name="salign" value="tl"/></object>
       </div>
+      
+
     </div>
   </aside>
   <div id="sidebar-dimmer"></div>
@@ -502,6 +495,8 @@
 
     <footer class="footer">
       <div class="footer-inner">
+        
+
         
 
 <div class="copyright">
@@ -547,15 +542,6 @@
 
 
   
-  <script>
-    (function(){
-      var bp = document.createElement('script');
-      var curProtocol = window.location.protocol.split(':')[0];
-      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(bp, s);
-    })();
-  </script>
 
 
 
@@ -595,7 +581,7 @@ NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
       notify     : true,
       appId      : 'BmologYYnRqCv0SLHDeDdA17-gzGzoHsz',
       appKey     : 'w9mVebFMdCmY6Nh9vfcBGaGt',
-      placeholder: "Determination.",
+      placeholder: "Say something.",
       avatar     : 'mm',
       meta       : guest,
       pageSize   : '10' || 10,
