@@ -6,7 +6,7 @@
 
 body, html {
 	overflow: hidden;
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: 'Comic Sans MS', Arial, sans-serif;
 	color: #fff;
 	font-size: 11px;
 	background: #010c12;
@@ -36,7 +36,7 @@ canvas {
 }
 
 .ui {
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: 'Comic Sans MS', Helvetica, sans-serif;
 	font-size: 10px;
 	color: #999999;
 	text-align: left;
@@ -76,9 +76,9 @@ canvas {
 	height: 100%;
 	box-sizing: border-box;
 
-	font-family: "Montserrat", Helvetica, Arial, sans-serif;
+	font-family: 'Comic Sans MS', Helvetica, Arial, sans-serif;
 	font-size: 20px;
-	text-transform: uppercase;
+	text-transform: lowercase;
 	line-height: 1.4;
 }
 
@@ -141,7 +141,7 @@ canvas {
 
 .ui a.external {
 	outline: none;
-	font-family: sans-serif;
+	font-family: 'Comic Sans MS';
 	font-size: 1em;
 	font-weight: bold;
 	text-decoration: none;

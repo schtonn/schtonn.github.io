@@ -169,11 +169,11 @@ var Core = new function(){
 		score = Math.round(score);
 
 		// Write the users score to the UI
-		title.innerHTML = 'Game Over! (' + score + ' points)';
+		title.innerHTML = 'game over! (' + score + ' points)';
 
 		// Update the status bar with the final score and time
-		scoreText = 'Score: <span>' + Math.round( score ) + '</span>';
-		scoreText += ' Time: <span>' + Math.round( ( ( new Date().getTime() - time ) / 1000 ) * 100 ) / 100 + 's</span>';
+		scoreText = 'score: <span>' + Math.round( score ) + '</span>';
+		scoreText += ' time: <span>' + Math.round( ( ( new Date().getTime() - time ) / 1000 ) * 100 ) / 100 + 's</span>';
 		status.innerHTML = scoreText;
 	}
 
@@ -563,9 +563,9 @@ var Core = new function(){
 
 		// If the game is active, update the game status bar with score, duration and FPS
 		if( playing ) {
-			scoreText = 'Score: <span>' + Math.round( score ) + '</span>';
-			scoreText += ' Time: <span>' + Math.round( ( ( new Date().getTime() - time ) / 1000 ) * 100 ) / 100 + 's</span>';
-			scoreText += ' <p class="fps">FPS: <span>' + Math.round( fps ) + ' ('+Math.round(Math.max(Math.min(fps/FRAMERATE, FRAMERATE), 0)*100)+'%)</span></p>';
+			scoreText = 'score: <span>' + Math.round( score ) + '</span>';
+			scoreText += ' time: <span>' + Math.round( ( ( new Date().getTime() - time ) / 1000 ) * 100 ) / 100 + 's</span>';
+			scoreText += ' <p class="fps">fps: <span>' + Math.round( fps ) + ' ('+Math.round(Math.max(Math.min(fps/FRAMERATE, FRAMERATE), 0)*100)+'%)</span></p>';
 			status.innerHTML = scoreText;
 
 			if( player.energy === 0 ) {
