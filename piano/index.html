@@ -1,0 +1,1851 @@
+<!DOCTYPE html>
+<!-- saved from url=(0028)https://www.xiwnn.com/piano/ -->
+<html lang="zh-cn">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=no,minimum-scale=1,maximum-scale=1">
+    <meta name="author" content="xiwnn">
+    <meta name="copyright" content="xiwnn.com">
+    <style
+        data-vue-ssr-id="7f856741:0 9aa6c2b2:0 0423f76e:0 312f42d8:0 6f3e8538:0 0e25b610:0 aeb9be64:0 f5e2c8bc:0 db984184:0 9a97df18:0 3153952e:0 08feb84e:0 8fa30810:0">
+        body {
+            margin: 0;
+            font-family: Helvetica Neue For Number, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Helvetica Neue, Helvetica, Arial, sans-serif;
+            font-size: 15px;
+            line-height: 1.5;
+            color: rgba(0, 0, 0, .65);
+            background-color: #fff
+        }
+
+        ::-moz-selection {
+            color: #fff;
+            background-color: rgba(39, 168, 255, .75)
+        }
+
+        ::selection {
+            color: #fff;
+            background-color: rgba(39, 168, 255, .75)
+        }
+
+        .h1,
+        .h2,
+        .h3,
+        .h4,
+        .h5,
+        .h6,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: inherit;
+            font-weight: 500;
+            line-height: 1.1;
+            color: inherit
+        }
+
+        button,
+        input,
+        textarea {
+            font-family: Helvetica Neue For Number, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Helvetica Neue, Helvetica, Arial, sans-serif;
+            color: inherit
+        }
+
+        .page-container {
+            min-height: 600px;
+            margin: 0 20px
+        }
+
+        .content-container {
+            max-width: 1000px
+        }
+
+        @font-face {
+            font-family: iconfont;
+            src: url(/assets/img/iconfont.a296391.eot);
+            src: url(/assets/img/iconfont.a296391.eot#iefix) format("embedded-opentype"), url("data:application/x-font-woff2;charset=utf-8;base64,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") format("woff2"), url(/assets/img/iconfont.5e2b705.woff) format("woff"), url(/assets/img/iconfont.fda72c6.ttf) format("truetype"), url(/assets/img/iconfont.a99b445.svg#iconfont) format("svg")
+        }
+
+        .iconfont {
+            font-family: iconfont !important;
+            font-size: 16px;
+            font-style: normal;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale
+        }
+
+        .icon-send:before {
+            content: "\e663"
+        }
+
+        .icon-search:before {
+            content: "\e66f"
+        }
+
+        .icon-reload:before {
+            content: "\e648"
+        }
+
+        .icon-pintu:before {
+            content: "\e61e"
+        }
+
+        .icon-ok:before {
+            content: "\e63d"
+        }
+
+        .icon-danger:before {
+            content: "\e765"
+        }
+
+        .icon-info:before {
+            content: "\f3c2"
+        }
+
+        .icon-record:before {
+            content: "\e615"
+        }
+
+        .icon-play:before {
+            content: "\ef26"
+        }
+
+        .icon-zan:before {
+            content: "\e64e"
+        }
+
+        .icon-shouye:before {
+            content: "\e77e"
+        }
+
+        .icon-celebration_piano:before {
+            content: "\ef25"
+        }
+
+        .icon-jianpan:before {
+            content: "\e604"
+        }
+
+        .icon-luyin:before {
+            content: "\e621"
+        }
+
+        .icon-pinglun:before {
+            content: "\e605"
+        }
+
+        .icon-shezhi:before {
+            content: "\e607"
+        }
+
+        .icon-down:before {
+            content: "\e600"
+        }
+
+        .icon-left:before {
+            content: "\e601"
+        }
+
+        .icon-right:before {
+            content: "\e602"
+        }
+
+        .icon-up:before {
+            content: "\e603"
+        }
+
+        .icon-pause:before {
+            content: "\e718"
+        }
+
+        .icon-close:before {
+            content: "\e650"
+        }
+
+        .icon-delete:before {
+            content: "\e606"
+        }
+
+        .icon-edit:before {
+            content: "\e61d"
+        }
+
+        .icon-stop:before {
+            content: "\e71e"
+        }
+
+        .iconfont {
+            font-size: 1em
+        }
+
+        #app,
+        body,
+        html {
+            position: relative;
+            width: 100%;
+            height: 100%
+        }
+
+        .xw-footer {
+            display: none
+        }
+
+        .xw-header {
+            height: 50px;
+            line-height: 50px
+        }
+
+        .xw-header>.container {
+            position: fixed;
+            height: 50px;
+            width: 100%;
+            background-color: hsla(0, 0%, 100%, .867);
+            box-shadow: 0 0 6px rgba(0, 0, 0, .165);
+            z-index: 30;
+            white-space: nowrap
+        }
+
+        .xw-header>.container .absolute-user {
+            position: absolute;
+            right: 0;
+            top: 0
+        }
+
+        .xw-header>.container .show-list {
+            position: fixed;
+            top: 50px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: hsla(0, 0%, 97.3%, .933);
+            overflow: auto
+        }
+
+        .xw-header>.container .show-list .navbar-nav,
+        .xw-header>.container .show-list .navbar-nav>li,
+        .xw-header>.container .show-list .navbar-nav>li>a {
+            display: block
+        }
+
+        .xw-header>.container .more-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 32px;
+            height: 27px;
+            border: 1px solid #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            background: rgba(0, 102, 0, .333);
+            transition: background .3s
+        }
+
+        .xw-header>.container .more-btn>i {
+            position: absolute;
+            left: 6px;
+            width: 20px;
+            height: 1px;
+            display: block;
+            background: #fff;
+            transition: all .3s
+        }
+
+        .xw-header>.container .more-btn>i.i1 {
+            top: 6px
+        }
+
+        .xw-header>.container .more-btn>i.i2 {
+            top: 13px
+        }
+
+        .xw-header>.container .more-btn>i.i3 {
+            top: 20px
+        }
+
+        .xw-header>.container .more-btn.inshow {
+            background: rgba(255, 0, 0, .533)
+        }
+
+        .xw-header>.container .more-btn.inshow>i.i1 {
+            top: 12px
+        }
+
+        .xw-header>.container .more-btn.inshow>i.i2 {
+            top: 13px
+        }
+
+        .xw-header>.container .more-btn.inshow>i.i3 {
+            top: 14px
+        }
+
+        .header-logo {
+            margin: 0 20px 0 18px;
+            display: inline-block;
+            line-height: 50px;
+            height: 50px
+        }
+
+        .header-logo>a {
+            position: relative;
+            top: -2px;
+            display: inline-block;
+            color: rgba(0, 0, 0, .933);
+            font-size: 20px;
+            padding: 0;
+            text-shadow: 0 0 1px rgba(0, 0, 0, .533);
+            letter-spacing: 2px
+        }
+
+        .header-logo>a,
+        .header-logo>a:hover {
+            text-decoration: none
+        }
+
+        ul.header-nav {
+            display: inline-block;
+            white-space: nowrap;
+            vertical-align: top;
+            margin: 0;
+            padding: 0
+        }
+
+        ul.header-nav>li {
+            display: inline-block;
+            margin: 0 1px
+        }
+
+        ul.header-nav>li>a {
+            font-size: 14px;
+            vertical-align: top;
+            display: inline-block;
+            padding: 0 15px;
+            font-weight: 700;
+            text-decoration: none;
+            letter-spacing: 1px;
+            color: rgba(0, 0, 0, .533);
+            transition: all .3s
+        }
+
+        ul.header-nav>li.active>a,
+        ul.header-nav>li>a:hover {
+            background-color: rgba(0, 0, 0, .051)
+        }
+
+        .show-list>ul.header-nav,
+        .show-list>ul.header-nav>li,
+        .show-list>ul.header-nav>li>a {
+            display: block
+        }
+
+        .header-user {
+            position: relative;
+            display: block;
+            padding: 0 10px;
+            font-size: 13px
+        }
+
+        .header-user>a {
+            display: block;
+            color: rgba(0, 0, 0, .533);
+            text-decoration: none;
+            padding: 0 5px
+        }
+
+        .header-user>.hidden-links {
+            display: none;
+            background: #fff;
+            border: 1px solid rgba(0, 0, 0, .133);
+            border-radius: 0 0 4px 4px;
+            box-shadow: 0 0 8px rgba(0, 0, 0, .133)
+        }
+
+        .header-user>.hidden-links>a {
+            display: block;
+            color: rgba(0, 0, 0, .667);
+            text-decoration: none;
+            padding: 0 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, .067);
+            line-height: 36px
+        }
+
+        .header-user>.hidden-links>a:last-child {
+            border-bottom: none
+        }
+
+        .header-user>.hidden-links>a:hover {
+            background-color: rgba(0, 0, 0, .051)
+        }
+
+        .header-user:hover>.hidden-links {
+            display: block
+        }
+
+        .show-list .hidden-links {
+            display: block;
+            box-shadow: none;
+            border: none
+        }
+
+        .show-list .hidden-links>a {
+            border: none;
+            line-height: 40px;
+            padding-left: 40px
+        }
+
+        .user-link:hover {
+            background-color: rgba(0, 0, 0, .051)
+        }
+
+        .user-link>span {
+            display: inline-block;
+            height: 100%;
+            vertical-align: top
+        }
+
+        .user-link>span.avatar-span {
+            padding: 13px 8px 0 0
+        }
+
+        .user-link .avatar {
+            display: block;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%
+        }
+
+        .user-link>.user-name-span {
+            max-width: 140px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis
+        }
+
+        .piano {
+            top: 50px;
+            left: 0;
+            right: 0;
+            background-image: url(/assets/img/pianobg.0b535a2.jpg)
+        }
+
+        .piano,
+        .piano>.loading {
+            position: absolute;
+            overflow: hidden
+        }
+
+        .piano>.loading {
+            z-index: 20;
+            top: 50%;
+            left: 50%;
+            width: 200px;
+            background: #fff;
+            padding: 0 0 10px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, .2);
+            border-radius: 5px;
+            -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%)
+        }
+
+        .piano>.loading>.loading-status {
+            position: relative;
+            height: 7em;
+            font-size: 13px
+        }
+
+        .piano>.loading>.loading-status .loading-icon {
+            padding: 3em 0 0
+        }
+
+        .piano>.loading>.text {
+            padding: 20px 0;
+            font-size: 15px;
+            text-align: center
+        }
+
+        .piano>.loading>.loading-bar {
+            display: block;
+            height: 2px;
+            max-width: 100%;
+            background: rgba(1, 102, 189, .851)
+        }
+
+        .setting-panel {
+            position: relative
+        }
+
+        .setting-panel>.slide-menu {
+            position: relative;
+            top: 4px;
+            z-index: 10;
+            margin: 0;
+            padding: 0 15px;
+            line-height: 32px;
+            overflow-y: hidden;
+            font-size: 13px;
+            white-space: nowrap;
+            background: #fff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, .2)
+        }
+
+        .setting-panel>.slide-menu>a {
+            display: inline-block;
+            padding: 0 12px;
+            cursor: pointer;
+            margin: 0 1px;
+            background-color: hsla(0, 0%, 100%, .333);
+            transition: background-color .3s;
+            text-decoration: none;
+            color: rgba(0, 0, 0, .667);
+            font-size: 14px
+        }
+
+        .setting-panel>.slide-menu>a.active {
+            position: relative;
+            background-color: rgba(1, 102, 189, .133);
+            color: #0166bd;
+            font-weight: 700;
+            border: 1px solid rgba(1, 102, 189, .2);
+            border-width: 0 1px
+        }
+
+        .setting-panel>.slide-menu>a:focus,
+        .setting-panel>.slide-menu>a:hover {
+            outline: none;
+            background-color: rgba(1, 102, 189, .133)
+        }
+
+        .setting-panel>.slide-menu>a>.iconfont {
+            padding: 0 3px 0 0
+        }
+
+        .setting-panel>.st-cont {
+            position: absolute;
+            top: 36px;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            overflow-y: auto
+        }
+
+        .old-entry {
+            min-height: 20px
+        }
+
+        .old-entry>div {
+            padding: .6em 0 0;
+            margin: 0 20px;
+            text-align: right;
+            font-size: 13px
+        }
+
+        .visit-ct>.logo-ct {
+            position: relative;
+            margin: 0
+        }
+
+        .visit-ct>.logo-ct>.pn-logo {
+            position: absolute;
+            top: 0;
+            left: 18px;
+            width: 40px;
+            max-width: 30%;
+            overflow: hidden;
+            border-radius: 110px;
+            border: 2px solid #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+            margin: 0 auto
+        }
+
+        .visit-ct>.logo-ct>.pn-logo:before {
+            padding-top: 100%;
+            content: "";
+            display: block
+        }
+
+        .visit-ct>.logo-ct>.pn-logo>img {
+            position: absolute;
+            top: 0;
+            max-height: 100%
+        }
+
+        .visit-ct>.logo-ct>.pn-info {
+            margin: 0 0 0 78px
+        }
+
+        .visit-ct>.logo-ct>.pn-info>h1 {
+            padding: 4px 0 0;
+            margin: 0;
+            font-size: 16px;
+            font-weight: 700
+        }
+
+        .visit-ct>.logo-ct>.pn-info>p {
+            margin: 0;
+            word-break: break-all
+        }
+
+        .visit-ct>.tips-wrapper {
+            padding: 50px 0 30px;
+            margin: 0 20px;
+            font-size: 17px;
+            min-height: 2em
+        }
+
+        .visit-ct>.tips-wrapper>div {
+            text-align: center;
+            transition: opacity .3s
+        }
+
+        .visit-ct>.tips-wrapper>div.hidden {
+            opacity: 0
+        }
+
+        .visit-ct>.tips-wrapper>div b {
+            margin: 0 6px;
+            font-size: 17px;
+            color: #444
+        }
+
+        .visit-ct>.doc-div {
+            margin: 0 15px;
+            padding: 10px 0 0
+        }
+
+        .visit-ct>.doc-div p {
+            margin: 8px 0
+        }
+
+        .note-bar {
+            position: absolute;
+            z-index: 10;
+            top: 0;
+            touch-action: none;
+            cursor: default;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            pointer-events: none
+        }
+
+        .note-bar,
+        .note-bar>canvas {
+            width: 100%;
+            height: 100%
+        }
+
+        .keyboard-c {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 0 0 15px
+        }
+
+        .keyboard {
+            position: absolute;
+            bottom: 15px;
+            height: 200px;
+            touch-action: none;
+            cursor: default;
+            overflow: visible;
+            transition: -webkit-transform .2s;
+            transition: transform .2s;
+            transition: transform .2s, -webkit-transform .2s;
+            -webkit-user-select: none;
+            -webkit-user-drag: none;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            -webkit-transform-origin: 0 100%;
+            transform-origin: 0 100%;
+            font-size: 12px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, .267)
+        }
+
+        .keyboard>.black {
+            position: absolute;
+            height: 125px;
+            margin: 0 0 0 26px;
+            width: 0;
+            bottom: 75px;
+            z-index: 4;
+            pointer-events: none
+        }
+
+        .keyboard>.black>div {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 27px;
+            height: 100%;
+            background-color: #444;
+            border: 1px solid rgba(0, 0, 0, .533);
+            border-radius: 3px;
+            color: #fff;
+            text-align: center
+        }
+
+        .keyboard>.black>div.act {
+            background-color: #c783b2;
+            border-color: rgba(0, 0, 0, .533)
+        }
+
+        .keyboard>.white {
+            height: 200px;
+            white-space: nowrap;
+            bottom: 0;
+            margin: 0 0 0 1px;
+            z-index: 2;
+            pointer-events: none
+        }
+
+        .keyboard>.white>div {
+            position: relative;
+            display: inline-block;
+            width: 41px;
+            height: 100%;
+            background-color: #fff;
+            border: 1px solid rgba(0, 0, 0, .267);
+            margin: 0 0 0 -1px;
+            box-sizing: border-box;
+            border-radius: 4px;
+            text-align: center;
+            color: #000
+        }
+
+        .keyboard>.white>div.act {
+            background-color: rgba(173, 60, 138, .6)
+        }
+
+        .keyboard>.white>div>div.pn {
+            position: absolute;
+            width: 100%;
+            bottom: 10px;
+            font-size: 12px
+        }
+
+        .keyboard>.white>div>div.pn>div.sub,
+        .keyboard>.white>div>div.pn>div.sup {
+            display: inline-block;
+            margin: 0 2px
+        }
+
+        .keyboard>.white>div>div.pn>div.sub {
+            -webkit-transform: scale(.9) translateY(5px);
+            transform: scale(.9) translateY(5px)
+        }
+
+        .keyboard>.white>div>div.pn>div.sup {
+            -webkit-transform: scale(.9) translateY(-5px);
+            transform: scale(.9) translateY(-5px)
+        }
+
+        .keyboard.hidenum>div>div>span,
+        .keyboard.hidepname>div.white>div>div {
+            display: none
+        }
+
+        .keyboard>.center-c {
+            position: absolute;
+            bottom: 35px;
+            left: 925px;
+            font-size: 12px;
+            color: #a43983;
+            z-index: 5;
+            pointer-events: none
+        }
+
+        .xw-footer {
+            background: rgba(0, 0, 0, .012);
+            border-top: 1px dashed rgba(0, 0, 0, .122)
+        }
+
+        .xw-footer>.container {
+            margin: 0 10px;
+            padding: 0 0 12px
+        }
+
+        .xw-footer>.container>p {
+            font-size: 14px;
+            margin: 0;
+            padding: 15px 0
+        }
+
+        .xw-footer>.container>p>span {
+            margin: 0 10px
+        }
+    </style>
+    <script src="./hm.js"></script>
+    <script type="text/javascript" async="" defer="" src="./matomo.js"></script>
+    <script charset="utf-8" src="./vendors.js"></script>
+    <script charset="utf-8" src="./comps.js"></script>
+    <script charset="utf-8" src="./piano_new.js"></script>
+    <style type="text/css">
+        .xw-msg-fixed {
+            position: fixed;
+            left: 0;
+            width: 100%;
+            overflow: visible;
+            top: .5em;
+            z-index: 200;
+            font-size: 15px
+        }
+
+        .xw-msg-fixed>.msg-list {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 0;
+            text-align: center
+        }
+
+        .xw-msg-fixed>.msg-list>.msg-list-item {
+            position: relative;
+            display: block;
+            width: 100%;
+            transition: all .6s;
+            -webkit-transform-origin: 150% top;
+            transform-origin: 150% top
+        }
+
+        .xw-msg-fixed>.msg-list>.msg-list-item>.msg-content-wrapper {
+            position: relative;
+            left: 40px;
+            margin: 0 20px
+        }
+
+        .xw-msg-fixed>.msg-list>.msg-list-item>.msg-content-wrapper>.msg-content {
+            position: relative;
+            left: 100%;
+            display: inline-block;
+            max-width: 100%;
+            margin: .5em 0;
+            background: #fff;
+            line-height: 1.6em;
+            padding: .4em 2.6em .4em .8em;
+            border-radius: .2em;
+            box-shadow: 0 0 5px rgba(0, 0, 0, .2)
+        }
+
+        .xw-msg-fixed>.msg-list>.msg-list-item>.msg-content-wrapper>.msg-content>p {
+            word-break: break-all;
+            margin: 0
+        }
+
+        .xw-msg-fixed>.msg-list>.msg-list-item>.msg-content-wrapper>.msg-content>p>span.icon {
+            display: inline-block;
+            color: #fff;
+            background: rgba(0, 0, 0, .333);
+            font-size: .8em;
+            margin: 0 .1em 0 0;
+            width: 1.5em;
+            height: 1.5em;
+            line-height: 1.5;
+            border-radius: 50%
+        }
+
+        .xw-msg-fixed>.msg-list>.msg-list-item>.msg-content-wrapper>.msg-content>p>span.icon.success {
+            background-color: #31e08f
+        }
+
+        .xw-msg-fixed>.msg-list>.msg-list-item>.msg-content-wrapper>.msg-content>p>span.icon.info {
+            background-color: #267cc6
+        }
+
+        .xw-msg-fixed>.msg-list>.msg-list-item>.msg-content-wrapper>.msg-content>p>span.icon.error {
+            background-color: #fd5353
+        }
+
+        .xw-msg-fixed>.msg-list>.msg-list-item>.msg-content-wrapper>.msg-content>p>span.icon.warn {
+            background-color: #f1bd48
+        }
+
+        .xw-msg-fixed>.msg-list>.msg-list-item>.msg-content-wrapper>.msg-content>.msg-close {
+            position: absolute;
+            top: 50%;
+            right: 0;
+            margin: -1em 0 0;
+            cursor: pointer;
+            padding: .2em .8em .2em .2em
+        }
+
+        .xw-msg-fixed>.msg-list .msg-list-enter {
+            opacity: 0;
+            -webkit-transform: translateY(100px) scale(.2);
+            transform: translateY(100px) scale(.2)
+        }
+
+        .xw-msg-fixed>.msg-list .msg-list-leave-to {
+            opacity: 0;
+            -webkit-transform: translateY(-100px) scale(.2);
+            transform: translateY(-100px) scale(.2)
+        }
+
+        .xw-msg-fixed>.msg-list .msg-list-leave-active {
+            position: absolute
+        }
+    </style>
+    <style type="text/css">
+        .xw-button {
+            position: relative;
+            display: inline-block;
+            background-color: #fff;
+            border: 1px solid #d9d9d9;
+            border-radius: .3em;
+            color: rgba(0, 0, 0, .651);
+            padding: 0 .8em;
+            font-weight: 400;
+            text-align: center;
+            line-height: 2;
+            font-size: inherit;
+            cursor: pointer;
+            touch-action: manipulation;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            transition: all .3s
+        }
+
+        .xw-button.select,
+        .xw-button:focus,
+        .xw-button:hover {
+            color: #267cc6;
+            border-color: #267cc6;
+            box-shadow: 0 0 .3em rgba(0, 0, 0, .2);
+            z-index: 5
+        }
+
+        .xw-button:focus {
+            outline: 1px dashed -webkit-focus-ring-color
+        }
+
+        .xw-button:active {
+            color: #1e639e;
+            border-color: #1e639e
+        }
+
+        .xw-button.primary {
+            color: #fff;
+            background-color: #267cc6
+        }
+
+        .xw-button.primary.select,
+        .xw-button.primary:hover {
+            background-color: #2e95ee;
+            border-color: #267cc6
+        }
+
+        .xw-button.primary:focus {
+            background-color: #2e95ee
+        }
+
+        .xw-button.primary:active {
+            background-color: #1e639e
+        }
+
+        .xw-button.success {
+            color: #fff;
+            background-color: #31e08f
+        }
+
+        .xw-button.success.select,
+        .xw-button.success:focus,
+        .xw-button.success:hover {
+            background-color: #3bffac;
+            border-color: #31e08f
+        }
+
+        .xw-button.success:active {
+            background-color: #27b372;
+            border-color: #31e08f
+        }
+
+        .xw-button.danger,
+        .xw-button.error {
+            color: #fff;
+            background-color: #fd5353
+        }
+
+        .xw-button.danger.select,
+        .xw-button.danger:hover,
+        .xw-button.error.select,
+        .xw-button.error:hover {
+            background-color: #ff6464;
+            border-color: #fd5353
+        }
+
+        .xw-button.danger:focus,
+        .xw-button.error:focus {
+            background-color: #ff6464;
+            border-color: #ff6464
+        }
+
+        .xw-button.danger:active,
+        .xw-button.error:active {
+            background-color: #d74747;
+            border-color: #d74747
+        }
+
+        .xw-button.disable {
+            background-color: #f3f4f5;
+            color: rgba(0, 0, 0, .333);
+            cursor: not-allowed
+        }
+
+        .xw-button.disable.select,
+        .xw-button.disable:focus,
+        .xw-button.disable:hover {
+            color: rgba(0, 0, 0, .333);
+            border-color: #d9d9d9;
+            box-shadow: none
+        }
+
+        .xw-button.dashed {
+            color: rgba(0, 0, 0, .651);
+            border-style: dashed
+        }
+
+        .xw-button.dashed.select,
+        .xw-button.dashed:hover {
+            border-color: #2e95ee;
+            color: #267cc6
+        }
+
+        .xw-button.dashed:focus {
+            border-color: #2e95ee;
+            color: #2e95ee
+        }
+
+        .xw-button.dashed:active {
+            border-color: #1e639e;
+            color: #1e639e
+        }
+
+        .xw-button.link {
+            background-color: transparent;
+            border-color: transparent;
+            color: #267cc6
+        }
+    </style>
+    <style type="text/css">
+        .xw-input {
+            margin: 0 2px;
+            border: 1px solid rgba(0, 0, 0, .333);
+            border-radius: 3px;
+            padding: 4px 8px
+        }
+
+        .pc-keyboard-save {
+            padding: 0
+        }
+
+        .pc-keyboard-save>.t-save-tips {
+            margin: 1em 0
+        }
+
+        .pc-keyboard-save>.title {
+            margin: 0 0 1em
+        }
+
+        .pc-keyboard-save .save-list {
+            position: relative;
+            padding: 0 0 1em
+        }
+
+        .pc-keyboard-save .save-list .save-list-item {
+            display: inline-block;
+            margin: 3px;
+            transition: all .6s
+        }
+
+        .pc-keyboard-save .save-list .save-list-item>div.cont {
+            position: relative;
+            padding: 10px 12px;
+            width: 280px;
+            border-radius: 3px;
+            box-shadow: 0 0 6px rgba(0, 0, 0, .267);
+            background-color: #fff
+        }
+
+        .pc-keyboard-save .save-list .save-list-item>div.cont>.name {
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin: 0 50px 5px 0
+        }
+
+        .pc-keyboard-save .save-list .save-list-item>div.cont>.time {
+            font-size: 12px
+        }
+
+        .pc-keyboard-save .save-list .save-list-item>div.cont>.btns {
+            position: absolute;
+            bottom: 5px;
+            right: 3px;
+            text-align: center
+        }
+
+        .pc-keyboard-save .save-list .save-list-item>div.cont>.btns>.xw-button {
+            font-size: 12px
+        }
+
+        .pc-keyboard-save .save-list-enter {
+            opacity: 0;
+            -webkit-transform: translateY(-100px) scale(.5);
+            transform: translateY(-100px) scale(.5)
+        }
+
+        .pc-keyboard-save .save-list-leave-to {
+            opacity: 0;
+            -webkit-transform: scale(.2) translateY(-100px) rotate(30deg);
+            transform: scale(.2) translateY(-100px) rotate(30deg)
+        }
+
+        .pc-keyboard-save .save-list-leave-active {
+            position: absolute
+        }
+    </style>
+    <style type="text/css"></style>
+    <style type="text/css">
+        .faq-item {
+            background: #fff;
+            padding: 16px 0 8px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, .267);
+            margin: 0 0 1em
+        }
+
+        .faq-item>header {
+            position: relative;
+            font-size: 16px;
+            padding: 0 10px 0 20px;
+            color: #000
+        }
+
+        .faq-item>header:before {
+            position: absolute;
+            top: 8px;
+            left: 0;
+            content: "";
+            display: inline-block;
+            width: 14px;
+            height: 9px;
+            background: #2479c1
+        }
+
+        .faq-item>p {
+            margin: 5px 10px 5px 20px
+        }
+    </style>
+    <style type="text/css">
+        .pc-kbd-ct {
+            padding: 30px 5px 15px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            width: 1272px;
+            margin: 0 auto
+        }
+
+        .pc-kbd-ct>.pc-kbd-row {
+            display: block;
+            white-space: nowrap;
+            height: 52px;
+            margin: 0 0 5px
+        }
+
+        .pc-kbd-ct>.pc-kbd-row>div {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            margin: 0 5px 0 0;
+            background: #fff;
+            border: 1px solid rgba(0, 0, 0, .302);
+            border-radius: 4px;
+            line-height: 1;
+            vertical-align: top
+        }
+
+        .pc-kbd-ct>.pc-kbd-row>div.disable {
+            background: #7d97ad;
+            border: 1px solid rgba(0, 0, 0, .2)
+        }
+
+        .pc-kbd-ct>.pc-kbd-row>div.d {
+            background-color: rgba(199, 39, 76, .502)
+        }
+
+        .pc-kbd-ct>.pc-kbd-row>div.selec {
+            -webkit-animation: shanshan 1s infinite;
+            animation: shanshan 1s infinite
+        }
+
+        .pc-kbd-ct>.pc-kbd-row>div>.key-name {
+            padding: 5px 8px 0;
+            pointer-events: none
+        }
+
+        .pc-kbd-ct>.pc-kbd-row>div>.key-rep {
+            font-size: 12px;
+            padding: 6px 0 0;
+            color: rgba(16, 10, 255, .8);
+            font-weight: 700;
+            text-align: center;
+            pointer-events: none
+        }
+
+        .pc-kbd-set {
+            width: 1272px;
+            margin: 0 auto;
+            padding: 0 0 50px
+        }
+
+        .pc-kbd-set>.row-title {
+            margin: 0 10px .5em;
+            font-size: 16px;
+            font-weight: 700
+        }
+
+        .pc-kbd-set>.row {
+            margin: 0 10px
+        }
+
+        .pc-kbd-set>.row.faq-item {
+            margin: 0 10px 1em
+        }
+
+        .pc-kbd-set .xw-button {
+            font-size: 14px;
+            margin: 0 .25em
+        }
+
+        .pc-kbd-set .select-key {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            margin: 0 5px 0 0;
+            background: rgba(0, 0, 0, .733);
+            border: 1px solid rgba(0, 0, 0, .302);
+            border-radius: 4px;
+            line-height: 1;
+            vertical-align: top
+        }
+
+        .pc-kbd-set .select-key>.key-name {
+            padding: 5px 8px 0;
+            pointer-events: none;
+            font-weight: 700;
+            color: #fff
+        }
+
+        .pc-kbd-set .edit-container {
+            margin: 5px 0 0;
+            border: 1px solid rgba(0, 0, 0, .2);
+            padding: 3px 16px 20px;
+            background: #fff
+        }
+
+        .pc-kbd-set .edit-container>.btn-group {
+            margin: 10px 0 0
+        }
+
+        @-webkit-keyframes shanshan {
+            0% {
+                border: 1px solid rgba(16, 10, 255, .8);
+                color: rgba(16, 10, 255, .8);
+                background-color: rgba(16, 10, 255, .2)
+            }
+
+            49% {
+                border: 1px solid rgba(16, 10, 255, .8);
+                color: rgba(16, 10, 255, .8);
+                background-color: rgba(16, 10, 255, .2)
+            }
+
+            50% {
+                border: 1px solid rgba(0, 0, 0, .302);
+                color: #000
+            }
+
+            to {
+                border: 1px solid rgba(0, 0, 0, .302);
+                color: #000
+            }
+        }
+
+        @keyframes shanshan {
+            0% {
+                border: 1px solid rgba(16, 10, 255, .8);
+                color: rgba(16, 10, 255, .8);
+                background-color: rgba(16, 10, 255, .2)
+            }
+
+            49% {
+                border: 1px solid rgba(16, 10, 255, .8);
+                color: rgba(16, 10, 255, .8);
+                background-color: rgba(16, 10, 255, .2)
+            }
+
+            50% {
+                border: 1px solid rgba(0, 0, 0, .302);
+                color: #000
+            }
+
+            to {
+                border: 1px solid rgba(0, 0, 0, .302);
+                color: #000
+            }
+        }
+    </style>
+    <style type="text/css">
+        .loading-fade-enter-active,
+        .loading-fade-leave-active {
+            transition: opacity .3s
+        }
+
+        .loading-fade-enter,
+        .loading-fade-leave-to {
+            opacity: 0
+        }
+
+        .xw-loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 100;
+            background: hsla(0, 0%, 100%, .733);
+            transition: all .3s;
+            text-align: center
+        }
+
+        .xw-loading>.loading-icon {
+            padding: 4em 0 0;
+            pointer-events: none
+        }
+
+        .xw-loading>.loading-icon>i {
+            display: inline-block;
+            width: 1.1em;
+            height: 1.1em;
+            background-color: #267cc6;
+            margin: 0 .2em;
+            border-radius: 50%;
+            -webkit-transform-origin: 50%;
+            transform-origin: 50%;
+            -webkit-transform: scale(.1);
+            transform: scale(.1);
+            -webkit-animation: loading_icon 2s infinite;
+            animation: loading_icon 2s infinite
+        }
+
+        .xw-loading>.custom-text {
+            padding: .5em 0;
+            font-size: .9em
+        }
+
+        .xw-loading>.loading-icon>i:first-child {
+            -webkit-animation-delay: 0s;
+            animation-delay: 0s
+        }
+
+        .xw-loading>.loading-icon>i:nth-child(2) {
+            -webkit-animation-delay: .25s;
+            animation-delay: .25s
+        }
+
+        .xw-loading>.loading-icon>i:nth-child(3) {
+            -webkit-animation-delay: .5s;
+            animation-delay: .5s
+        }
+
+        .xw-loading>.loading-icon>i:nth-child(4) {
+            -webkit-animation-delay: .75s;
+            animation-delay: .75s
+        }
+
+        .xw-loading>.loading-icon>i:nth-child(5) {
+            -webkit-animation-delay: 1s;
+            animation-delay: 1s
+        }
+
+        .xw-loading>.loading-icon>i:nth-child(6) {
+            -webkit-animation-delay: 1.25s;
+            animation-delay: 1.25s
+        }
+
+        .xw-loading>.loading-icon>i:nth-child(7) {
+            -webkit-animation-delay: 1.5s;
+            animation-delay: 1.5s
+        }
+
+        .xw-loading>.loading-icon>i:nth-child(8) {
+            -webkit-animation-delay: 1.75s;
+            animation-delay: 1.75s
+        }
+
+        .xw-loading>.loading-icon>i:nth-child(9) {
+            -webkit-animation-delay: 2s;
+            animation-delay: 2s
+        }
+
+        .xw-loading>.loading-icon>i:nth-child(10) {
+            -webkit-animation-delay: 2.25s;
+            animation-delay: 2.25s
+        }
+
+        @-webkit-keyframes loading_icon {
+            0% {
+                -webkit-transform: scale(.1) translate(0);
+                transform: scale(.1) translate(0)
+            }
+
+            50% {
+                -webkit-transform: scale(1) translateY(-1em);
+                transform: scale(1) translateY(-1em)
+            }
+
+            to {
+                -webkit-transform: scale(.1) translate(0);
+                transform: scale(.1) translate(0)
+            }
+        }
+
+        @keyframes loading_icon {
+            0% {
+                -webkit-transform: scale(.1) translate(0);
+                transform: scale(.1) translate(0)
+            }
+
+            50% {
+                -webkit-transform: scale(1) translateY(-1em);
+                transform: scale(1) translateY(-1em)
+            }
+
+            to {
+                -webkit-transform: scale(.1) translate(0);
+                transform: scale(.1) translate(0)
+            }
+        }
+    </style>
+    <script charset="utf-8" src="./midi-file.js"></script>
+    <style type="text/css">
+        .xw-button-group .xw-button {
+            border-radius: 0;
+            margin-left: -1px
+        }
+
+        .xw-button-group :first-child.xw-button {
+            border-radius: .3em 0 0 .3em;
+            margin-left: 0
+        }
+
+        .xw-button-group :last-child.xw-button {
+            border-radius: 0 .3em .3em 0
+        }
+    </style>
+    <style type="text/css">
+        .panel-midifile {
+            margin: 0 1em;
+            font-size: 14px
+        }
+
+        .panel-midifile>.player-wp {
+            max-width: 500px;
+            padding: 2em 0;
+            margin: 0 auto
+        }
+
+        .panel-midifile>.player-wp>.file-upload {
+            position: relative;
+            min-height: 120px;
+            border: 1px dashed rgba(0, 0, 0, .267);
+            border-radius: 5px;
+            background: rgba(245, 246, 247, .667);
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        .panel-midifile>.player-wp>.file-upload:hover {
+            background-color: rgba(242, 243, 244, .667)
+        }
+
+        .panel-midifile>.player-wp>.file-upload:active {
+            background-color: rgba(239, 240, 241, .667)
+        }
+
+        .panel-midifile>.player-wp>.file-upload>.tips-text {
+            position: absolute;
+            z-index: 1;
+            font-size: 14px;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: rgba(0, 0, 0, .533);
+            font-weight: 700;
+            text-shadow: 0 0 2px hsla(0, 0%, 100%, .533);
+            -webkit-transform: translateY(-50%);
+            transform: translateY(-50%)
+        }
+
+        .panel-midifile>.player-wp>.player-control {
+            padding: 1em 0
+        }
+
+        .panel-midifile>.player-wp>.player-control>.play-btns {
+            text-align: center
+        }
+
+        .panel-midifile>.player-wp>.player-control>.play-info {
+            text-align: center;
+            padding: .8em 0
+        }
+
+        .panel-midifile>.player-wp>.player-control>.meta-info>div {
+            margin: 0 0 0 50px;
+            word-break: break-all
+        }
+
+        .panel-midifile>.player-wp>.player-control>.meta-info>div>.name {
+            font-size: 12px;
+            color: rgba(0, 0, 0, .467);
+            margin: 0 0 0 -50px
+        }
+
+        .panel-midifile>.player-wp>.player-control>.meta-info>div>.value {
+            margin: 0 0 0 1em;
+            font-size: 14px;
+            color: rgba(0, 0, 0, .733)
+        }
+    </style>
+</head>
+
+<body data-gr-c-s-loaded="true" class="vsc-initialized" style="">
+    <div id="app">
+        <div class="piano" style="top: 50px; bottom: 0px;">
+            <div class="setting-panel" style="height: 449.717px;">
+                <div class="rit-btn"></div>
+                <menu class="slide-menu"><a tabindex="0" href="javascript:void(0)" class="">
+                        <!----><span>感谢访问</span></a><a tabindex="0" href="javascript:void(0)" class=""><i
+                            class="iconfont icon-shezhi"></i><span>设置</span></a><a tabindex="0"
+                        href="javascript:void(0)" class=""><i
+                            class="iconfont icon-jianpan"></i><span>电脑键盘映射</span></a><a tabindex="0"
+                        href="javascript:void(0)" class="active">
+                        <!----><span>MIDI播放</span></a><a tabindex="0" href="javascript:void(0)" class=""><i
+                            class="iconfont icon-pinglun"></i><span>吐槽专区</span></a></menu>
+                <section class="st-cont">
+                    <!---->
+                    <!---->
+                    <!---->
+                    <div class="panel-midifile">
+                        <div class="player-wp">
+                            <div class="file-upload">
+                                <div class="tips-text">
+                                </div>
+                            </div>
+                            <div>
+                            </div>
+                            <div class="player-control">
+                                <div class="xw-button-group play-btns"><button type="button" class="xw-button"><i
+                                            class="iconfont icon-play"></i>
+                                    </button><button type="button" class="xw-button"><i class="iconfont icon-pause"></i>
+                                    </button><button type="button" class="xw-button"><i class="iconfont icon-stop"></i>
+                                    </button></div>
+                                <div class="play-info"><span class="time">
+                                        <!---->
+                                        0 / 794692
+                                    </span></div>
+                                <div class="meta-info">
+                                    <div><span class="name">
+                                        </span><span class="value">
+                                        </span></div>
+                                    <div><span class="name">
+                                        </span><span class="value">
+                                        </span></div>
+                                    <div><span class="name">
+                                        </span><span class="value">
+                                        </span></div>
+                                    <div><span class="name">
+                                        </span><span class="value">
+                                        </span></div>
+                                    <div><span class="name">
+                                        </span><span class="value">
+                                        </span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!---->
+                </section>
+            </div>
+            <div class="note-bar" style="height: 449.717px;"><canvas width="1366" height="449"></canvas></div>
+            <div class="keyboard-c">
+                <div class="keyboard hidenum" style="transform: scale(0.656415) translateX(0px);">
+                    <div class="black">
+                        <div data-key="2" style="left:2px;" class=""><span>2</span></div>
+                        <div data-key="5" style="left:78px;" class=""><span>5</span></div>
+                        <div data-key="7" style="left:122px;" class=""><span>7</span></div>
+                        <div data-key="10" style="left:198px;"><span>10</span></div>
+                        <div data-key="12" style="left:240px;" class=""><span>12</span></div>
+                        <div data-key="14" style="left:282px;" class=""><span>14</span></div>
+                        <div data-key="17" style="left:358px;" class=""><span>17</span></div>
+                        <div data-key="19" style="left:402px;" class=""><span>19</span></div>
+                        <div data-key="22" style="left:478px;" class=""><span>22</span></div>
+                        <div data-key="24" style="left:520px;" class=""><span>24</span></div>
+                        <div data-key="26" style="left:562px;" class=""><span>26</span></div>
+                        <div data-key="29" style="left:638px;" class=""><span>29</span></div>
+                        <div data-key="31" style="left:682px;" class=""><span>31</span></div>
+                        <div data-key="34" style="left:758px;" class=""><span>34</span></div>
+                        <div data-key="36" style="left:800px;" class=""><span>36</span></div>
+                        <div data-key="38" style="left:842px;" class=""><span>38</span></div>
+                        <div data-key="41" style="left:918px;" class=""><span>41</span></div>
+                        <div data-key="43" style="left:962px;" class=""><span>43</span></div>
+                        <div data-key="46" style="left:1038px;" class=""><span>46</span></div>
+                        <div data-key="48" style="left:1080px;" class=""><span>48</span></div>
+                        <div data-key="50" style="left:1122px;" class=""><span>50</span></div>
+                        <div data-key="53" style="left:1198px;" class=""><span>53</span></div>
+                        <div data-key="55" style="left:1242px;" class=""><span>55</span></div>
+                        <div data-key="58" style="left:1318px;" class=""><span>58</span></div>
+                        <div data-key="60" style="left:1360px;" class=""><span>60</span></div>
+                        <div data-key="62" style="left:1402px;" class=""><span>62</span></div>
+                        <div data-key="65" style="left:1478px;" class=""><span>65</span></div>
+                        <div data-key="67" style="left:1522px;" class=""><span>67</span></div>
+                        <div data-key="70" style="left:1598px;"><span>70</span></div>
+                        <div data-key="72" style="left:1640px;" class=""><span>72</span></div>
+                        <div data-key="74" style="left:1682px;" class=""><span>74</span></div>
+                        <div data-key="77" style="left:1758px;"><span>77</span></div>
+                        <div data-key="79" style="left:1802px;"><span>79</span></div>
+                        <div data-key="82" style="left:1878px;"><span>82</span></div>
+                        <div data-key="84" style="left:1920px;"><span>84</span></div>
+                        <div data-key="86" style="left:1962px;"><span>86</span></div>
+                    </div>
+                    <div class="white">
+                        <div data-key="1"><span>1</span>
+                            <div class="pn">A<div class="sub">2</div>
+                            </div>
+                        </div>
+                        <div data-key="3"><span>3</span>
+                            <div class="pn">B<div class="sub">2</div>
+                            </div>
+                        </div>
+                        <div data-key="4" class=""><span>4</span>
+                            <div class="pn">C<div class="sub">1</div>
+                            </div>
+                        </div>
+                        <div data-key="6" class=""><span>6</span>
+                            <div class="pn">D<div class="sub">1</div>
+                            </div>
+                        </div>
+                        <div data-key="8"><span>8</span>
+                            <div class="pn">E<div class="sub">1</div>
+                            </div>
+                        </div>
+                        <div data-key="9" class=""><span>9</span>
+                            <div class="pn">F<div class="sub">1</div>
+                            </div>
+                        </div>
+                        <div data-key="11" class=""><span>11</span>
+                            <div class="pn">G<div class="sub">1</div>
+                            </div>
+                        </div>
+                        <div data-key="13" class=""><span>13</span>
+                            <div class="pn">A<div class="sub">1</div>
+                            </div>
+                        </div>
+                        <div data-key="15" class=""><span>15</span>
+                            <div class="pn">B<div class="sub">1</div>
+                            </div>
+                        </div>
+                        <div data-key="16" class=""><span>16</span>
+                            <div class="pn">C</div>
+                        </div>
+                        <div data-key="18" class=""><span>18</span>
+                            <div class="pn">D</div>
+                        </div>
+                        <div data-key="20" class=""><span>20</span>
+                            <div class="pn">E</div>
+                        </div>
+                        <div data-key="21" class=""><span>21</span>
+                            <div class="pn">F</div>
+                        </div>
+                        <div data-key="23" class=""><span>23</span>
+                            <div class="pn">G</div>
+                        </div>
+                        <div data-key="25" class=""><span>25</span>
+                            <div class="pn">A</div>
+                        </div>
+                        <div data-key="27" class=""><span>27</span>
+                            <div class="pn">B</div>
+                        </div>
+                        <div data-key="28" class=""><span>28</span>
+                            <div class="pn">c</div>
+                        </div>
+                        <div data-key="30" class=""><span>30</span>
+                            <div class="pn">d</div>
+                        </div>
+                        <div data-key="32"><span>32</span>
+                            <div class="pn">e</div>
+                        </div>
+                        <div data-key="33" class=""><span>33</span>
+                            <div class="pn">f</div>
+                        </div>
+                        <div data-key="35" class=""><span>35</span>
+                            <div class="pn">g</div>
+                        </div>
+                        <div data-key="37" class=""><span>37</span>
+                            <div class="pn">a</div>
+                        </div>
+                        <div data-key="39" class=""><span>39</span>
+                            <div class="pn">b</div>
+                        </div>
+                        <div data-key="40" class=""><span>40</span>
+                            <div class="pn">c<div class="sup">1</div>
+                            </div>
+                        </div>
+                        <div data-key="42" class=""><span>42</span>
+                            <div class="pn">d<div class="sup">1</div>
+                            </div>
+                        </div>
+                        <div data-key="44" class=""><span>44</span>
+                            <div class="pn">e<div class="sup">1</div>
+                            </div>
+                        </div>
+                        <div data-key="45" class=""><span>45</span>
+                            <div class="pn">f<div class="sup">1</div>
+                            </div>
+                        </div>
+                        <div data-key="47" class=""><span>47</span>
+                            <div class="pn">g<div class="sup">1</div>
+                            </div>
+                        </div>
+                        <div data-key="49" class=""><span>49</span>
+                            <div class="pn">a<div class="sup">1</div>
+                            </div>
+                        </div>
+                        <div data-key="51" class=""><span>51</span>
+                            <div class="pn">b<div class="sup">1</div>
+                            </div>
+                        </div>
+                        <div data-key="52" class=""><span>52</span>
+                            <div class="pn">c<div class="sup">2</div>
+                            </div>
+                        </div>
+                        <div data-key="54" class=""><span>54</span>
+                            <div class="pn">d<div class="sup">2</div>
+                            </div>
+                        </div>
+                        <div data-key="56" class=""><span>56</span>
+                            <div class="pn">e<div class="sup">2</div>
+                            </div>
+                        </div>
+                        <div data-key="57" class=""><span>57</span>
+                            <div class="pn">f<div class="sup">2</div>
+                            </div>
+                        </div>
+                        <div data-key="59" class=""><span>59</span>
+                            <div class="pn">g<div class="sup">2</div>
+                            </div>
+                        </div>
+                        <div data-key="61" class=""><span>61</span>
+                            <div class="pn">a<div class="sup">2</div>
+                            </div>
+                        </div>
+                        <div data-key="63" class=""><span>63</span>
+                            <div class="pn">b<div class="sup">2</div>
+                            </div>
+                        </div>
+                        <div data-key="64" class=""><span>64</span>
+                            <div class="pn">c<div class="sup">3</div>
+                            </div>
+                        </div>
+                        <div data-key="66" class=""><span>66</span>
+                            <div class="pn">d<div class="sup">3</div>
+                            </div>
+                        </div>
+                        <div data-key="68" class=""><span>68</span>
+                            <div class="pn">e<div class="sup">3</div>
+                            </div>
+                        </div>
+                        <div data-key="69" class=""><span>69</span>
+                            <div class="pn">f<div class="sup">3</div>
+                            </div>
+                        </div>
+                        <div data-key="71" class=""><span>71</span>
+                            <div class="pn">g<div class="sup">3</div>
+                            </div>
+                        </div>
+                        <div data-key="73" class=""><span>73</span>
+                            <div class="pn">a<div class="sup">3</div>
+                            </div>
+                        </div>
+                        <div data-key="75"><span>75</span>
+                            <div class="pn">b<div class="sup">3</div>
+                            </div>
+                        </div>
+                        <div data-key="76" class=""><span>76</span>
+                            <div class="pn">c<div class="sup">4</div>
+                            </div>
+                        </div>
+                        <div data-key="78"><span>78</span>
+                            <div class="pn">d<div class="sup">4</div>
+                            </div>
+                        </div>
+                        <div data-key="80"><span>80</span>
+                            <div class="pn">e<div class="sup">4</div>
+                            </div>
+                        </div>
+                        <div data-key="81"><span>81</span>
+                            <div class="pn">f<div class="sup">4</div>
+                            </div>
+                        </div>
+                        <div data-key="83"><span>83</span>
+                            <div class="pn">g<div class="sup">4</div>
+                            </div>
+                        </div>
+                        <div data-key="85"><span>85</span>
+                            <div class="pn">a<div class="sup">4</div>
+                            </div>
+                        </div>
+                        <div data-key="87"><span>87</span>
+                            <div class="pn">b<div class="sup">4</div>
+                            </div>
+                        </div>
+                        <div data-key="88"><span>88</span>
+                            <div class="pn">c<div class="sup">5</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="center-c" style="display:;">中央C</div>
+                </div>
+            </div>
+            <!---->
+            <!---->
+        </div>
+        <footer class="xw-footer">
+            <div class="container text-center">
+                <p><span>© WWW.XIWNN.COM</span><span><span>粤ICP备</span><a href="http://www.beian.miit.gov.cn/"
+                            target="_blank">16015361</a><span>号</span></span></p>
+            </div>
+        </footer>
+    </div>
+    <script>var _SSR_PAGE_ = "piano/new" || "piano/new";</script>
+    <script>var __USER__ = null;</script>
+    <script type="text/javascript" src="./main.js"></script>
+    <div class="xw-msg-fixed">
+        <div class="msg-list"></div>
+    </div>
+</body>
+
+</html>
