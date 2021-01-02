@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0014)about:internet -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+
+<head>
+	<title>crypty</title>
+	<script src="/js/jquery-1.7.2.js"></script>
+	<script src="/js/aes.js"></script>
+	<script src="/js/tripledes.js"></script>
+	<script src="/js/rabbit.js"></script>
+	<script src="/js/rc4.js"></script>
+</head>
+
+<body>
+	<div>
+		<div>plain:</div>
+		<textarea rows="10" cols="64" name="message" id="msg_source" class="text_source"></textarea>
+		<div>
+			<p>algorithm:</p>
+			<ul>
+				<input type="radio" name="Etype" value="aes" checked="checked" />AES
+				<input type="radio" name="Etype" value="des" />DES
+				<input type="radio" name="Etype" value="rc4" />RC4
+				<input type="radio" name="Etype" value="rabbit" />Rabbit
+				<input type="radio" name="Etype" value="tripledes" />TripleDes
+			</ul>
+		</div>
+		<div class="OptDetail Button">
+			<p class="input">pass:
+				<input type="text" id="pwd" />
+			</p>
+			<ul>
+				<button onclick="encrypt();">encrypt</button>
+				<button onclick="decrypt();">decrypt</button>
+			</ul>
+		</div>
+
+		<div>encrypted:</div>
+		<textarea rows="10" cols="64" name="cipher" id="encrypt_result" onclick="this.select();"></textarea>
+
+		<script>
+			function encrypt() {
+				switch ($('input[name="Etype"]:checked').val()) {
+					case "aes":
+						$("#encrypt_result").val(CryptoJS.AES.encrypt($("#msg_source").val(), $("#pwd").val()));
+						break;
+					case "des":
+						$("#encrypt_result").val(CryptoJS.DES.encrypt($("#msg_source").val(), $("#pwd").val()));
+						break;
+					case "rabbit":
+						$("#encrypt_result").val(CryptoJS.Rabbit.encrypt($("#msg_source").val(), $("#pwd").val()));
+						break;
+					case "rc4":
+						$("#encrypt_result").val(CryptoJS.RC4.encrypt($("#msg_source").val(), $("#pwd").val()));
+						break;
+					case "tripledes":
+						$("#encrypt_result").val(CryptoJS.TripleDES.encrypt($("#msg_source").val(), $("#pwd").val()));
+						break;
+				}
+			}
+			function decrypt() {
+				switch ($('input[name="Etype"]:checked').val()) {
+					case "aes":
+						$("#msg_source").val(CryptoJS.AES.decrypt($("#encrypt_result").val(), $("#pwd").val()).toString(CryptoJS.enc.Utf8));
+						break;
+					case "des":
+						$("#msg_source").val(CryptoJS.DES.decrypt($("#encrypt_result").val(), $("#pwd").val()).toString(CryptoJS.enc.Utf8));
+						break;
+					case "rabbit":
+						$("#msg_source").val(CryptoJS.Rabbit.decrypt($("#encrypt_result").val(), $("#pwd").val()).toString(CryptoJS.enc.Utf8));
+						break;
+					case "rc4":
+						$("#msg_source").val(CryptoJS.RC4.decrypt($("#encrypt_result").val(), $("#pwd").val()).toString(CryptoJS.enc.Utf8));
+						break;
+					case "tripledes":
+						$("#msg_source").val(CryptoJS.TripleDES.decrypt($("#encrypt_result").val(), $("#pwd").val()).toString(CryptoJS.enc.Utf8));
+						break;
+				}
+			}
+		</script>
+	</div>
+</body>
+
+</html>
