@@ -21,8 +21,8 @@
             var upIcon = document.getElementById('upicon');
             message.innerHTML = file.name + " - " + file.size + " 字节 - " + file.type + " - 正在读取...";
             upBtn.classList.remove('btn-danger');
-            upBtn.classList.remove('btn-default');
-            upBtn.classList.add('btn-default');
+            upBtn.classList.remove('btn-info');
+            upBtn.classList.add('btn-info');
             upIcon.classList.remove('glyphicon-exclamation-sign');
             upIcon.classList.remove('glyphicon-open');
             upIcon.classList.add('glyphicon-open');
@@ -174,7 +174,7 @@
                     for (i = 0; i < charts.length; i++)charts[i].style.display = 'none';
                     upBtn.classList.remove('btn-danger');
                     upBtn.classList.add('btn-danger');
-                    upBtn.classList.remove('btn-default');
+                    upBtn.classList.remove('btn-info');
                     upIcon.classList.remove('glyphicon-open');
                     upIcon.classList.remove('glyphicon-exclamation-sign');
                     upIcon.classList.add('glyphicon-exclamation-sign');

@@ -1,20 +1,43 @@
 <head>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
-integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
-<link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
 &family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../css/style.css">
-<style>
-    img{
-        border: 3px dotted grey;
-        width:48%;
-    }
-</style>
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        img {
+            border: 3px dotted grey;
+            width: 48%;
+        }
+    </style>
 </head>
+
 <body>
-    <a class="btn btn-info" href=".." style="text-shadow: rgb(85, 85, 85) 3px 2px 4px;"><span
-        class="glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp;返回</a><br>
+    <a class="btn btn-info" href="/" style="text-shadow: rgb(85, 85, 85) 3px 2px 4px;"><span
+            class="glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp;返回</a><br>
+    <div>
+        <h1>
+            实验中学成绩整理
+        </h1>
+        <p style="font-size:16px">基于心意答查分页面提供的数据整理汇总考试成绩</p>
+        <h2>如何获取数据</h2>
+        <p>尽量使用 Google Chrome 浏览器，不保证其他浏览器操作相同。</p>
+        <p>1. 进入心意答查分页面；</p>
+        <p>2. 按下 F12 打开控制台，若无反应，尝试 Fn+F12；</p>
+        <p>3. 控制台顶栏分页中找到“<b>网络</b>”或“<b>Network</b>”（可能需要从下拉框里面找）；</p>
+        <p>4. 刷新页面（用 F5 刷新），此时应看到控制台中出现一批文件，点击其中的“<b>getStudentReportMEVO</b>”；</p>
+        <p>5. 在新出现的小页面的顶栏分页中找到“<b>预览</b>”或“<b>Preview</b>”；</p>
+        <p>6. 此时应看到“{data: {,...”等数据，一定在数据第一行右键（或在其最后一行下方空白处右键），随后“<b>复制物体</b>”或“<b>Copy Object</b>”；</p>
+        <p>7. 新建文本文档（格式为 txt，不可用 Word 文档），将所复制的内容粘贴并保存，于下方按钮打开。</p>
+        <p style="font-size: 12px;font-style: italic;">
+            注：图表整理均在本地进行，你的数据不会上传到网络。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;你获取的数据在心意答上未经加密并可直接访问，本质上对学生都是公开的，但恶意使用这些数据造成的后果自负。
+        </p>
+    </div>
+    <div style="text-align: center;">
+        <a class="btn btn-warning" href=".." style="text-shadow: rgb(85, 85, 85) 3px 2px 4px;"><span
+                class="glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp;返回</a><br>
+    </div>
     <img src="1.png">
     <img src="2.png">
     <img src="3.png">
