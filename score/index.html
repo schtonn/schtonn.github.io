@@ -4,14 +4,15 @@
     <script src="https://cdn.jsdelivr.net/npm/echarts@4.3.0/dist/echarts.min.js"></script>
     <script src="https://apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
     <link rel="preconnect" href="https://fonts.gstatic.com">
-	<link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
+    <link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
 &family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../css/style.css">
-<!-- <link rel="stylesheet" href="/css/style.css"> -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- <link rel="stylesheet" href="/css/style.css"> -->
+    <script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
     <script type="text/javascript">
         function decimal(x, n) {
             x = Math.round(x * 10 ** n) / 10 ** n;
-            return x.toFixed(3);
+            return x.toFixed(n);
         }
         function processFiles(event) {
             var file = event.target.files[0];
@@ -54,11 +55,35 @@
                         }
                     }
                 }
+                var scoreP = {}, avgP = {};
+                for (var i = 0; i < seIds.length; i++) {
+                    scoreP[object.data.multiExamStudentScore.singleExamStudentScores[i].seId] = object.data.multiExamStudentScore.singleExamStudentScores[i].essScore;
+                }
+                for (var i = 0; i < seIds.length; i++) {
+                    avgP[object.data.multiExamStudentScore.singleExamStudentScores[i].seId] = object.data.singleExamClassScores[i].secsAvgScore;
+                }
                 var scoreRate = {};
                 for (var i = 0; i < seIds.length; i++) {
                     scoreRate[object.data.multiExamStudentScore.singleExamStudentScores[i].seId] = decimal(object.data.multiExamStudentScore.singleExamStudentScores[i].essScore / object.data.multiExam.singleExams[seIdDic[i]].seFullScore, 3);
                 }
                 scoreRate["0"] = decimal(object.data.multiExamStudentScore.messScore / object.data.multiExam.meFullScore, 3);
+                var classOrderP = {}, gradeOrderP = {};
+                for (var i = 0; i < seIds.length; i++) {
+                    classOrderP[object.data.multiExamStudentScore.singleExamStudentScores[i].seId] = object.data.multiExamStudentScore.singleExamStudentScores[i].essClassOrder;
+                }
+                for (var i = 0; i < seIds.length; i++) {
+                    gradeOrderP[object.data.multiExamStudentScore.singleExamStudentScores[i].seId] = object.data.multiExamStudentScore.singleExamStudentScores[i].essGradeOrder;
+                }
+                classOrderP["0"] = object.data.multiExamStudentScore.messClassOrder;
+                gradeOrderP["0"] = object.data.multiExamStudentScore.messGradeOrder
+                var ysClassOrderP = {};
+                for (var i = 0; i < object.data.singleExamClassYsScores.length; i++) {
+                    for (var j = 0; j < seIds.length; j++) {
+                        if (object.data.singleExamClassYsScores[i].seId == object.data.multiExamStudentScore.singleExamStudentScores[j].seId) {
+                            ysClassOrderP[object.data.singleExamClassYsScores[i].seId + "Ys"] = object.data.multiExamStudentScore.singleExamStudentScores[j].essYsClassOrder;
+                        }
+                    }
+                }
                 var classOrder = {}, ysClassOrder = {};
                 for (var i = 0; i < seIds.length; i++) {
                     classOrder[object.data.multiExamStudentScore.singleExamStudentScores[i].seId] = decimal(1 - object.data.multiExamStudentScore.singleExamStudentScores[i].essClassOrder / object.data.singleExamClassScores[i].secsStudentCount, 3);
@@ -91,7 +116,7 @@
                         + "单科分数班级排名：" + object.data.multiExamStudentScore.singleExamStudentScores[i].essClassOrder + "<br>"
                         + "单科班级参考人数：" + object.data.singleExamClassScores[i].secsStudentCount + "<br>"
                         + "单科班级年级排名：" + object.data.singleExamClassScores[i].secsClassOrder + "<br>"
-                        + "单科班级其他数据："
+                        + "单科班级："
                         + '<table class="table table-responsive" style="table-layout: fixed;"><tr><td>平均分</td><td>最高分</td><td>四分位数（75%）</td><td>中位数</td><td>四分位数（25%）</td><td>最低分</td></tr>'
                         + "<tr><td>" + object.data.singleExamClassScores[i].secsAvgScore + "</td><td>" + object.data.singleExamClassScores[i].secsMaxScore + "</td><td>" + object.data.singleExamClassScores[i].secs3quatrerScore + "</td><td>" + object.data.singleExamClassScores[i].secsHalfScore + "</td><td>" + object.data.singleExamClassScores[i].secsQuarterScore + "</td><td>" + object.data.singleExamClassScores[i].secsMinScore + "</td></tr></table>"
                         ;
@@ -102,7 +127,7 @@
                                 + "单科分数分层班级排名：" + object.data.multiExamStudentScore.singleExamStudentScores[i].essYsClassOrder + "<br>"
                                 + "单科分层班级参考人数：" + object.data.singleExamClassYsScores[j].secsStudentCount + "<br>"
                                 + "单科分层班级年级排名：" + object.data.singleExamClassYsScores[j].secsClassOrder + "<br>"
-                                + "单科分层班级其他数据："
+                                + "单科分层班级："
                                 + '<table class="table table-responsive" style="table-layout: fixed;"><tr><td>平均分</td><td>最高分</td><td>四分位数（75%）</td><td>中位数</td><td>四分位数（25%）</td><td>最低分</td></tr>'
                                 + "<tr><td>" + object.data.singleExamClassYsScores[j].secsAvgScore + "</td><td>" + object.data.singleExamClassYsScores[j].secsMaxScore + "</td><td>" + object.data.singleExamClassYsScores[j].secs3quatrerScore + "</td><td>" + object.data.singleExamClassYsScores[j].secsHalfScore + "</td><td>" + object.data.singleExamClassYsScores[j].secsQuarterScore + "</td><td>" + object.data.singleExamClassYsScores[j].secsMinScore + "</td></tr></table>"
                                 ;
@@ -111,7 +136,7 @@
                     classText += "<br><br>"
                         + "单科分数年级排名：" + object.data.multiExamStudentScore.singleExamStudentScores[i].essGradeOrder + "<br>"
                         + "单科年级参考人数：" + object.data.multiExam.singleExams[seIdDic[i]].seStudentCount + "<br>"
-                        + "单科年级其他数据："
+                        + "单科年级："
                         + '<table class="table table-responsive" style="table-layout: fixed;"><tr><td>平均分</td><td>最高分</td><td>四分位数（75%）</td><td>中位数</td><td>四分位数（25%）</td><td>最低分</td></tr>'
                         + "<tr><td>" + object.data.multiExam.singleExams[seIdDic[i]].seAvgScore + "</td><td>" + object.data.multiExam.singleExams[seIdDic[i]].seMaxScore + "</td><td>" + object.data.multiExam.singleExams[seIdDic[i]].se3QuarterScore + "</td><td>" + object.data.multiExam.singleExams[seIdDic[i]].seHalfScore + "</td><td>" + object.data.multiExam.singleExams[seIdDic[i]].seQuarterScore + "</td><td>" + object.data.multiExam.singleExams[seIdDic[i]].seMinScore + "</td></tr></table><br><br>"
                         ;
@@ -136,12 +161,13 @@
                     }
                     gradingText += "</tr></table><br><br>";
                 }
-                sheetOutput("各科得分比例一览表", scoreRate);
-                sheetOutput("各科班级排名一览表", classOrder);
-                sheetOutput("各科分层班级排名一览表", ysClassOrder);
-                sheetOutput("各科年级排名一览表", gradeOrder);
 
-                output.innerHTML = "<br>注：实验中学74桌出品，我抄的速来谴责我<br><br>"
+                // sheetOutput("各科得分比例一览表", scoreRate);
+                // sheetOutput("各科班级排名一览表", classOrder);
+                // sheetOutput("各科分层班级排名一览表", ysClassOrder);
+                // sheetOutput("各科年级排名一览表", gradeOrder);
+
+                output.innerHTML = "<br>注：实验中学 74 桌出品，我略作修改并加上了图表功能<del>，完成作者遗愿</del>。<br><br>"
                     + "行政班级：" + object.data.examStudents[0].classId + "<br>"
                     + "姓名：" + object.data.multiExamStudentScore.studentName + "<br>"
                     + "<br><h4>总分</h4>"
@@ -149,40 +175,410 @@
                     + "全科分数班级排名：" + object.data.multiExamStudentScore.messClassOrder + "<br>"
                     + "全科班级参考人数：" + object.data.multiExamClassScores[0].mecsStudentCount + "<br>"
                     + "全科班级年级排名：" + object.data.multiExamClassScores[0].mecsClassOrder + "<br>"
-                    + "全科班级其他数据："
+                    + "全科班级："
                     + '<table class="table table-responsive" style="table-layout: fixed;"><tr><td>平均分</td><td>最高分</td><td>四分位数（75%）</td><td>中位数</td><td>四分位数（25%）</td><td>最低分</td></tr>'
                     + "<tr><td>" + object.data.multiExamClassScores[0].mecsAvgScore + "</td><td>" + object.data.multiExamClassScores[0].mecsMaxScore + "</td><td>" + object.data.multiExamClassScores[0].mecs3quatrerScore + "</td><td>" + object.data.multiExamClassScores[0].mecsHalfScore + "</td><td>" + object.data.multiExamClassScores[0].mecsQuarterScore + "</td><td>" + object.data.multiExamClassScores[0].mecsMinScore + "</td></tr></table>"
                     + "<br><br>全科分数年级排名：" + object.data.multiExamStudentScore.messGradeOrder + "<br>"
                     + "全科年级参考人数：" + object.data.multiExamSchoolScore.mecsStudentCount + "<br>"
-                    + "全科年级其他数据："
+                    + "全科年级："
                     + '<table class="table table-responsive" style="table-layout: fixed;"><tr><td>平均分</td><td>最高分</td><td>四分位数（75%）</td><td>中位数</td><td>四分位数（25%）</td><td>最低分</td></tr>'
                     + "<tr><td>" + object.data.multiExam.meAvgScore + "</td><td>" + object.data.multiExam.meMaxScore + "</td><td>" + object.data.multiExam.me3QuatrerScore + "</td><td>" + object.data.multiExam.meHalfScore + "</td><td>" + object.data.multiExam.meQuarterScore + "</td><td>" + object.data.multiExam.meMinScore + "</td></tr></table><br><br>"
                     + classText
-                    + gradingText;
+                    + gradingText
+                    + "<br>（分班考年级排名：" + object.data.studentMEHistoryScoreVOs[0].gradeOrder + "）"
+                    + "<h4>汇总</h4>";
 
-
-                /* 分班考成绩 */
-
-                output.innerHTML += "<br>分班考年级排名：" + object.data.studentMEHistoryScoreVOs[0].gradeOrder;
 
                 $("#fileOutput table").css("display", "inline-table");
                 $("#fileOutput table").css("margin-bottom", "0px");
-            };
+                // 路径配置
+
+                var charts=document.getElementsByClassName("chart");
+                for(i=0;i<charts.length;i++)charts[i].style.display='';
+
+                sChart = echarts.init(document.getElementById("score"));
+                oChart1 = echarts.init(document.getElementById("order1"));
+                oChart2 = echarts.init(document.getElementById("order2"));
+                oChart3 = echarts.init(document.getElementById("order3"));
+                oChart4 = echarts.init(document.getElementById("order4"));
+                
+
+                seNameDicP = []; scorePP = []; avgPP = [];
+                seNameDicP2 = []; classOrderPP = []; gradeOrderPP = []; classOrderQ = []; gradeOrderQ = [];
+                seNameDicP3 = []; ysClassOrderPP = []; ysClassOrderQ = [];
+                for (var i in scoreP) {
+                    if (seNameDic[i].substr(0, 2) == '总分') continue;
+                    seNameDicP.push(seNameDic[i].substr(0, 2));
+                    scorePP.push(scoreP[i]);
+                    avgPP.push(avgP[i]);
+                }
+                for (var i in classOrderP) {
+                    seNameDicP2.push(seNameDic[i].substr(0, 2));
+                    classOrderPP.push(classOrderP[i]);
+                    gradeOrderPP.push(gradeOrderP[i]);
+                    classOrderQ.push(decimal(classOrder[i] * 100, 1));
+                    gradeOrderQ.push(decimal(gradeOrder[i] * 100, 1));
+                }
+                for (var i in ysClassOrderP) {
+                    seNameDicP3.push(seNameDic[i]);
+                    ysClassOrderPP.push(ysClassOrderP[i]);
+                    ysClassOrderQ.push(decimal(ysClassOrder[i] * 100, 1));
+                }
+                console.log(scoreP);
+                console.log(scorePP);
+                var sOp = { //具体细节的描述
+                    textStyle: {
+                        fontFamily: 'Noto Serif SC'
+                    },
+                    title: {
+                        text: '成绩与平均分',
+                        textStyle: { //主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}
+                            fontSize: 14,
+                            fontStyle: 'normal',
+                            fontWeight: 'bold',
+                        },
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        data: ['成绩', '平均分']
+                    },
+                    toolbox: { //可以选择具体数据，柱状图，折线图，还原，保存图片的的切换选择
+                        show: true,
+                        feature: {
+                            dataView: {
+                                show: true,
+                                readOnly: false
+                            },
+                            magicType: {
+                                show: true,
+                                type: ['line', 'bar'] //可选折线图和柱状图
+                            },
+                            restore: {
+                                show: true  //恢复默认
+                            },
+                            saveAsImage: {
+                                show: true // 存储为图片的功能
+                            }
+                        }
+                    },
+                    calculable: true,
+                    xAxis: [{
+                        type: 'category',
+                        //name: 'min_sup(%)'
+                        data: seNameDicP,
+                        name: '科目',
+                        position: 'left'
+                    }],
+                    yAxis: [{
+                        type: 'value',
+                        name: '分数',
+                        position: 'left'
+                    }],
+                    series: [{
+                        name: '成绩',
+                        type: 'bar',// bar
+                        data: scorePP,
+                        color: '#fb7756'
+                    },
+                    {
+                        name: '平均分',
+                        type: 'bar',//bar
+                        data: avgPP,
+                        color: '#facd60'
+                    }
+                    ]
+                };
+
+                var oOp1 = {
+                    textStyle: {
+                        fontFamily: 'Noto Serif SC'
+                    }, title: {
+                        text: '行政排名位次',
+                        textStyle: { //主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}
+                            fontSize: 14,
+                            fontStyle: 'normal',
+                            fontWeight: 'bold'
+                        },
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        data: ['班级排名', '年级排名']
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            dataView: {
+                                show: true,
+                                readOnly: false
+                            },
+                            magicType: {
+                                show: true,
+                                type: ['line', 'bar']
+                            },
+                            restore: {
+                                show: true
+                            },
+                            saveAsImage: {
+                                show: true
+                            }
+                        }
+                    },
+                    calculable: true,
+                    xAxis: [{
+                        type: 'category',
+                        //name: 'min_sup(%)'
+                        data: seNameDicP2,
+                        name: '科目',
+                        position: 'left'
+                    }],
+                    yAxis: [{
+                        type: 'value',
+                        name: '排名',
+                        position: 'left'
+                    }],
+                    series: [{
+                        name: '班级排名',
+                        type: 'bar',
+                        data: classOrderPP,
+                        color: '#343090'
+                    }, {
+                        name: '年级排名',
+                        type: 'bar',
+                        data: gradeOrderPP,
+                        color: '#5f59f7'
+                    }
+                    ]
+                };
+
+                var oOp2 = {
+                    textStyle: {
+                        fontFamily: 'Noto Serif SC'
+                    }, title: {
+                        text: '行政排名比例',
+                        textStyle: { //主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}
+                            fontSize: 14,
+                            fontStyle: 'normal',
+                            fontWeight: 'bold'
+                        },
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        data: ['班级排名(%)', '年级排名(%)']
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            dataView: {
+                                show: true,
+                                readOnly: false
+                            },
+                            magicType: {
+                                show: true,
+                                type: ['line', 'bar']
+                            },
+                            restore: {
+                                show: true
+                            },
+                            saveAsImage: {
+                                show: true
+                            }
+                        }
+                    },
+                    calculable: true,
+                    xAxis: [{
+                        type: 'category',
+                        //name: 'min_sup(%)'
+                        data: seNameDicP2,
+                        name: '科目',
+                        position: 'left'
+                    }],
+                    yAxis: [{
+                        type: 'value',
+                        name: '排名(%)',
+                        position: 'left'
+                    }],
+                    series: [{
+                        name: '班级排名(%)',
+                        type: 'bar',
+                        data: classOrderQ,
+                        color: '#343090'
+                    }, {
+                        name: '年级排名(%)',
+                        type: 'bar',
+                        data: gradeOrderQ,
+                        color: '#5f59f7'
+                    }
+                    ]
+                };
+
+                var oOp3 = {
+                    textStyle: {
+                        fontFamily: 'Noto Serif SC'
+                    }, title: {
+                        text: '分班排名位次',
+                        textStyle: { //主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}
+                            fontSize: 14,
+                            fontStyle: 'normal',
+                            fontWeight: 'bold'
+                        },
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        data: ['分班排名']
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            dataView: {
+                                show: true,
+                                readOnly: false
+                            },
+                            magicType: {
+                                show: true,
+                                type: ['line', 'bar']
+                            },
+                            restore: {
+                                show: true
+                            },
+                            saveAsImage: {
+                                show: true
+                            }
+                        }
+                    },
+                    calculable: true,
+                    xAxis: [{
+                        type: 'category',
+                        //name: 'min_sup(%)'
+                        data: seNameDicP3,
+                        name: '科目',
+                        position: 'left'
+                    }],
+                    yAxis: [{
+                        type: 'value',
+                        name: '排名',
+                        position: 'left'
+                    }],
+                    series: [{
+                        name: '分班排名',
+                        type: 'bar',
+                        data: ysClassOrderPP,
+                        color: '#44c2fd'
+                    }
+                    ]
+                };
+
+                var oOp4 = {
+                    textStyle: {
+                        fontFamily: 'Noto Serif SC'
+                    }, title: {
+                        text: '分班排名比例',
+                        textStyle: { //主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}
+                            fontSize: 14,
+                            fontStyle: 'normal',
+                            fontWeight: 'bold'
+                        },
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        data: ['分班排名(%)']
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            dataView: {
+                                show: true,
+                                readOnly: false
+                            },
+                            magicType: {
+                                show: true,
+                                type: ['line', 'bar']
+                            },
+                            restore: {
+                                show: true
+                            },
+                            saveAsImage: {
+                                show: true
+                            }
+                        }
+                    },
+                    calculable: true,
+                    xAxis: [{
+                        type: 'category',
+                        //name: 'min_sup(%)'
+                        data: seNameDicP3,
+                        name: '科目',
+                        position: 'left'
+                    }],
+                    yAxis: [{
+                        type: 'value',
+                        name: '排名(%)',
+                        position: 'left'
+                    }],
+                    series: [{
+                        name: '分班排名(%)',
+                        type: 'bar',
+                        data: ysClassOrderQ,
+                        color: '#44c2fd'
+                    }
+                    ]
+                };
+
+                // 为echarts对象加载数据 
+                sChart.setOption(sOp);
+                oChart1.setOption(oOp1);
+                oChart2.setOption(oOp2);
+                oChart3.setOption(oOp3);
+                oChart4.setOption(oOp4);
+            }
             reader.readAsText(file);
         }
 
     </script>
+    <title>
+        实验中学成绩整理
+    </title>
 </head>
+
 <body>
+
+    <h1>
+        实验中学成绩整理
+    </h1>
+    <p style="font-size:16px">基于心意答查分页面提供的数据整理汇总考试成绩</p>
+    <h2>如何获取数据</h2>
+    <p>尽量使用 Google Chrome 浏览器，不保证其他浏览器操作相同。</p>
+    <p>1. 进入心意答查分页面；</p>
+    <p>2. F12 打开控制台，若笔记本电脑无反应，尝试 Fn+F12；</p>
+    <p>3. 控制台顶栏分页中找到“网络”；</p>
+    <p>4. 刷新页面，此时应看到控制台中出现一批文件，点击其中的“getStudentReportSEVO”；</p>
+    <p>5. 在新出现的小页面的顶栏分页中找到“预览”；</p>
+    <p>6. 此时应看到“{data: {,...”等数据，一定在数据第一行右键（或在其下方空白处右键），随后“复制物体”；</p>
+    <p>7. 新建文本文档，将所复制的内容粘贴并保存，于下方按钮打开。</p>
+    <p style="font-size: 12px;font-style: italic;">注：图表整理均在本地进行，你的数据不会上传到网络。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;你获取的数据在心意答上未经加密并可直接访问，本质上对学生都是公开的，但恶意使用这些数据造成的后果自负。</p>
     <div style="text-align: center;">
         <a tabindex="0" class="btn btn-default" onclick="document.getElementById('fileInput').click();"
-            style="text-shadow: rgb(155, 155, 155) 3px 2px 4px;display:inline-block;">
+            style="text-shadow: rgb(185, 185, 185) 3px 2px 4px;display:inline-block;">
             <span class="glyphicon glyphicon-open" aria-hidden="true"></span> <b>打开文件</b><input style="display: none;"
                 id="fileInput" type="file" onchange="processFiles(event)">
         </a>
     </div>
 
-
     <div id="message"></div>
     <div id="fileOutput"></div>
+    <div id="score" class="chart" style="display: none"></div>
+    <div id="order1" class="chart" style="display: none"></div>
+    <div id="order2" class="chart" style="display: none"></div>
+    <div id="order3" class="chart" style="display: none"></div>
+    <div id="order4" class="chart" style="display: none"></div>
+
 </body>

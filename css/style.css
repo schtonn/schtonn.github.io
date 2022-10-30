@@ -1,35 +1,51 @@
 body {
     font-family: 'Noto Serif SC', serif, 'Anonymous Pro', monospace;
 }
-h1,h2,h3,h4
-    {
-        font-weight: bold;
-    }
 
-@media screen{
-    body
-    {
+h1,h2,h3,h4 {
+    font-weight: bold;
+}
+
+@media screen {
+    body {
         padding: 20px 5px 5px 5px;
     }
 }
-    
 
-@media screen and (min-width:699px){
-    body
-    {
+
+@media screen and (min-width:699px) {
+    body {
         padding: 20px 75px 40px 75px;
     }
-    #fileOutput{
+
+    #fileOutput {
         margin-right: 50px;
+    }
+
+    .table {
+        margin-left: 80px;
     }
 }
 
-@media screen and (min-width:1200px){
-    body
-    {
+@media screen and (min-width:1200px) {
+    body {
         padding: 20px 150px 40px 150px;
     }
-    #fileOutput{
+
+    #fileOutput {
         margin-right: 200px;
     }
+
+    .table {
+        margin-left: 100px;
+    }
+}
+
+.table {
+    font-size: 14px;
+}
+
+.chart {
+    width: auto;
+    height: 400px;
 }
