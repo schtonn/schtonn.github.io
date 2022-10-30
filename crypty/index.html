@@ -2,6 +2,9 @@
 <!-- saved from url=(0014)about:internet -->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
 
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+	integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+
 <head>
 	<title>crypty</title>
 	<script src="/js/jquery-1.7.2.js"></script>
@@ -9,14 +12,19 @@
 	<script src="/js/tripledes.js"></script>
 	<script src="/js/rabbit.js"></script>
 	<script src="/js/rc4.js"></script>
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
+&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- <link rel="stylesheet" href="/website/Other/css/style.css"> -->
+<link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
 	<div>
-		<div>plain:</div>
+		<div>明文：</div>
 		<textarea rows="10" cols="64" name="message" id="msg_source" class="text_source"></textarea>
 		<div>
-			<p>algorithm:</p>
+			<p>加密算法：</p>
 			<ul>
 				<input type="radio" name="Etype" value="aes" checked="checked" />AES
 				<input type="radio" name="Etype" value="des" />DES
@@ -26,16 +34,20 @@
 			</ul>
 		</div>
 		<div class="OptDetail Button">
-			<p class="input">pass:
+			<p class="input">密码：
 				<input type="text" id="pwd" />
 			</p>
 			<ul>
-				<button onclick="encrypt();">encrypt</button>
-				<button onclick="decrypt();">decrypt</button>
+				<button class="btn btn-default" onclick="encrypt();"
+					style="text-shadow: rgb(155, 155, 155) 3px 2px 4px;"><span class="glyphicon glyphicon-arrow-down"
+						aria-hidden="true"></span>&nbsp;加密</button>
+				<button class="btn btn-default" onclick="decrypt();"
+					style="text-shadow: rgb(155, 155, 155) 3px 2px 4px;"><span class="glyphicon glyphicon-arrow-up"
+						aria-hidden="true"></span>&nbsp;解密</button>
 			</ul>
 		</div>
 
-		<div>encrypted:</div>
+		<div>密文：</div>
 		<textarea rows="10" cols="64" name="cipher" id="encrypt_result" onclick="this.select();"></textarea>
 
 		<script>
