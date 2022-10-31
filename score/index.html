@@ -13,13 +13,72 @@
             x = Math.round(x * 10 ** n) / 10 ** n;
             return x.toFixed(n);
         }
-        function processFiles(event) {
-            var file = event.target.files[0];
+        var fileCount = 0, cur = 0, files = {};
 
+        function nextFile() {
+            cur = (cur - 1 + fileCount) % fileCount;
+            processFiles();
+        }
+
+        function prevFile() {
+            cur = (cur + 1) % fileCount;
+            processFiles();
+        }
+
+        function clearScreen() {
+            var charts = document.getElementsByClassName("chart");
+            for (i = 0; i < charts.length; i++)charts[i].style.display = 'none';
+            var message = document.getElementById("message");
+            var output = document.getElementById("fileOutput");
+            var info = document.getElementById("fileInfo");
+            message.innerHTML = "";
+            info.innerHTML = "";
+            output.innerHTML = "";
+        }
+
+        function reset() {
+            cur = 0;
+            fileCount = 0;
+            files = {};
+            clearScreen();
+            document.getElementById("lbtn").classList.add("disabled");
+            document.getElementById("rbtn").classList.add("disabled");
+            document.getElementById("resetbtn").classList.add("disabled");
+        }
+
+        document.onkeydown = function (event) {
+            var e = event || window.event || arguments.callee.caller.arguments[0];
+            if (e) {
+                if (e.keyCode == 37) {
+                    nextFile();
+                }
+                else if (e.keyCode == 39) {
+                    prevFile();
+                } else if (49 <= e.keyCode && e.keyCode <= 57) {
+                    if (e.keyCode - 48 <= fileCount) {
+                        cur = e.keyCode - 49;
+                        processFiles();
+                    }
+                }
+            }
+        };
+
+        function getFiles(event) {
+            files[fileCount] = event.target.files[0];
+            cur = fileCount;
+            fileCount++;
+            document.getElementById("lbtn").classList.remove("disabled");
+            document.getElementById("rbtn").classList.remove("disabled");
+            document.getElementById("resetbtn").classList.remove("disabled");
+            processFiles();
+        }
+
+        function processFiles() {
+            var file = files[cur];
             var message = document.getElementById("message");
             var upBtn = document.getElementById('upbtn');
             var upIcon = document.getElementById('upicon');
-            message.innerHTML = file.name + " - " + file.size + " 字节 - " + file.type + " - 正在读取...";
+            message.innerHTML = (cur + 1) + "/" + (fileCount) + " - " + file.name + " - " + file.size + " 字节 - " + file.type + " - 正在读取...<br>>";
             upBtn.classList.remove('btn-danger');
             upBtn.classList.remove('btn-info');
             upBtn.classList.add('btn-info');
@@ -73,7 +132,6 @@
                         rate100[object.data.multiExamStudentScore.singleExamStudentScores[i].seId] = object.data.singleExamClassScores[i].secsMaxScore;
                         rateFull[object.data.multiExamStudentScore.singleExamStudentScores[i].seId] = object.data.multiExam.singleExams[seIdDic[i]].seFullScore;
                     }
-                    console.log("rat");
                     var scoreRate = {};
                     for (var i = 0; i < seIds.length; i++) {
                         scoreRate[object.data.multiExamStudentScore.singleExamStudentScores[i].seId] = decimal(object.data.multiExamStudentScore.singleExamStudentScores[i].essScore / object.data.multiExam.singleExams[seIdDic[i]].seFullScore, 3);
@@ -175,7 +233,7 @@
                     }
                 } catch (e) {
                     console.log(e);
-                    message.innerHTML += "<br>读取失败！";
+                    message.innerHTML += "读取失败！";
                     output.innerHTML = "";
                     var charts = document.getElementsByClassName("chart");
                     for (i = 0; i < charts.length; i++)charts[i].style.display = 'none';
@@ -191,11 +249,12 @@
                 // sheetOutput("各科班级排名一览表", classOrder);
                 // sheetOutput("各科分层班级排名一览表", ysClassOrder);
                 // sheetOutput("各科年级排名一览表", gradeOrder);
-                message.innerHTML += "<br>读取成功！"
+                message.innerHTML += "读取成功！"
                 info.innerHTML = "<br>注：实验中学 74 桌出品，因 2025 届高一开始大量使用，为防止原作者被追责，我便搬运下来略作修改并加上了图表功能。<br><br>"
                     + "行政班级：" + object.data.examStudents[0].classId + "<br>"
                     + "姓名：" + object.data.multiExamStudentScore.studentName + "<br>"
-                    + "<br><h4>班内一览表</h4>";
+                    + "<br><h4>班内一览表</h4>"
+                    + "点击图例可隐藏部分内容；<br>图中\"x%\"代表排名比例为x%同学的成绩。<br><br>";
                 output.innerHTML = "<br><h4>总分</h4>"
                     + "全科分数：" + object.data.multiExamStudentScore.messScore + "<br><br>"
                     + "全科分数班级排名：" + object.data.multiExamStudentScore.messClassOrder + "<br>"
@@ -269,7 +328,7 @@
                         fontFamily: 'Noto Serif SC'
                     },
                     title: {
-                        text: '分数（点击图例可隐藏内容）',
+                        text: '分数',
                         textStyle: { //主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}
                             fontSize: 14,
                             fontStyle: 'normal',
@@ -727,6 +786,9 @@
         <p style="font-size: 12px;font-style: italic;">
             注：图表整理均在本地进行，你的数据不会上传到网络。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;你获取的数据在心意答上未经加密并可直接访问，本质上对学生都是公开的，但恶意使用这些数据造成的后果自负。
         </p>
+        <h2>键盘操作指南</h2>
+        <p>加载多个文件后，使用方向键或数字键可在文件间快速切换，方便比较。</p>
+        <br>
     </div>
     <div style="text-align: center;">
         <a tabindex="0" class="btn btn-default" href="tutor/"
@@ -736,7 +798,17 @@
         <a id="upbtn" tabindex="0" class="btn btn-info" onclick="document.getElementById('fileInput').click();"
             style="text-shadow: rgb(85, 85, 85) 3px 2px 4px;display:inline-block;">
             <span id="upicon" class="glyphicon glyphicon-open" aria-hidden="true"></span> <b>打开文件</b><input
-                style="display: none;" id="fileInput" type="file" onchange="processFiles(event)">
+                style="display: none;" id="fileInput" type="file" onchange="getFiles(event)">
+        </a>
+        <a id="resetbtn" tabindex="0" class="btn btn-primary disabled" onclick="reset();"
+            style="text-shadow: rgb(85, 85, 85) 3px 2px 4px;display:inline-block;">
+            <span id="upicon" class="glyphicon glyphicon-refresh" aria-hidden="true"></span> <b>重置</b>
+        </a>
+        <a id="lbtn" tabindex="0" class="btn btn-default disabled" onclick="prevFile();">
+            <span id="upicon" class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        </a>
+        <a id="rbtn" tabindex="0" class="btn btn-default disabled" onclick="nextFile();">
+            <span id="upicon" class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
         </a>
     </div>
 
