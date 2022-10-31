@@ -15,12 +15,12 @@
         }
         var fileCount = 0, cur = 0, files = {};
 
-        function nextFile() {
+        function prevFile() {
             cur = (cur - 1 + fileCount) % fileCount;
             processFiles();
         }
 
-        function prevFile() {
+        function nextFile() {
             cur = (cur + 1) % fileCount;
             processFiles();
         }
@@ -50,10 +50,10 @@
             var e = event || window.event || arguments.callee.caller.arguments[0];
             if (e) {
                 if (e.keyCode == 37) {
-                    nextFile();
+                    prevFile();
                 }
                 else if (e.keyCode == 39) {
-                    prevFile();
+                    nextFile();
                 } else if (49 <= e.keyCode && e.keyCode <= 57) {
                     if (e.keyCode - 48 <= fileCount) {
                         cur = e.keyCode - 49;
@@ -786,7 +786,7 @@
         <p style="font-size: 12px;font-style: italic;">
             注：图表整理均在本地进行，你的数据不会上传到网络。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;你获取的数据在心意答上未经加密并可直接访问，本质上对学生都是公开的，但恶意使用这些数据造成的后果自负。
         </p>
-        <h2>键盘操作指南</h2>
+        <h4>键盘操作指南</h4>
         <p>加载多个文件后，使用方向键或数字键可在文件间快速切换，方便比较。</p>
         <br>
     </div>
