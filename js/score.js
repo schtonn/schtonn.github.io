@@ -8,7 +8,7 @@ AV.init({
     serverURL: "https://bmologyy.lc-cn-n1-shared.com/",
 });
 
-console.log("：*成绩*一定不会上传到网络，但为了保证使用范围，避免过度使用，可能会对其他信息进行记录。")
+console.log("温馨提示：*成绩*一定不会上传到网络，但为了保证使用范围，避免过度使用，可能会对其他信息进行记录。")
 
 function decimal(x, n) {
     x = Math.round(x * 10 ** n) / 10 ** n;
