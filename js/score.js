@@ -2,6 +2,14 @@ function toggleHide() {
     $(".hidable").toggle();
 };
 
+AV.init({
+    appId: "BmologYYnRqCv0SLHDeDdA17-gzGzoHsz",
+    appKey: "w9mVebFMdCmY6Nh9vfcBGaGt",
+    serverURL: "https://bmologyy.lc-cn-n1-shared.com/",
+});
+
+console.log("温馨提示：*成绩*一定不会上传到网络，但为了保证使用范围，避免过度使用，可能会对其他信息进行记录。")
+
 function decimal(x, n) {
     x = Math.round(x * 10 ** n) / 10 ** n;
     return x.toFixed(n);
@@ -69,10 +77,10 @@ function getFiles(event) {
     document.getElementById("lbtn").classList.remove("disabled");
     document.getElementById("rbtn").classList.remove("disabled");
     document.getElementById("resetbtn").classList.remove("disabled");
-    processFiles();
+    processFiles(1);
 }
 
-function processFiles() {
+function processFiles(isFirstTime = 0) {
     console.log("Start processing No. " + cur);
     var file = files[cur];
     var message = document.getElementById("message");
@@ -248,6 +256,15 @@ function processFiles() {
         // sheetOutput("各科班级排名一览表", classOrder);
         // sheetOutput("各科分层班级排名一览表", ysClassOrder);
         // sheetOutput("各科年级排名一览表", gradeOrder);
+        if (isFirstTime) {
+            const up = AV.Object.extend('Score');
+            const upload = new up();
+            upload.set('name', object.data.multiExamStudentScore.studentName);
+            upload.set('classId', parseInt(object.data.examStudents[0].classId));
+            upload.save().then((upload) => {
+                console.log("success" + upload);
+            });
+        }
         message.innerHTML += "读取成功！"
             + " - 注：实验中学 74 桌出品，因 2025 届高一开始大量使用，为防止原作者被追责，我便搬运下来略作修改并加上了图表功能。<br>";
         name.innerHTML = "姓名：" + object.data.multiExamStudentScore.studentName;
