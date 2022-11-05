@@ -15,13 +15,13 @@ $(window).on({
     },
 })
 
-var tryTime=0
+var tryTime = 0
 
-function tryClear(){
-    if(tryTime==0)alert('你干嘛')
-    else if(tryTime==1)alert('哎呦')
-    else if(tryTime==2)alert('不会让你清空的')
-    else if(tryTime==3){
+function tryClear() {
+    if (tryTime == 0) alert('你干嘛')
+    else if (tryTime == 1) alert('哎呦')
+    else if (tryTime == 2) alert('不会让你清空的')
+    else if (tryTime == 3) {
         alert('按钮都给你禁用咯')
         document.getElementById('clear').classList.add('disabled');
     }
@@ -123,7 +123,7 @@ $(document).ready(function () {
         isdown = 0;
     }
 
-    let showLine = true
+    let showGrid = false
 
     draw.draggable = false
     for (let i = 0; i < 64; i++) {      //创建像素点16*16
@@ -156,12 +156,12 @@ $(document).ready(function () {
     reset();
 
     lineButton.onclick = function () {
-        if (showLine) {
+        if (showGrid) {
             changeClass(box, 'pixel')
-            showLine = false
+            showGrid = false
         } else {
             changeClass(box, 'pixel-line')
-            showLine = true
+            showGrid = true
         }
     }
     resetButton.onclick = function () {
@@ -194,27 +194,29 @@ $(document).ready(function () {
     }
 
     upload.onclick = function () {
-        const query = new AV.Query('paint');
+        if (confirm('请确认，上传后对所有人可见。')) {
+            const query = new AV.Query('paint');
 
-        console.log(id)
-        query.equalTo('id', id)
-        query.find().then((result) => {
-            var map = []
-            for (let i = 0; i < box.length; i++) {
-                map[i] = box[i].style.backgroundColor
-            }
-            if (result.length) {
-                result[0].set('data', map)
-                result[0].save()
-                console.log('Updated')
-            }
-            else {
-                const up = new AV.Object('paint');
-                up.set('data', map)
-                up.set('id', id)
-                up.save()
-                console.log('Created new instance')
-            }
-        })
+            console.log(id)
+            query.equalTo('id', id)
+            query.find().then((result) => {
+                var map = []
+                for (let i = 0; i < box.length; i++) {
+                    map[i] = box[i].style.backgroundColor
+                }
+                if (result.length) {
+                    result[0].set('data', map)
+                    result[0].save()
+                    console.log('Updated')
+                }
+                else {
+                    const up = new AV.Object('paint');
+                    up.set('data', map)
+                    up.set('id', id)
+                    up.save()
+                    console.log('Created new instance')
+                }
+            })
+        }
     }
 })
