@@ -1,0 +1,160 @@
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
+&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        .box {
+            display: inline-block;
+            margin: 10px;
+            cursor: pointer;
+            width: 180px;
+            height: 3px;
+            background-color: #bdbdbd;
+            position: relative;
+            vertical-align: middle;
+        }
+
+        .box .hd {
+            width: 17px;
+            height: 18px;
+            background-color: #56a3fc;
+            border-radius: 6px;
+            position: absolute;
+            left: 0;
+            top: -8px;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .box .hdt {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 3px;
+            width: 0;
+            background-color: #56a3fc;
+            margin: 0;
+        }
+
+        .box-text {
+            user-select: none;
+        }
+
+        * {
+            -webkit-box-sizing: border-box;
+            box-sizing: content-box;
+        }
+
+        #main {
+            display: flex;
+            flex-direction: row;
+            width: 900px;
+            margin: 0 auto;
+            margin-top: -20px;
+        }
+
+        #draw {
+            width: 640px;
+            height: 640px;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            margin: 0 auto;
+            border: 1px solid rgb(211, 211, 211);
+        }
+
+        .pixel-line {
+            width: 8px;
+            height: 8px;
+            border: 1px solid rgb(211, 211, 211);
+        }
+
+        .pixel {
+            width: 10px;
+            height: 10px;
+        }
+
+        #color-list {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+        }
+
+        #tools {
+            width: 20%;
+        }
+
+        .color-item {
+            height: 20px;
+            width: 20px;
+        }
+
+        #now-color {
+            width: 80px;
+            height: 80px;
+            border: 1px solid rgb(147, 147, 147);
+            background-color: #000;
+        }
+
+        li {
+            list-style: none;
+            margin-bottom: 3px;
+            display: block;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            text-shadow: rgb(85, 85, 85) 3px 2px 4px;
+            display: inline-block;
+        }
+    </style>
+    <script src="../js/av-min.js"></script>
+
+
+    <script src="https://apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
+
+    <script type="text/javascript" src="../js/paint.js">
+
+    </script>
+</head>
+
+<body>
+    <a class="btn btn-info" href="/" style="text-shadow: rgb(85, 85, 85) 3px 2px 4px;"><span
+        class="glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp;返回</a>
+    <div id="main">
+        <div id="draw"></div>
+        <div id="tools">
+            <div id="now-color"></div>
+            <div class="box" id="box-r">
+                <i class="hd"></i>
+                <i class="hdt"></i>
+                <div class="box-text" id="box-r-text">0</div>
+            </div>
+            <div class="box" id="box-g">
+                <i class="hd"></i>
+                <i class="hdt"></i>
+                <div class="box-text" id="box-g-text">0</div>
+            </div>
+            <div class="box" id="box-b">
+                <i class="hd"></i>
+                <i class="hdt"></i>
+                <div class="box-text" id="box-b-text">0</div>
+            </div>
+            <ul id="color-list"></ul>
+        </div>
+    </div>
+    <div style="text-align: center;margin-top:10px">
+        <button class="btn btn-warning" id="show-hide-line">
+            <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>&nbsp;展示/隐藏网格</button>
+        <button class="btn btn-info" id="upload"><span class="glyphicon glyphicon-cloud-upload"
+                aria-hidden="true"></span>&nbsp;上传</button>
+        <button class="btn btn-danger" id="reset"><span class="glyphicon glyphicon-cloud-download"
+                aria-hidden="true"></span>&nbsp;重置</button>
+        <button class="btn btn-danger" id="clear" onclick="tryClear()"><span class="glyphicon glyphicon-ban-circle"
+                aria-hidden="true"></span>&nbsp;清空</button>
+    </div>
+</body>
