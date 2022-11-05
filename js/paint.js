@@ -36,7 +36,7 @@ function getMap() {
     if (curVer != 0) document.getElementById('upload').classList.add('disabled')
     else document.getElementById('upload').classList.remove('disabled')
     const query = new AV.Query('paint');
-    document.getElementById('version').innerHTML = "当前版本：" + (curVer == 0 ? ' ' : '-') + curVer;
+    document.getElementById('version').innerHTML = "当前版本：" + (curVer == 0 ? '' : '-') + curVer + ' by ';
     query.descending('updatedAt')
     query.limit(curVer + 1)
     console.log(curVer)
@@ -44,6 +44,7 @@ function getMap() {
         if (result.length > curVer) {
             var map = result[curVer].get('data')
             document.getElementById('version').title = result[curVer].get('updatedAt');
+            document.getElementById('version').innerHTML += result[curVer].get('nickName');
             for (let i = 0; i < box.length; i++) {
                 box[i].style.backgroundColor = map[i]
             }
@@ -211,7 +212,9 @@ $(document).ready(function () {
 
     upload.onclick = function () {
         if (curVer != 0) return false;
-        if (confirm('请确认，上传后对所有人可见。')) {
+        var nick=prompt('请确认，可使用昵称，上传后对所有人可见。','-')
+        console.log(nick)
+        if (nick) {
             const query = new AV.Query('paint');
 
             console.log(id)
@@ -223,6 +226,7 @@ $(document).ready(function () {
                 }
                 if (result.length) {
                     result[0].set('data', map)
+                    result[0].set('nickName', nick)
                     result[0].save()
                     console.log('Updated')
                 }
@@ -230,10 +234,12 @@ $(document).ready(function () {
                     const up = new AV.Object('paint');
                     up.set('data', map)
                     up.set('id', id)
+                    up.set('nickName',nick)
                     up.save()
                     console.log('Created new instance')
                 }
             })
+            document.getElementById('version').innerHTML = "当前版本：" + (curVer == 0 ? '' : '-') + curVer + ' by '+nick;
         }
     }
 })
