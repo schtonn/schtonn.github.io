@@ -156,5 +156,12 @@
                 aria-hidden="true"></span>&nbsp;重置</button>
         <button class="btn btn-danger" id="clear" onclick="tryClear()"><span class="glyphicon glyphicon-ban-circle"
                 aria-hidden="true"></span>&nbsp;清空</button>
+        <a id="lbtn" tabindex="0" class="btn btn-default" onclick="curVer++,getMap()">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        </a>
+        <a id="rbtn" tabindex="0" class="btn btn-default" onclick="curVer==0?true:(curVer--,getMap());">
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        </a>
+        <span id="version"></span>
     </div>
 </body>

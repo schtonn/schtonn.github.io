@@ -1,5 +1,3 @@
-
-
 AV.init({
     appId: "BmologYYnRqCv0SLHDeDdA17-gzGzoHsz",
     appKey: "w9mVebFMdCmY6Nh9vfcBGaGt",
@@ -24,24 +22,42 @@ function tryClear() {
     else if (tryTime == 3) {
         alert('按钮都给你禁用咯')
         document.getElementById('clear').classList.add('disabled');
+    } else if (tryTime == 10) {
+        alert('...')
+    } else if (tryTime > 10) {
+        alert('闹呢')
     }
     tryTime++;
 }
 
-function reset() {
+var curVer = 0
+
+function getMap() {
+    if (curVer != 0) document.getElementById('upload').classList.add('disabled')
+    else document.getElementById('upload').classList.remove('disabled')
     const query = new AV.Query('paint');
+    document.getElementById('version').innerHTML = "当前版本：" + (curVer == 0 ? ' ' : '-') + curVer;
     query.descending('updatedAt')
-    query.limit(1)
+    query.limit(curVer + 1)
+    console.log(curVer)
     query.find().then((result) => {
-        if (result.length) {
-            var map = result[0].get('data')
+        if (result.length > curVer) {
+            var map = result[curVer].get('data')
+            document.getElementById('version').title = result[curVer].get('updatedAt');
             for (let i = 0; i < box.length; i++) {
                 box[i].style.backgroundColor = map[i]
             }
         } else {
-            console.log('Reset found no data!')
+            console.log('Found no data!')
+            curVer = result.length - 1;
+            getMap()
         }
     })
+}
+
+function reset() {
+    curVer = 0;
+    getMap()
 }
 
 let box = []
@@ -194,6 +210,7 @@ $(document).ready(function () {
     }
 
     upload.onclick = function () {
+        if (curVer != 0) return false;
         if (confirm('请确认，上传后对所有人可见。')) {
             const query = new AV.Query('paint');
 
