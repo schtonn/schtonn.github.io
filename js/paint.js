@@ -135,7 +135,7 @@ $(document).ready(function () {
 
     for (let i = 0; i < box.length; i++) {
         box[i].style.backgroundColor = "#fff"
-        box[i].className = 'pixel-line'
+        box[i].className = 'pixel'
         box[i].onmousedown = function (e) {
             if (e.button == 0) color = lcolor
             else color = '#fff'
