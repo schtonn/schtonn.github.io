@@ -79,11 +79,9 @@ $(document).ready(function () {
         var box = document.getElementById(obj);
         var hd = box.children[0];
         var hdt = box.children[1];
-        //鼠标按下事件  只要鼠标按下时是在hd上触发就可以
         hd.onmousedown = function (event) {
             var event = event || window.event;
             var leftval = event.clientX - this.offsetLeft;
-            //滑动事件 作用在document上，因为如果是作用在hd.onmousemove，滑动时可能会出现鼠标脱离hd范围（范围太小）而停止滑动，但是此时鼠标按下还没有弹起还处于滑动状态，所以就产生了bug
             document.onmousemove = function (event) {
                 var event = event || window.event;
                 hd.style.left = event.clientX - leftval + "px";
@@ -109,10 +107,9 @@ $(document).ready(function () {
         }
         box.onclick = function (event) {
             var event = event || window.event;
-            var boxWidth = event.clientX - this.offsetLeft;
-            if (boxWidth > 180) {
-                boxWidth = 180;
-            }
+            var boxWidth = event.clientX - this.offsetLeft - document.getElementById('tools').offsetLeft;
+            if (boxWidth > 180) boxWidth = 180;
+            if (boxWidth < 0) boxWidth = 0;
             hdt.style.width = hd.style.left = boxWidth + 'px';
             var result = parseInt(parseInt(hdt.style.width) / 180 * num);
             document.getElementById(obj + '-text').innerHTML = result;
@@ -130,6 +127,7 @@ $(document).ready(function () {
     var lineButton = document.getElementById('show-hide-line')
     var colorList = document.getElementById('color-list')
     var resetButton = document.getElementById('reset')
+    var zoomButton = document.getElementById('zoom')
     var nowColor = document.getElementById('now-color')
     var isdown = 0;
 
@@ -141,10 +139,11 @@ $(document).ready(function () {
     }
 
     let showGrid = false
+    let zoom = false
 
     draw.draggable = false
-    for (let i = 0; i < 64; i++) {      //创建像素点16*16
-        for (let j = 0; j < 64; j++) {
+    for (let i = 0; i < 128; i++) {
+        for (let j = 0; j < 128; j++) {
             box.push(document.createElement("div"))
         }
     }
@@ -185,7 +184,22 @@ $(document).ready(function () {
         reset()
     }
 
-
+    zoomButton.onclick = function () {
+        if (zoom == 0) {
+            draw.style.setProperty('transform', 'scale(200%) translate(-' + draw.offsetLeft / 4 + 'px,16px)')
+            zoom = 1
+        } else if (zoom == 1) {
+            draw.style.setProperty('transform', 'scale(400%) translate(-' + draw.offsetLeft / 4 + 'px,8px)')
+            zoom = 2
+            this.children[0].classList.remove('glyphicon-zoom-in')
+            this.children[0].classList.add('glyphicon-zoom-out')
+        } else {
+            draw.style.setProperty('transform', '')
+            zoom = 0
+            this.children[0].classList.remove('glyphicon-zoom-out')
+            this.children[0].classList.add('glyphicon-zoom-in')
+        }
+    }
 
 
 
@@ -211,8 +225,11 @@ $(document).ready(function () {
     }
 
     upload.onclick = function () {
-        if (curVer != 0) return false;
-        var nick=prompt('请确认，可使用昵称，上传后对所有人可见。','-')
+        if (curVer != 0) {
+            alert('对历史版本的编辑无法保存！')
+            return false;
+        }
+        var nick = prompt('请确认，可使用昵称，上传后对所有人可见。', '-')
         console.log(nick)
         if (nick) {
             const query = new AV.Query('paint');
@@ -234,12 +251,12 @@ $(document).ready(function () {
                     const up = new AV.Object('paint');
                     up.set('data', map)
                     up.set('id', id)
-                    up.set('nickName',nick)
+                    up.set('nickName', nick)
                     up.save()
                     console.log('Created new instance')
                 }
             })
-            document.getElementById('version').innerHTML = "当前版本：" + (curVer == 0 ? '' : '-') + curVer + ' by '+nick;
+            document.getElementById('version').innerHTML = "当前版本：" + (curVer == 0 ? '' : '-') + curVer + ' by ' + nick;
         }
     }
 })

@@ -46,10 +46,8 @@ function reset() {
     var upBtn = document.getElementById('upbtn');
     var upIcon = document.getElementById('upicon');
     upBtn.classList.remove('btn-danger');
-    upBtn.classList.remove('btn-info');
     upBtn.classList.add('btn-info');
     upIcon.classList.remove('glyphicon-exclamation-sign');
-    upIcon.classList.remove('glyphicon-open');
     upIcon.classList.add('glyphicon-open');
 }
 
@@ -88,10 +86,8 @@ function processFiles(isFirstTime = 0) {
     var upIcon = document.getElementById('upicon');
     message.innerHTML = (cur + 1) + "/" + (fileCount) + " - " + file.name + " - " + file.size + " 字节 - " + file.type + " - 正在读取...<br>>";
     upBtn.classList.remove('btn-danger');
-    upBtn.classList.remove('btn-info');
     upBtn.classList.add('btn-info');
     upIcon.classList.remove('glyphicon-exclamation-sign');
-    upIcon.classList.remove('glyphicon-open');
     upIcon.classList.add('glyphicon-open');
 
     var reader = new FileReader();
@@ -244,11 +240,9 @@ function processFiles(isFirstTime = 0) {
             console.log(e);
             clearScreen();
             message.innerHTML += "读取失败！";
-            upBtn.classList.remove('btn-danger');
-            upBtn.classList.add('btn-danger');
             upBtn.classList.remove('btn-info');
+            upBtn.classList.add('btn-danger');
             upIcon.classList.remove('glyphicon-open');
-            upIcon.classList.remove('glyphicon-exclamation-sign');
             upIcon.classList.add('glyphicon-exclamation-sign');
             return;
         }

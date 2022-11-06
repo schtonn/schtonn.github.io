@@ -5,11 +5,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
 &family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
+    <title>paint</title>
     <style>
         .box {
             display: inline-block;
-            margin: 10px;
+            margin: auto;
+            margin-top: 10px;
+            margin-bottom: 10px;
             cursor: pointer;
             width: 180px;
             height: 3px;
@@ -19,7 +21,7 @@
         }
 
         .box .hd {
-            width: 17px;
+            width: 18px;
             height: 18px;
             background-color: #56a3fc;
             border-radius: 6px;
@@ -28,6 +30,8 @@
             top: -8px;
             cursor: pointer;
             margin: 0;
+            transform: translateX(-9px);
+            z-index: 1;
         }
 
         .box .hdt {
@@ -42,6 +46,8 @@
 
         .box-text {
             user-select: none;
+            z-index: -1;
+            transform: translate(-30px, -10px);
         }
 
         * {
@@ -63,29 +69,41 @@
             display: flex;
             flex-direction: row;
             flex-wrap: wrap;
-            margin: 0 auto;
+            margin: auto;
+            transition-duration: 0.3s;
+            transform-origin: 0px 0px;
             border: 1px solid rgb(211, 211, 211);
         }
 
         .pixel-line {
-            width: 8px;
-            height: 8px;
-            border: 1px solid rgb(211, 211, 211);
+            width: 5px;
+            height: 5px;
+            box-sizing: border-box;
+            border: 0.1px solid rgb(211, 211, 211);
         }
 
         .pixel {
-            width: 10px;
-            height: 10px;
+            width: 5px;
+            height: 5px;
         }
 
         #color-list {
             display: flex;
             flex-direction: column;
             flex-wrap: wrap;
+            padding: 0;
+            margin: auto;
         }
 
         #tools {
-            width: 20%;
+            display: flex;
+            flex-direction: column;
+            width: 250px;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
         }
 
         .color-item {
@@ -96,6 +114,7 @@
         #now-color {
             width: 80px;
             height: 80px;
+            margin: auto;
             border: 1px solid rgb(147, 147, 147);
             background-color: #000;
         }
@@ -110,6 +129,19 @@
         .btn {
             text-shadow: rgb(85, 85, 85) 3px 2px 4px;
             display: inline-block;
+        }
+
+        .noshadow {
+            text-shadow: none;
+        }
+
+        #controls {
+            position: fixed;
+            text-align: left;
+            margin-top: 10px;
+            margin-left: 20%;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
         }
     </style>
     <script src="../js/av-min.js"></script>
@@ -147,19 +179,21 @@
             <ul id="color-list"></ul>
         </div>
     </div>
-    <div style="text-align: left;margin-top:10px;margin-left:20%">
+    <div id="controls">
+        <button class="btn btn-default noshadow" id="zoom"><span class="glyphicon glyphicon-zoom-in"
+                aria-hidden="true"></span></button>
         <button class="btn btn-warning" id="show-hide-line">
             <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>&nbsp;网格</button>
-        <button class="btn btn-info" id="upload"><span class="glyphicon glyphicon-cloud-upload"
+        <button class="btn btn-primary" id="upload"><span class="glyphicon glyphicon-cloud-upload"
                 aria-hidden="true"></span>&nbsp;上传</button>
         <button class="btn btn-danger" id="reset"><span class="glyphicon glyphicon-cloud-download"
                 aria-hidden="true"></span>&nbsp;重置</button>
         <button class="btn btn-danger" id="clear" onclick="tryClear()"><span class="glyphicon glyphicon-ban-circle"
                 aria-hidden="true"></span>&nbsp;清空</button>
-        <a id="lbtn" tabindex="0" class="btn btn-default" onclick="curVer++,getMap()">
+        <a id="lbtn" tabindex="0" class="btn btn-default noshadow" onclick="curVer++,getMap()">
             <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
         </a>
-        <a id="rbtn" tabindex="0" class="btn btn-default" onclick="curVer==0?true:(curVer--,getMap());">
+        <a id="rbtn" tabindex="0" class="btn btn-default noshadow" onclick="curVer==0?true:(curVer--,getMap());">
             <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
         </a>
         <span id="version" style="margin-right:auto"></span>
