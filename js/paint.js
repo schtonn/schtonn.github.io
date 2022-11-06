@@ -75,20 +75,20 @@ function getId() {
     }
 }
 
-var curVer = 0, maxVer = -1, stopVer = 1000, stopped=false;
+var curVer = 0, maxVer = -1, stopVer = 1000, stopped = false;
 var maxResult = {};
 
 function getMap() {
     if (curVer != 0) document.getElementById('upload').classList.add('disabled')
     else document.getElementById('upload').classList.remove('disabled')
-    if (curVer >= stopVer){
-        if(!stopped)document.getElementById('lbtn').classList.add('disabled'),stopped=true;
+    if (curVer >= stopVer) {
+        if (!stopped) document.getElementById('lbtn').classList.add('disabled'), stopped = true;
         else {
-            curVer=stopVer;
+            curVer = stopVer;
             return;
         }
     }
-    else document.getElementById('lbtn').classList.remove('disabled'),stopped=false;
+    else document.getElementById('lbtn').classList.remove('disabled'), stopped = false;
     document.getElementById('version').innerHTML = "当前版本：" + (curVer == 0 ? '' : '-') + curVer + ' by ';
     console.log('GetMap: currentVersion: ' + curVer)
     if (maxVer >= curVer) {
@@ -233,7 +233,6 @@ $(document).ready(function () {
         }
     }
 
-
     for (let i = 0; i < box.length; i++) {
         box[i].style.backgroundColor = "#fff"
         box[i].className = 'pixel'
@@ -296,8 +295,6 @@ $(document).ready(function () {
             this.children[0].classList.add('glyphicon-zoom-in')
         }
     }
-
-
 
     let colors = ['#FFF', '#000', '#7f7f7f', '#c3c3c3', '#880015', '#ed1c24', '#ff7f27', "#fff200", "#22b14c", "#00a2e8", "#3f48cc", "#a349a4"]
     for (let i = 0; i < colors.length; i++) {
