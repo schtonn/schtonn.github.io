@@ -67,7 +67,7 @@ function checkCookie() {
 
 function getId(){
     var cookieId=getCookie('id')
-    if(cookieId!='')return cookieId
+    if(cookieId!='')return parseInt(cookieId)
     else{
         var newId=Math.ceil(Math.random() * 1000000)
         setCookie('id',newId,365)
