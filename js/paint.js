@@ -123,6 +123,7 @@ function getMap() {
                 console.log('Found no data!')
                 curVer = result.length - 1;
                 stopVer = result.length - 1;
+                working = false;
                 getMap()
             }
             working = false;
