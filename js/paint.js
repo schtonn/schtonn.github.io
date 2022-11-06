@@ -50,7 +50,7 @@ function getCookie(cname) {
 function checkCookie() {
     var username = getCookie("name");
     if (username != "") {
-        var result = confirm("确认上传？" + username);
+        var result = confirm(username + "，确认上传？");
         if (result) return username
         else return false
     }
