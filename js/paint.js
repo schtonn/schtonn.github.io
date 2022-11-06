@@ -75,16 +75,20 @@ function getId() {
     }
 }
 
-var curVer = 0, maxVer = -1, stopVer = 1000, stopped = false;
+var curVer = 0, maxVer = -1, stopVer = 1000, stopped = false, working = false;
 var maxResult = {};
 
 function getMap() {
+    if (working) return;
+    working = true;
+    console.log('g' + working)
     if (curVer != 0) document.getElementById('upload').classList.add('disabled')
     else document.getElementById('upload').classList.remove('disabled')
     if (curVer >= stopVer) {
         if (!stopped) document.getElementById('lbtn').classList.add('disabled'), stopped = true;
         else {
             curVer = stopVer;
+            working = false;
             return;
         }
     }
@@ -99,6 +103,7 @@ function getMap() {
         for (let i = 0; i < box.length; i++) {
             box[i].style.backgroundColor = map[i]
         }
+        working = false;
     } else {
         const query = new AV.Query('paint');
         query.descending('updatedAt')
@@ -120,6 +125,7 @@ function getMap() {
                 stopVer = result.length - 1;
                 getMap()
             }
+            working = false;
         })
     }
 }
@@ -131,14 +137,25 @@ function reset() {
     getMap()
 }
 
+function prevVer() {
+    console.log(working)
+    if (working) return;
+    curVer++, getMap();
+}
+
+function nextVer() {
+    if (working) return;
+    curVer == 0 ? true : (curVer--, getMap());
+}
+
 document.onkeydown = function (event) {
     var e = event || window.event || arguments.callee.caller.arguments[0];
     if (e) {
         if (e.key == "ArrowLeft") {
-            curVer++, getMap()
+            prevVer()
         }
         else if (e.key == "ArrowRight") {
-            curVer == 0 ? true : (curVer--, getMap());
+            nextVer()
         }
     }
 };

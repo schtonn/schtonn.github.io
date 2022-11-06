@@ -216,10 +216,10 @@
                 aria-hidden="true"></span>&nbsp;同步</button>
         <button class="btn btn-danger" id="clear" onclick="tryClear()"><span class="glyphicon glyphicon-ban-circle"
                 aria-hidden="true"></span>&nbsp;清空</button>
-        <a id="lbtn" tabindex="0" class="btn btn-default noshadow" onclick="curVer++,getMap()">
+        <a id="lbtn" tabindex="0" class="btn btn-default noshadow" onclick="prevVer()">
             <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
         </a>
-        <a id="rbtn" tabindex="0" class="btn btn-default noshadow" onclick="curVer==0?true:(curVer--,getMap());">
+        <a id="rbtn" tabindex="0" class="btn btn-default noshadow" onclick="nextVer()">
             <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
         </a>
         <span id="version" style="margin-right:auto"></span>
