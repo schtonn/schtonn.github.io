@@ -40,7 +40,6 @@ function setCookie(cname, cvalue, exdays) {
 function getCookie(cname) {
     var name = cname + "=";
     var ca = document.cookie.split(';');
-    console.log(ca)
     for (var i = 0; i < ca.length; i++) {
         var c = ca[i].trim();
         if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
@@ -49,15 +48,15 @@ function getCookie(cname) {
 }
 
 function checkCookie() {
-    var username = getCookie("username");
+    var username = getCookie("name");
     if (username != "") {
-        alert("Welcome again " + username);
+        alert("Hi, " + username);
         return username
     }
     else {
-        username = prompt("Please enter your name:", "");
+        username = prompt("同一设备一天内的编辑将会保存在一个版本中，并对所有人可见。可设置昵称：", "-");
         if (username != "" && username != null) {
-            setCookie("username", username, 365);
+            setCookie("name", username, 1);
             return username
         } else {
             return false
@@ -70,7 +69,7 @@ function getId(){
     if(cookieId!='')return parseInt(cookieId)
     else{
         var newId=Math.ceil(Math.random() * 1000000)
-        setCookie('id',newId,365)
+        setCookie('id',newId,1)
         return newId
     }
 }
@@ -84,7 +83,7 @@ function getMap() {
     document.getElementById('version').innerHTML = "当前版本：" + (curVer == 0 ? '' : '-') + curVer + ' by ';
     query.descending('updatedAt')
     query.limit(curVer + 1)
-    console.log(curVer)
+    console.log('currentVersion: '+curVer)
     query.find().then((result) => {
         if (result.length > curVer) {
             var map = result[curVer].get('data')
@@ -166,7 +165,7 @@ $(document).ready(function () {
     slider('box-g', 255)
     slider('box-b', 255);
     var id=getId()
-    console.log('id:'+id)
+    console.log('id: '+id)
     var draw = document.getElementById('draw')
     draw.draggable = false
 
@@ -275,12 +274,12 @@ $(document).ready(function () {
             alert('对历史版本的编辑无法保存！')
             return false;
         }
-        var nick = prompt('请确认，可使用昵称，上传后对所有人可见。', '-')
-        console.log(nick)
+        var nick = checkCookie()
+        console.log('nickName: '+nick)
         if (nick) {
             const query = new AV.Query('paint');
 
-            console.log(id)
+            console.log('id: '+id)
             query.equalTo('id', id)
             query.find().then((result) => {
                 var map = []
