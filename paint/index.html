@@ -47,12 +47,16 @@
 
         .box-text {
             user-select: none;
+            width: fit-content;
             z-index: -1;
             transform: translate(-30px, -10px);
+            background-color: rgba(215, 215, 215, 0.7);
+            border: 2px solid rgba(215, 215, 215, 0.7);
+            border-radius: 5px;
         }
 
         * {
-            -webkit-box-sizing: border-box;
+            -webkit-box-sizing: content-box;
             box-sizing: content-box;
         }
 
@@ -62,6 +66,7 @@
             width: 900px;
             margin: 0 auto;
             margin-top: -20px;
+            text-align: center;
         }
 
         #draw {
@@ -103,7 +108,9 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background-color: rgba(15,15,15,0.1);
+            transition-duration: 0.3s;
+            background-color: rgba(15, 15, 15, 0.1);
+            border: 5px solid rgba(15, 15, 15, 0.1);
             border-radius: 15px;
             backdrop-filter: blur(5px);
         }
@@ -118,6 +125,7 @@
             height: 80px;
             margin: auto;
             border: 1px solid rgb(147, 147, 147);
+            border-radius: 15px;
             background-color: #000;
         }
 
@@ -140,10 +148,23 @@
         #controls {
             position: fixed;
             text-align: left;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
             margin-top: 10px;
-            margin-left: 20%;
+            width: fit-content;
+            padding-left: 3px;
+            padding-right: 5px;
+            border: 5px solid rgba(15, 15, 15, 0.1);
             border-radius: 15px;
+            background-color: rgba(15, 15, 15, 0.1);
             backdrop-filter: blur(5px);
+        }
+
+        #version {
+            background-color: rgba(215, 215, 215, 0.7);
+            border-radius: 5px;
+            padding-right: 3px;
         }
     </style>
     <script src="../js/av-min.js"></script>
@@ -155,37 +176,41 @@
 <body>
     <a class="btn btn-info" href="/" style="text-shadow: rgb(85, 85, 85) 3px 2px 4px;"><span
             class="glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp;返回</a>
-    <div id="main">
+    <div id="main" style="text-align:center">
         <div id="draw"></div>
         <div id="tools">
+            <button class="btn" id="toggle" style="background:rgba(215, 215, 215,0.7)"><span
+                    class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></button>
             <div id="now-color"></div>
-            <div class="box" id="box-r">
+            <div class="box canToggle" id="box-r">
                 <i class="hd"></i>
                 <i class="hdt"></i>
                 <div class="box-text" id="box-r-text">0</div>
             </div>
-            <div class="box" id="box-g">
+            <div class="box canToggle" id="box-g">
                 <i class="hd"></i>
                 <i class="hdt"></i>
                 <div class="box-text" id="box-g-text">0</div>
             </div>
-            <div class="box" id="box-b">
+            <div class="box canToggle" id="box-b">
                 <i class="hd"></i>
                 <i class="hdt"></i>
                 <div class="box-text" id="box-b-text">0</div>
             </div>
-            <ul id="color-list"></ul>
+            <ul class="canToggle" id="color-list"></ul>
         </div>
     </div>
     <div id="controls">
+        <button class="btn btn-default noshadow" id="help" onclick="alert('说明：左键绘制，右键擦除。\n左右方向键可浏览历史版本，鼠标悬停于版本上可查看时间。\n点击上传后，同一设备一天内的编辑将会保存在一个版本中，并对所有人可见。')"><span class="glyphicon glyphicon-question-sign"
+                aria-hidden="true"></span></button>
         <button class="btn btn-default noshadow" id="zoom"><span class="glyphicon glyphicon-zoom-in"
                 aria-hidden="true"></span></button>
         <button class="btn btn-warning" id="show-hide-line">
-            <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>&nbsp;网格</button>
+            <span class="glyphicon glyphicon-th" aria-hidden="true"></span>&nbsp;网格</button>
         <button class="btn btn-primary" id="upload"><span class="glyphicon glyphicon-cloud-upload"
                 aria-hidden="true"></span>&nbsp;上传</button>
-        <button class="btn btn-danger" id="reset"><span class="glyphicon glyphicon-cloud-download"
-                aria-hidden="true"></span>&nbsp;重置</button>
+        <button class="btn btn-primary" id="reset"><span class="glyphicon glyphicon-cloud-download"
+                aria-hidden="true"></span>&nbsp;同步</button>
         <button class="btn btn-danger" id="clear" onclick="tryClear()"><span class="glyphicon glyphicon-ban-circle"
                 aria-hidden="true"></span>&nbsp;清空</button>
         <a id="lbtn" tabindex="0" class="btn btn-default noshadow" onclick="curVer++,getMap()">

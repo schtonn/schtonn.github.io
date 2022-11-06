@@ -55,7 +55,7 @@ function checkCookie() {
         else return false
     }
     else {
-        username = prompt("同一设备一天内的编辑将会保存在一个版本中，并对所有人可见。可设置昵称：", "-");
+        username = prompt("同一设备一天内的编辑将会保存在一个版本中，并对所有人可见。\n可设置昵称：", "-");
         if (username != "" && username != null) {
             setCookie("name", username, 1);
             return username
@@ -75,36 +75,73 @@ function getId() {
     }
 }
 
-var curVer = 0
+var curVer = 0, maxVer = -1, stopVer = 1000, stopped=false;
+var maxResult = {};
 
 function getMap() {
     if (curVer != 0) document.getElementById('upload').classList.add('disabled')
     else document.getElementById('upload').classList.remove('disabled')
-    const query = new AV.Query('paint');
-    document.getElementById('version').innerHTML = "当前版本：" + (curVer == 0 ? '' : '-') + curVer + ' by ';
-    query.descending('updatedAt')
-    query.limit(curVer + 1)
-    console.log('currentVersion: ' + curVer)
-    query.find().then((result) => {
-        if (result.length > curVer) {
-            var map = result[curVer].get('data')
-            document.getElementById('version').title = result[curVer].get('updatedAt');
-            document.getElementById('version').innerHTML += result[curVer].get('nickName');
-            for (let i = 0; i < box.length; i++) {
-                box[i].style.backgroundColor = map[i]
-            }
-        } else {
-            console.log('Found no data!')
-            curVer = result.length - 1;
-            getMap()
+    if (curVer >= stopVer){
+        if(!stopped)document.getElementById('lbtn').classList.add('disabled'),stopped=true;
+        else {
+            curVer=stopVer;
+            return;
         }
-    })
+    }
+    else document.getElementById('lbtn').classList.remove('disabled'),stopped=false;
+    document.getElementById('version').innerHTML = "当前版本：" + (curVer == 0 ? '' : '-') + curVer + ' by ';
+    console.log('GetMap: currentVersion: ' + curVer)
+    if (maxVer >= curVer) {
+        console.log('Data loaded from cache')
+        var map = maxResult[curVer].get('data')
+        document.getElementById('version').title = maxResult[curVer].get('updatedAt');
+        document.getElementById('version').innerHTML += maxResult[curVer].get('nickName');
+        for (let i = 0; i < box.length; i++) {
+            box[i].style.backgroundColor = map[i]
+        }
+    } else {
+        const query = new AV.Query('paint');
+        query.descending('updatedAt')
+        query.limit(curVer + 1)
+        query.find().then((result) => {
+            if (result.length > curVer) {
+                console.log('Data loaded from LeanCloud')
+                var map = result[curVer].get('data')
+                document.getElementById('version').title = result[curVer].get('updatedAt');
+                document.getElementById('version').innerHTML += result[curVer].get('nickName');
+                for (let i = 0; i < box.length; i++) {
+                    box[i].style.backgroundColor = map[i]
+                }
+                maxVer = curVer
+                maxResult = result
+            } else {
+                console.log('Found no data!')
+                curVer = result.length - 1;
+                stopVer = result.length - 1;
+                getMap()
+            }
+        })
+    }
 }
 
 function reset() {
     curVer = 0;
+    maxVer = -1;
+    stopVer = 1000;
     getMap()
 }
+
+document.onkeydown = function (event) {
+    var e = event || window.event || arguments.callee.caller.arguments[0];
+    if (e) {
+        if (e.key == "ArrowLeft") {
+            curVer++, getMap()
+        }
+        else if (e.key == "ArrowRight") {
+            curVer == 0 ? true : (curVer--, getMap());
+        }
+    }
+};
 
 let box = []
 $(document).ready(function () {
@@ -162,8 +199,8 @@ $(document).ready(function () {
         }
     }
 
-    slider('box-r', 255)
-    slider('box-g', 255)
+    slider('box-r', 255);
+    slider('box-g', 255);
     slider('box-b', 255);
     var id = getId()
     console.log('id: ' + id)
@@ -174,6 +211,7 @@ $(document).ready(function () {
     var colorList = document.getElementById('color-list')
     var resetButton = document.getElementById('reset')
     var zoomButton = document.getElementById('zoom')
+    var toggleButton = document.getElementById('toggle')
     var nowColor = document.getElementById('now-color')
     var isdown = 0;
 
@@ -186,6 +224,7 @@ $(document).ready(function () {
 
     let showGrid = false
     let zoom = false
+    let showTools = false
 
     draw.draggable = false
     for (let i = 0; i < 128; i++) {
@@ -228,6 +267,17 @@ $(document).ready(function () {
     }
     resetButton.onclick = function () {
         reset()
+    }
+
+    toggleButton.onclick = function () {
+        var result = $('#tools')
+        if (showTools) {
+            for (let i = 0; i < result.length; i++)result[i].style.setProperty('transform', '');
+            showTools = 0;
+        } else {
+            for (let i = 0; i < result.length; i++)result[i].style.setProperty('transform', 'scale(80%) translate(170px,520px)');
+            showTools = 1;
+        }
     }
 
     zoomButton.onclick = function () {
