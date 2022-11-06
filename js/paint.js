@@ -50,8 +50,9 @@ function getCookie(cname) {
 function checkCookie() {
     var username = getCookie("name");
     if (username != "") {
-        alert("Hi, " + username);
-        return username
+        var result = confirm("确认上传？" + username);
+        if (result) return username
+        else return false
     }
     else {
         username = prompt("同一设备一天内的编辑将会保存在一个版本中，并对所有人可见。可设置昵称：", "-");
@@ -64,12 +65,12 @@ function checkCookie() {
     }
 }
 
-function getId(){
-    var cookieId=getCookie('id')
-    if(cookieId!='')return parseInt(cookieId)
-    else{
-        var newId=Math.ceil(Math.random() * 1000000)
-        setCookie('id',newId,1)
+function getId() {
+    var cookieId = getCookie('id')
+    if (cookieId != '') return parseInt(cookieId)
+    else {
+        var newId = Math.ceil(Math.random() * 1000000)
+        setCookie('id', newId, 1)
         return newId
     }
 }
@@ -83,7 +84,7 @@ function getMap() {
     document.getElementById('version').innerHTML = "当前版本：" + (curVer == 0 ? '' : '-') + curVer + ' by ';
     query.descending('updatedAt')
     query.limit(curVer + 1)
-    console.log('currentVersion: '+curVer)
+    console.log('currentVersion: ' + curVer)
     query.find().then((result) => {
         if (result.length > curVer) {
             var map = result[curVer].get('data')
@@ -164,8 +165,8 @@ $(document).ready(function () {
     slider('box-r', 255)
     slider('box-g', 255)
     slider('box-b', 255);
-    var id=getId()
-    console.log('id: '+id)
+    var id = getId()
+    console.log('id: ' + id)
     var draw = document.getElementById('draw')
     draw.draggable = false
 
@@ -275,11 +276,11 @@ $(document).ready(function () {
             return false;
         }
         var nick = checkCookie()
-        console.log('nickName: '+nick)
+        console.log('nickName: ' + nick)
         if (nick) {
             const query = new AV.Query('paint');
 
-            console.log('id: '+id)
+            console.log('id: ' + id)
             query.equalTo('id', id)
             query.find().then((result) => {
                 var map = []
