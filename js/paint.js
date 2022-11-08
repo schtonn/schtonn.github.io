@@ -79,9 +79,11 @@ var curVer = 0, maxVer = -1, stopVer = 1000, stopped = false, working = false;
 var maxResult = {};
 
 function getMap() {
-    if (working) return;
+    if (working) {
+        console.log("Too frequent!");
+        return;
+    }
     working = true;
-    console.log('g' + working)
     if (curVer != 0) document.getElementById('upload').classList.add('disabled')
     else document.getElementById('upload').classList.remove('disabled')
     if (curVer >= stopVer) {
@@ -139,23 +141,28 @@ function reset() {
 }
 
 function prevVer() {
-    console.log(working)
-    if (working) return;
+    if (working) {
+        console.log("Too frequent!");
+        return;
+    }
     curVer++, getMap();
 }
 
 function nextVer() {
-    if (working) return;
+    if (working) {
+        console.log("Too frequent!");
+        return;
+    }
     curVer == 0 ? true : (curVer--, getMap());
 }
 
 document.onkeydown = function (event) {
     var e = event || window.event || arguments.callee.caller.arguments[0];
     if (e) {
-        if (e.key == "ArrowLeft") {
+        if (e.key == "a") {
             prevVer()
         }
-        else if (e.key == "ArrowRight") {
+        else if (e.key == "d") {
             nextVer()
         }
     }
