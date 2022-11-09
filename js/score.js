@@ -54,10 +54,10 @@ function reset() {
 document.onkeydown = function (event) {
     var e = event || window.event || arguments.callee.caller.arguments[0];
     if (e) {
-        if (e.key == "ArrowLeft" || e.key == "ArrowUp") {
+        if (e.key == "ArrowLeft") {
             prevFile();
         }
-        else if (e.key == "ArrowRight" || e.key == "ArrowDown") {
+        else if (e.key == "ArrowRight") {
             nextFile();
         } else if ('1' <= e.key && e.key <= '9') {
             if (parseInt(e.key) <= fileCount) {
@@ -84,6 +84,7 @@ function processFiles(isFirstTime = 0) {
     var message = document.getElementById("message");
     var upBtn = document.getElementById('upbtn');
     var upIcon = document.getElementById('upicon');
+    var tableLayout = '<table class="table table-responsive table-hover" style="table-layout: fixed;">'
     message.innerHTML = (cur + 1) + "/" + (fileCount) + " - " + file.name + " - " + file.size + " 字节 - " + file.type + " - 正在读取...<br>>";
     upBtn.classList.remove('btn-danger');
     upBtn.classList.add('btn-info');
@@ -101,15 +102,18 @@ function processFiles(isFirstTime = 0) {
             var object = eval("(" + event.target.result + ")");
             var classText = "", gradingText = "";
 
-            var seIds = [], seNames = [];
+            var seIds = [], seNames = [], iter = 1;
             seIds = object.data.seIds;
             for (var i = 0; i < seIds.length; i++) {
+                console.log(object.data.multiExam.singleExams[i].seId)
                 for (var j = 0; j < seIds.length; j++) {
                     if (object.data.multiExam.singleExams[i].seId == seIds[j]) {
                         seNames[j] = object.data.multiExam.singleExams[i].seCourseName;
                     }
                 }
             }
+            console.log(seIds)
+            console.log(seNames)
             var seNameDic = {};
             for (var i = 0; i < seIds.length; i++) {
                 seNameDic[seIds[i]] = seNames[i];
@@ -118,7 +122,8 @@ function processFiles(isFirstTime = 0) {
             for (var i = 0; i < object.data.singleExamClassYsScores.length; i++) {
                 seNameDic[object.data.singleExamClassYsScores[i].seId + "Ys"] = seNameDic[object.data.singleExamClassYsScores[i].seId] + " " + object.data.singleExamClassYsScores[i].ysClassId;
             }
-            var seIdDic = {};
+            console.log(seNameDic)
+            var seIdDic = {}, seIdRev = {};
             for (var i = 0; i < seIds.length; i++) {
                 for (var j = 0; j < seIds.length; j++) {
                     if (object.data.multiExamStudentScore.singleExamStudentScores[j].seId == seIds[i]) {
@@ -126,6 +131,7 @@ function processFiles(isFirstTime = 0) {
                     }
                 }
             }
+            for (var i = 0; i < seIds.length; i++)seIdRev[seIdDic[i]] = i;
             var scoreP = {}, avgP = {}, rate0 = {}, rate25 = {}, rate50 = {}, rate75 = {}, rate100 = {}, rateFull = {};//表1用
             for (var i = 0; i < seIds.length; i++) {
                 scoreP[object.data.multiExamStudentScore.singleExamStudentScores[i].seId] = object.data.multiExamStudentScore.singleExamStudentScores[i].essScore;
@@ -184,42 +190,42 @@ function processFiles(isFirstTime = 0) {
                 // seIds[i]
                 // 前两个和后两个数据应该是能分别对上号的（1-2 3-4），用 seIdDic 连接
                 // seIdDic {key(1-2): value(3-4),..}
-
+                var g=seIdRev[i];
                 classText += "<h4>"
-                    + seNameDic[object.data.multiExamStudentScore.singleExamStudentScores[i].seId] + "</h4>"
-                    + "单科分数：" + object.data.multiExamStudentScore.singleExamStudentScores[i].essScore + "<br><br>"
-                    + "单科分数班级排名：" + object.data.multiExamStudentScore.singleExamStudentScores[i].essClassOrder + "<br>"
-                    + "单科班级参考人数：" + object.data.singleExamClassScores[i].secsStudentCount + "<br>"
-                    + "单科班级年级排名：" + object.data.singleExamClassScores[i].secsClassOrder + "<br>"
+                    + seNameDic[object.data.multiExamStudentScore.singleExamStudentScores[g].seId] + "</h4>"
+                    + "单科分数：" + object.data.multiExamStudentScore.singleExamStudentScores[g].essScore + "<br><br>"
+                    + "单科分数班级排名：" + object.data.multiExamStudentScore.singleExamStudentScores[g].essClassOrder + "<br>"
+                    + "单科班级参考人数：" + object.data.singleExamClassScores[g].secsStudentCount + "<br>"
+                    + "单科班级年级排名：" + object.data.singleExamClassScores[g].secsClassOrder + "<br>"
                     + "单科班级："
-                    + '<table class="table table-responsive" style="table-layout: fixed;"><tr><td>平均分</td><td>最高分</td><td>四分位数（75%）</td><td>中位数</td><td>四分位数（25%）</td><td>最低分</td></tr>'
-                    + "<tr><td>" + object.data.singleExamClassScores[i].secsAvgScore + "</td><td>" + object.data.singleExamClassScores[i].secsMaxScore + "</td><td>" + object.data.singleExamClassScores[i].secs3quatrerScore + "</td><td>" + object.data.singleExamClassScores[i].secsHalfScore + "</td><td>" + object.data.singleExamClassScores[i].secsQuarterScore + "</td><td>" + object.data.singleExamClassScores[i].secsMinScore + "</td></tr></table>"
+                    + tableLayout + '<tr><td>平均分</td><td>最高分</td><td>四分位数（75%）</td><td>中位数</td><td>四分位数（25%）</td><td>最低分</td></tr>'
+                    + "<tr><td>" + object.data.singleExamClassScores[g].secsAvgScore + "</td><td>" + object.data.singleExamClassScores[g].secsMaxScore + "</td><td>" + object.data.singleExamClassScores[g].secs3quatrerScore + "</td><td>" + object.data.singleExamClassScores[g].secsHalfScore + "</td><td>" + object.data.singleExamClassScores[g].secsQuarterScore + "</td><td>" + object.data.singleExamClassScores[g].secsMinScore + "</td></tr></table>"
                     ;
                 for (var j = 0; j < object.data.singleExamClassYsScores.length; j++) {
-                    if (object.data.singleExamClassYsScores[j].seId == object.data.multiExamStudentScore.singleExamStudentScores[i].seId) {
+                    if (object.data.singleExamClassYsScores[j].seId == object.data.multiExamStudentScore.singleExamStudentScores[g].seId) {
                         classText += "<br><br>"
                             + "单科分层班级名称：" + object.data.singleExamClassYsScores[j].ysClassId + "<br>"
-                            + "单科分数分层班级排名：" + object.data.multiExamStudentScore.singleExamStudentScores[i].essYsClassOrder + "<br>"
+                            + "单科分数分层班级排名：" + object.data.multiExamStudentScore.singleExamStudentScores[g].essYsClassOrder + "<br>"
                             + "单科分层班级参考人数：" + object.data.singleExamClassYsScores[j].secsStudentCount + "<br>"
                             + "单科分层班级年级排名：" + object.data.singleExamClassYsScores[j].secsClassOrder + "<br>"
                             + "单科分层班级："
-                            + '<table class="table table-responsive" style="table-layout: fixed;"><tr><td>平均分</td><td>最高分</td><td>四分位数（75%）</td><td>中位数</td><td>四分位数（25%）</td><td>最低分</td></tr>'
+                            + tableLayout + '<tr><td>平均分</td><td>最高分</td><td>四分位数（75%）</td><td>中位数</td><td>四分位数（25%）</td><td>最低分</td></tr>'
                             + "<tr><td>" + object.data.singleExamClassYsScores[j].secsAvgScore + "</td><td>" + object.data.singleExamClassYsScores[j].secsMaxScore + "</td><td>" + object.data.singleExamClassYsScores[j].secs3quatrerScore + "</td><td>" + object.data.singleExamClassYsScores[j].secsHalfScore + "</td><td>" + object.data.singleExamClassYsScores[j].secsQuarterScore + "</td><td>" + object.data.singleExamClassYsScores[j].secsMinScore + "</td></tr></table>"
                             ;
                     }
                 }
                 classText += "<br><br>"
-                    + "单科分数年级排名：" + object.data.multiExamStudentScore.singleExamStudentScores[i].essGradeOrder + "<br>"
-                    + "单科年级参考人数：" + object.data.multiExam.singleExams[seIdDic[i]].seStudentCount + "<br>"
+                    + "单科分数年级排名：" + object.data.multiExamStudentScore.singleExamStudentScores[g].essGradeOrder + "<br>"
+                    + "单科年级参考人数：" + object.data.multiExam.singleExams[seIdDic[g]].seStudentCount + "<br>"
                     + "单科年级："
-                    + '<table class="table table-responsive" style="table-layout: fixed;"><tr><td>平均分</td><td>最高分</td><td>四分位数（75%）</td><td>中位数</td><td>四分位数（25%）</td><td>最低分</td></tr>'
-                    + "<tr><td>" + object.data.multiExam.singleExams[seIdDic[i]].seAvgScore + "</td><td>" + object.data.multiExam.singleExams[seIdDic[i]].seMaxScore + "</td><td>" + object.data.multiExam.singleExams[seIdDic[i]].se3QuarterScore + "</td><td>" + object.data.multiExam.singleExams[seIdDic[i]].seHalfScore + "</td><td>" + object.data.multiExam.singleExams[seIdDic[i]].seQuarterScore + "</td><td>" + object.data.multiExam.singleExams[seIdDic[i]].seMinScore + "</td></tr></table><br><br>"
+                    + tableLayout + '<tr><td>平均分</td><td>最高分</td><td>四分位数（75%）</td><td>中位数</td><td>四分位数（25%）</td><td>最低分</td></tr>'
+                    + "<tr><td>" + object.data.multiExam.singleExams[seIdDic[g]].seAvgScore + "</td><td>" + object.data.multiExam.singleExams[seIdDic[g]].seMaxScore + "</td><td>" + object.data.multiExam.singleExams[seIdDic[g]].se3QuarterScore + "</td><td>" + object.data.multiExam.singleExams[seIdDic[g]].seHalfScore + "</td><td>" + object.data.multiExam.singleExams[seIdDic[g]].seQuarterScore + "</td><td>" + object.data.multiExam.singleExams[seIdDic[g]].seMinScore + "</td></tr></table><br><br>"
                     ;
             }
 
             function sheetOutput(title, dict) {
                 gradingText += "<h4>" + title + "</h4>"
-                gradingText += '<table class="table table-responsive" style="table-layout: fixed;"><tr>';
+                gradingText += tableLayout + '<tr>';
                 if (dict != ysClassOrder) {
                     for (var i in dict) {
                         gradingText += "<td>" + seNameDic[i].substr(0, 2) + "</td>";
@@ -272,12 +278,12 @@ function processFiles(isFirstTime = 0) {
             + "全科班级参考人数：" + object.data.multiExamClassScores[0].mecsStudentCount + "<br>"
             + "全科班级年级排名：" + object.data.multiExamClassScores[0].mecsClassOrder + "<br>"
             + "全科班级："
-            + '<table class="table table-responsive" style="table-layout: fixed;"><tr><td>平均分</td><td>最高分</td><td>四分位数（75%）</td><td>中位数</td><td>四分位数（25%）</td><td>最低分</td></tr>'
+            + tableLayout + '<tr><td>平均分</td><td>最高分</td><td>四分位数（75%）</td><td>中位数</td><td>四分位数（25%）</td><td>最低分</td></tr>'
             + "<tr><td>" + object.data.multiExamClassScores[0].mecsAvgScore + "</td><td>" + object.data.multiExamClassScores[0].mecsMaxScore + "</td><td>" + object.data.multiExamClassScores[0].mecs3quatrerScore + "</td><td>" + object.data.multiExamClassScores[0].mecsHalfScore + "</td><td>" + object.data.multiExamClassScores[0].mecsQuarterScore + "</td><td>" + object.data.multiExamClassScores[0].mecsMinScore + "</td></tr></table>"
             + "<br><br>全科分数年级排名：" + object.data.multiExamStudentScore.messGradeOrder + "<br>"
             + "全科年级参考人数：" + object.data.multiExamSchoolScore.mecsStudentCount + "<br>"
             + "全科年级："
-            + '<table class="table table-responsive" style="table-layout: fixed;"><tr><td>平均分</td><td>最高分</td><td>四分位数（75%）</td><td>中位数</td><td>四分位数（25%）</td><td>最低分</td></tr>'
+            + tableLayout + '<tr><td>平均分</td><td>最高分</td><td>四分位数（75%）</td><td>中位数</td><td>四分位数（25%）</td><td>最低分</td></tr>'
             + "<tr><td>" + object.data.multiExam.meAvgScore + "</td><td>" + object.data.multiExam.meMaxScore + "</td><td>" + object.data.multiExam.me3QuatrerScore + "</td><td>" + object.data.multiExam.meHalfScore + "</td><td>" + object.data.multiExam.meQuarterScore + "</td><td>" + object.data.multiExam.meMinScore + "</td></tr></table><br><br>"
             + classText
             + gradingText
@@ -303,44 +309,47 @@ function processFiles(isFirstTime = 0) {
         scoreQ = []; avgQ = []; rate0Q = []; rate25Q = []; rate50Q = []; rate75Q = []; rate100Q = [];
         seNameDicP2 = []; classOrderPP = []; gradeOrderPP = []; classOrderQ = []; gradeOrderQ = [];
         seNameDicP3 = []; ysClassOrderPP = []; ysClassOrderQ = [];
-        for (var i in scoreP) {
-            if (seNameDic[i].substr(0, 2) == '总分') continue;
-            seNameDicP.push(seNameDic[i].substr(0, 2));
-            scorePP.push(scoreP[i]);
-            avgPP.push(avgP[i]);
-            rate0P.push(rate0[i]);
-            rate25P.push(rate25[i]);
-            rate50P.push(rate50[i]);
-            rate75P.push(rate75[i]);
-            rate100P.push(rate100[i]);
-            rateFullP.push(rateFull[i]);
-            scoreQ.push(decimal(scoreP[i] / rateFull[i] * 100, 1));
-            avgQ.push(decimal(avgP[i] / rateFull[i] * 100, 1));
-            rate0Q.push(decimal(rate0[i] / rateFull[i] * 100, 1));
-            rate25Q.push(decimal(rate25[i] / rateFull[i] * 100, 1));
-            rate50Q.push(decimal(rate50[i] / rateFull[i] * 100, 1));
-            rate75Q.push(decimal(rate75[i] / rateFull[i] * 100, 1));
-            rate100Q.push(decimal(rate100[i] / rateFull[i] * 100, 1));
+        console.log(scoreP)
+        for (var i = 0; i < seIds.length; i++) {
+            var g=seIds[i];
+            if (seNameDic[g].substr(0, 2) == '总分') continue;
+            seNameDicP.push(seNameDic[g].substr(0, 2));
+            scorePP.push(scoreP[g]);
+            avgPP.push(avgP[g]);
+            rate0P.push(rate0[g]);
+            rate25P.push(rate25[g]);
+            rate50P.push(rate50[g]);
+            rate75P.push(rate75[g]);
+            rate100P.push(rate100[g]);
+            rateFullP.push(rateFull[g]);
+            scoreQ.push(decimal(scoreP[g] / rateFull[g] * 100, 1));
+            avgQ.push(decimal(avgP[g] / rateFull[g] * 100, 1));
+            rate0Q.push(decimal(rate0[g] / rateFull[g] * 100, 1));
+            rate25Q.push(decimal(rate25[g] / rateFull[g] * 100, 1));
+            rate50Q.push(decimal(rate50[g] / rateFull[g] * 100, 1));
+            rate75Q.push(decimal(rate75[g] / rateFull[g] * 100, 1));
+            rate100Q.push(decimal(rate100[g] / rateFull[g] * 100, 1));
         }
-        for (var i in classOrderP) {
-            seNameDicP2.push(seNameDic[i].substr(0, 2));
-            classOrderPP.push(classOrderP[i]);
-            gradeOrderPP.push(gradeOrderP[i]);
-            classOrderQ.push(decimal(classOrder[i] * 100, 1));
-            gradeOrderQ.push(decimal(gradeOrder[i] * 100, 1));
+        for (var i = 0; i < seIds.length; i++) {
+            var g=seIds[i];
+            seNameDicP2.push(seNameDic[g].substr(0, 2));
+            classOrderPP.push(classOrderP[g]);
+            gradeOrderPP.push(gradeOrderP[g]);
+            classOrderQ.push(decimal(classOrder[g] * 100, 1));
+            gradeOrderQ.push(decimal(gradeOrder[g] * 100, 1));
         }
         for (var i in ysClassOrderP) {
             seNameDicP3.push(seNameDic[i]);
             ysClassOrderPP.push(ysClassOrderP[i]);
             ysClassOrderQ.push(decimal(ysClassOrder[i] * 100, 1));
         }
-        var sOp1 = { //具体细节的描述
+        var sOp1 = {
             textStyle: {
                 fontFamily: 'Noto Serif SC'
             },
             title: {
                 text: '分数',
-                textStyle: { //主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}
+                textStyle: {
                     fontSize: 14,
                     fontStyle: 'normal',
                     fontWeight: 'bold',
@@ -352,7 +361,7 @@ function processFiles(isFirstTime = 0) {
             legend: {
                 data: ['0%', '25%', '50%', '75%', '100%', '满分', '平均分', '我的分数']
             },
-            toolbox: { //可以选择具体数据，柱状图，折线图，还原，保存图片的的切换选择
+            toolbox: {
                 show: true,
                 feature: {
                     dataView: {
@@ -360,81 +369,52 @@ function processFiles(isFirstTime = 0) {
                         readOnly: false
                     },
                     magicType: {
-                        show: true,
-                        type: ['line', 'bar'] //可选折线图和柱状图
+                        show: true, type: ['line', 'bar']
                     },
                     restore: {
-                        show: true  //恢复默认
+                        show: true
                     },
                     saveAsImage: {
-                        show: true // 存储为图片的功能
+                        show: true
                     }
                 }
             },
             calculable: true,
             xAxis: [{
-                type: 'category',
-                //name: 'min_sup(%)'
-                data: seNameDicP,
+                type: 'category', data: seNameDicP,
                 name: '科目',
                 position: 'left'
             }],
             yAxis: [{
-                type: 'value',
-                name: '分数',
-                position: 'left'
+                type: 'value', name: '分数', position: 'left'
             }],
             series: [{
-                name: '0%',
-                type: 'line',
-                data: rate0P,
-                color: '#99ab4e'
+                name: '0%', type: 'line', data: rate0P, color: '#99ab4e'
             }, {
-                name: '25%',
-                type: 'line',
-                data: rate25P,
-                color: '#c7dc68'
+                name: '25%', type: 'line', data: rate25P, color: '#c7dc68'
             }, {
-                name: '50%',
-                type: 'line',
-                data: rate50P,
-                color: '#c7dc68'
+                name: '50%', type: 'line', data: rate50P, color: '#c7dc68'
             }, {
-                name: '75%',
-                type: 'line',
-                data: rate75P,
-                color: '#c7dc68'
+                name: '75%', type: 'line', data: rate75P, color: '#c7dc68'
             }, {
-                name: '100%',
-                type: 'line',
-                data: rate100P,
-                color: '#99ab4e'
+                name: '100%', type: 'line', data: rate100P, color: '#99ab4e'
             }, {
-                name: '满分',
-                type: 'line',
-                data: rateFullP,
-                color: '#783c1d'
+                name: '满分', type: 'line', data: rateFullP, color: '#783c1d'
             }, {
-                name: '平均分',
-                type: 'line',
-                data: avgPP,
-                color: '#2792c3'
+                name: '平均分', type: 'line', data: avgPP, color: '#2792c3'
             }, {
-                name: '我的分数',
-                type: 'line',
-                data: scorePP,
-                color: '#e2041b'
+                name: '我的分数', type: 'line', data: scorePP, color: '#e2041b'
             }
 
             ]
         };
-        var sOp2 = { //具体细节的描述
+        var sOp2 = {
             textStyle: {
                 fontFamily: 'Noto Serif SC'
             },
             title: {
                 text: '得分率',
-                textStyle: { //主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}
+                textStyle: {
                     fontSize: 14,
                     fontStyle: 'normal',
                     fontWeight: 'bold',
@@ -446,7 +426,7 @@ function processFiles(isFirstTime = 0) {
             legend: {
                 data: ['0%', '25%', '50%', '75%', '100%', '平均得分率', '我的得分率']
             },
-            toolbox: { //可以选择具体数据，柱状图，折线图，还原，保存图片的的切换选择
+            toolbox: {
                 show: true,
                 feature: {
                     dataView: {
@@ -454,21 +434,20 @@ function processFiles(isFirstTime = 0) {
                         readOnly: false
                     },
                     magicType: {
-                        show: true,
-                        type: ['line', 'bar'] //可选折线图和柱状图
+                        show: true, type: ['line', 'bar']
                     },
                     restore: {
-                        show: true  //恢复默认
+                        show: true
                     },
                     saveAsImage: {
-                        show: true // 存储为图片的功能
+                        show: true
                     }
                 }
             },
             calculable: true,
             xAxis: [{
                 type: 'category',
-                //name: 'min_sup(%)'
+
                 data: seNameDicP,
                 name: '科目',
                 position: 'left'
@@ -479,40 +458,19 @@ function processFiles(isFirstTime = 0) {
                 position: 'left'
             }],
             series: [{
-                name: '0%',
-                type: 'line',
-                data: rate0Q,
-                color: '#99ab4e'
+                name: '0%', type: 'line', data: rate0Q, color: '#99ab4e'
             }, {
-                name: '25%',
-                type: 'line',
-                data: rate25Q,
-                color: '#c7dc68'
+                name: '25%', type: 'line', data: rate25Q, color: '#c7dc68'
             }, {
-                name: '50%',
-                type: 'line',
-                data: rate50Q,
-                color: '#c7dc68'
+                name: '50%', type: 'line', data: rate50Q, color: '#c7dc68'
             }, {
-                name: '75%',
-                type: 'line',
-                data: rate75Q,
-                color: '#c7dc68'
+                name: '75%', type: 'line', data: rate75Q, color: '#c7dc68'
             }, {
-                name: '100%',
-                type: 'line',
-                data: rate100Q,
-                color: '#99ab4e'
+                name: '100%', type: 'line', data: rate100Q, color: '#99ab4e'
             }, {
-                name: '平均得分率',
-                type: 'line',
-                data: avgQ,
-                color: '#2792c3'
+                name: '平均得分率', type: 'line', data: avgQ, color: '#2792c3'
             }, {
-                name: '我的得分率',
-                type: 'line',
-                data: scoreQ,
-                color: '#e2041b'
+                name: '我的得分率', type: 'line', data: scoreQ, color: '#e2041b'
             }
 
             ]
@@ -523,7 +481,7 @@ function processFiles(isFirstTime = 0) {
                 fontFamily: 'Noto Serif SC'
             }, title: {
                 text: '行政排名位次',
-                textStyle: { //主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}
+                textStyle: {
                     fontSize: 14,
                     fontStyle: 'normal',
                     fontWeight: 'bold'
@@ -543,8 +501,7 @@ function processFiles(isFirstTime = 0) {
                         readOnly: false
                     },
                     magicType: {
-                        show: true,
-                        type: ['line', 'bar']
+                        show: true, type: ['line', 'bar']
                     },
                     restore: {
                         show: true
@@ -556,9 +513,7 @@ function processFiles(isFirstTime = 0) {
             },
             calculable: true,
             xAxis: [{
-                type: 'category',
-                //name: 'min_sup(%)'
-                data: seNameDicP2,
+                type: 'category', data: seNameDicP2,
                 name: '科目',
                 position: 'left'
             }],
@@ -568,15 +523,9 @@ function processFiles(isFirstTime = 0) {
                 position: 'left'
             }],
             series: [{
-                name: '班级排名',
-                type: 'bar',
-                data: classOrderPP,
-                color: '#343090'
+                name: '班级排名', type: 'bar', data: classOrderPP, color: '#343090'
             }, {
-                name: '年级排名',
-                type: 'bar',
-                data: gradeOrderPP,
-                color: '#5f59f7'
+                name: '年级排名', type: 'bar', data: gradeOrderPP, color: '#5f59f7'
             }
             ]
         };
@@ -586,7 +535,7 @@ function processFiles(isFirstTime = 0) {
                 fontFamily: 'Noto Serif SC'
             }, title: {
                 text: '行政排名比例',
-                textStyle: { //主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}
+                textStyle: {
                     fontSize: 14,
                     fontStyle: 'normal',
                     fontWeight: 'bold'
@@ -606,8 +555,7 @@ function processFiles(isFirstTime = 0) {
                         readOnly: false
                     },
                     magicType: {
-                        show: true,
-                        type: ['line', 'bar']
+                        show: true, type: ['line', 'bar']
                     },
                     restore: {
                         show: true
@@ -619,9 +567,7 @@ function processFiles(isFirstTime = 0) {
             },
             calculable: true,
             xAxis: [{
-                type: 'category',
-                //name: 'min_sup(%)'
-                data: seNameDicP2,
+                type: 'category', data: seNameDicP2,
                 name: '科目',
                 position: 'left'
             }],
@@ -631,15 +577,9 @@ function processFiles(isFirstTime = 0) {
                 position: 'left'
             }],
             series: [{
-                name: '班级排名(%)',
-                type: 'bar',
-                data: classOrderQ,
-                color: '#343090'
+                name: '班级排名(%)', type: 'bar', data: classOrderQ, color: '#343090'
             }, {
-                name: '年级排名(%)',
-                type: 'bar',
-                data: gradeOrderQ,
-                color: '#5f59f7'
+                name: '年级排名(%)', type: 'bar', data: gradeOrderQ, color: '#5f59f7'
             }
             ]
         };
@@ -649,7 +589,7 @@ function processFiles(isFirstTime = 0) {
                 fontFamily: 'Noto Serif SC'
             }, title: {
                 text: '分班排名位次',
-                textStyle: { //主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}
+                textStyle: {
                     fontSize: 14,
                     fontStyle: 'normal',
                     fontWeight: 'bold'
@@ -669,8 +609,7 @@ function processFiles(isFirstTime = 0) {
                         readOnly: false
                     },
                     magicType: {
-                        show: true,
-                        type: ['line', 'bar']
+                        show: true, type: ['line', 'bar']
                     },
                     restore: {
                         show: true
@@ -682,9 +621,7 @@ function processFiles(isFirstTime = 0) {
             },
             calculable: true,
             xAxis: [{
-                type: 'category',
-                //name: 'min_sup(%)'
-                data: seNameDicP3,
+                type: 'category', data: seNameDicP3,
                 name: '科目',
                 position: 'left'
             }],
@@ -694,10 +631,7 @@ function processFiles(isFirstTime = 0) {
                 position: 'left'
             }],
             series: [{
-                name: '分班排名',
-                type: 'bar',
-                data: ysClassOrderPP,
-                color: '#44c2fd'
+                name: '分班排名', type: 'bar', data: ysClassOrderPP, color: '#44c2fd'
             }
             ]
         };
@@ -707,7 +641,7 @@ function processFiles(isFirstTime = 0) {
                 fontFamily: 'Noto Serif SC'
             }, title: {
                 text: '分班排名比例',
-                textStyle: { //主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}
+                textStyle: {
                     fontSize: 14,
                     fontStyle: 'normal',
                     fontWeight: 'bold'
@@ -727,8 +661,7 @@ function processFiles(isFirstTime = 0) {
                         readOnly: false
                     },
                     magicType: {
-                        show: true,
-                        type: ['line', 'bar']
+                        show: true, type: ['line', 'bar']
                     },
                     restore: {
                         show: true
@@ -740,9 +673,7 @@ function processFiles(isFirstTime = 0) {
             },
             calculable: true,
             xAxis: [{
-                type: 'category',
-                //name: 'min_sup(%)'
-                data: seNameDicP3,
+                type: 'category', data: seNameDicP3,
                 name: '科目',
                 position: 'left'
             }],
@@ -752,10 +683,7 @@ function processFiles(isFirstTime = 0) {
                 position: 'left'
             }],
             series: [{
-                name: '分班排名(%)',
-                type: 'bar',
-                data: ysClassOrderQ,
-                color: '#44c2fd'
+                name: '分班排名(%)', type: 'bar', data: ysClassOrderQ, color: '#44c2fd'
             }
             ]
         };
