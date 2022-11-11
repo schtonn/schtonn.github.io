@@ -22,6 +22,7 @@
             border-radius: 15px;
             background-color: rgba(15, 15, 15, 0.1);
             backdrop-filter: blur(5px);
+            z-index: -1;
         }
 
         #name {
@@ -88,7 +89,7 @@
             <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
         </a>
     </div>
-    <div id="controls" style="text-align: center;">
+    <div id="controls" class="disabled" style="text-align: center;">
         <div id="name"></div>
         <a id="lbtn" tabindex="0" class="btn btn-default btn-lg disabled" onclick="prevFile();">
             <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>

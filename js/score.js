@@ -40,6 +40,7 @@ function reset() {
     files = {};
     clearScreen();
     document.getElementById("message").innerHTML = "";
+    document.getElementById("controls").classList.add("disabled");
     document.getElementById("lbtn").classList.add("disabled");
     document.getElementById("rbtn").classList.add("disabled");
     document.getElementById("resetbtn").classList.add("disabled");
@@ -72,6 +73,7 @@ function getFiles(event) {
     files[fileCount] = event.target.files[0];
     cur = fileCount;
     fileCount++;
+    document.getElementById("controls").classList.remove("disabled");
     document.getElementById("lbtn").classList.remove("disabled");
     document.getElementById("rbtn").classList.remove("disabled");
     document.getElementById("resetbtn").classList.remove("disabled");
@@ -84,7 +86,7 @@ function processFiles(isFirstTime = 0) {
     var message = document.getElementById("message");
     var upBtn = document.getElementById('upbtn');
     var upIcon = document.getElementById('upicon');
-    var tableLayout = '<table class="table table-responsive table-hover" style="table-layout: fixed;">'
+    var tableLayout = '<table class="table table-responsive" style="table-layout: fixed;">'
     message.innerHTML = (cur + 1) + "/" + (fileCount) + " - " + file.name + " - " + file.size + " 字节 - " + file.type + " - 正在读取...<br>>";
     upBtn.classList.remove('btn-danger');
     upBtn.classList.add('btn-info');
@@ -190,10 +192,10 @@ function processFiles(isFirstTime = 0) {
                 // seIds[i]
                 // 前两个和后两个数据应该是能分别对上号的（1-2 3-4），用 seIdDic 连接
                 // seIdDic {key(1-2): value(3-4),..}
-                var g=seIdRev[i];
+                var g = seIdRev[i];
                 classText += "<h4>"
                     + seNameDic[object.data.multiExamStudentScore.singleExamStudentScores[g].seId] + "</h4>"
-                    + "单科分数：" + object.data.multiExamStudentScore.singleExamStudentScores[g].essScore + "<br><br>"
+                    + "<b>单科分数：" + object.data.multiExamStudentScore.singleExamStudentScores[g].essScore + "</b><br><br>"
                     + "单科分数班级排名：" + object.data.multiExamStudentScore.singleExamStudentScores[g].essClassOrder + "<br>"
                     + "单科班级参考人数：" + object.data.singleExamClassScores[g].secsStudentCount + "<br>"
                     + "单科班级年级排名：" + object.data.singleExamClassScores[g].secsClassOrder + "<br>"
@@ -273,7 +275,7 @@ function processFiles(isFirstTime = 0) {
             + "姓名：" + object.data.multiExamStudentScore.studentName + "<br>"
             + "<br><h4>班内一览表</h4>";
         output.innerHTML = "<br><h4>总分</h4>"
-            + "全科分数：" + object.data.multiExamStudentScore.messScore + "<br><br>"
+            + "<b>全科分数：" + object.data.multiExamStudentScore.messScore + "</b><br><br>"
             + "全科分数班级排名：" + object.data.multiExamStudentScore.messClassOrder + "<br>"
             + "全科班级参考人数：" + object.data.multiExamClassScores[0].mecsStudentCount + "<br>"
             + "全科班级年级排名：" + object.data.multiExamClassScores[0].mecsClassOrder + "<br>"
@@ -311,7 +313,7 @@ function processFiles(isFirstTime = 0) {
         seNameDicP3 = []; ysClassOrderPP = []; ysClassOrderQ = [];
         console.log(scoreP)
         for (var i = 0; i < seIds.length; i++) {
-            var g=seIds[i];
+            var g = seIds[i];
             if (seNameDic[g].substr(0, 2) == '总分') continue;
             seNameDicP.push(seNameDic[g].substr(0, 2));
             scorePP.push(scoreP[g]);
@@ -331,7 +333,7 @@ function processFiles(isFirstTime = 0) {
             rate100Q.push(decimal(rate100[g] / rateFull[g] * 100, 1));
         }
         for (var i = 0; i < seIds.length; i++) {
-            var g=seIds[i];
+            var g = seIds[i];
             seNameDicP2.push(seNameDic[g].substr(0, 2));
             classOrderPP.push(classOrderP[g]);
             gradeOrderPP.push(gradeOrderP[g]);
@@ -364,20 +366,16 @@ function processFiles(isFirstTime = 0) {
             toolbox: {
                 show: true,
                 feature: {
+                    saveAsImage: {
+                        show: true
+                    },
                     dataView: {
                         show: true,
                         readOnly: false
-                    },
-                    magicType: {
-                        show: true, type: ['line', 'bar']
-                    },
-                    restore: {
-                        show: true
-                    },
-                    saveAsImage: {
-                        show: true
                     }
-                }
+                },
+                padding: 25,
+                orient: 'vertical'
             },
             calculable: true,
             xAxis: [{
@@ -389,7 +387,7 @@ function processFiles(isFirstTime = 0) {
                 type: 'value', name: '分数', position: 'left'
             }],
             series: [{
-                name: '0%', type: 'line', data: rate0P, color: '#99ab4e'
+                name: '0%', type: 'line', data: rate0P, color: '#5cb85c'
             }, {
                 name: '25%', type: 'line', data: rate25P, color: '#c7dc68'
             }, {
@@ -397,16 +395,14 @@ function processFiles(isFirstTime = 0) {
             }, {
                 name: '75%', type: 'line', data: rate75P, color: '#c7dc68'
             }, {
-                name: '100%', type: 'line', data: rate100P, color: '#99ab4e'
+                name: '100%', type: 'line', data: rate100P, color: '#5cb85c'
             }, {
-                name: '满分', type: 'line', data: rateFullP, color: '#783c1d'
+                name: '满分', type: 'line', data: rateFullP, color: '#f0ad4e'
             }, {
-                name: '平均分', type: 'line', data: avgPP, color: '#2792c3'
+                name: '平均分', type: 'line', data: avgPP, color: '#337ab7'
             }, {
                 name: '我的分数', type: 'line', data: scorePP, color: '#e2041b'
-            }
-
-            ]
+            }],
         };
         var sOp2 = {
             textStyle: {
@@ -429,20 +425,16 @@ function processFiles(isFirstTime = 0) {
             toolbox: {
                 show: true,
                 feature: {
+                    saveAsImage: {
+                        show: true
+                    },
                     dataView: {
                         show: true,
                         readOnly: false
-                    },
-                    magicType: {
-                        show: true, type: ['line', 'bar']
-                    },
-                    restore: {
-                        show: true
-                    },
-                    saveAsImage: {
-                        show: true
                     }
-                }
+                },
+                padding: 25,
+                orient: 'vertical'
             },
             calculable: true,
             xAxis: [{
@@ -458,7 +450,7 @@ function processFiles(isFirstTime = 0) {
                 position: 'left'
             }],
             series: [{
-                name: '0%', type: 'line', data: rate0Q, color: '#99ab4e'
+                name: '0%', type: 'line', data: rate0Q, color: '#5cb85c'
             }, {
                 name: '25%', type: 'line', data: rate25Q, color: '#c7dc68'
             }, {
@@ -466,11 +458,11 @@ function processFiles(isFirstTime = 0) {
             }, {
                 name: '75%', type: 'line', data: rate75Q, color: '#c7dc68'
             }, {
-                name: '100%', type: 'line', data: rate100Q, color: '#99ab4e'
+                name: '100%', type: 'line', data: rate100Q, color: '#5cb85c'
             }, {
-                name: '平均得分率', type: 'line', data: avgQ, color: '#2792c3'
+                name: '平均得分率', type: 'line', data: avgQ, color: '#337ab7'
             }, {
-                name: '我的得分率', type: 'line', data: scoreQ, color: '#e2041b'
+                name: '我的得分率', type: 'line', data: scoreQ, color: '#d9534f'
             }
 
             ]
@@ -496,20 +488,16 @@ function processFiles(isFirstTime = 0) {
             toolbox: {
                 show: true,
                 feature: {
+                    saveAsImage: {
+                        show: true
+                    },
                     dataView: {
                         show: true,
                         readOnly: false
-                    },
-                    magicType: {
-                        show: true, type: ['line', 'bar']
-                    },
-                    restore: {
-                        show: true
-                    },
-                    saveAsImage: {
-                        show: true
                     }
-                }
+                },
+                padding: 25,
+                orient: 'vertical'
             },
             calculable: true,
             xAxis: [{
@@ -523,9 +511,9 @@ function processFiles(isFirstTime = 0) {
                 position: 'left'
             }],
             series: [{
-                name: '班级排名', type: 'bar', data: classOrderPP, color: '#343090'
+                name: '班级排名', type: 'bar', data: classOrderPP, color: '#5bc0de'
             }, {
-                name: '年级排名', type: 'bar', data: gradeOrderPP, color: '#5f59f7'
+                name: '年级排名', type: 'bar', data: gradeOrderPP, color: '#337ab7'
             }
             ]
         };
@@ -550,20 +538,16 @@ function processFiles(isFirstTime = 0) {
             toolbox: {
                 show: true,
                 feature: {
+                    saveAsImage: {
+                        show: true
+                    },
                     dataView: {
                         show: true,
                         readOnly: false
-                    },
-                    magicType: {
-                        show: true, type: ['line', 'bar']
-                    },
-                    restore: {
-                        show: true
-                    },
-                    saveAsImage: {
-                        show: true
                     }
-                }
+                },
+                padding: 25,
+                orient: 'vertical'
             },
             calculable: true,
             xAxis: [{
@@ -577,9 +561,9 @@ function processFiles(isFirstTime = 0) {
                 position: 'left'
             }],
             series: [{
-                name: '班级排名(%)', type: 'bar', data: classOrderQ, color: '#343090'
+                name: '班级排名(%)', type: 'bar', data: classOrderQ, color: '#5bc0de'
             }, {
-                name: '年级排名(%)', type: 'bar', data: gradeOrderQ, color: '#5f59f7'
+                name: '年级排名(%)', type: 'bar', data: gradeOrderQ, color: '#337ab7'
             }
             ]
         };
@@ -604,20 +588,16 @@ function processFiles(isFirstTime = 0) {
             toolbox: {
                 show: true,
                 feature: {
+                    saveAsImage: {
+                        show: true
+                    },
                     dataView: {
                         show: true,
                         readOnly: false
-                    },
-                    magicType: {
-                        show: true, type: ['line', 'bar']
-                    },
-                    restore: {
-                        show: true
-                    },
-                    saveAsImage: {
-                        show: true
                     }
-                }
+                },
+                padding: 25,
+                orient: 'vertical'
             },
             calculable: true,
             xAxis: [{
@@ -631,7 +611,7 @@ function processFiles(isFirstTime = 0) {
                 position: 'left'
             }],
             series: [{
-                name: '分班排名', type: 'bar', data: ysClassOrderPP, color: '#44c2fd'
+                name: '分班排名', type: 'bar', data: ysClassOrderPP, color: '#5cb85c'
             }
             ]
         };
@@ -656,20 +636,16 @@ function processFiles(isFirstTime = 0) {
             toolbox: {
                 show: true,
                 feature: {
+                    saveAsImage: {
+                        show: true
+                    },
                     dataView: {
                         show: true,
                         readOnly: false
-                    },
-                    magicType: {
-                        show: true, type: ['line', 'bar']
-                    },
-                    restore: {
-                        show: true
-                    },
-                    saveAsImage: {
-                        show: true
                     }
-                }
+                },
+                padding: 25,
+                orient: 'vertical'
             },
             calculable: true,
             xAxis: [{
@@ -683,7 +659,7 @@ function processFiles(isFirstTime = 0) {
                 position: 'left'
             }],
             series: [{
-                name: '分班排名(%)', type: 'bar', data: ysClassOrderQ, color: '#44c2fd'
+                name: '分班排名(%)', type: 'bar', data: ysClassOrderQ, color: '#5cb85c'
             }
             ]
         };
