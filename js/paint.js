@@ -11,6 +11,9 @@ $(window).on({
     dragstart: function () {
         return false;
     },
+    beforeunload: function () {
+        return true;
+    }
 })
 
 var tryTime = 0
@@ -84,8 +87,8 @@ function getMap() {
         return;
     }
     working = true;
-    if (curVer != 0) document.getElementById('upload').classList.add('disabled'),document.getElementById('rbtn').classList.remove('disabled')
-    else document.getElementById('upload').classList.remove('disabled'),document.getElementById('rbtn').classList.add('disabled')
+    if (curVer != 0) document.getElementById('upload').classList.add('disabled'), document.getElementById('rbtn').classList.remove('disabled')
+    else document.getElementById('upload').classList.remove('disabled'), document.getElementById('rbtn').classList.add('disabled')
     if (curVer >= stopVer) {
         if (!stopped) document.getElementById('lbtn').classList.add('disabled'), stopped = true;
         else {
@@ -99,8 +102,8 @@ function getMap() {
     console.log('GetMap: currentVersion: ' + curVer)
     if (maxVer >= curVer) {
         console.log('Data loaded from cache')
-        var map = maxResult[curVer].get('data')
-        document.getElementById('version').title = maxResult[curVer].get('updatedAt');
+        var map = maxResult[curVer].get('data'), date = maxResult[curVer].get('updatedAt')
+        document.getElementById('version').title = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate() + ' ' + date.toString().split(' ')[4];
         document.getElementById('version').innerHTML += maxResult[curVer].get('nickName');
         for (let i = 0; i < box.length; i++) {
             box[i].style.backgroundColor = map[i]
@@ -113,8 +116,9 @@ function getMap() {
         query.find().then((result) => {
             if (result.length > curVer) {
                 console.log('Data loaded from LeanCloud')
-                var map = result[curVer].get('data')
-                document.getElementById('version').title = result[curVer].get('updatedAt');
+                var map = result[curVer].get('data'), date = result[curVer].get('updatedAt')
+                console.log(date)
+                document.getElementById('version').title = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate() + ' ' + date.toString().split(' ')[4];
                 document.getElementById('version').innerHTML += result[curVer].get('nickName');
                 for (let i = 0; i < box.length; i++) {
                     box[i].style.backgroundColor = map[i]
@@ -339,9 +343,9 @@ $(document).ready(function () {
         colorItem.onclick = function () {
             lcolor = colors[i]
             nowColor.style.backgroundColor = colors[i]
-            changeSlider('box-r',255,parseInt(colorItem.style.backgroundColor.split(',')[0].split('(')[1]))
-            changeSlider('box-g',255,parseInt(colorItem.style.backgroundColor.split(',')[1]))
-            changeSlider('box-b',255,parseInt(colorItem.style.backgroundColor.split(',')[2]))
+            changeSlider('box-r', 255, parseInt(colorItem.style.backgroundColor.split(',')[0].split('(')[1]))
+            changeSlider('box-g', 255, parseInt(colorItem.style.backgroundColor.split(',')[1]))
+            changeSlider('box-b', 255, parseInt(colorItem.style.backgroundColor.split(',')[2]))
             updateCol();
         }
         if (i === 0) {
