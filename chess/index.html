@@ -50,9 +50,6 @@
         td {
             width: 35px;
             height: 35px;
-            /* display: flex;
-    justify-content: center;
-    align-items: center; */
             text-align: center;
         }
 
@@ -74,6 +71,7 @@
             width: 18px;
             height: 18px;
             z-index: 10;
+            vertical-align: middle;
         }
 
         span::after {
@@ -81,10 +79,6 @@
             height: 0;
             display: inline-block;
             vertical-align: middle;
-        }
-
-        .table {
-            margin: 0;
         }
 
         .black {
@@ -96,12 +90,6 @@
         .white {
             box-shadow: 1px 1px 2px rgba(115, 115, 115, 0.7);
             background: #fff;
-            cursor: default;
-        }
-
-        .green {
-            box-shadow: 1px 1px 2px rgba(115, 115, 115, 0.7);
-            background-image: linear-gradient(black,white,90deg);
             cursor: default;
         }
 
@@ -155,6 +143,14 @@
             left: 0;
             top: 0;
         }
+
+        .btn {
+            text-shadow: rgb(85, 85, 85) 3px 2px 4px;
+        }
+
+        .noshadow{
+            text-shadow: none;
+        }
     </style>
 
     <script src="https://apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -164,14 +160,15 @@
 <body>
     <div id="five">
         <div class="controls">
-            <a class="btn btn-info" href="/" style="text-shadow: rgb(85, 85, 85) 3px 2px 4px;"><i
-                    class="glyphicon glyphicon-home" aria-hidden="true"></i>&nbsp;返回</a>
+            <a class="btn btn-info" href="/"><i class="glyphicon glyphicon-home" aria-hidden="true"></i>&nbsp;返回</a>
             <button class="btn btn-primary" id="begin"><i class=" glyphicon glyphicon-ban-circle"
                     aria-hidden="true"></i>&nbsp;开始游戏</button>
             <button class="btn btn-primary" id="agin"><i class=" glyphicon glyphicon-repeat"
                     aria-hidden="true"></i>&nbsp;重新游戏</button>
             <button class="btn btn-warning" id="regret"><i class=" glyphicon glyphicon-backward"
                     aria-hidden="true"></i>&nbsp;悔棋</button>
+            <button class="btn btn-default noshadow" id="help" onclick="alert('说明：普通五子棋，需双人对战，同一设备只能使用一种颜色\n\n（找不到同伴可以自己用两个设备玩）')"><i
+                    class="glyphicon glyphicon-question-sign" aria-hidden="true"></i></button>
             <div class="light"></div>
         </div>
         <div id="game" class="center-block">

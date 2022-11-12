@@ -187,7 +187,6 @@ class Chess {
             this.arr = [];
             $("#xq-tips").show();
             $(".xq-txt").html("Black Wins!");
-            $('.light').addClass('green');
             $("#regret").hide();
         }
         if (this.isInclude(wrr, 1) || this.isInclude(wrr, 16) || this.isInclude(wrr, 17) || this.isInclude(wrr, 15)) {
@@ -232,7 +231,6 @@ class Chess {
         setCookie('color', myCol, exp)
         myCol = -1;
         this.reset();
-        $('.light').removeClass('green');
         $("#xq-tips").hide();
         $(".xq-txt").html("");
         $("#regret").show();
@@ -289,7 +287,6 @@ query.subscribe().then((liveQuery) => {
             exp.setTime(exp.getTime() - 1)
             setCookie('color', myCol, exp)
             myCol = -1;
-            $('.light').removeClass('green');
             $("#xq-tips").hide();
             $(".xq-txt").html("");
             $("#regret").show();
