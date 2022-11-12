@@ -1,7 +1,7 @@
 <head>
     <link rel="manifest" href="/site.webmanifest">
-    <!-- <link async rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
-        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous"> -->
+    <link async rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
     <link rel="stylesheet" href="../css/bootstrap.min.css"
         integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
     <link rel="stylesheet" href="../css/style.css">
@@ -17,34 +17,60 @@
             margin-bottom: 10px;
             cursor: pointer;
             width: 180px;
-            height: 3px;
-            background-color: #bdbdbd;
+            height: 7px;
+            background-color: rgba(215, 215, 215, 0.7);
             position: relative;
             vertical-align: middle;
         }
 
         .box .hd {
-            width: 18px;
-            height: 18px;
-            background-color: #56a3fc;
+            width: 16px;
+            height: 16px;
+            background-color: rgba(215, 215, 215, 1);
             border-radius: 6px;
             position: absolute;
             left: 0;
-            top: -8px;
+            top: -6px;
             cursor: pointer;
             margin: 0;
             transform: translateX(-9px);
-            z-index: 1;
+            z-index: 2;
         }
 
         .box .hdt {
             position: absolute;
             top: 0;
             left: 0;
-            height: 3px;
+            height: 7px;
             width: 0;
-            background-color: #56a3fc;
             margin: 0;
+        }
+
+        #box-r .hd {
+            background-image: linear-gradient(60deg, #e57070, rgba(215, 215, 215, 0.5));
+            border: 1px solid #ef2929
+        }
+
+        #box-g .hd {
+            background-image: linear-gradient(60deg, #5dbd79, rgba(215, 215, 215, 0.5));
+            border: 1px solid #22b14c
+        }
+
+        #box-b .hd {
+            background-image: linear-gradient(60deg, #91b0d2, rgba(215, 215, 215, 0.5));
+            border: 1px solid #729fcf
+        }
+
+        #box-r .hdt {
+            background-image: linear-gradient(60deg, #eb9696, #ef2929);
+        }
+
+        #box-g .hdt {
+            background-image: linear-gradient(60deg, #88be98, #22b14c);
+        }
+
+        #box-b .hdt {
+            background-image: linear-gradient(60deg, #b8c7d7, #729fcf);
         }
 
         .box-text {
@@ -120,6 +146,7 @@
         }
 
         .color-item {
+            cursor: pointer;
             height: 20px;
             width: 20px;
         }
@@ -159,6 +186,8 @@
             width: 700px;
             padding-left: 3px;
             padding-right: 5px;
+            transition-duration: 0.3s;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
             border: 5px solid rgba(15, 15, 15, 0.1);
             border-radius: 15px;
             background-color: rgba(15, 15, 15, 0.1);
@@ -219,10 +248,10 @@
         <button class="btn btn-danger" id="clear" onclick="tryClear()"><span class="glyphicon glyphicon-ban-circle"
                 aria-hidden="true"></span>&nbsp;清空</button>
         <a id="lbtn" tabindex="0" class="btn btn-default noshadow" onclick="prevVer()">
-            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"><kbd>A</kbd></span>
         </a>
         <a id="rbtn" tabindex="0" class="btn btn-default noshadow" onclick="nextVer()">
-            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"><kbd>D</kbd></span>
         </a>
         <span id="version" style="margin-right:auto"></span>
     </div>

@@ -84,8 +84,8 @@ function getMap() {
         return;
     }
     working = true;
-    if (curVer != 0) document.getElementById('upload').classList.add('disabled')
-    else document.getElementById('upload').classList.remove('disabled')
+    if (curVer != 0) document.getElementById('upload').classList.add('disabled'),document.getElementById('rbtn').classList.remove('disabled')
+    else document.getElementById('upload').classList.remove('disabled'),document.getElementById('rbtn').classList.add('disabled')
     if (curVer >= stopVer) {
         if (!stopped) document.getElementById('lbtn').classList.add('disabled'), stopped = true;
         else {
@@ -186,22 +186,18 @@ $(document).ready(function () {
         var box = document.getElementById(obj);
         var hd = box.children[0];
         var hdt = box.children[1];
+        var mouseMoved = false;
         hd.onmousedown = function (event) {
+            mouseMoved = false;
             var event = event || window.event;
             var leftval = event.clientX - this.offsetLeft;
             document.onmousemove = function (event) {
+                mouseMoved = true;
                 var event = event || window.event;
                 hd.style.left = event.clientX - leftval + "px";
-
                 var far = parseInt(hd.style.left);
-
-                if (far < 0) {
-                    hd.style.left = 0;
-                }
-                else if (far > 180) {
-                    hd.style.left = 180 + "px";
-                }
-
+                if (far < 0) hd.style.left = 0;
+                else if (far > 180) hd.style.left = 180 + "px";
                 hdt.style.width = hd.style.left;
                 var result = parseInt(parseInt(hdt.style.width) / 180 * num);
                 document.getElementById(obj + '-text').innerHTML = result;
@@ -214,6 +210,8 @@ $(document).ready(function () {
         }
         box.onclick = function (event) {
             var event = event || window.event;
+            if (mouseMoved) { mouseMoved = false; return false; }
+            mouseMoved = false;
             var boxWidth = event.clientX - this.offsetLeft - document.getElementById('tools').offsetLeft;
             if (boxWidth > 180) boxWidth = 180;
             if (boxWidth < 0) boxWidth = 0;
@@ -222,6 +220,15 @@ $(document).ready(function () {
             document.getElementById(obj + '-text').innerHTML = result;
             updateCol()
         }
+    }
+
+    function changeSlider(obj, num, newVal) {
+        var box = document.getElementById(obj);
+        var hd = box.children[0];
+        var hdt = box.children[1];
+        hd.style.left = newVal / num * 180 + 'px';
+        hdt.style.width = hd.style.left;
+        document.getElementById(obj + '-text').innerHTML = newVal;
     }
 
     slider('box-r', 255);
@@ -294,12 +301,15 @@ $(document).ready(function () {
     }
 
     toggleButton.onclick = function () {
-        var result = $('#tools')
+        var tool = $('#tools')
+        var controls = $('#controls')
         if (showTools) {
-            for (let i = 0; i < result.length; i++)result[i].style.setProperty('transform', '');
+            tool[0].style.setProperty('transform', '');
+            controls[0].style.setProperty('transform', '');
             showTools = 0;
         } else {
-            for (let i = 0; i < result.length; i++)result[i].style.setProperty('transform', 'scale(80%) translate(170px,520px)');
+            tool[0].style.setProperty('transform', 'scale(80%) translate(170px,530px)');
+            controls[0].style.setProperty('transform', 'rotate(-30deg) translate(-370px,50px)');
             showTools = 1;
         }
     }
@@ -329,6 +339,10 @@ $(document).ready(function () {
         colorItem.onclick = function () {
             lcolor = colors[i]
             nowColor.style.backgroundColor = colors[i]
+            changeSlider('box-r',255,parseInt(colorItem.style.backgroundColor.split(',')[0].split('(')[1]))
+            changeSlider('box-g',255,parseInt(colorItem.style.backgroundColor.split(',')[1]))
+            changeSlider('box-b',255,parseInt(colorItem.style.backgroundColor.split(',')[2]))
+            updateCol();
         }
         if (i === 0) {
             colorItem.style.border = '1px solid #000000'
