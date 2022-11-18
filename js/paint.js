@@ -87,8 +87,10 @@ function getMap() {
         return;
     }
     working = true;
-    if (curVer != 0) document.getElementById('upload').classList.add('disabled'), document.getElementById('rbtn').classList.remove('disabled')
-    else document.getElementById('upload').classList.remove('disabled'), document.getElementById('rbtn').classList.add('disabled')
+    if (curVer >= 3) document.getElementById('upload').classList.add('disabled');
+    else document.getElementById('upload').classList.remove('disabled');
+    if (curVer != 0) document.getElementById('rbtn').classList.remove('disabled');
+    else document.getElementById('rbtn').classList.add('disabled');
     if (curVer >= stopVer) {
         if (!stopped) document.getElementById('lbtn').classList.add('disabled'), stopped = true;
         else {
@@ -361,8 +363,8 @@ $(document).ready(function () {
     }
 
     upload.onclick = function () {
-        if (curVer != 0) {
-            alert('对历史版本的编辑无法保存！')
+        if (curVer >= 3) {
+            alert('过于久远，无法上传！')
             return false;
         }
         var nick = checkCookie()
