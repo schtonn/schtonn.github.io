@@ -16,7 +16,7 @@ $(window).on({
     }
 })
 
-var curCol = 0, myCol = -1, cur;
+var curCol = 0, myCol = 2, cur, messages = [0, 0, 0];
 
 function setCookie(cname, cvalue, exdays) {
     var d = new Date();
@@ -37,12 +37,12 @@ function getCookie(cname) {
 
 function checkCookie() {
     myCol = parseInt(getCookie('color'))
-    if (myCol != 0 && myCol != 1) myCol = -1;
+    if (myCol != 0 && myCol != 1) myCol = 2;
     console.log('mycolor: ' + myCol)
 }
 
-function updateLight() {
-    if (curCol) {
+function updateCurLight() {
+    if (curCol == 1) {
         $('.light').removeClass("black");
         $('.light').addClass("white");
     } else {
@@ -51,8 +51,43 @@ function updateLight() {
     }
 }
 
+function updateMyLight() {
+    if (myCol == 1) {
+        $('.mylight').removeClass("black");
+        $('.mylight').addClass("white");
+    } else if (myCol == 0) {
+        $('.mylight').removeClass("white");
+        $('.mylight').addClass("black");
+    } else {
+        $('.mylight').removeClass("black white");
+    }
+}
+
+function updateMessages() {
+    if (messages[0]) $('.message1').addClass("red");
+    else $('.message1').removeClass("red");
+    if (messages[1]) $('.message2').addClass("red");
+    else $('.message2').removeClass("red");
+    if (messages[2]) $('.message3').addClass("red");
+    else $('.message3').removeClass("red");
+}
+
+var timer, st = 1;
+function uploadMessages() {
+    timer && clearTimeout(timer);
+    timer = setTimeout(function () { st = 1; }, 500);
+    //FUUUULL BRiDGE RECtiFyer!!!
+    if (st) {
+        console.log('Messages updated.')
+        cur.set('messages', messages)
+        cur.save();
+    }
+    st = 0;
+}
+
+
 function updateCol() {
-    updateLight();
+    updateCurLight();
     if (curCol) {
         $('.pointer').removeClass("black");
         $('.pointer').addClass("white");
@@ -61,6 +96,7 @@ function updateCol() {
         $('.pointer').addClass("black");
     }
 }
+
 class Chess {
     constructor(ele) {
         this.ele = ele;
@@ -75,7 +111,7 @@ class Chess {
             top: $('#game')[0].offsetTop + 30,
         }, 0);
         $('.pos').on('mouseenter', function () {
-            if ($(this).hasClass("black") || $(this).hasClass("white") || (myCol != -1 && myCol != curCol)) return;
+            if ($(this).hasClass("black") || $(this).hasClass("white") || (myCol != 2 && myCol != curCol)) return;
             document.onmousemove = null
             $('.pointer').animate({
                 left: this.parentNode.parentNode.parentNode.parentNode.offsetLeft + this.parentNode.offsetLeft + 3,
@@ -109,6 +145,24 @@ class Chess {
         $("#agin").on('click', function () {
             that.agin();
         })
+        $("#check").on('click', function () {
+            that.check();
+        })
+        $(".message1").on('click', function () {
+            messages[0] = !messages[0];
+            updateMessages();
+            uploadMessages();
+        })
+        $(".message2").on('click', function () {
+            messages[1] = !messages[1];
+            updateMessages();
+            uploadMessages();
+        })
+        $(".message3").on('click', function () {
+            messages[2] = !messages[2];
+            updateMessages();
+            uploadMessages();
+        })
     }
     render() {
         let div = $("<div id='xq-tips'>").appendTo($(this.ele))
@@ -137,30 +191,31 @@ class Chess {
         })
         let num = this.arr.length;
         curCol = num % 2;
-        updateLight();
+        updateCurLight();
     }
     ifs(_this) {
-        if (myCol == -1) {
+        if (myCol == 2) {
             myCol = curCol;
             setCookie('color', myCol, 1)
         }
         if ($(_this).hasClass("black") || $(_this).hasClass("white") || myCol != curCol) return;
         myCol = curCol;
+        updateMyLight();
         let num = this.arr.length;
         console.log(this.arr)
         $(this.span).each((index, item) => {
+            $(item).removeClass("highlight");
             if (item === _this) {
                 this.arr.push(index);
-                this.nums = index
                 curCol = (num + 1) % 2;
-                updateLight();
+                updateCurLight();
                 if (num % 2 == 0) {
                     $(_this).addClass("black");
                 }
                 else {
                     $(_this).addClass("white");
                 }
-                return;
+                // return;
             }
         })
         cur.set('data', this.arr)
@@ -229,7 +284,8 @@ class Chess {
         var exp = new Date();
         exp.setTime(exp.getTime() - 1)
         setCookie('color', myCol, exp)
-        myCol = -1;
+        myCol = 2;
+        updateMyLight();
         this.reset();
         $("#xq-tips").hide();
         $(".xq-txt").html("");
@@ -237,7 +293,15 @@ class Chess {
         cur.set('data', this.arr)
         cur.save();
     }
-
+    check() {
+        $(this.span).each((index, item) => {
+            if (index == this.arr[this.arr.length - 1]) {
+                console.log(item)
+                $(item).addClass("highlight");
+                return;
+            }
+        })
+    }
 }
 var game;
 
@@ -255,7 +319,10 @@ query.find().then((result) => {
         console.log('Data loaded from LeanCloud')
         cur = result[0]
         var map = result[0].get('data')
+        messages = result[0].get('messages')
+        updateMessages();
         console.log(map)
+        console.log(messages)
         if (map.length) {
             game = new Chess($("#game"));
             game.arr = map;
@@ -267,30 +334,36 @@ query.find().then((result) => {
     }
 })
 
+setTimeout(function () {
 
-query.subscribe().then((liveQuery) => {
-    console.log('Subscribed')
-    liveQuery.on('update', (result) => {
-        var map = result.get('data')
-        console.log(map);
-        game.reset();
-        game.arr = map;
-        game.upd();
-        curCol = map.length % 2;
-        if (map.length) {
-            game.win()
-        } else {
-            $('.pointer').removeClass("white");
-            $('.pointer').addClass("black");
-            checkCookie();
-            var exp = new Date();
-            exp.setTime(exp.getTime() - 1)
-            setCookie('color', myCol, exp)
-            myCol = -1;
-            $("#xq-tips").hide();
-            $(".xq-txt").html("");
-            $("#regret").show();
-        }
+    query.subscribe().then((liveQuery) => {
+        console.log('Subscribed')
+        liveQuery.on('update', (result) => {
+            var map = result.get('data')
+            messages = result.get('messages')
+            updateMessages();
+            console.log(map);
+            game.reset();
+            game.arr = map;
+            game.upd();
+            curCol = map.length % 2;
+            if (map.length) {
+                game.win()
+            } else {
+                $('.pointer').removeClass("white");
+                $('.pointer').addClass("black");
+                checkCookie();
+                var exp = new Date();
+                exp.setTime(exp.getTime() - 1)
+                setCookie('color', myCol, exp)
+                myCol = 2;
+                $("#xq-tips").hide();
+                $(".xq-txt").html("");
+                $("#regret").show();
+            }
+        });
+    }, (error) => {
+        alert(error + "\n无法与服务器同步，请稍后再试")
     });
-});
 
+}, 1000)

@@ -63,7 +63,7 @@
             cursor: pointer;
         }
 
-        .light {
+        .led {
             transition-duration: 100ms;
             display: inline-block;
             border: 5px double grey;
@@ -72,6 +72,20 @@
             height: 18px;
             z-index: 10;
             vertical-align: middle;
+        }
+
+        .word {
+            background: radial-gradient(transparent, rgb(15 15 15 / 25%));
+            transition-duration: 100ms;
+            display: inline-block;
+            padding: 3px 6px;
+            border: 5px double grey;
+            z-index: 10;
+            vertical-align: middle;
+        }
+
+        .red {
+            filter: drop-shadow(0 0 2px red);
         }
 
         span::after {
@@ -91,6 +105,23 @@
             box-shadow: 1px 1px 2px rgba(115, 115, 115, 0.7);
             background: #fff;
             cursor: default;
+        }
+
+        .highlight.black {
+            filter: drop-shadow(0 0 5px black);
+        }
+
+        .highlight.white {
+            filter: drop-shadow(0 0 5px white);
+        }
+
+        .red:active{
+            background: radial-gradient(transparent, rgb(15 15 15 / 25%));
+        }
+
+        .word:focus:not(:focus-visible) {
+            background: radial-gradient(transparent, rgb(15 15 15 / 25%));
+            outline: 0;
         }
 
         .tables {
@@ -148,7 +179,7 @@
             text-shadow: rgb(85, 85, 85) 3px 2px 4px;
         }
 
-        .noshadow{
+        .noshadow {
             text-shadow: none;
         }
     </style>
@@ -167,9 +198,16 @@
                     aria-hidden="true"></i>&nbsp;重新游戏</button>
             <button class="btn btn-warning" id="regret"><i class=" glyphicon glyphicon-backward"
                     aria-hidden="true"></i>&nbsp;悔棋</button>
-            <button class="btn btn-default noshadow" id="help" onclick="alert('说明：普通五子棋，需双人对战，同一设备只能使用一种颜色\n\n（找不到同伴可以自己用两个设备玩）')"><i
+            <button class="btn btn-info" id="check"><i class=" glyphicon glyphicon-exclamation-sign"
+                    aria-hidden="true"></i>&nbsp;下哪了</button>
+            <button class="btn btn-default noshadow" id="help"
+                onclick="alert('说明：普通五子棋，需双人对战，同一设备只能使用一种颜色。\n（找不到同伴可以自己用两个设备玩）\n右侧按钮可用于发送信号，但请勿频繁点击。\n两个指示灯分别表示自身颜色和当前颜色，两者相同时说明该你了')"><i
                     class="glyphicon glyphicon-question-sign" aria-hidden="true"></i></button>
-            <div class="light"></div>
+            <div class="led mylight"></div>
+            <div class="led light"></div>
+            <button class="btn btn-danger word message1">快</button>
+            <button class="btn btn-danger word message2">再想想？</button>
+            <button class="btn btn-danger word message3">拜拜</button>
         </div>
         <div id="game" class="center-block">
             <span class="black pointer"></span>
