@@ -20,8 +20,8 @@ var curCol = 0, myCol = 2, cur, messages = [0, 0, 0];
 
 
 function isMobile() {
-    console.log(navigator.userAgent)
     let flag = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    alert(navigator.userAgent+'\n'+flag)
     return flag;
 }
 
