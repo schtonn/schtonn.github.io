@@ -21,7 +21,7 @@ var curCol = 0, myCol = 2, cur, messages = [0, 0, 0];
 
 function isMobile() {
     let flag = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    alert(navigator.userAgent+'\n'+flag)
+    alert(navigator.userAgent + '\n' + flag)
     return flag;
 }
 
@@ -112,12 +112,12 @@ class Chess {
     init() {
         this.arr = [];
         this.render();
-        if(isMobile())$('.pointer').hide();
         $('.pointer')[0].style.display = 'block'
         $('.pointer').animate({
             left: $('#game')[0].offsetLeft - 50,
             top: $('#game')[0].offsetTop + 30,
         }, 0);
+        if (isMobile()) $('.pointer').hide();
         $('.pos').on('mouseenter', function () {
             if ($(this).hasClass("black") || $(this).hasClass("white") || (myCol != 2 && myCol != curCol)) return;
             document.onmousemove = null
