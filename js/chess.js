@@ -18,6 +18,13 @@ $(window).on({
 
 var curCol = 0, myCol = 2, cur, messages = [0, 0, 0];
 
+
+function isMobile() {
+    console.log(navigator.userAgent)
+    let flag = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    return flag;
+}
+
 function setCookie(cname, cvalue, exdays) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
@@ -105,6 +112,7 @@ class Chess {
     init() {
         this.arr = [];
         this.render();
+        if(isMobile())$('.pointer').hide();
         $('.pointer')[0].style.display = 'block'
         $('.pointer').animate({
             left: $('#game')[0].offsetLeft - 50,
