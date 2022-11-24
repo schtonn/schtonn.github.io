@@ -3,7 +3,10 @@ body {
     background-color: floralwhite;
 }
 
-h1,h2,h3,h4 {
+h1,
+h2,
+h3,
+h4 {
     font-weight: bold;
 }
 
@@ -49,4 +52,13 @@ h1,h2,h3,h4 {
 .chart {
     width: auto;
     height: 400px;
+}
+
+.blurred {
+    transition-duration: 100ms;
+    filter: blur(2px);
+}
+
+.blurred:hover {
+    filter: none;
 }
