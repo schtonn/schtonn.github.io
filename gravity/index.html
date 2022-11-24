@@ -39,7 +39,7 @@
 
 <body>
     <a class="btn btn-default" href="/" onmouseenter="alert('单击屏幕添加元素。\n所有元素互相吸引，鼠标亦有引力。');$('.btn').hide()"
-        style="position:fixed;margin: 0 auto;text-shadow: rgb(185, 185, 185) 3px 2px 4px;"><span
+        style="position:fixed"><span
             class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
     <canvas id="canvas" onclick='init(10)' width="500" height="500"></canvas>
 </body>
@@ -94,30 +94,30 @@
     }
     function collide() {
         for (var i = 0, count = planets.length; i < count; i++) {
-            if (planets[i].lock <= 0) {
-                for (var i1 = 0; i1 < count; i1++) {
-                    if (i1 != i && planets[i1] && planets[i1].lock <= 0) {
-                        var r = Math.sqrt(Math.pow((planets[i].x - planets[i1].x), 2) + Math.pow((planets[i].y - planets[i1].y), 2));
-                        if (r <= Math.max(Math.sqrt(planets[i1].mass) / Math.PI + Math.sqrt(planets[i].mass) / Math.PI) && planets[i1].mass >= planets[i].mass) {
-                            var amplitude = Math.min(planets[i1].mass, planets[i].mass) / 1000 + (planets[i1].mass + planets[i].mass) / 2000;
-                            planets[i1].vy = (planets[i1].mass * planets[i1].vy + planets[i].mass * planets[i].vy) / (planets[i1].mass + planets[i].mass);
-                            planets[i1].vx = (planets[i1].mass * planets[i1].vx + planets[i].mass * planets[i].vx) / (planets[i1].mass + planets[i].mass);
-                            planets[i1].mass += planets[i].mass;
-                            planets[i] = null;
-                            var frequency = arrFrequency[Math.floor(Math.random() * 15)];
-                            var oscillator = audioCtx.createOscillator();
-                            var gainNode = audioCtx.createGain();
-                            oscillator.connect(gainNode);
-                            gainNode.connect(audioCtx.destination);
-                            oscillator.type = 'sawtooth';
-                            oscillator.frequency.value = frequency;
-                            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-                            gainNode.gain.linearRampToValueAtTime(amplitude, audioCtx.currentTime + 0.01);
-                            oscillator.start(audioCtx.currentTime);
-                            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1);
-                            oscillator.stop(audioCtx.currentTime + 1);
-                            break;
-                        }
+            for (var i1 = 0; i1 < count; i1++) {
+                if (i1 != i && planets[i1]) {
+                    if (planets[i].lock > 0 && planets[i1].lock > 0) continue;
+                    if ((planets[i].lock > 0 || planets[i1].lock > 0)&&Math.random()>0.1) continue;
+                    var r = Math.sqrt(Math.pow((planets[i].x - planets[i1].x), 2) + Math.pow((planets[i].y - planets[i1].y), 2));
+                    if (r <= Math.max(Math.sqrt(planets[i1].mass) / Math.PI + Math.sqrt(planets[i].mass) / Math.PI) && planets[i1].mass >= planets[i].mass) {
+                        var amplitude = Math.min(planets[i1].mass, planets[i].mass) / 1000 + (planets[i1].mass + planets[i].mass) / 2000;
+                        planets[i1].vy = (planets[i1].mass * planets[i1].vy + planets[i].mass * planets[i].vy) / (planets[i1].mass + planets[i].mass);
+                        planets[i1].vx = (planets[i1].mass * planets[i1].vx + planets[i].mass * planets[i].vx) / (planets[i1].mass + planets[i].mass);
+                        planets[i1].mass += planets[i].mass;
+                        planets[i] = null;
+                        var frequency = arrFrequency[Math.floor(Math.random() * 15)];
+                        var oscillator = audioCtx.createOscillator();
+                        var gainNode = audioCtx.createGain();
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioCtx.destination);
+                        oscillator.type = 'sawtooth';
+                        oscillator.frequency.value = frequency;
+                        gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+                        gainNode.gain.linearRampToValueAtTime(amplitude, audioCtx.currentTime + 0.01);
+                        oscillator.start(audioCtx.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1);
+                        oscillator.stop(audioCtx.currentTime + 1);
+                        break;
                     }
                 }
             }
