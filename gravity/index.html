@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="manifest" href="/site.webmanifest">
+    <!-- <link async rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="../css/bootstrap.min.css"
+        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
+&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gravity</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .btn {
+            width: auto;
+            height: auto;
+        }
+
+        body {
+            background: radial-gradient(rgb(235, 235, 235), floralwhite);
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <a class="btn btn-default" href="/" onmouseenter="alert('单击屏幕添加元素。\n所有元素互相吸引，鼠标亦有引力。');$('.btn').hide()"
+        style="position:fixed;margin: 0 auto;text-shadow: rgb(185, 185, 185) 3px 2px 4px;"><span
+            class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
+    <canvas id="canvas" onclick='init(10)' width="500" height="500"></canvas>
+</body>
+<script>
+    const LOST = 0.3;
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+    var planets = [];
+    const MAX_MASS = 3000;
+    const PLANET_COUNT = 300;
+    const FRAGMENT_COUNT = 100;
+    const FRAGMENT_SPEED = 10;
+    const MAX_SPEED = 8;
+    const G = 0.5;
+    var maxLineLength = 45;
+    const DEFAULT_MASS = 20;
+    const LOCK_TIME = 50;
+    const COLOR = '#333';
+    const LINE_COLOR = '#2344';
+    const MOUSE_MASS = 100;
+    var mousepoint = { x: 0, y: 0 };
+    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!window.AudioContext) {
+        console.log('当前浏览器不支持Web Audio API');
+    }
+
+
+    var audioCtx = new AudioContext();
+
+    var arrFrequency = [196.00, 220.00, 246.94, 261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25, 587.33, 659.25, 698.46, 783.99, 880.00, 987.77, 1046.50];
+
+    function init(count) {
+        if (planets.length > 300) return;
+        var w = canvas.clientWidth;
+        var h = canvas.clientHeight;
+        for (var i = 0; i < count; i++) {
+            planets.push({ x: Math.random() * w, y: Math.random() * h, mass: DEFAULT_MASS, vx: Math.random() * 2 - 1, vy: Math.random() * 2 - 1, lock: 0 });
+        }
+    }
+    function fillRound(cx, cy, r, color) {
+        context.beginPath();
+        context.fillStyle = color;
+        context.arc(cx, cy, Math.sqrt(r) / Math.PI, 0 * Math.PI, 2 * Math.PI, true);
+        context.fill();
+    }
+    function drawLine(x1, y1, x2, y2, color) {
+        context.beginPath();
+        context.moveTo(x1, y1);
+        context.strokeStyle = color;
+        context.lineTo(x2, y2);
+        context.stroke();
+    }
+    function collide() {
+        for (var i = 0, count = planets.length; i < count; i++) {
+            if (planets[i].lock <= 0) {
+                for (var i1 = 0; i1 < count; i1++) {
+                    if (i1 != i && planets[i1] && planets[i1].lock <= 0) {
+                        var r = Math.sqrt(Math.pow((planets[i].x - planets[i1].x), 2) + Math.pow((planets[i].y - planets[i1].y), 2));
+                        if (r <= Math.max(Math.sqrt(planets[i1].mass) / Math.PI + Math.sqrt(planets[i].mass) / Math.PI) && planets[i1].mass >= planets[i].mass) {
+                            var amplitude = Math.min(planets[i1].mass, planets[i].mass) / 1000 + (planets[i1].mass + planets[i].mass) / 2000;
+                            planets[i1].vy = (planets[i1].mass * planets[i1].vy + planets[i].mass * planets[i].vy) / (planets[i1].mass + planets[i].mass);
+                            planets[i1].vx = (planets[i1].mass * planets[i1].vx + planets[i].mass * planets[i].vx) / (planets[i1].mass + planets[i].mass);
+                            planets[i1].mass += planets[i].mass;
+                            planets[i] = null;
+                            var frequency = arrFrequency[Math.floor(Math.random() * 15)];
+                            var oscillator = audioCtx.createOscillator();
+                            var gainNode = audioCtx.createGain();
+                            oscillator.connect(gainNode);
+                            gainNode.connect(audioCtx.destination);
+                            oscillator.type = 'sawtooth';
+                            oscillator.frequency.value = frequency;
+                            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+                            gainNode.gain.linearRampToValueAtTime(amplitude, audioCtx.currentTime + 0.01);
+                            oscillator.start(audioCtx.currentTime);
+                            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1);
+                            oscillator.stop(audioCtx.currentTime + 1);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    function explode() {
+        for (var i = 0, count = planets.length; i < count; i++) {
+            if (planets[i] && planets[i].mass >= MAX_MASS) {
+                for (var i1 = 0; i1 < FRAGMENT_COUNT; i1++) {
+                    planets.push({
+                        x: planets[i].x + Math.random(),
+                        y: planets[i].y + Math.random(),
+                        mass: planets[i].mass / FRAGMENT_COUNT,
+                        vx: FRAGMENT_SPEED * (Math.random() * 2 - 1),
+                        vy: FRAGMENT_SPEED * (Math.random() * 2 - 1),
+                        lock: LOCK_TIME
+                    });
+                }
+                var frequency = arrFrequency[Math.floor(Math.random() * 10)];
+                var oscillator = audioCtx.createOscillator();
+                var gainNode = audioCtx.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                oscillator.type = 'sine';
+                oscillator.frequency.value = frequency;
+                gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+                gainNode.gain.linearRampToValueAtTime(1.3, audioCtx.currentTime + 0.01);
+                oscillator.start(audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 10);
+                oscillator.stop(audioCtx.currentTime + 10);
+                planets[i] = null;
+            }
+        }
+    }
+
+    canvas.onmousemove = function (event) {
+        var e = event || window.event;
+        mousepoint = { 'x': e.clientX, 'y': e.clientY };
+    }
+
+    function step() {
+        var w = canvas.clientWidth;
+        var h = canvas.clientHeight;
+        collide();
+        explode();
+        for (var i = 0, count = planets.length; i < count; i++) {
+            if (planets[i]) {
+                if (planets[i].vx === NaN) {
+                    planets[i].vx = 0
+                }
+                if (planets[i].vy === NaN) {
+                    planets[i].vy = 0
+                }
+            }
+        }
+        planets = planets.filter(e => e && e.x !== NaN && e.y !== NaN && e.vx !== NaN && e.vy !== NaN && e.mass !== NaN);
+
+        for (var i = 0, count = planets.length; i < count; i++) {
+            if (planets[i].x > w) {
+                planets[i].x -= (planets[i].x - w) * 2;
+                planets[i].vx *= -(1 - LOST);
+            } else if (planets[i].x < 0) {
+                planets[i].x += planets[i].x * -2;
+                planets[i].vx *= -(1 - LOST);
+            }
+            if (planets[i].y > h) {
+                planets[i].y -= (planets[i].y - h) * 2;
+                planets[i].vy *= -(1 - LOST);
+            } else if (planets[i].y < 0) {
+                planets[i].y += planets[i].y * -2;
+                planets[i].vy *= -(1 - LOST);
+            }
+            fillRound(planets[i].x, planets[i].y, planets[i].mass, COLOR)
+            for (var i1 = 0; i1 < count; i1++) {
+                if (i1 != i) {
+                    var r = Math.sqrt(Math.pow((planets[i].x - planets[i1].x), 2) + Math.pow((planets[i].y - planets[i1].y), 2));
+                    var f = r != 0 ? G * G * planets[i1].mass / Math.pow(r, 2) : 0;
+                    var dx = planets[i1].x - planets[i].x;
+                    var dy = planets[i1].y - planets[i].y;
+                    if (planets[i].mass > 0) {
+                        planets[i].vy += f / r * dy;
+                        planets[i].vx += f / r * dx;
+                    }
+                    if (i1 > i && r <= maxLineLength) {
+                        drawLine(planets[i].x, planets[i].y, planets[i1].x, planets[i1].y, LINE_COLOR)
+                    }
+                }
+            }
+            //
+            var r = Math.max(1, Math.sqrt(Math.pow((planets[i].x - mousepoint.x), 2) + Math.pow((planets[i].y - mousepoint.y), 2)));
+            if (r > maxLineLength / 8) {
+                var f = r != 0 ? G * G * MOUSE_MASS / Math.pow(r, 2) : 0;
+                var dx = mousepoint.x - planets[i].x;
+                var dy = mousepoint.y - planets[i].y;
+                if (planets[i].mass > 0) {
+                    planets[i].vy += f / r * dy;
+                    planets[i].vx += f / r * dx;
+                }
+                if (r <= maxLineLength) {
+                    drawLine(planets[i].x, planets[i].y, mousepoint.x, mousepoint.y, LINE_COLOR);
+                }
+            }
+            //
+            var speedNow = Math.sqrt(Math.pow(planets[i].vx, 2) + Math.pow(planets[i].vy, 2))
+            if (speedNow > MAX_SPEED) {
+                planets[i].vx = planets[i].vx * MAX_SPEED / speedNow;
+                planets[i].vy = planets[i].vy * MAX_SPEED / speedNow;
+            }
+            planets[i].x += planets[i].vx;
+            planets[i].y += planets[i].vy;
+            planets[i].lock--;
+        }
+    }
+    // init(PLANET_COUNT);
+    setInterval(function () {
+        var w = document.body.clientWidth;
+        var h = document.body.clientHeight;
+        maxLineLength = Math.max(30, Math.min(w / 10, h / 10));
+        canvas.setAttribute('width', w);
+        canvas.setAttribute('height', h);
+        canvas.style.width = w + 'px';
+        canvas.style.height = h + 'px';
+        step();
+    }, 30)
+
+</script>
+
+</html>
