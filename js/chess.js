@@ -45,7 +45,6 @@ function getCookie(cname) {
 function checkCookie() {
     myCol = parseInt(getCookie('color'))
     if (myCol != 0 && myCol != 1) myCol = 2;
-    console.log('mycolor: ' + myCol)
 }
 
 function updateCurLight() {
@@ -304,7 +303,6 @@ class Chess {
     check() {
         $(this.span).each((index, item) => {
             if (index == this.arr[this.arr.length - 1]) {
-                console.log(item)
                 $(item).addClass("highlight");
                 return;
             }
@@ -329,8 +327,6 @@ query.find().then((result) => {
         var map = result[0].get('data')
         messages = result[0].get('messages')
         updateMessages();
-        console.log(map)
-        console.log(messages)
         if (map.length) {
             game = new Chess($("#game"));
             game.arr = map;
@@ -350,7 +346,7 @@ setTimeout(function () {
             var map = result.get('data')
             messages = result.get('messages')
             updateMessages();
-            console.log(map);
+            console.log('Updated')
             game.reset();
             game.arr = map;
             game.upd();
