@@ -39,8 +39,7 @@
 
 <body>
     <a class="btn btn-default" href="/" onmouseenter="alert('单击屏幕添加元素。\n所有元素互相吸引，鼠标亦有引力。');$('.btn').hide()"
-        style="position:fixed"><span
-            class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
+        style="position:fixed"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
     <canvas id="canvas" onclick='init(10)' width="500" height="500"></canvas>
 </body>
 <script>
@@ -51,7 +50,7 @@
     const MAX_MASS = 3000;
     const PLANET_COUNT = 300;
     const FRAGMENT_COUNT = 100;
-    const FRAGMENT_SPEED = 10;
+    const FRAGMENT_SPEED = 20;
     const MAX_SPEED = 8;
     const G = 0.5;
     var maxLineLength = 45;
@@ -97,7 +96,7 @@
             for (var i1 = 0; i1 < count; i1++) {
                 if (i1 != i && planets[i1]) {
                     if (planets[i].lock > 0 && planets[i1].lock > 0) continue;
-                    if ((planets[i].lock > 0 || planets[i1].lock > 0)&&Math.random()>0.1) continue;
+                    if ((planets[i].lock > 0 || planets[i1].lock > 0) && Math.random() > 0.1) continue;
                     var r = Math.sqrt(Math.pow((planets[i].x - planets[i1].x), 2) + Math.pow((planets[i].y - planets[i1].y), 2));
                     if (r <= Math.max(Math.sqrt(planets[i1].mass) / Math.PI + Math.sqrt(planets[i].mass) / Math.PI) && planets[i1].mass >= planets[i].mass) {
                         var amplitude = Math.min(planets[i1].mass, planets[i].mass) / 1000 + (planets[i1].mass + planets[i].mass) / 2000;
@@ -133,8 +132,9 @@
                         mass: planets[i].mass / FRAGMENT_COUNT,
                         vx: FRAGMENT_SPEED * (Math.random() * 2 - 1),
                         vy: FRAGMENT_SPEED * (Math.random() * 2 - 1),
-                        lock: LOCK_TIME
+                        lock: LOCK_TIME * (Math.random() + 1)
                     });
+                    console.log(planets[planets.length - 1].lock)
                 }
                 var frequency = arrFrequency[Math.floor(Math.random() * 10)];
                 var oscillator = audioCtx.createOscillator();
