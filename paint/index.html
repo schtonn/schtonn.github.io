@@ -1,7 +1,7 @@
 <head>
     <link rel="manifest" href="/site.webmanifest">
-    <!-- <link async rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
-        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous"> -->
+    <link async rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
     <link rel="stylesheet" href="../css/bootstrap.min.css"
         integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
     <link rel="stylesheet" href="../css/style.css">
@@ -10,6 +10,14 @@
 &family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <title>paint</title>
     <style>
+        .hd,
+        .hdt,
+        #now-color,
+        .pixel
+        {
+        transition-duration: 100ms;
+        }
+
         .box {
             display: inline-block;
             margin: auto;
@@ -235,7 +243,7 @@
     </div>
     <div id="controls">
         <button class="btn btn-default noshadow" id="help"
-            onclick="alert('说明：左键绘制，右键擦除。\n键盘AD键或屏幕下方按键可浏览历史版本，鼠标悬停于版本上可查看时间。\n点击上传后，同一设备一天内的编辑将会保存在一个版本中，并对所有人可见。')"><span
+            onclick="alert('说明：左键绘制，右键擦除。\n数字键可快速切换颜色，AD键或屏幕下方按键可浏览历史版本，鼠标悬停于版本上可查看时间。\n点击上传后，同一设备一天内的编辑将会保存在一个版本中，并对所有人可见。')"><span
                 class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></button>
         <button class="btn btn-default noshadow" id="zoom"><span class="glyphicon glyphicon-zoom-in"
                 aria-hidden="true"></span></button>
