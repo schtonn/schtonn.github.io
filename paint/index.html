@@ -83,9 +83,9 @@
 
         .box-text {
             user-select: none;
-            width: fit-content;
+            width: 25px;
             z-index: -1;
-            transform: translate(-30px, -10px);
+            transform: translate(-105px, -10px);
             background-color: rgba(215, 215, 215, 0.7);
             border: 2px solid rgba(215, 215, 215, 0.7);
             border-radius: 5px;
@@ -226,17 +226,17 @@
             <div class="box canToggle" id="box-r">
                 <i class="hd blurred"></i>
                 <i class="hdt"></i>
-                <div class="box-text" id="box-r-text">0</div>
+                <input class="box-text" id="box-r-text" onfocus="this.select()"/>
             </div>
             <div class="box canToggle" id="box-g">
                 <i class="hd blurred"></i>
                 <i class="hdt"></i>
-                <div class="box-text" id="box-g-text">0</div>
+                <input class="box-text" id="box-g-text" onfocus="this.select()"/>
             </div>
             <div class="box canToggle" id="box-b">
                 <i class="hd blurred"></i>
                 <i class="hdt"></i>
-                <div class="box-text" id="box-b-text">0</div>
+                <input class="box-text" id="box-b-text" onfocus="this.select()"/>
             </div>
             <ul class="canToggle" id="color-list"></ul>
         </div>

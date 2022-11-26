@@ -24,7 +24,7 @@ function tryClear() {
     else if (tryTime == 2) alert('不会让你清空的')
     else if (tryTime == 3) {
         alert('按钮都给你禁用咯')
-        document.getElementById('clear').classList.add('disabled');
+        $('#clear').addClass('disabled');
     } else if (tryTime == 10) {
         alert('...')
     } else if (tryTime > 10) {
@@ -87,26 +87,26 @@ function getMap() {
         return;
     }
     working = true;
-    if (curVer >= 3) document.getElementById('upload').classList.add('disabled');
-    else document.getElementById('upload').classList.remove('disabled');
-    if (curVer != 0) document.getElementById('rbtn').classList.remove('disabled');
-    else document.getElementById('rbtn').classList.add('disabled');
+    if (curVer >= 3) $('#upload').addClass('disabled');
+    else $('#upload').removeClass('disabled');
+    if (curVer != 0) $('#rbtn').removeClass('disabled');
+    else $('#rbtn').addClass('disabled');
     if (curVer >= stopVer) {
-        if (!stopped) document.getElementById('lbtn').classList.add('disabled'), stopped = true;
+        if (!stopped) $('#lbtn').addClass('disabled'), stopped = true;
         else {
             curVer = stopVer;
             working = false;
             return;
         }
     }
-    else document.getElementById('lbtn').classList.remove('disabled'), stopped = false;
-    document.getElementById('version').innerHTML = "当前版本：" + (curVer == 0 ? '' : '-') + curVer + ' by ';
+    else $('#lbtn').removeClass('disabled'), stopped = false;
+    $('#version')[0].innerHTML = "当前版本：" + (curVer == 0 ? '' : '-') + curVer + ' by ';
     console.log('GetMap: currentVersion: ' + curVer)
     if (maxVer >= curVer) {
         console.log('Data loaded from cache')
         var map = maxResult[curVer].get('data'), date = maxResult[curVer].get('updatedAt')
-        document.getElementById('version').title = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate() + ' ' + date.toString().split(' ')[4];
-        document.getElementById('version').innerHTML += maxResult[curVer].get('nickName');
+        $('#version')[0].title = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate() + ' ' + date.toString().split(' ')[4];
+        $('#version')[0].innerHTML += maxResult[curVer].get('nickName');
         for (let i = 0; i < box.length; i++) {
             box[i].style.backgroundColor = map[i]
         }
@@ -120,8 +120,8 @@ function getMap() {
                 console.log('Data loaded from LeanCloud')
                 var map = result[curVer].get('data'), date = result[curVer].get('updatedAt')
                 console.log(date)
-                document.getElementById('version').title = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate() + ' ' + date.toString().split(' ')[4];
-                document.getElementById('version').innerHTML += result[curVer].get('nickName');
+                $('#version')[0].title = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate() + ' ' + date.toString().split(' ')[4];
+                $('#version')[0].innerHTML += result[curVer].get('nickName');
                 for (let i = 0; i < box.length; i++) {
                     box[i].style.backgroundColor = map[i]
                 }
@@ -170,6 +170,8 @@ document.onkeydown = function (event) {
         }
         else if (e.key == "d") {
             nextVer()
+        } else if ("0" <= e.key && e.key <= "9") {
+
         }
     }
 };
@@ -182,9 +184,9 @@ $(document).ready(function () {
 
     function updateCol() {
         lcolor = 'rgb('
-            + document.getElementById('box-r-text').innerHTML + ', '
-            + document.getElementById('box-g-text').innerHTML + ', '
-            + document.getElementById('box-b-text').innerHTML + ')'
+            + $('#box-r-text')[0].value + ', '
+            + $('#box-g-text')[0].value + ', '
+            + $('#box-b-text')[0].value + ')'
         nowColor.style.backgroundColor = lcolor
     }
 
@@ -206,7 +208,7 @@ $(document).ready(function () {
                 else if (far > 180) hd.style.left = 180 + "px";
                 hdt.style.width = hd.style.left;
                 var result = parseInt(parseInt(hdt.style.width) / 180 * num);
-                document.getElementById(obj + '-text').innerHTML = result;
+                document.getElementById(obj + '-text').value = result;
                 updateCol()
             }
             document.onmouseup = function () {
@@ -218,28 +220,40 @@ $(document).ready(function () {
             var event = event || window.event;
             if (mouseMoved) { mouseMoved = false; return false; }
             mouseMoved = false;
-            var boxWidth = event.clientX - this.offsetLeft - document.getElementById('tools').offsetLeft;
+            var boxWidth = event.clientX - this.offsetLeft - $('#tools')[0].offsetLeft;
             if (boxWidth > 180) boxWidth = 180;
+            if (boxWidth < -10) return;
             if (boxWidth < 0) boxWidth = 0;
             hdt.style.width = hd.style.left = boxWidth + 'px';
             var result = parseInt(parseInt(hdt.style.width) / 180 * num);
-            document.getElementById(obj + '-text').innerHTML = result;
+            document.getElementById(obj + '-text').value = result;
             updateCol()
         }
     }
 
     function changeSlider(obj, num, newVal) {
+        if (newVal < 0) newVal = 0;
+        if (newVal > 255) newVal = 255;
         var box = document.getElementById(obj);
         var hd = box.children[0];
         var hdt = box.children[1];
         hd.style.left = newVal / num * 180 + 'px';
         hdt.style.width = hd.style.left;
-        document.getElementById(obj + '-text').innerHTML = newVal;
+        document.getElementById(obj + '-text').value = newVal;
     }
 
     slider('box-r', 255);
     slider('box-g', 255);
     slider('box-b', 255);
+
+    $(".box-text").bind('input porpertychange', function () {
+        console.log("e");
+        updateCol();
+        changeSlider('box-r', 255, $('#box-r-text')[0].value)
+        changeSlider('box-g', 255, $('#box-g-text')[0].value)
+        changeSlider('box-b', 255, $('#box-b-text')[0].value)
+    });
+
     var id = getId()
     console.log('id: ' + id)
     var draw = document.getElementById('draw')
@@ -394,7 +408,7 @@ $(document).ready(function () {
                     console.log('Created new instance')
                 }
             })
-            document.getElementById('version').innerHTML = "当前版本：" + (curVer == 0 ? '' : '-') + curVer + ' by ' + nick;
+            $('#version')[0].innerHTML = "当前版本：" + (curVer == 0 ? '' : '-') + curVer + ' by ' + nick;
         }
     }
 })
