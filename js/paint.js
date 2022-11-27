@@ -114,7 +114,7 @@ function getMap() {
     } else {
         const query = new AV.Query('paint');
         query.descending('updatedAt')
-        query.limit(curVer + 1)
+        query.limit(curVer + 6)
         query.find().then((result) => {
             if (result.length > curVer) {
                 console.log('Data loaded from LeanCloud')
@@ -125,7 +125,7 @@ function getMap() {
                 for (let i = 0; i < box.length; i++) {
                     box[i].style.backgroundColor = map[i]
                 }
-                maxVer = curVer
+                maxVer = Math.min(result.length - 1, curVer + 6)
                 maxResult = result
             } else {
                 console.log('Found no data!')
