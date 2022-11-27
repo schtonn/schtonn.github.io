@@ -79,7 +79,15 @@ function getId() {
 }
 
 var curVer = 0, maxVer = -1, stopVer = 1000, stopped = false, working = false;
-var maxResult = {};
+var maxResult = {}, maxDate = {}, maxNick = {};
+
+function saveMap() {
+    var map = []
+    for (let i = 0; i < box.length; i++) {
+        map[i] = box[i].style.backgroundColor
+    }
+    maxResult[curVer] = map;
+}
 
 function getMap() {
     if (working) {
@@ -104,9 +112,12 @@ function getMap() {
     console.log('GetMap: currentVersion: ' + curVer)
     if (maxVer >= curVer) {
         console.log('Data loaded from cache')
-        var map = maxResult[curVer].get('data'), date = maxResult[curVer].get('updatedAt')
-        $('#version')[0].title = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate() + ' ' + date.toString().split(' ')[4];
-        $('#version')[0].innerHTML += maxResult[curVer].get('nickName');
+        var map = maxResult[curVer], date = maxDate[curVer]
+        console.log(maxResult)
+        console.log(maxVer)
+        console.log(curVer)
+        $('#version')[0].title = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.toString().split(' ')[4];
+        $('#version')[0].innerHTML += maxNick[curVer];
         for (let i = 0; i < box.length; i++) {
             box[i].style.backgroundColor = map[i]
         }
@@ -120,13 +131,15 @@ function getMap() {
                 console.log('Data loaded from LeanCloud')
                 var map = result[curVer].get('data'), date = result[curVer].get('updatedAt')
                 console.log(date)
-                $('#version')[0].title = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate() + ' ' + date.toString().split(' ')[4];
+                $('#version')[0].title = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.toString().split(' ')[4];
                 $('#version')[0].innerHTML += result[curVer].get('nickName');
                 for (let i = 0; i < box.length; i++) {
                     box[i].style.backgroundColor = map[i]
                 }
                 maxVer = Math.min(result.length - 1, curVer + 6)
-                maxResult = result
+                for (let i = curVer; i < result.length ; i++)maxResult[i] = result[i].get('data')
+                for (let i = curVer; i < result.length ; i++)maxDate[i] = result[i].get('updatedAt')
+                for (let i = curVer; i < result.length ; i++)maxNick[i] = result[i].get('nickName')
             } else {
                 console.log('Found no data!')
                 curVer = result.length - 1;
@@ -259,7 +272,6 @@ $(document).ready(function () {
     var draw = document.getElementById('draw')
     draw.draggable = false
 
-    var lineButton = document.getElementById('show-hide-line')
     var colorList = document.getElementById('color-list')
     var resetButton = document.getElementById('reset')
     var zoomButton = document.getElementById('zoom')
@@ -271,10 +283,10 @@ $(document).ready(function () {
         isdown = 1;
     }
     draw.onmouseup = function () {
+        saveMap();
         isdown = 0;
     }
 
-    let showGrid = false
     let zoom = false
     let showTools = false
 
@@ -307,15 +319,6 @@ $(document).ready(function () {
 
     reset();
 
-    lineButton.onclick = function () {
-        if (showGrid) {
-            changeClass(box, 'pixel')
-            showGrid = false
-        } else {
-            changeClass(box, 'pixel-line')
-            showGrid = true
-        }
-    }
     resetButton.onclick = function () {
         reset()
     }
@@ -336,15 +339,15 @@ $(document).ready(function () {
 
     zoomButton.onclick = function () {
         if (zoom == 0) {
-            draw.style.setProperty('transform', 'scale(200%) translate(-' + draw.offsetLeft / 4 + 'px,16px)')
+            $(draw).css('transform', 'scale(200%) translate(-' + draw.offsetLeft / 4 + 'px,16px)')
             zoom = 1
         } else if (zoom == 1) {
-            draw.style.setProperty('transform', 'scale(400%) translate(-' + draw.offsetLeft / 4 + 'px,8px)')
+            $(draw).css('transform', 'scale(400%) translate(-' + draw.offsetLeft / 4 + 'px,8px)')
             zoom = 2
             this.children[0].classList.remove('glyphicon-zoom-in')
             this.children[0].classList.add('glyphicon-zoom-out')
         } else {
-            draw.style.setProperty('transform', '')
+            $(draw).css('transform', '')
             zoom = 0
             this.children[0].classList.remove('glyphicon-zoom-out')
             this.children[0].classList.add('glyphicon-zoom-in')
@@ -368,12 +371,6 @@ $(document).ready(function () {
             colorItem.style.border = '1px solid #000000'
         }
         colorList.appendChild(colorItem)
-    }
-
-    function changeClass(arr, className) {
-        for (let i = 0; i < arr.length; i++) {
-            arr[i].className = className
-        }
     }
 
     upload.onclick = function () {

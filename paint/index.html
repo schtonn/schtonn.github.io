@@ -1,7 +1,7 @@
 <head>
     <link rel="manifest" href="/site.webmanifest">
-    <!-- <link async rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
-        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous"> -->
+    <link async rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
     <link rel="stylesheet" href="../css/bootstrap.min.css"
         integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
     <link rel="stylesheet" href="../css/style.css">
@@ -13,9 +13,8 @@
         .hd,
         .hdt,
         #now-color,
-        .pixel
-        {
-        transition-duration: 100ms;
+        .pixel {
+            transition-duration: 100ms;
         }
 
         .box {
@@ -118,12 +117,6 @@
             border: 1px solid rgb(211, 211, 211);
         }
 
-        .pixel-line {
-            width: 5px;
-            height: 5px;
-            box-sizing: border-box;
-            border: 0.1px solid rgb(211, 211, 211);
-        }
 
         .pixel {
             width: 5px;
@@ -215,7 +208,7 @@
 </head>
 
 <body>
-    <a class="btn btn-info" href="/" style="text-shadow: rgb(85, 85, 85) 3px 2px 4px;"><span
+    <a class="btn btn-info" href="/"><span
             class="glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp;返回</a>
     <div id="main" style="text-align:center">
         <div id="draw"></div>
@@ -226,17 +219,17 @@
             <div class="box canToggle" id="box-r">
                 <i class="hd blurred"></i>
                 <i class="hdt"></i>
-                <input class="box-text" id="box-r-text" onfocus="this.select()"/>
+                <input class="box-text" id="box-r-text" onfocus="this.select()" />
             </div>
             <div class="box canToggle" id="box-g">
                 <i class="hd blurred"></i>
                 <i class="hdt"></i>
-                <input class="box-text" id="box-g-text" onfocus="this.select()"/>
+                <input class="box-text" id="box-g-text" onfocus="this.select()" />
             </div>
             <div class="box canToggle" id="box-b">
                 <i class="hd blurred"></i>
                 <i class="hdt"></i>
-                <input class="box-text" id="box-b-text" onfocus="this.select()"/>
+                <input class="box-text" id="box-b-text" onfocus="this.select()" />
             </div>
             <ul class="canToggle" id="color-list"></ul>
         </div>
@@ -245,16 +238,12 @@
         <button class="btn btn-default noshadow" id="help"
             onclick="alert('说明：左键绘制，右键擦除。\n键盘AD键或屏幕下方按键可浏览历史版本，鼠标悬停于版本上可查看时间。\n点击上传后，同一设备一天内的编辑将会保存在一个版本中，并对所有人可见。')"><span
                 class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></button>
-        <button class="btn btn-default noshadow" id="zoom"><span class="glyphicon glyphicon-zoom-in"
-                aria-hidden="true"></span></button>
-        <button class="btn btn-warning" id="show-hide-line">
-            <span class="glyphicon glyphicon-th" aria-hidden="true"></span>&nbsp;网格</button>
+        <button class="btn btn-info" id="zoom"><span class="glyphicon glyphicon-zoom-in"
+                aria-hidden="true"></span>&nbsp;缩放</button>
         <button class="btn btn-primary" id="upload"><span class="glyphicon glyphicon-cloud-upload"
                 aria-hidden="true"></span>&nbsp;上传</button>
         <button class="btn btn-primary" id="reset"><span class="glyphicon glyphicon-cloud-download"
                 aria-hidden="true"></span>&nbsp;同步</button>
-        <button class="btn btn-danger" id="clear" onclick="tryClear()"><span class="glyphicon glyphicon-ban-circle"
-                aria-hidden="true"></span>&nbsp;清空</button>
         <a id="lbtn" tabindex="0" class="btn btn-default noshadow" onclick="prevVer()">
             <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"><kbd>A</kbd></span>
         </a>
