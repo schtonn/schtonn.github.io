@@ -4,8 +4,7 @@
 <head>
     <!-- <link async rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
         integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous"> -->
-    <link rel="stylesheet" href="../css/bootstrap.min.css"
-        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <link rel="stylesheet" href="../css/bootstrap.min.css" crossorigin="anonymous">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
@@ -115,7 +114,7 @@
             filter: drop-shadow(0 0 5px white);
         }
 
-        .red:active{
+        .red:active {
             background: radial-gradient(transparent, rgb(15 15 15 / 25%));
         }
 
@@ -182,6 +181,21 @@
         .noshadow {
             text-shadow: none;
         }
+
+        input {
+            outline-style: none;
+            text-shadow: rgb(85, 85, 85) 3px 2px 4px;
+            border: 1px solid #ccc;
+            border-radius: 2px;
+            background: rgb(215 215 215 / 50%);
+        }
+        input:hover {
+            outline-style: none;
+            text-shadow: rgb(85, 85, 85) 3px 2px 4px;
+            border: 1px solid #ccc;
+            border-radius: 2px;
+            background: rgb(215 215 215 / 40%);
+        }
     </style>
 
     <script src="https://apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -208,10 +222,12 @@
             <button class="btn btn-danger word message1">快</button>
             <button class="btn btn-danger word message2">再想想？</button>
             <button class="btn btn-danger word message3">拜拜</button>
+            <button class="btn btn-danger word message4"><input id="messageText"></button>
         </div>
         <div id="game" class="center-block">
             <span class="black pointer"></span>
         </div>
+        <div style="display:inline-block">在线人数：<p style="display: inline-block" class="curnum">0</p></div>
     </div>
     <script src="../js/chess.js"></script>
 </body>

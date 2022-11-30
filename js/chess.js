@@ -1,9 +1,3 @@
-AV.init({
-    appId: "BmologYYnRqCv0SLHDeDdA17-gzGzoHsz",
-    appKey: "w9mVebFMdCmY6Nh9vfcBGaGt",
-    serverURL: "https://bmologyy.lc-cn-n1-shared.com",
-});
-
 $(window).on({
     contextmenu: function () {
         return false;
@@ -76,17 +70,19 @@ function updateMessages() {
     else $('.message2').removeClass("red");
     if (messages[2]) $('.message3').addClass("red");
     else $('.message3').removeClass("red");
+    if (messages[3]) $('.message4').addClass("red");
+    else $('.message4').removeClass("red");
+    $("#messageText")[0].value = messages[4];
 }
 
 var timer, st = 1;
 function uploadMessages() {
     timer && clearTimeout(timer);
-    timer = setTimeout(function () { st = 1; }, 500);
+    timer = setTimeout(function () { st = 1; }, 100);
     //FUUUULL BRiDGE RECtiFyer!!!
     if (st) {
         console.log('Messages updated.')
-        cur.set('messages', messages)
-        cur.save();
+        sendMessage()
     }
     st = 0;
 }
@@ -102,6 +98,7 @@ function updateCol() {
         $('.pointer').addClass("black");
     }
 }
+
 
 class Chess {
     constructor(ele) {
@@ -170,6 +167,17 @@ class Chess {
             updateMessages();
             uploadMessages();
         })
+        $(".message4").on('click', function () {
+            messages[3] = !messages[3];
+            messages[4] = $("#messageText")[0].value;
+            updateMessages();
+            uploadMessages();
+        })
+        $("#messageText").on('input blur', function () {
+            messages[4] = $("#messageText")[0].value;
+            updateMessages();
+            uploadMessages();
+        })
     }
     render() {
         let div = $("<div id='xq-tips'>").appendTo($(this.ele))
@@ -225,8 +233,7 @@ class Chess {
                 // return;
             }
         })
-        cur.set('data', this.arr)
-        cur.save();
+        sendMessage(this.arr)
     }
     win() {
         let this_ = this;
@@ -275,8 +282,7 @@ class Chess {
         curCol = num % 2;
         updateCol();
         this.arr.pop();
-        cur.set('data', this.arr)
-        cur.save();
+        sendMessage(this.arr)
     }
     reset() {
         this.arr = [];
@@ -297,8 +303,7 @@ class Chess {
         $("#xq-tips").hide();
         $(".xq-txt").html("");
         $("#regret").show();
-        cur.set('data', this.arr)
-        cur.save();
+        sendMessage(this.arr)
     }
     check() {
         $(this.span).each((index, item) => {
@@ -309,65 +314,76 @@ class Chess {
         })
     }
 }
-var game;
+var game = new Chess($("#game"));
 
 checkCookie();
 
-const query = new AV.Query('chess');
-query.descending('updatedAt')
-query.limit(1)
-query.find().then((result) => {
-    $("#begin").hide();
-    $("#regret").show();
-    $("#agin").show();
-    $("#game").show();
-    if (result.length) {
-        console.log('Data loaded from LeanCloud')
-        cur = result[0]
-        var map = result[0].get('data')
-        messages = result[0].get('messages')
-        updateMessages();
-        if (map.length) {
-            game = new Chess($("#game"));
-            game.arr = map;
-            game.upd();
-            updateCol();
-        } else {
-            game = new Chess($("#game"));
-        }
+var conversation = document.getElementById('conversation');
+var sendBtn = document.getElementById('sendBtn');
+var socket = null;
+var createSocket = function () {
+    if (socket) {
+        socket.close();
     }
-})
+    var url = 'ws://' + window.location.host + '/ws/chess';
+    socket = new WebSocket(url);
+    socket.onopen = function () {
+        console.log('connected to ' + url);
+    }
+    socket.onmessage = function (event) {
+        var map = JSON.parse(event.data).content;
+        messages = JSON.parse(event.data).message
+        console.log(messages)
+        updateMessages();
+        game.reset();
+        game.arr = map;
+        game.upd();
+        curCol = map.length % 2;
+        if (map.length) {
+            game.win()
+        } else {
+            $('.pointer').removeClass("white");
+            $('.pointer').addClass("black");
+            checkCookie();
+            var exp = new Date();
+            exp.setTime(exp.getTime() - 1)
+            setCookie('color', myCol, exp)
+            myCol = 2;
+            $("#xq-tips").hide();
+            $(".xq-txt").html("");
+            $("#regret").show();
+        }
+        console.log('Updated')
+    }
+    socket.onclose = function () {
+        console.log('close connect to' + url);
+    }
+};
+var sendMessage = function (map = game.arr, msg = messages, type = '') {
+    var bd = JSON.stringify({
+        from: myCol,
+        content: map,
+        message: msg,
+        type: type
+    })
+    console.log(bd)
+    fetch('/chess/setboard', {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json',
+        },
+        body: bd
+    }).then(res => {
+        return res.json();
+    })
+};
 
-setTimeout(function () {
-
-    query.subscribe().then((liveQuery) => {
-        console.log('Subscribed')
-        liveQuery.on('update', (result) => {
-            var map = result.get('data')
-            messages = result.get('messages')
-            updateMessages();
-            console.log('Updated')
-            game.reset();
-            game.arr = map;
-            game.upd();
-            curCol = map.length % 2;
-            if (map.length) {
-                game.win()
-            } else {
-                $('.pointer').removeClass("white");
-                $('.pointer').addClass("black");
-                checkCookie();
-                var exp = new Date();
-                exp.setTime(exp.getTime() - 1)
-                setCookie('color', myCol, exp)
-                myCol = 2;
-                $("#xq-tips").hide();
-                $(".xq-txt").html("");
-                $("#regret").show();
-            }
-        });
-    }, (error) => {
-        alert(error + "\n无法与服务器同步，请稍后再试")
-    });
-
-}, 1000)
+createSocket();
+checkCookie();
+game.upd();
+updateCol();
+updateMessages();
+$("#begin").hide();
+$("#regret").show();
+$("#agin").show();
+$("#game").show();
