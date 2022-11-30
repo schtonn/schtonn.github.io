@@ -73,6 +73,7 @@ function updateMessages() {
     if (messages[3]) $('.message4').addClass("red");
     else $('.message4').removeClass("red");
     $("#messageText")[0].value = messages[4];
+    $("#messageServer")[0].innerHTML = messages[5];    
 }
 
 var timer, st = 1;
