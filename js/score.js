@@ -242,8 +242,7 @@ function processFiles(isFirstTime = 0) {
         name.innerHTML = "姓名：" + object.data.multiExamStudentScore.studentName;
         info.innerHTML = "<h3>" + object.data.multiExam.meName + "</h3>"
             + "行政班级：" + object.data.examStudents[0].classId + "<br>"
-            + "姓名：" + object.data.multiExamStudentScore.studentName + "<br>"
-            + "<br><h4>班内一览表</h4>";
+            + "姓名：" + object.data.multiExamStudentScore.studentName + "<br>";
         output.innerHTML = "<br><h4>总分</h4>"
             + "<b>全科分数：" + object.data.multiExamStudentScore.messScore + "</b><br><br>"
             + "全科分数班级排名：" + object.data.multiExamStudentScore.messClassOrder + "<br>"
@@ -257,8 +256,7 @@ function processFiles(isFirstTime = 0) {
             + "全科年级："
             + tableLayout + '<tr><td>平均分</td><td>最高分</td><td>四分位数（75%）</td><td>中位数</td><td>四分位数（25%）</td><td>最低分</td></tr>'
             + "<tr><td>" + object.data.multiExam.meAvgScore + "</td><td>" + object.data.multiExam.meMaxScore + "</td><td>" + object.data.multiExam.me3QuatrerScore + "</td><td>" + object.data.multiExam.meHalfScore + "</td><td>" + object.data.multiExam.meQuarterScore + "</td><td>" + object.data.multiExam.meMinScore + "</td></tr></table><br><br>"
-            + classText
-            + "<h4>排名汇总</h4>";
+            + classText;
 
 
         $("#fileOutput table").css("display", "inline-table");
@@ -641,3 +639,7 @@ function processFiles(isFirstTime = 0) {
     }
     reader.readAsText(file);
 }
+
+$().ready(function () {
+    $(".chart").hide()
+})
