@@ -12,6 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
 &family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="../js/av-live-query-min.js"></script>
     <title>五子</title>
     <meta charset="UTF-8">
     <style>
@@ -183,22 +184,6 @@
         .noshadow {
             text-shadow: none;
         }
-
-        input {
-            outline-style: none;
-            text-shadow: rgb(85, 85, 85) 3px 2px 4px;
-            border: 1px solid #ccc;
-            border-radius: 2px;
-            background: rgb(215 215 215 / 50%);
-        }
-
-        input:hover {
-            outline-style: none;
-            text-shadow: rgb(85, 85, 85) 3px 2px 4px;
-            border: 1px solid #ccc;
-            border-radius: 2px;
-            background: rgb(215 215 215 / 40%);
-        }
     </style>
 
     <script src="https://apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -227,14 +212,10 @@
             <button class="btn btn-danger word message1">快</button>
             <button class="btn btn-danger word message2">再想想？</button>
             <button class="btn btn-danger word message3">拜拜</button>
-            <button class="btn btn-danger word message4"><input id="messageText"></button>
         </div>
         <div id="game" class="center-block">
             <span class="black pointer"></span>
         </div>
-        <div style="display:inline-block">在线人数：<il id="messageServer"></il>
-        </div>
-    </div>
     </div>
     <script src="../js/chess.js"></script>
 </body>
