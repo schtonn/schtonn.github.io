@@ -1,7 +1,10 @@
 <head>
     <meta charset="UTF-8">
     <link rel="manifest" href="/site.webmanifest">
+    <script type="text/javascript" src="../js/jquery.min.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="../css/bootstrap.min.css" crossorigin="anonymous">
+    <script type="text/javascript" src="../js/bootstrap.min.js" crossorigin="anonymous"></script>
+
     <link rel="stylesheet" href="../css/style.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
@@ -237,16 +240,20 @@
                 class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></button>
         <button class="btn btn-info" id="zoom"><span class="glyphicon glyphicon-zoom-in"
                 aria-hidden="true"></span>&nbsp;缩放</button>
-        <button class="btn btn-primary" id="upload"><span class="glyphicon glyphicon-cloud-upload"
-                aria-hidden="true"></span>&nbsp;上传</button>
-        <button class="btn btn-primary" id="reset"><span class="glyphicon glyphicon-cloud-download"
-                aria-hidden="true"></span>&nbsp;同步</button>
-        <a id="lbtn" tabindex="0" class="btn btn-default noshadow" onclick="prevVer()">
-            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"><kbd>A</kbd></span>
-        </a>
-        <a id="rbtn" tabindex="0" class="btn btn-default noshadow" onclick="nextVer()">
-            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"><kbd>D</kbd></span>
-        </a>
+        <div class="btn-group">
+            <button class="btn btn-primary" id="upload"><span class="glyphicon glyphicon-cloud-upload"
+                    aria-hidden="true"></span>&nbsp;上传</button>
+            <button class="btn btn-primary" id="reset"><span class="glyphicon glyphicon-cloud-download"
+                    aria-hidden="true"></span>&nbsp;同步</button>
+        </div>
+        <div class="btn-group">
+            <a id="lbtn" tabindex="0" class="btn btn-default noshadow" onclick="prevVer()">
+                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"><kbd>A</kbd></span>
+            </a>
+            <a id="rbtn" tabindex="0" class="btn btn-default noshadow" onclick="nextVer()">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"><kbd>D</kbd></span>
+            </a>
+        </div>
         <span id="version" style="margin-right:auto"></span>
     </div>
 </body>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<head>
+    <!-- <link async rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous"> -->
+        <script type="text/javascript" src="../js/jquery.min.js" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="../css/bootstrap.min.css" crossorigin="anonymous">
+        <script type="text/javascript" src="../js/bootstrap.min.js" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
+&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>化学</title>
+    <style>
+        iframe {
+            border: 1px solid rgb(173,173,173);
+            margin-top: 5px;
+            border-radius: 5px;
+            width: 100%;
+        }
+    </style>
+<script id="MathJax-script" src="https://cdn.bootcss.com/mathjax/3.0.5/es5/tex-mml-chtml.js"></script>
+    <!-- <script src="https://apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script> -->
+    <script>
+
+    </script>
+
+</head>
+
+<body>
+    <div>
+        <div class="col-lg-6 col-md-6 col-xs-12">
+            <div class="input-group">
+                <input type="text" value="CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O" class="form-control" oninput="$('#balBtn').attr('href','/chem?'+this.value)">
+                <span class="input-group-btn">
+                    <a type="button" class="btn btn-default" href="/chem?CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O" target="balFrame" id="balBtn">配平</a>
+                    <!-- <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                        <span class="sr-only">切换下拉菜单</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">功能</a></li>
+                        <li><a href="#">另一个功能</a></li>
+                        <li><a href="#">其他</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">分离的链接</a></li>
+                    </ul> -->
+                </span>
+            </div>
+            <div>
+                <iframe name="balFrame"></iframe>
+            </div>
+        </div>
+    </div>
+    \(\text{H}_2\text{O}+\text{O}\text{Na}_{22}^{+}\)
+</body>
+
+</html>
