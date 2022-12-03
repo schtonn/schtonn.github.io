@@ -37,6 +37,15 @@
         #controls:not(.disabled) {
             z-index: 1;
         }
+
+        .well{
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            -webkit-box-shadow: inset 0 3px 3px rgb(0 0 0 / 5%);
+            box-shadow: inset 0 3px 3px rgb(0 0 0 / 5%);
+        }
     </style>
     <title>
         实验中学成绩整理
@@ -77,6 +86,7 @@
         <br>
     </div>
     <div style="text-align: center;" class="hidable">
+        <div class="btn-group">
         <a tabindex="0" class="btn btn-default" href="tutor/"
             style="text-shadow: rgb(185, 185, 185) 3px 2px 4px;display:inline-block;">
             <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>&nbsp;<b>查看示例截图</b>
@@ -86,10 +96,7 @@
             <span id="upicon" class="glyphicon glyphicon-open" aria-hidden="true"></span> <b>打开文件</b><input
                 style="display: none;" id="fileInput" type="file" onchange="getFiles(event)">
         </a>
-        <a id="resetbtn" tabindex="0" class="btn btn-primary disabled" onclick="reset();"
-            style="text-shadow: rgb(85, 85, 85) 3px 2px 4px;display:inline-block;">
-            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> <b>重置</b>
-        </a>
+        </div>
         <a tabindex="0" class="btn btn-warning toggleHide" onclick="toggleHide();"
             style="text-shadow: rgb(85, 85, 85) 3px 2px 4px;display:inline-block;">
             <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
@@ -113,10 +120,11 @@
         <ul class="nav nav-tabs">
             <li class="active"><a href="#chart" data-toggle="tab">图表</a></li>
             <li><a href="#data" data-toggle="tab">数据</a></li>
-            <li><a href="#3" data-toggle="tab">iOS</a></li>
+            <!-- <li><a href="#3" data-toggle="tab">iOS</a></li> -->
         </ul>
-        <div class="tab-content">
+        <div class="tab-content well well-sm">
             <div class="tab-pane fade in active" id="chart">
+                <br>
                 <h4>班内一览表</h4>
                 <div id="score1" class="chart"></div>
                 <div id="score2" class="chart"></div>
@@ -128,9 +136,9 @@
             <div class="tab-pane fade" id="data">
                 <div id="fileOutput"></div>
             </div>
-            <div class="tab-pane fade" id="3">
+            <!-- <div class="tab-pane fade" id="3">
 
-            </div>
+            </div> -->
         </div>
     </div>
 
