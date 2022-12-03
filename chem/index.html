@@ -12,7 +12,8 @@
 &family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <title>化学</title>
     <style>
-        iframe {
+        iframe,
+        .well {
             border: 1px solid rgb(173, 173, 173);
             margin-top: 5px;
             border-radius: 5px;
@@ -42,84 +43,99 @@
                 ret *= 10;
                 ret += ch - 0;
             }
-            str=str.slice(i,n)
-            return [ret,str,i]
+            str = str.slice(i, n)
+            return [ret, str, i]
         }
 
-        function workMolecule(str,st) {
-            console.log(str,st)
-            var n = str.length, co = 1;
+        function workMolecule(str, st) {
+            console.log(str, st)
+            var n = str.length, co = 1, ans = {};
             for (let i = 0; i < n; i++) {
-                
+                var ch = str.charAt(i)
+                var f = {}
+                if (ch == '(') {
+                    f = workMolecule(str.slice(i + 1, bracket[i + st] - st), st + i + 1)
+                    i = bracket[i + st] - st;
+                } else if ('A' <= ch && ch <= 'Z') {
+                    if (i + 1 < n) {
+                        let nch = str.charAt(i + 1)
+                        if ('a' <= nch && nch <= 'z') i++, ch += nch
+                    }
+                    if (f[ch]) f[ch]++;
+                    else f[ch] = 1;
+                } else return {}
+                let g = getco(str.slice(i + 1, n))
+                if (g[0]) {
+                    for (key in f) {
+                        f[key] *= g[0]
+                    }
+                }
+                for (key in f) {
+
+                    if (ans[key]) ans[key] = ans[key] + f[key]
+                    else ans[key] = f[key]
+                }
+                i += g[2]
             }
+            console.log('ans', ans)
+            return ans;
         }
 
         function parseMolecule(str) {
             str = str.replace(/[\[{]/g, "(").replace(/[\]}]/g, ")");
+            console.log('Parsing molecule', str)
             var n = str.length, co = 1, stack = [], top = 0;
             for (let i = 0; i < n; i++) {
                 var ch = str.charAt(i);
-                console.log(i,ch)
                 if (ch == '(') stack[top] = i, top++;
-                else if (ch == ')') bracket[stack[top-1]] = i, bracket[i] = stack[top-1], top--;
+                else if (ch == ')') bracket[stack[top - 1]] = i, bracket[i] = stack[top - 1], top--;
+                if (top < 0) return {}
             }
+            if (top != 0) return {};
             console.log(bracket)
-            var g=getco(str)
-            co=g[0]
-            workMolecule(g[1],g[2])
+            var g = getco(str)
+            if (g[0]) co = g[0]
+            var f = workMolecule(g[1], g[2])
+            for (key in f) {
+                f[key] *= co;
+            }
+            return f;
         }
 
-        function parseMolecute(formula) {
-            var hash = {};
-            var traverse = function (formula) {
-                var str = "";
-                var prev = ""; for (var i = 0; i < formula.length; i++) {
-                    var chr = formula.charAt(i);
-                    //如果当前字符是数字 
-                    if (!isNaN(chr)) {
-                        //如果右边的字符也是数字 
-                        //如"O12"，十二个氧原子 
-                        if (!isNaN(formula.charAt(i + 1))) {
-                            chr += formula.charAt(i + 1); i++;
-                        }
-                        //转化为数字 
-                        //"12" => 12
-                        chr = chr - 0;
-                        while (chr--) str += prev;
-                    } else if (chr === "(") {
-                        //剪切两个括号之间的内容，递归 
-                        //如"Mg(OH)2" 
-                        //"OH"递归 
-                        var temp = formula.slice(i + 1);
-                        var pos = findBracket(temp);
-                        //=>"OH"
-                        prev = traverse(temp.slice(0, pos));
-                        //右括号位置")" 
-                        i = pos + i + 1;
-                        //如果右括弧右边不是数字，直接拼接"OH"，无须相乘
-                        if (isNaN(formula.charAt(i + 1))) str += prev;
-                    }
-                    //如果当前字符右边是数字
-                    else if (formula.charAt(i + 1) && !isNaN(formula.charAt(i + 1))) prev = chr;
-                    //如果当前字符右边是小写字母，再右边是数字
-                    else if (formula.charCodeAt(i + 1) >= 97 && formula.charCodeAt(i + 1) <= 122 && formula.charAt(i + 2) && !isNaN(formula.charAt(i + 2))) {
-                        prev = chr + formula.charAt(i + 1); i++;
-                    } else str += chr;
+        var mode = 'bal', balInput
+        $().ready(function () {
+            balInput = $("#balInput")[0]
+            setBal();
+            $("#balInput").keydown(function (e) {
+                if (e.keyCode == 13) {
+                    $("#balBtn")[0].click();
                 }
-                //如"Mg(OH)2" 
-                //=> "MgOHOH" 
-                return str;
-            }; var result = traverse(formula);
-            //将字符串遍历，在hash中存储
-            for (var i = 0; i < result.length; i++) {
-                var nextCode = result.charCodeAt(i + 1); //例如"Mg","Fe","Cu"这样一个大写接一个小写的情况 
-                if (nextCode >= 97 && nextCode <= 122) {
-                    var key = result.charAt(i) + result.charAt(i + 1);
-                    i++;
-                } else var key = result.charAt(i);
-                if (hash[key]) hash[key] = hash[key] + 1;
-                else hash[key] = 1;
-            } return hash;
+            });
+            $(function () { $("[data-toggle='tooltip']").tooltip(); });
+        })
+        function setBal() {
+            $('#balBtn').text('配平')
+            $('#balInput').attr('placeholder', 'CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O')
+            $('#balBtn').attr('href', '/chem?CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O')
+            $('#balBtn').removeClass('disabled')
+            $('#balFrame').show();
+            $('#otherFrame').hide();
+            mode='bal'
+        }
+        function setWeigh() {
+            $('#balBtn').text('相对质量')
+            $('#balInput').attr('placeholder', 'Fe2(SO4)3')
+            $('#balBtn').attr('href', '')
+            $('#balBtn').addClass('disabled')
+            $('#balFrame').hide();
+            $('#otherFrame').show();
+            mode='weigh'
+        }
+        function input() {
+            if (mode == 'bal') $('#balBtn').attr('href', '/chem?' + ((balInput.value == '') ? 'CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O' : balInput.value))
+            else if (mode == 'weigh') {
+
+            }
         }
     </script>
 
@@ -129,30 +145,31 @@
     <div>
         <div class="col-lg-6 col-md-6 col-xs-12">
             <div class="input-group">
-                <input type="text" placeholder="CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O" class="form-control"
-                    oninput="$('#balBtn').attr('href','/chem?'+((this.value=='')?'CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O':this.value))">
+                <input id="balInput" type="text" class="form-control" oninput="input()">
                 <span class="input-group-btn">
-                    <a type="button" class="btn btn-default" href="/chem?CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O"
-                        target="balFrame" id="balBtn">配平</a>
-                    <!-- <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    <a type="button" class="btn btn-default" href="" target="balFrame" id="balBtn">配平</a>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                         <span class="caret"></span>
                         <span class="sr-only">切换下拉菜单</span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="#">功能</a></li>
-                        <li><a href="#">另一个功能</a></li>
+                        <li><a href="#" onclick="setBal()">配平</a></li>
+                        <li><a href="#" onclick="setWeigh()">相对质量</a></li>
                         <li><a href="#">其他</a></li>
                         <li class="divider"></li>
-                        <li><a href="#">分离的链接</a></li>
-                    </ul> -->
+                        <li><a href="#"  data-toggle="tooltip" data-placement="left"
+                            title="将会对所有人可见">发送到数据库</a></li>
+                    </ul>
                 </span>
             </div>
             <div>
-                <iframe name="balFrame"></iframe>
+                <iframe name="balFrame" id="balFrame"></iframe>
+            </div>
+            <div class="well" id="otherFrame">
+                \(\text{Fe}_{2}(\text{S}\text{O}_{4})_{3}\)
             </div>
         </div>
     </div>
-    \(\text{H}_2\text{O}+\text{O}\text{Na}_{22}^{+}\)
 </body>
 
 </html>
