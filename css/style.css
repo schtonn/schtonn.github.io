@@ -62,3 +62,47 @@ h4 {
 .blurred:hover {
     filter: none;
 }
+
+.btn-info:focus,
+.btn-info:focus-visible {
+    outline: 5px dashed rgba(95, 177, 221, 0.5);
+}
+
+.btn-primary:focus,
+.btn-primary:focus-visible {
+    outline: 5px dashed rgba(69, 89, 163, 0.5);
+}
+
+.btn-warning:focus,
+.btn-warning:focus-visible {
+    outline: 5px dashed rgba(200, 157, 39, 0.5);
+}
+
+.btn-danger:focus,
+.btn-danger:focus-visible {
+    outline: 5px dashed rgba(234, 71, 71, 0.5);
+}
+
+.btn-info:hover,
+.btn-info:active {
+    outline: 10px double rgba(95, 177, 221, 0.5);
+}
+
+.btn-primary:hover,
+.btn-primary:active {
+    outline: 10px double rgba(69, 89, 163, 0.5);
+}
+
+.btn-warning:hover,
+.btn-warning:active {
+    outline: 10px double rgba(200, 157, 39, 0.5);
+}
+
+.btn-danger:hover,
+.btn-danger:active {
+    outline: 10px double rgba(234, 71, 71, 0.5);
+}
+
+.btn {
+    transition-duration: 100ms;
+}
