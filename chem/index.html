@@ -12,21 +12,23 @@
 &family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <title>化学</title>
     <style>
-        .well{
-            padding: 4px;
-            padding-left: 8px
-        }
-        iframe,
         .well {
+            padding: 10px;
             border: 1px solid rgb(173, 173, 173);
             background-color: #f5f5f5;
-            font-size: 16px;
             margin-top: 5px;
             min-height: 160px;
             border-radius: 5px;
             width: 100%;
             overflow-x: auto;
             overflow-y: auto;
+        }
+        .btn:focus,.btn:focus-visible,.btn:focus-within,.btn:active{
+            outline: 10px double rgba(95, 177, 221, 0.5);
+        }
+        .btn.disabled {
+            cursor: default;
+            pointer-events: none;
         }
     </style>
     <script id="MathJax-script" src="https://cdn.bootcss.com/mathjax/3.0.5/es5/tex-mml-chtml.js"></script>
@@ -186,7 +188,7 @@
             return str
         }
 
-        var mode = 'bal', balInput
+        var mode = 'bal', balInput, balText = '', inputText
         $().ready(function () {
             balInput = $("#balInput")[0]
             setBal();
@@ -198,47 +200,68 @@
             $(function () { $("[data-toggle='tooltip']").tooltip(); });
         })
         function setBal() {
+            $('#frame')[0].innerHTML = '\\(' + renderEquation(balText) + '\\)';
+            MathJax.typeset()
             $('#balBtn').text('配平')
+            $('#balShare').removeClass('disabled')
             $('#balInput').attr('placeholder', 'CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O')
             $('#balBtn').attr('href', '/chem?CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O')
             $('#balBtn').removeClass('disabled')
-            $('#balFrame').show();
-            $('#otherFrame').hide();
             mode = 'bal'
             input()
         }
         function setWeigh() {
             $('#balBtn').text('相对质量')
+            $('#balShare').addClass('disabled')
             $('#balInput').attr('placeholder', 'CH3CHO+2Ag(NH3)2OH=CH3COONH4+2Ag+3NH3+H2O')
             $('#balBtn').attr('href', '')
             $('#balBtn').addClass('disabled')
-            $('#balFrame').hide();
-            $('#otherFrame').show();
             mode = 'weigh'
             input()
         }
         function setWeigh2() {
             $('#balBtn').text('相对质量*')
+            $('#balShare').addClass('disabled')
             $('#balInput').attr('placeholder', 'CH3CHO+2Ag(NH3)2OH=CH3COONH4+2Ag+3NH3+H2O')
             $('#balBtn').attr('href', '')
             $('#balBtn').addClass('disabled')
-            $('#balFrame').hide();
-            $('#otherFrame').show();
             mode = 'weigh2'
             input()
         }
         function input() {
+            inputText = balInput.value
             if (mode == 'bal') {
-                $('#balBtn').attr('href', '/chem?' + ((balInput.value == '') ? 'CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O' : balInput.value))
-                $('#balBtn2').attr('href', '/chem?' + ((balInput.value == '') ? 'CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O' : balInput.value))
-            }
-            else if (mode == 'weigh') {
-                $('#otherFrame')[0].innerHTML = '\\(' + renderEquation((balInput.value == '') ? 'CH3CHO+2Ag(NH3)2OH=CH3COONH4+2Ag+3NH3+H2O' : balInput.value) + '\\)<br>\\(' + weighEquation((balInput.value == '') ? '2CrI3+27Cl2+64KOH=2K2CrO4+6KIO4+54KCl+32H2O' : balInput.value) + '\\)';
+                $('#frame')[0].innerHTML = '\\(' + renderEquation((inputText == '') ? 'CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O' : inputText) + '\\)<br>'
+                    + '<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>' + ((balText != '') ? ('\\(' + renderEquation(balText) + '\\)') : ('...'));
+                MathJax.typeset()
+            } else if (mode == 'weigh') {
+                $('#frame')[0].innerHTML = '\\(' + renderEquation((inputText == '') ? 'CH3CHO+2Ag(NH3)2OH=CH3COONH4+2Ag+3NH3+H2O' : inputText) + '\\)<br>\\('
+                    + weighEquation((inputText == '') ? '2CrI3+27Cl2+64KOH=2K2CrO4+6KIO4+54KCl+32H2O' : inputText) + '\\)';
                 MathJax.typeset()
             } else if (mode == 'weigh2') {
-                $('#otherFrame')[0].innerHTML = '\\(' + renderEquation((balInput.value == '') ? 'CH3CHO+2Ag(NH3)2OH=CH3COONH4+2Ag+3NH3+H2O' : balInput.value) + '\\)<br>\\(' + weighEquation((balInput.value == '') ? '2CrI3+27Cl2+64KOH=2K2CrO4+6KIO4+54KCl+32H2O' : balInput.value, 1) + '\\)';
+                $('#frame')[0].innerHTML = '\\(' + renderEquation((inputText == '') ? 'CH3CHO+2Ag(NH3)2OH=CH3COONH4+2Ag+3NH3+H2O' : inputText) + '\\)<br>\\('
+                    + weighEquation((inputText == '') ? '2CrI3+27Cl2+64KOH=2K2CrO4+6KIO4+54KCl+32H2O' : inputText, 1) + '\\)';
                 MathJax.typeset()
             }
+        }
+        var running;
+        function balance() {
+            if (running) return;
+            $('#balBtn').text('配平...')
+            $('#balBtn').addClass('disabled')
+            running = 1;
+            $.get('/chem?' + ((inputText == '') ? 'CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O' : inputText), function (e) {
+                $('#frame')[0].innerHTML = (e.charAt(0) == '!') ? ('<pre class="text-danger bg-danger">' + e.slice(1, e.length) + '</pre>') : ('\\(' + renderEquation((inputText == '') ? 'CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O' : inputText)
+                    + '\\)<br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>' + '\\(' + renderEquation(e) + '\\)');
+                if (e.charAt(0) != '!') balText = e
+                MathJax.typeset()
+                $('#balBtn').text('配平')
+                $('#balBtn').removeClass('disabled')
+                running = 0;
+            })
+        }
+        function balUp() {
+            $('#balInput').val(balText)
         }
     </script>
 
@@ -246,11 +269,15 @@
 
 <body>
     <div>
-        <div class="col-lg-6 col-md-6 col-xs-12">
+        <div class="col-lg-8 col-md-10 col-xs-12">
             <div class="input-group">
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" onclick="balUp()" id="balShare" title="导入配平结果"> <span class="glyphicon glyphicon-share-alt"
+                            aria-hidden="true"></span></button>
+                </span>
                 <input id="balInput" type="text" class="form-control" oninput="input()">
                 <span class="input-group-btn">
-                    <a type="button" class="btn btn-default" href="" target="balFrame" id="balBtn">配平</a>
+                    <button type="button" class="btn btn-default" onclick="balance()" id="balBtn">配平</button>
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                         <span class="caret"></span>
                         <span class="sr-only">切换下拉菜单</span>
@@ -269,10 +296,7 @@
                     </ul>
                 </span>
             </div>
-            <div>
-                <iframe name="balFrame" id="balFrame"></iframe>
-            </div>
-            <div class="well" id="otherFrame">
+            <div class="well" id="frame">
             </div>
         </div>
     </div>
