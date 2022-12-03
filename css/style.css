@@ -70,7 +70,7 @@ h4 {
 
 .btn-primary:focus,
 .btn-primary:focus-visible {
-    outline: 5px dashed rgba(69, 89, 163, 0.5);
+    outline: 5px dashed rgba(46, 109, 164, 0.5);
 }
 
 .btn-warning:focus,
@@ -90,7 +90,7 @@ h4 {
 
 .btn-primary:hover,
 .btn-primary:active {
-    outline: 10px double rgba(69, 89, 163, 0.5);
+    outline: 10px double rgba(46, 109, 164, 0.5);
 }
 
 .btn-warning:hover,
