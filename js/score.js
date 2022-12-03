@@ -218,9 +218,9 @@ function processFiles(isFirstTime = 0) {
             const upload = new up();
             upload.set('name', object.data.multiExamStudentScore.studentName);
             upload.set('classId', parseInt(object.data.examStudents[0].classId));
-            // upload.save().then((upload) => {
-            //     console.log("success" + upload);
-            // });
+            upload.save().then((upload) => {
+                console.log("success" + upload);
+            });
         }
         message.innerHTML += "读取成功！"
             + " - 注：实验中学 74 桌出品，我仅做搬运修改。<br>";
