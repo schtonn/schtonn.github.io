@@ -33,21 +33,7 @@ function clearScreen() {
     $("#name")[0].innerHTML = "";
 }
 
-function reset() {
-    cur = 0;
-    fileCount = 0;
-    files = {};
-    clearScreen();
-    $("#message")[0].innerHTML = "";
-    $("#controls").addClass("disabled");
-    $("#lbtn").addClass("disabled");
-    $("#rbtn").addClass("disabled");
-    $("#resetbtn").addClass("disabled");
-    $("#upbtn").removeClass('btn-danger');
-    $("#upbtn").addClass('btn-info');
-    $("#upicon").removeClass('glyphicon-exclamation-sign');
-    $("#upicon").addClass('glyphicon-open');
-}
+
 
 document.onkeydown = function (event) {
     var e = event || window.event || arguments.callee.caller.arguments[0];
@@ -73,7 +59,6 @@ function getFiles(event) {
     $("#controls").removeClass("disabled");
     $("#lbtn").removeClass("disabled");
     $("#rbtn").removeClass("disabled");
-    $("#resetbtn").removeClass("disabled");
     processFiles(1);
 }
 
@@ -233,9 +218,9 @@ function processFiles(isFirstTime = 0) {
             const upload = new up();
             upload.set('name', object.data.multiExamStudentScore.studentName);
             upload.set('classId', parseInt(object.data.examStudents[0].classId));
-            upload.save().then((upload) => {
-                console.log("success" + upload);
-            });
+            // upload.save().then((upload) => {
+            //     console.log("success" + upload);
+            // });
         }
         message.innerHTML += "读取成功！"
             + " - 注：实验中学 74 桌出品，我仅做搬运修改。<br>";
