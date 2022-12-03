@@ -3,26 +3,124 @@
 <head>
     <!-- <link async rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
         integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous"> -->
-        <script type="text/javascript" src="../js/jquery.min.js" crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="../css/bootstrap.min.css" crossorigin="anonymous">
-        <script type="text/javascript" src="../js/bootstrap.min.js" crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="../css/style.css">
+    <script type="text/javascript" src="../js/jquery.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../css/bootstrap.min.css" crossorigin="anonymous">
+    <script type="text/javascript" src="../js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../css/style.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
 &family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <title>化学</title>
     <style>
         iframe {
-            border: 1px solid rgb(173,173,173);
+            border: 1px solid rgb(173, 173, 173);
             margin-top: 5px;
             border-radius: 5px;
             width: 100%;
         }
     </style>
-<script id="MathJax-script" src="https://cdn.bootcss.com/mathjax/3.0.5/es5/tex-mml-chtml.js"></script>
+    <script id="MathJax-script" src="https://cdn.bootcss.com/mathjax/3.0.5/es5/tex-mml-chtml.js"></script>
     <!-- <script src="https://apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script> -->
     <script>
+        var list = ['',
+            'H', 'He',
+            'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne',
+            'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar',
+            'K', 'Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge', 'As', 'Se', 'Br', 'Kr',
+            'Rb', 'Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn', 'Sb', 'Te', 'I', 'Xe',
+            'Cs', 'Ba', 'La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn',
+            'Fr', 'Ra', 'Ac', 'Th', 'Pa', 'U', 'Np', 'Pu', 'Am', 'Cm', 'Bk', 'Cf', 'Es', 'Fm', 'Md', 'No', 'Lr', 'Rf', 'Db', 'Sg', 'Bh', 'Hs', 'Mt', 'Ds', 'Rg', 'Cn', 'Nh', 'Fl', 'Mc', 'Lv', 'Ts', 'Og'
+        ]
 
+        var bracket = {}
+
+        function getco(str) {
+            var n = str.length, ret = 0
+            for (var i = 0; i < n; i++) {
+                var ch = str.charAt(i)
+                if (isNaN(ch)) break;
+                ret *= 10;
+                ret += ch - 0;
+            }
+            str=str.slice(i,n)
+            return [ret,str,i]
+        }
+
+        function workMolecule(str,st) {
+            console.log(str,st)
+            var n = str.length, co = 1;
+            for (let i = 0; i < n; i++) {
+                
+            }
+        }
+
+        function parseMolecule(str) {
+            str = str.replace(/[\[{]/g, "(").replace(/[\]}]/g, ")");
+            var n = str.length, co = 1, stack = [], top = 0;
+            for (let i = 0; i < n; i++) {
+                var ch = str.charAt(i);
+                console.log(i,ch)
+                if (ch == '(') stack[top] = i, top++;
+                else if (ch == ')') bracket[stack[top-1]] = i, bracket[i] = stack[top-1], top--;
+            }
+            console.log(bracket)
+            var g=getco(str)
+            co=g[0]
+            workMolecule(g[1],g[2])
+        }
+
+        function parseMolecute(formula) {
+            var hash = {};
+            var traverse = function (formula) {
+                var str = "";
+                var prev = ""; for (var i = 0; i < formula.length; i++) {
+                    var chr = formula.charAt(i);
+                    //如果当前字符是数字 
+                    if (!isNaN(chr)) {
+                        //如果右边的字符也是数字 
+                        //如"O12"，十二个氧原子 
+                        if (!isNaN(formula.charAt(i + 1))) {
+                            chr += formula.charAt(i + 1); i++;
+                        }
+                        //转化为数字 
+                        //"12" => 12
+                        chr = chr - 0;
+                        while (chr--) str += prev;
+                    } else if (chr === "(") {
+                        //剪切两个括号之间的内容，递归 
+                        //如"Mg(OH)2" 
+                        //"OH"递归 
+                        var temp = formula.slice(i + 1);
+                        var pos = findBracket(temp);
+                        //=>"OH"
+                        prev = traverse(temp.slice(0, pos));
+                        //右括号位置")" 
+                        i = pos + i + 1;
+                        //如果右括弧右边不是数字，直接拼接"OH"，无须相乘
+                        if (isNaN(formula.charAt(i + 1))) str += prev;
+                    }
+                    //如果当前字符右边是数字
+                    else if (formula.charAt(i + 1) && !isNaN(formula.charAt(i + 1))) prev = chr;
+                    //如果当前字符右边是小写字母，再右边是数字
+                    else if (formula.charCodeAt(i + 1) >= 97 && formula.charCodeAt(i + 1) <= 122 && formula.charAt(i + 2) && !isNaN(formula.charAt(i + 2))) {
+                        prev = chr + formula.charAt(i + 1); i++;
+                    } else str += chr;
+                }
+                //如"Mg(OH)2" 
+                //=> "MgOHOH" 
+                return str;
+            }; var result = traverse(formula);
+            //将字符串遍历，在hash中存储
+            for (var i = 0; i < result.length; i++) {
+                var nextCode = result.charCodeAt(i + 1); //例如"Mg","Fe","Cu"这样一个大写接一个小写的情况 
+                if (nextCode >= 97 && nextCode <= 122) {
+                    var key = result.charAt(i) + result.charAt(i + 1);
+                    i++;
+                } else var key = result.charAt(i);
+                if (hash[key]) hash[key] = hash[key] + 1;
+                else hash[key] = 1;
+            } return hash;
+        }
     </script>
 
 </head>
@@ -31,9 +129,11 @@
     <div>
         <div class="col-lg-6 col-md-6 col-xs-12">
             <div class="input-group">
-                <input type="text" value="CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O" class="form-control" oninput="$('#balBtn').attr('href','/chem?'+this.value)">
+                <input type="text" placeholder="CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O" class="form-control"
+                    oninput="$('#balBtn').attr('href','/chem?'+((this.value=='')?'CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O':this.value))">
                 <span class="input-group-btn">
-                    <a type="button" class="btn btn-default" href="/chem?CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O" target="balFrame" id="balBtn">配平</a>
+                    <a type="button" class="btn btn-default" href="/chem?CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O"
+                        target="balFrame" id="balBtn">配平</a>
                     <!-- <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                         <span class="caret"></span>
                         <span class="sr-only">切换下拉菜单</span>
