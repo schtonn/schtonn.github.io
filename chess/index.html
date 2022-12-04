@@ -85,7 +85,7 @@
             vertical-align: middle;
         }
 
-        .red{
+        .red {
             filter: drop-shadow(0 0 2px red);
             outline: 5px dashed rgba(234, 71, 71, 0.5);
         }
@@ -121,9 +121,15 @@
             background: radial-gradient(transparent, rgb(15 15 15 / 25%));
         }
 
-        .word:focus:not(:focus-visible) {
+        .word:focus:not(:focus-visible):not(.red),
+        .word:active:not(:focus-visible):not(.red),
+        .word:hover:not(.red) {
             background: radial-gradient(transparent, rgb(15 15 15 / 25%));
             outline: 0;
+        }
+
+        .red:focus {
+            outline: 5px dashed rgba(234, 71, 71, 0.5);
         }
 
         .tables {

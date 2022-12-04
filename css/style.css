@@ -63,23 +63,31 @@ h4 {
     filter: none;
 }
 
+.btn:focus:active,.btn:focus {
+    outline: 0;
+}
+
 .btn-info:focus,
-.btn-info:focus-visible {
+.btn-info:focus-visible,
+.btn-info:active:focus {
     outline: 5px dashed rgba(95, 177, 221, 0.5);
 }
 
 .btn-primary:focus,
-.btn-primary:focus-visible {
+.btn-primary:focus-visible,
+.btn-primary:active:focus {
     outline: 5px dashed rgba(46, 109, 164, 0.5);
 }
 
 .btn-warning:focus,
-.btn-warning:focus-visible {
+.btn-warning:focus-visible,
+.btn-warning:active:focus {
     outline: 5px dashed rgba(200, 157, 39, 0.5);
 }
 
 .btn-danger:focus,
-.btn-danger:focus-visible {
+.btn-danger:focus-visible,
+.btn-danger:active:focus {
     outline: 5px dashed rgba(234, 71, 71, 0.5);
 }
 

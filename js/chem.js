@@ -108,9 +108,9 @@ function weigh(hash, mode = 0) {
     return parseInt(ans * 10000) / 10000;
 }
 function weighEquation(str, mode = 0) {
-    str = str.replace(/<\d*e[\+\-]>*/g, "").replace(/[^\dA-Za-z<>\(\)\+\-=\.]/g, "");
-    var q = str.split(/[=\+\-\.]/g)
-    var p = str.replace(/[^=\+\-\.]/g, "").replace('.', '*')
+    str = str.replace(/<\d*e[\+\-]>*/g, "").replace(/[^\dA-Za-z<>\(\)\+\-=\.;]/g, "");
+    var q = str.split(/[=\+\-\.;]/g)
+    var p = str.replace(/[^=\+\-\.;]/g, "").replace(/\./g, '*')
     var ans = ""
     if (str == "") return ""
     var n = p.length, sum = 0, gsum = "";
@@ -121,7 +121,7 @@ function weighEquation(str, mode = 0) {
         ans = ans + k + p.charAt(i)
     }
     if (n) ans += '\\)<br>\\(' + gsum + parseInt(sum * 10000) / 10000
-    return ans.replace('\*', "\\cdot");
+    return ans.replace(/\*/g, "\\cdot");
 }
 
 function parseEquation(str) {
@@ -142,12 +142,12 @@ function parseEquation(str) {
 
 function renderEquation(str) {
     str = str.replace(/[\[{]/g, "(").replace(/[\]}]/g, ")");
-    str = str.replace(/[^\dA-Za-z<>\(\)\+\-=\.]/g, "");
+    str = str.replace(/[^\dA-Za-z<>\(\)\+\-=\.;]/g, "");
     // console.log('Rendering equation', str)
     str = str.replace(/([A-Za-z]+)/g, "\\text{$1}");
     str = str.replace(/<(\d*)\\text\{e\}([\+\-])>/g, "^{$1$2}");
     str = str.replace(/([\}\)])(\d+)/g, "$1_{$2}");
-    str = str.replace('.', "\\cdot");
+    str = str.replace(/\./g, "\\cdot");
     // console.log(str)
     return str
 }
@@ -213,6 +213,7 @@ function balance() {
     if (running) return;
     $('#balBtn').text('配平...')
     $('#balBtn').addClass('disabled')
+    $('#frame').addClass('text-muted')
     running = 1;
     $.get('/chem?' + ((inputText == '') ? 'CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O' : inputText), function (e) {
         $('#frame')[0].innerHTML = (e.charAt(0) == '!') ? ('<pre class="text-danger bg-danger">' + e.slice(1, e.length) + '</pre>') : ('\\(' + renderEquation((inputText == '') ? 'CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O' : inputText)
@@ -221,6 +222,7 @@ function balance() {
         MathJax.typeset()
         $('#balBtn').text('配平')
         $('#balBtn').removeClass('disabled')
+        $('#frame').removeClass('text-muted')
         running = 0;
     })
 }
