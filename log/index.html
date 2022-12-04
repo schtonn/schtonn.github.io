@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+
+<head>
+    <!-- <link async rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous"> -->
+    <script type="text/javascript" src="../js/jquery.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../css/bootstrap.min.css" crossorigin="anonymous">
+    <script type="text/javascript" src="../js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
+&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>日志</title>
+    <style>
+        * {
+            transition-duration: 300ms;
+        }
+
+        .btn {
+            text-shadow: rgb(85, 85, 85) 3px 2px 4px;
+            display: inline-block;
+        }
+
+        .btn-xs.gee {
+            background-color: rgb(70, 59, 150);
+            color: white;
+        }
+
+        .btn-info.gee {
+            color: #fff;
+            background-color: #027396;
+            border-color: #46b8da;
+        }
+
+        code.gee {
+            background-color: rgb(70, 59, 150);
+        }
+
+        .noshadow {
+            text-shadow: none;
+        }
+
+        .gee ::selection {
+            color: white;
+            text-decoration: underline wavy #FF3028;
+            text-shadow: 1px 1px 2px red, 0 0 1em blue, 0 0 0.2em blue;
+            background-color: black;
+        }
+
+        .gee {
+            color: white;
+            background-color: black;
+        }
+
+        .btn-dang {
+            transition-duration: 200ms;
+        }
+
+        .btn-dang:is(:hover, :hover:focus) {
+            outline: 50px solid rgba(58, 58, 58, 0.5)
+        }
+
+        .btn-dang.gee:hover {
+            outline: 50px solid rgba(202, 202, 202, 0.5)
+        }
+
+        .btn-dang:is(:hover:active, :active) {
+            scale: 80%;
+            transform: translate(-7px, -7px);
+            outline: 150px double rgba(162, 6, 6, 0.5)
+        }
+    </style>
+    <script>
+        $().ready(function () {
+            $('.btn-danger').on('click', function (e) {
+                $('body,.btn,.btn-xs,code').toggleClass('gee')
+                console.log(e)
+            })
+        })
+    </script>
+</head>
+
+<body>
+    <a class="btn btn-info" href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp;返回</a>
+    <div class="page-header">
+        <h1>网站日志</h1>
+    </div>
+
+    <h3>
+        2022.12.4
+        <small>dark</small>
+    </h3>
+    <p>在首页加上了黑暗模式，以及非常愚蠢的秘密消息。</p>
+    <p>进一步完善按钮样式。</p>
+    <hr>
+
+    <h3>
+        2022.12.3
+        <small><a href="/chem">chem</a></small>
+    </h3>
+    <p>把化学式配平、相对质量计算的网页实现出来了，接下来还要加上 MySQL 的上传。</p>
+    <p>为所有按钮加上了好玩的悬浮样式。这可真不容易，为了去掉浏览器自带的丑陋黑色边框，我进行了不懈的斗争，最后发现是除了 <code>:focus</code> 和 <code>:active</code> 选择器，还得写上
+        <code>:focus:active</code> 。
+    </p>
+    <button class="btn btn-info">看看</button>&nbsp;&nbsp;&nbsp;&nbsp;
+    <button class="btn btn-info"
+        style="outline: 10px double rgba(95, 177, 221, 0.5);">悬浮</button>&nbsp;&nbsp;&nbsp;&nbsp;
+    <button class="btn btn-info" style="outline: 5px dashed rgba(95, 177, 221, 0.5);">聚焦</button>
+    <hr>
+
+    <h3>
+        2022.12.2
+        <small>MySQL</small>
+    </h3>
+    <p>近日研究了 Bootstrap 框架很多不错的设计，如按钮组团等，进行了应用。</p>
+    <p>今天开始尝试在本地搭建 MySQL 数据库。希望是日后能建起一个存放中学化学式的数据库。</p>
+    <hr>
+
+    <h3>
+        2022.11.30
+        <small>WebSocket</small>
+    </h3>
+    <p>有了小崔给的主机，开辟了很多新领域。</p>
+    <p>不用暴力地琢磨纯静态页面了，可以开始自己开发网页后端。刚起步，先用 Node.js+Express 做后端。写了个配平化学式的接口（<a class="btn-xs btn-default noshadow"
+            href="/chem?H2+O2=H2O">/chem?H2+O2=H2O</a>）。</p>
+    <p>用 WebSocket 可以实现服务器与客户端的即时通讯，原先搭载在 LeanCloud 上的五子棋计算部分可以迁移到本地了。</p>
+
+    <hr>
+    <p>开始记录。</p>
+    <hr>
+    <p><button class="btn btn-danger btn-dang"><span class="glyphicon glyphicon-off" aria-hidden="true"></span></button>
+    </p>
+</body>
+
+</html>
