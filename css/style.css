@@ -67,35 +67,35 @@ h4 {
     outline: 0;
 }
 
-.btn-info:is(:focus,:focus-visible,:active,:active:focus) {
+.btn-info:is(:not(:hover):focus,:active:focus,:active:hover:focus) {
     outline: 5px dashed rgba(95, 177, 221, 0.5);
 }
 
-.btn-primary:is(:focus,:focus-visible,:active,:active:focus) {
+.btn-primary:is(:not(:hover):focus,:active:focus,:active:hover:focus) {
     outline: 5px dashed rgba(46, 109, 164, 0.5);
 }
 
-.btn-warning:is(:focus,:focus-visible,:active,:active:focus) {
+.btn-warning:is(:not(:hover):focus,:active:focus,:active:hover:focus) {
     outline: 5px dashed rgba(200, 157, 39, 0.5);
 }
 
-.btn-danger:is(:focus,:focus-visible,:active,:active:focus) {
+.btn-danger:is(:not(:hover):focus,:active:focus,:active:hover:focus) {
     outline: 5px dashed rgba(234, 71, 71, 0.5);
 }
 
-.btn-info:is(:hover) {
+.btn-info:is(:hover,:focus:hover) {
     outline: 10px double rgba(95, 177, 221, 0.5);
 }
 
-.btn-primary:is(:hover) {
+.btn-primary:is(:hover,:focus:hover) {
     outline: 10px double rgba(46, 109, 164, 0.5);
 }
 
-.btn-warning:is(:hover) {
+.btn-warning:is(:hover,:focus:hover) {
     outline: 10px double rgba(200, 157, 39, 0.5);
 }
 
-.btn-danger:is(:hover) {
+.btn-danger:is(:hover,:focus:hover) {
     outline: 10px double rgba(234, 71, 71, 0.5);
 }
 
