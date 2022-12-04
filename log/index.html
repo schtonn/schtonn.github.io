@@ -53,18 +53,22 @@
         }
 
         .btn-dang {
-            transition-duration: 200ms;
+            transition-duration: 1000ms;
+        }
+
+        .btn-dang.gee {
+            outline: 10px transparent
         }
 
         .btn-dang:is(:hover, :hover:focus) {
-            outline: 50px solid rgba(58, 58, 58, 0.5)
+            outline: 15px solid rgba(58, 58, 58, 0.8)
         }
 
         .btn-dang.gee:hover {
-            outline: 50px solid rgba(202, 202, 202, 0.5)
+            outline: 4000px solid rgba(0, 0, 0, 0.1)
         }
 
-        .btn-dang:is(:hover:active, :active) {
+        .btn-dang:is(:hover:active:focus, :active) {
             scale: 80%;
             transform: translate(-7px, -7px);
             outline: 150px double rgba(162, 6, 6, 0.5)
@@ -122,7 +126,7 @@
     </h3>
     <p>有了小崔给的主机，开辟了很多新领域。</p>
     <p>不用暴力地琢磨纯静态页面了，可以开始自己开发网页后端。刚起步，先用 Node.js+Express 做后端。写了个配平化学式的接口（<a class="btn-xs btn-default noshadow"
-            href="/chem?H2+O2=H2O">/chem?H2+O2=H2O</a>）。</p>
+            href="/chemist?H2+O2=H2O">/chemist?H2+O2=H2O</a>）。</p>
     <p>用 WebSocket 可以实现服务器与客户端的即时通讯，原先搭载在 LeanCloud 上的五子棋计算部分可以迁移到本地了。</p>
 
     <hr>
