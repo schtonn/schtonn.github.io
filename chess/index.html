@@ -122,9 +122,15 @@
             background: radial-gradient(transparent, rgb(15 15 15 / 25%));
         }
 
-        .word:focus:not(:focus-visible) {
+        .word:focus:not(:focus-visible):not(.red),
+        .word:active:not(:focus-visible):not(.red),
+        .word:hover:not(.red) {
             background: radial-gradient(transparent, rgb(15 15 15 / 25%));
             outline: 0;
+        }
+
+        .red:focus {
+            outline: 5px dashed rgba(234, 71, 71, 0.5);
         }
 
         .tables {
