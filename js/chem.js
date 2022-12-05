@@ -11,7 +11,7 @@ var weighList = {
     'H': 1, 'He': 4,
     'Li': 7, 'Be': 9, 'B': 11, 'C': 12, 'N': 14, 'O': 16, 'F': 19, 'Ne': 20,
     'Na': 23, 'Mg': 24, 'Al': 27, 'Si': 28, 'P': 31, 'S': 32, 'Cl': 35.5, 'Ar': 40,
-    'K': 39, 'Ca': 40, 'Sc': 45, 'Ti': 48, 'V': 51, 'Cr': 52, 'Mn': 55, 'Fe': 56, 'Co': 59, 'Ni': 59, 'Cu': 63.5, 'Zn': 65.5, 'Ga': 70, 'Ge': 72.5, 'As': 75, 'Se': 79, 'Br': 80, 'Kr': 84,
+    'K': 39, 'Ca': 40, 'Sc': 45, 'Ti': 48, 'V': 51, 'Cr': 52, 'Mn': 55, 'Fe': 56, 'Co': 59, 'Ni': 59, 'Cu': 64, 'Zn': 65.5, 'Ga': 70, 'Ge': 72.5, 'As': 75, 'Se': 79, 'Br': 80, 'Kr': 84,
     'Rb': 85.5, 'Sr': 87.5, 'Y': 89, 'Zr': 91, 'Nb': 93, 'Mo': 96, 'Tc': 99, 'Ru': 101, 'Rh': 103, 'Pd': 106.5, 'Ag': 108, 'Cd': 112.5, 'In': 115, 'Sn': 118.5, 'Sb': 122, 'Te': 127.5, 'I': 127, 'Xe': 131,
     'Cs': 133, 'Ba': 137, 'La': 139, 'Ce': 140, 'Pr': 141, 'Nd': 144, 'Pm': 147, 'Sm': 150.5, 'Eu': 152, 'Gd': 157, 'Tb': 159, 'Dy': 162.5, 'Ho': 165, 'Er': 167, 'Tm': 169, 'Yb': 173, 'Lu': 175, 'Hf': 178.5, 'Ta': 181, 'W': 184, 'Re': 186, 'Os': 190, 'Ir': 192, 'Pt': 195, 'Au': 197, 'Hg': 200.5, 'Tl': 204.5, 'Pb': 207, 'Bi': 209, 'Po': 209, 'At': 210, 'Rn': 222,
     'Fr': 223, 'Ra': 226, 'Ac': 227, 'Th': 232, 'Pa': 231, 'U': 238, 'Np': 237, 'Pu': 244, 'Am': 243, 'Cm': 247, 'Bk': 247, 'Cf': 251, 'Es': 252, 'Fm': 257, 'Md': 258, 'No': 259, 'Lr': 260, 'Rf': 261, 'Db': 262, 'Sg': 263, 'Bh': 262, 'Hs': 265, 'Mt': 266, 'Ds': 269, 'Rg': 272, 'Cn': 285, 'Nh': 284, 'Fl': 289, 'Mc': 288, 'Lv': 293, 'Ts': 291, 'Og': 294
@@ -94,6 +94,16 @@ function parseMolecule(str) {
     return f;
 }
 
+function eps(a, mode = 0) {
+    if (mode) {
+        var s = a.toString().split('e')
+        console.log(a)
+        console.log(s[0])
+        if (s.length == 1) return parseFloat(parseFloat(a).toFixed(4))
+        return Math.round(parseFloat(s[0]) * 10000) / 10000 + 'e' + s[1];
+    } else return a
+}
+
 function weigh(hash, mode = 0) {
     var ans = 0
     if (mode) {
@@ -105,7 +115,7 @@ function weigh(hash, mode = 0) {
             if (weighList[key]) ans += hash[key] * weighList[key]
         }
     }
-    return parseInt(ans * 10000) / 10000;
+    return eps(ans,mode);
 }
 function weighEquation(str, mode = 0) {
     str = str.replace(/<\d*e[\+\-]>*/g, "").replace(/[^\dA-Za-z<>\(\)\+\-=\.;]/g, "");
@@ -117,10 +127,10 @@ function weighEquation(str, mode = 0) {
     for (let i = 0; i <= n; i++) {
         var k = weigh(parseMolecule(q[i]), mode)
         sum += k
-        if (p.charAt(i) == '=') gsum += parseInt(sum * 10000) / 10000 + '=', sum = 0;
+        if (p.charAt(i) == '=') gsum += eps(sum,mode) + '=', sum = 0;
         ans = ans + k + p.charAt(i)
     }
-    if (n) ans += '\\)<br>\\(' + gsum + parseInt(sum * 10000) / 10000
+    if (n) ans += '\\)<br>\\(' + gsum + eps(sum,mode)
     return ans.replace(/\*/g, "\\cdot");
 }
 
@@ -200,17 +210,17 @@ function input() {
         MathJax.typeset()
     } else if (mode == 'weigh') {
         $('#frame')[0].innerHTML = '\\(' + renderEquation((inputText == '') ? 'CH3CHO+2Ag(NH3)2OH=CH3COONH4+2Ag+3NH3+H2O' : inputText) + '\\)<br>\\('
-            + weighEquation((inputText == '') ? '2CrI3+27Cl2+64KOH=2K2CrO4+6KIO4+54KCl+32H2O' : inputText) + '\\)';
+            + weighEquation((inputText == '') ? 'CH3CHO+2Ag(NH3)2OH=CH3COONH4+2Ag+3NH3+H2O' : inputText) + '\\)';
         MathJax.typeset()
     } else if (mode == 'weigh2') {
         $('#frame')[0].innerHTML = '\\(' + renderEquation((inputText == '') ? 'CH3CHO+2Ag(NH3)2OH=CH3COONH4+2Ag+3NH3+H2O' : inputText) + '\\)<br>\\('
-            + weighEquation((inputText == '') ? '2CrI3+27Cl2+64KOH=2K2CrO4+6KIO4+54KCl+32H2O' : inputText, 1) + '\\)';
+            + weighEquation((inputText == '') ? 'CH3CHO+2Ag(NH3)2OH=CH3COONH4+2Ag+3NH3+H2O' : inputText, 1) + '\\)';
         MathJax.typeset()
     }
 }
 var running;
 function balance() {
-    if (running) return;
+    if (running || mode != 'bal') return;
     $('#balBtn').text('配平...')
     $('#balBtn').addClass('disabled')
     $('#frame').addClass('text-muted')
@@ -227,6 +237,7 @@ function balance() {
     })
 }
 function balUp() {
+    if (mode != 'bal') return;
     $('#balInput').val(balText);
     input()
 }
