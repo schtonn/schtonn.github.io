@@ -115,7 +115,7 @@ function weigh(hash, mode = 0) {
             if (weighList[key]) ans += hash[key] * weighList[key]
         }
     }
-    return eps(ans,mode);
+    return eps(ans, mode);
 }
 function weighEquation(str, mode = 0) {
     str = str.replace(/<\d*e[\+\-]>*/g, "").replace(/[^\dA-Za-z<>\(\)\+\-=\.;]/g, "");
@@ -127,10 +127,10 @@ function weighEquation(str, mode = 0) {
     for (let i = 0; i <= n; i++) {
         var k = weigh(parseMolecule(q[i]), mode)
         sum += k
-        if (p.charAt(i) == '=') gsum += eps(sum,mode) + '=', sum = 0;
+        if (p.charAt(i) == '=') gsum += eps(sum, mode) + '=', sum = 0;
         ans = ans + k + p.charAt(i)
     }
-    if (n) ans += '\\)<br>\\(' + gsum + eps(sum,mode)
+    if (n) ans += '<br>' + gsum + eps(sum, mode)
     return ans.replace(/\*/g, "\\cdot");
 }
 
@@ -152,15 +152,19 @@ function parseEquation(str) {
 
 function renderEquation(str) {
     str = str.replace(/[\[{]/g, "(").replace(/[\]}]/g, ")");
+    str=str.replace(/([\+\=\.;])\1+/g,'$1')
     str = str.replace(/[^\dA-Za-z<>\(\)\+\-=\.;]/g, "");
     // console.log('Rendering equation', str)
     str = str.replace(/([A-Za-z]+)/g, "\\text{$1}");
     str = str.replace(/<(\d*)\\text\{e\}([\+\-])>/g, "^{$1$2}");
     str = str.replace(/([\}\)])(\d+)/g, "$1_{$2}");
     str = str.replace(/\./g, "\\cdot");
+    str = "<a href='#'>\\(" + str.replace(/([\+\-=\.;])([^\}])/g, "\\)</a> \\($1\\) <a href='#'>\\($2") + '\\)</a>';
     // console.log(str)
     return str
 }
+
+//PROCESS-------------------------------
 
 var mode = 'bal', balInput, balText = '', inputText
 $().ready(function () {
@@ -174,7 +178,7 @@ $().ready(function () {
     $(function () { $("[data-toggle='tooltip']").tooltip(); });
 })
 function setBal() {
-    $('#frame')[0].innerHTML = '\\(' + renderEquation(balText) + '\\)';
+    $('#frame')[0].innerHTML = renderEquation(balText);
     MathJax.typeset()
     $('#balBtn').text('配平')
     $('#balShare').removeClass('disabled')
@@ -205,16 +209,16 @@ function setWeigh2() {
 function input() {
     inputText = balInput.value
     if (mode == 'bal') {
-        $('#frame')[0].innerHTML = '\\(' + renderEquation((inputText == '') ? 'CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O' : inputText) + '\\)<br>'
-            + '<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>' + ((balText != '') ? ('\\(' + renderEquation(balText) + '\\)') : ('...'));
+        $('#frame')[0].innerHTML = renderEquation((inputText == '') ? 'CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O' : inputText) + '<br>'
+            + '<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>' + ((balText != '') ? (renderEquation(balText)) : ('...'));
         MathJax.typeset()
     } else if (mode == 'weigh') {
-        $('#frame')[0].innerHTML = '\\(' + renderEquation((inputText == '') ? 'CH3CHO+2Ag(NH3)2OH=CH3COONH4+2Ag+3NH3+H2O' : inputText) + '\\)<br>\\('
-            + weighEquation((inputText == '') ? 'CH3CHO+2Ag(NH3)2OH=CH3COONH4+2Ag+3NH3+H2O' : inputText) + '\\)';
+        $('#frame')[0].innerHTML = renderEquation((inputText == '') ? 'CH3CHO+2Ag(NH3)2OH=CH3COONH4+2Ag+3NH3+H2O' : inputText) + '<br>'
+            + weighEquation((inputText == '') ? 'CH3CHO+2Ag(NH3)2OH=CH3COONH4+2Ag+3NH3+H2O' : inputText);
         MathJax.typeset()
     } else if (mode == 'weigh2') {
-        $('#frame')[0].innerHTML = '\\(' + renderEquation((inputText == '') ? 'CH3CHO+2Ag(NH3)2OH=CH3COONH4+2Ag+3NH3+H2O' : inputText) + '\\)<br>\\('
-            + weighEquation((inputText == '') ? 'CH3CHO+2Ag(NH3)2OH=CH3COONH4+2Ag+3NH3+H2O' : inputText, 1) + '\\)';
+        $('#frame')[0].innerHTML = renderEquation((inputText == '') ? 'CH3CHO+2Ag(NH3)2OH=CH3COONH4+2Ag+3NH3+H2O' : inputText) + '<br>'
+            + weighEquation((inputText == '') ? 'CH3CHO+2Ag(NH3)2OH=CH3COONH4+2Ag+3NH3+H2O' : inputText, 1);
         MathJax.typeset()
     }
 }
@@ -226,8 +230,8 @@ function balance() {
     $('#frame').addClass('text-muted')
     running = 1;
     $.get('/chem?' + ((inputText == '') ? 'CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O' : inputText), function (e) {
-        $('#frame')[0].innerHTML = (e.charAt(0) == '!') ? ('<pre class="text-danger bg-danger">' + e.slice(1, e.length) + '</pre>') : ('\\(' + renderEquation((inputText == '') ? 'CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O' : inputText)
-            + '\\)<br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>' + '\\(' + renderEquation(e) + '\\)');
+        $('#frame')[0].innerHTML = (e.charAt(0) == '!') ? ('<pre class="text-danger bg-danger">' + e.slice(1, e.length) + '</pre>') : (renderEquation((inputText == '') ? 'CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O' : inputText)
+            + '<br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>' + renderEquation(e));
         if (e.charAt(0) != '!') balText = e
         MathJax.typeset()
         $('#balBtn').text('配平')
@@ -240,4 +244,10 @@ function balUp() {
     if (mode != 'bal') return;
     $('#balInput').val(balText);
     input()
+}
+
+//QUERY-------------------------------
+
+function qryUp() {
+    $('#qryInput').val($('#balInput').val());
 }
