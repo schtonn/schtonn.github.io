@@ -116,6 +116,7 @@ function weigh(hash, mode = 0) {
         }
     }
     return eps(ans, mode);
+    return eps(ans, mode);
 }
 function weighEquation(str, mode = 0) {
     str = str.replace(/<\d*e[\+\-]>*/g, "").replace(/[^\dA-Za-z<>\(\)\+\-=\.;]/g, "");
