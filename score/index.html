@@ -55,6 +55,19 @@
 <body>
     <a class="btn btn-info" href="/" style="text-shadow: rgb(85, 85, 85) 3px 2px 4px;"><span
             class="glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp;返回</a>
+            （暴露优质接口-无安全意识、实在愚蠢；）
+    <div class="input-group">
+        <span class="input-group-addon">考试编号</span>
+        <input id="Id" type="text" class="form-control" autocomplete="off" placeholder="972" value="972">
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon">姓名或数字校园号</span>
+        <input id="Input" type="text" class="form-control" autocomplete="off" placeholder="20222001 或 小明">
+        <span class="input-group-btn">
+            <button type="button" class="btn btn-default" onclick="fetchMe($('#Input').val())"
+                id="fetchBtn">FETCH</button>
+        </span>
+    </div>
     <a tabindex="0" class="btn btn-warning hidable toggleHide" onclick="toggleHide();"
         style="text-shadow: rgb(85, 85, 85) 3px 2px 4px;display:none;">
         <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
@@ -80,7 +93,7 @@
                 href="../crypty/">加密算法</a>不算复杂，不过各位且用且珍惜吧）；但恶意使用这些数据造成的后果自负。
         </p>
         <h3>操作指南</h3>
-        <p>1. 加载多个文件后，使用方向键、数字键或右下角控件可在文件间快速切换，方便比较；</p>
+        <p>1. 加载多个文件后，使用方向键或右下角控件可在文件间快速切换，方便比较；</p>
         <p>2. 点击图例可隐藏部分内容；</p>
         <p>3. 一览表中 "0%" 代表最低分，"100%" 代表最高分，以此类推。</p>
         <br>
@@ -114,6 +127,7 @@
             </a>
         </div>
     </div>
+
     <div id="message" class="hidable"></div>
     <div id="fileInfo" class="hideble"></div>
     <div class="chart">

@@ -2,6 +2,8 @@ function toggleHide() {
     $(".hidable").toggle();
 };
 
+var knownExams = '3129,3096,3132,3101,3104,3087,3111,3092,3116,3067,3061'
+
 AV.init({
     appId: "BmologYYnRqCv0SLHDeDdA17-gzGzoHsz",
     appKey: "w9mVebFMdCmY6Nh9vfcBGaGt",
@@ -43,12 +45,13 @@ document.onkeydown = function (event) {
         }
         else if (e.key == "ArrowRight") {
             nextFile();
-        } else if ('1' <= e.key && e.key <= '9') {
-            if (parseInt(e.key) <= fileCount) {
-                cur = parseInt(e.key) - 1;
-                processFiles();
-            }
         }
+        //  else if ('1' <= e.key && e.key <= '9') {
+        //     if (parseInt(e.key) <= fileCount) {
+        //         cur = parseInt(e.key) - 1;
+        //         processFiles();
+        //     }
+        // }
     }
 };
 
@@ -70,7 +73,91 @@ function aesDecrypt(encrypted) {
     var decryptedStr = decrypted.toString(CryptoJS.enc.Utf8);
     return decryptedStr;
 }
+function aesEncrypt(encrypted) {
+    var cipherParams = CryptoJS.lib.CipherParams.create({ ciphertext: CryptoJS.enc.Hex.parse(encrypted) })
+    console.log(cipherParams)
+    return CryptoJS.AES.encrypt(encrypted, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 }).ciphertext.toString();
+}
 
+function stringToByte(str) {
+    var bytes = new Array();
+    var len, c;
+    len = str.length;
+    for (var i = 0; i < len; i++) {
+        c = str.charCodeAt(i);
+        if (c >= 0x010000 && c <= 0x10FFFF) {
+            bytes.push(((c >> 18) & 0x07) | 0xF0);
+            bytes.push(((c >> 12) & 0x3F) | 0x80);
+            bytes.push(((c >> 6) & 0x3F) | 0x80);
+            bytes.push((c & 0x3F) | 0x80);
+        } else if (c >= 0x000800 && c <= 0x00FFFF) {
+            bytes.push(((c >> 12) & 0x0F) | 0xE0);
+            bytes.push(((c >> 6) & 0x3F) | 0x80);
+            bytes.push((c & 0x3F) | 0x80);
+        } else if (c >= 0x000080 && c <= 0x0007FF) {
+            bytes.push(((c >> 6) & 0x1F) | 0xC0);
+            bytes.push((c & 0x3F) | 0x80);
+        } else {
+            bytes.push(c & 0xFF);
+        }
+    }
+    return bytes;
+
+}
+
+$().ready(function () {
+    $("#Input").keydown(function (e) {
+        if (e.keyCode == 13) {
+            $("#fetchBtn")[0].click();
+        }
+    });
+})
+
+function fetchDo(id) {
+    var bd = '{"meId":' + $('#Id').val() + ',"seIds":"' + knownExams + '","schoolId":19707,"studentId":"' + id + '"}';
+    console.log(bd)
+    bd = aesEncrypt(bd)
+    console.log(bd)
+    fetch('http://36.112.23.77/analysis/api/student/exam/getStudentReportMEVO', {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json',
+        },
+        body: bd
+    }).then(res => {
+        res.text().then(resj => {
+            files[fileCount] = new Blob([resj], {
+                type: 'text/plain'
+            });;
+            cur = fileCount;
+            fileCount++;
+            $("#controls").removeClass("disabled");
+            $("#lbtn").removeClass("disabled");
+            $("#rbtn").removeClass("disabled");
+            processFiles();
+        });
+    })
+}
+
+function fetchMe(id) {
+    console.log(parseInt(id))
+    if (!parseInt(id)) {
+        fetch('/js/e.json', {
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json',
+            }
+        }).then(res => {
+            res.json().then(resj => {
+                console.log(resj)
+                var queryData = resj.data.filter(function (e) {
+                    return e.name == id
+                });
+                fetchDo(queryData[0].no)
+            });
+        })
+    } else fetchDo(id)
+}
 
 function processFiles(isFirstTime = 0) {
     console.log("Start processing No. " + cur);
@@ -97,20 +184,19 @@ function processFiles(isFirstTime = 0) {
             var classText = "", gradingText = "";
 
             object.data = eval("(" + aesDecrypt(object.data).toString() + ")");
-
+            // console.log(object.data)
             var seIds = [], seNames = [], iter = 1;
             var datSingle = object.data.multiExamStudentScore.singleExamStudentScores, datClass = object.data.singleExamClassScores, datYs = object.data.singleExamClassYsScores, datMulti = object.data.multiExam.singleExams;
             seIds = object.data.seIds;
             for (var i = 0; i < seIds.length; i++) {
-                console.log(datMulti[i].seId)
                 for (var j = 0; j < seIds.length; j++) {
                     if (datMulti[i].seId == seIds[j]) {
                         seNames[j] = datMulti[i].seCourseName;
                     }
                 }
             }
-            console.log(seIds)
-            console.log(seNames)
+            // console.log(seIds)
+            // console.log(seNames)
             var seNameDic = {};
             for (var i = 0; i < seIds.length; i++) {
                 seNameDic[seIds[i]] = seNames[i];
@@ -119,20 +205,26 @@ function processFiles(isFirstTime = 0) {
             for (var i = 0; i < datYs.length; i++) {
                 seNameDic[datYs[i].seId + "Ys"] = seNameDic[datYs[i].seId] + " " + datYs[i].ysClassId;
             }
-            console.log(seNameDic)
-            var seIdDic = {}, seIdRev = {};
+            var seIdDic = {}, seIdRev = {}, hasId = {};
             for (var i = 0; i < seIds.length; i++) {
                 for (var j = 0; j < seIds.length; j++) {
+                    if (!datSingle[j]) continue;
                     if (datSingle[j].seId == seIds[i]) {
+                        hasId[i] = true;
                         seIdDic[j] = i;
                     }
                 }
+            }
+            for (var i = 1; i < seIds.length; i++) {
+                if (!hasId[i]) seIds[i] = -1
             }
             for (var i = 0; i < seIds.length; i++)seIdRev[seIdDic[i]] = i;
             var scoreP = {}, avgP = {}, rate0 = {}, rate25 = {}, rate50 = {}, rate75 = {}, rate100 = {}, rateFull = {};//表1用
             var classOrderP = {}, ysClassOrderP = {}, gradeOrderP = {};
             var classOrder = {}, ysClassOrder = {}, gradeOrder = {};
             for (var i = 0; i < seIds.length; i++) {
+                if (!datSingle[i]) continue;
+
                 var dId = datSingle[i].seId;
                 scoreP[dId] = datSingle[i].essScore;
                 avgP[dId] = datClass[i].secsAvgScore;
@@ -149,12 +241,14 @@ function processFiles(isFirstTime = 0) {
                 gradeOrder[dId] = decimal(1 - datSingle[i].essGradeOrder / datMulti[seIdDic[i]].seStudentCount, 3);
             }
             // scoreRate["0"] = decimal(object.data.multiExamStudentScore.messScore / object.data.multiExam.meFullScore, 3);
-            // classOrder["0"] = decimal(1 - object.data.multiExamStudentScore.messClassOrder / object.data.multiExamClassScores[0].mecsStudentCount, 3); + "<br>"
-            // gradeOrder["0"] = decimal(1 - object.data.multiExamStudentScore.messGradeOrder / object.data.multiExamSchoolScore.mecsStudentCount, 3); + "<br>"
+            classOrder["0"] = decimal(1 - object.data.multiExamStudentScore.messClassOrder / object.data.multiExamClassScores[0].mecsStudentCount, 3); + "<br>"
+            gradeOrder["0"] = decimal(1 - object.data.multiExamStudentScore.messGradeOrder / object.data.multiExamSchoolScore.mecsStudentCount, 3); + "<br>"
             classOrderP["0"] = object.data.multiExamStudentScore.messClassOrder;
             gradeOrderP["0"] = object.data.multiExamStudentScore.messGradeOrder
             for (var i = 0; i < datYs.length; i++) {
                 for (var j = 0; j < seIds.length; j++) {
+                    if (!datSingle[j]) continue;
+
                     if (datYs[i].seId == datSingle[j].seId) {
                         ysClassOrder[datYs[i].seId + "Ys"] = decimal(1 - datSingle[j].essYsClassOrder / datYs[i].secsStudentCount, 3);
                         ysClassOrderP[datYs[i].seId + "Ys"] = datSingle[j].essYsClassOrder;
@@ -170,6 +264,8 @@ function processFiles(isFirstTime = 0) {
                 // 前两个和后两个数据应该是能分别对上号的（1-2 3-4），用 seIdDic 连接
                 // seIdDic {key(1-2): value(3-4),..}
                 var g = seIdRev[i];
+                if (!datSingle[g]) continue;
+
                 classText += "<h4>"
                     + seNameDic[datSingle[g].seId] + "</h4>"
                     + "<b>单科分数：" + datSingle[g].essScore + "</b><br><br>"
@@ -261,9 +357,10 @@ function processFiles(isFirstTime = 0) {
         scoreQ = []; avgQ = []; rate0Q = []; rate25Q = []; rate50Q = []; rate75Q = []; rate100Q = [];
         seNameDicP2 = []; classOrderPP = []; gradeOrderPP = []; classOrderQ = []; gradeOrderQ = [];
         seNameDicP3 = []; ysClassOrderPP = []; ysClassOrderQ = [];
-        console.log(scoreP)
+        seIds[seIds.length] = 0
         for (var i = 0; i < seIds.length; i++) {
             var g = seIds[i];
+            if (g == -1) continue;
             if (seNameDic[g].substr(0, 2) == '总分') continue;
             seNameDicP.push(seNameDic[g].substr(0, 2));
             scorePP.push(scoreP[g]);
@@ -282,8 +379,10 @@ function processFiles(isFirstTime = 0) {
             rate75Q.push(decimal(rate75[g] / rateFull[g] * 100, 1));
             rate100Q.push(decimal(rate100[g] / rateFull[g] * 100, 1));
         }
+        console.log(seIds)
         for (var i = 0; i < seIds.length; i++) {
             var g = seIds[i];
+            if (g == -1) continue;
             seNameDicP2.push(seNameDic[g].substr(0, 2));
             classOrderPP.push(classOrderP[g]);
             gradeOrderPP.push(gradeOrderP[g]);
