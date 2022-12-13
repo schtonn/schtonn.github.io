@@ -24,6 +24,12 @@
             overflow-y: auto;
         }
 
+        pre {
+            overflow-x: auto;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
         .btn-default:focus,
         .btn-default:focus-visible,
         .btn-default:focus-within,
@@ -73,7 +79,7 @@
                     <button type="button" class="btn btn-default" onclick="balUp()" id="balShare" title="导入配平结果"> <span
                             class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
                 </span>
-                <input id="balInput" type="text" class="form-control" oninput="input()">
+                <input id="balInput" type="text" class="form-control" oninput="input()" autocomplete="off">
                 <span class="input-group-btn">
                     <button type="button" class="btn btn-default" onclick="balance()" id="balBtn">配平</button>
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -89,38 +95,66 @@
                         <li class="divider"></li>
                         <li><a href="/chemist" data-toggle="tooltip" data-placement="left" title="将打开新页面">配平接口</a>
                         </li>
-                        <li class="divider"></li>
-                        <li><a href="#" data-toggle="tooltip" data-placement="left" title="将会对所有人可见">发送到数据库</a></li>
+                        <!-- <li class="divider"></li>
+                        <li><a href="#" data-toggle="tooltip" data-placement="left" title="将会对所有人可见">发送到数据库</a></li> -->
                     </ul>
                 </span>
             </div>
             <hr>
-            <div class="well" id="frame">
+            <div class="well frame">
             </div>
             <hr>
             <div class="input-group">
                 <span class="input-group-btn">
                     <button type="button" class="btn btn-default" onclick="qryUp()" id="qryShare" title="导入配平结果"> <span
                             class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
+                    <button type="button" class="btn btn-default" data-toggle="button" onclick="qryToggleMatch()"
+                        id="qryMatch">匹配分子</button>
                 </span>
-                <input id="qryInput" type="text" class="form-control" oninput="input()">
+                <input id="qryInput" type="text" class="form-control qryInput" autocomplete="off" oninput="input2()">
+                <span class="input-group-addon qryInputHidable" style="display:none">=</span>
+                <input id="qryInput2" type="text" class="form-control qryInput qryInputHidable" style="display:none"
+                    autocomplete="off" oninput="input2()">
                 <span class="input-group-btn">
-                    <button type="button" class="btn btn-default" onclick="balance()" id="qryBtn">查询</button>
+                    <button type="button" class="btn btn-default" onclick="query()" id="qryBtn">查询方程式</button>
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                         <span class="caret"></span>
                         <span class="sr-only">切换下拉菜单</span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
                         <li class="dropdown-header">功能</li>
-                        <li><a href="#" onclick="setBal()">查询</a></li>
+                        <li><a href="#1" onclick="setQryEq()">查询方程式</a></li>
+                        <li><a href="#1" onclick="setQryEq2()" data-toggle="tooltip" data-placement="left"
+                                title="限制等号左右">查询方程式*</a></li>
+                        <li><a href="#4" onclick="setQryMo()">查询分子</a></li>
                         <li class="divider"></li>
-                        <li><a href="/chemist" data-toggle="tooltip" data-placement="left" title="将打开新页面">上传到数据库</a>
+                        <li><a href="#5" onclick="setAddEq()">上传方程式</a></li>
+                        <li><a href="#5" onclick="setAddMo()">上传分子</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#1" onclick="setUpdEq()">修改方程式</a></li>
+                        <li><a href="#4" onclick="setUpdMo()">修改分子</a></li>
                         </li>
                     </ul>
                 </span>
             </div>
+            <div class="input-group addInput">
+                <span id="addId"><span class="input-group-addon">id</span>
+                    <input type="text" class="form-control" id="addIdText" oninput="input2()" autocomplete="off"
+                        placeholder="1">
+                </span>
+                <span><span class="input-group-addon">反应条件</span>
+                    <input id="addCondition" type="text" class="form-control" autocomplete="off"
+                        placeholder="加热;高温;点燃;通电;光照;MnO2">
+                </span>
+                <span><span class="input-group-addon">描述</span>
+                    <textarea id="addDescription" type="text" class="form-control" autocomplete="off"
+                        style="resize:vertical"></textarea>
+                </span>
+                <span class="input-group-addon">:)</span>
+            </div>
+            <pre class="ok" style="font-family: 'Consolas'"></pre>
             <hr>
-            <div class="well" id="frame">
+            <div class="well frame">
             </div>
         </div>
     </div>

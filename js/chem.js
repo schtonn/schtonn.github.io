@@ -153,7 +153,7 @@ function parseEquation(str) {
 
 function renderEquation(str) {
     str = str.replace(/[\[{]/g, "(").replace(/[\]}]/g, ")");
-    str=str.replace(/([\+\=\.;])\1+/g,'$1')
+    str = str.replace(/([\+\=\.;])\1+/g, '$1')
     str = str.replace(/[^\dA-Za-z<>\(\)\+\-=\.;]/g, "");
     // console.log('Rendering equation', str)
     str = str.replace(/([A-Za-z]+)/g, "\\text{$1}");
@@ -171,6 +171,7 @@ var mode = 'bal', balInput, balText = '', inputText
 $().ready(function () {
     balInput = $("#balInput")[0]
     setBal();
+    setQryEq();
     $("#balInput").keydown(function (e) {
         if (e.keyCode == 13 && mode == 'bal') {
             $("#balBtn")[0].click();
@@ -179,7 +180,7 @@ $().ready(function () {
     $(function () { $("[data-toggle='tooltip']").tooltip(); });
 })
 function setBal() {
-    $('#frame')[0].innerHTML = renderEquation(balText);
+    $('.frame')[0].innerHTML = renderEquation(balText);
     MathJax.typeset()
     $('#balBtn').text('配平')
     $('#balShare').removeClass('disabled')
@@ -210,34 +211,35 @@ function setWeigh2() {
 function input() {
     inputText = balInput.value
     if (mode == 'bal') {
-        $('#frame')[0].innerHTML = renderEquation((inputText == '') ? 'CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O' : inputText) + '<br>'
+        $('.frame')[0].innerHTML = renderEquation((inputText == '') ? 'CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O' : inputText) + '<br>'
             + '<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>' + ((balText != '') ? (renderEquation(balText)) : ('...'));
         MathJax.typeset()
     } else if (mode == 'weigh') {
-        $('#frame')[0].innerHTML = renderEquation((inputText == '') ? 'CH3CHO+2Ag(NH3)2OH=CH3COONH4+2Ag+3NH3+H2O' : inputText) + '<br>'
+        $('.frame')[0].innerHTML = renderEquation((inputText == '') ? 'CH3CHO+2Ag(NH3)2OH=CH3COONH4+2Ag+3NH3+H2O' : inputText) + '<br>'
             + weighEquation((inputText == '') ? 'CH3CHO+2Ag(NH3)2OH=CH3COONH4+2Ag+3NH3+H2O' : inputText);
         MathJax.typeset()
     } else if (mode == 'weigh2') {
-        $('#frame')[0].innerHTML = renderEquation((inputText == '') ? 'CH3CHO+2Ag(NH3)2OH=CH3COONH4+2Ag+3NH3+H2O' : inputText) + '<br>'
+        $('.frame')[0].innerHTML = renderEquation((inputText == '') ? 'CH3CHO+2Ag(NH3)2OH=CH3COONH4+2Ag+3NH3+H2O' : inputText) + '<br>'
             + weighEquation((inputText == '') ? 'CH3CHO+2Ag(NH3)2OH=CH3COONH4+2Ag+3NH3+H2O' : inputText, 1);
         MathJax.typeset()
     }
 }
 var running;
 function balance() {
+    input()
     if (running || mode != 'bal') return;
     $('#balBtn').text('配平...')
     $('#balBtn').addClass('disabled')
-    $('#frame').addClass('text-muted')
+    $('.frame').addClass('text-muted')
     running = 1;
-    $.get('/chem?' + ((inputText == '') ? 'CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O' : inputText), function (e) {
-        $('#frame')[0].innerHTML = (e.charAt(0) == '!') ? ('<pre class="text-danger bg-danger">' + e.slice(1, e.length) + '</pre>') : (renderEquation((inputText == '') ? 'CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O' : inputText)
+    return $.get('/chem?' + ((inputText == '') ? 'CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O' : inputText), function (e) {
+        $('.frame')[0].innerHTML = (e.charAt(0) == '!') ? ('<pre class="text-danger bg-danger">' + e.slice(1, e.length) + '</pre>') : (renderEquation((inputText == '') ? 'CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O' : inputText)
             + '<br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>' + renderEquation(e));
         if (e.charAt(0) != '!') balText = e
         MathJax.typeset()
         $('#balBtn').text('配平')
         $('#balBtn').removeClass('disabled')
-        $('#frame').removeClass('text-muted')
+        $('.frame').removeClass('text-muted')
         running = 0;
     })
 }
@@ -249,6 +251,315 @@ function balUp() {
 
 //QUERY-------------------------------
 
+var modeq = 'query', nameq = 'eq', strict = false, matchMode = 'mole'
+function setQryEq() {
+    $('#qryMatch').show()
+    $('.addInput').hide()
+    $('.ok').show()
+    modeq = 'query', nameq = 'eq', strict = false
+    $('.qryInputHidable').hide()
+    $('#qryBtn').text('查询方程式')
+    $('#qryInput').attr('placeholder', 'O2=H2O')
+    input2();
+}
+function setQryEq2() {
+    $('#qryMatch').show()
+    $('.addInput').hide()
+    $('.ok').show()
+    modeq = 'query', nameq = 'eq', strict = true
+    $('.qryInputHidable').show()
+    $('#qryBtn').text('查询方程式*')
+    $('#qryInput').attr('placeholder', 'H2O')
+    input2();
+}
+function setQryMo() {
+    $('#qryMatch').show()
+    $('.addInput').hide()
+    $('.ok').show()
+    modeq = 'query', nameq = 'mo'
+    $('.qryInputHidable').hide()
+    $('#qryBtn').text('查询分子')
+    input2();
+}
+function setAddEq() {
+    $('#qryMatch').hide()
+    $('.addInput').show()
+    $('#addId').hide()
+    $('.ok').hide()
+    modeq = 'add', nameq = 'eq'
+    $('.qryInputHidable').hide()
+    $('#qryBtn').text('上传方程式')
+    $('#qryInput').attr('placeholder', 'H2+O2=H2O')
+}
+function setAddMo() {
+    $('#qryMatch').hide()
+    $('.addInput').show()
+    $('#addId').hide()
+    $('.ok').hide()
+    modeq = 'add', nameq = 'mo'
+    $('.qryInputHidable').hide()
+    $('#qryBtn').text('上传分子')
+}
+function setUpdEq() {
+    $('#qryMatch').hide()
+    $('.addInput').show()
+    $('#addId').show()
+    $('.ok').hide()
+    modeq = 'upd', nameq = 'eq'
+    $('.qryInputHidable').hide()
+    $('#qryBtn').text('修改方程式')
+    $('#qryInput').attr('placeholder', '')
+}
+function setUpdMo() {
+    $('#qryMatch').hide()
+    $('.addInput').show()
+    $('#addId').show()
+    $('.ok').hide()
+    modeq = 'upd', nameq = 'mo'
+    $('.qryInputHidable').hide()
+    $('#qryBtn').text('修改分子')
+}
+function getRegex() {
+    var ret = ''
+    if (strict) {
+        var acont = $('#qryInput').val(), bcont = $('#qryInput2').val();
+        if (!acont && !bcont) acont = $('#qryInput').attr('placeholder')
+        acont = acont.replace(/([\+\=\.;])+/g, '$1')
+        bcont = bcont.replace(/([\+\=\.;])+/g, '$1')
+        ret = '^'
+        if (acont) {
+            var as = acont.split('+')
+            for (let i = 0; i < as.length; i++) {
+                if (matchMode == 'mole') ret += '(?=([^=]*\\+|)[0-9]?' + as[i] + '([+=]|$))'
+                else ret += '(?=[^=]*' + as[i] + '([^a-z]|$))'
+            }
+        }
+        if (bcont) {
+            var bs = bcont.split('+');
+            for (let i = 0; i < bs.length; i++) {
+                if (matchMode == 'mole') ret += '(?=.*=(.*\\+|)[0-9]?' + bs[i] + '([+=]|$))'
+                else ret += '(?=.*=.*' + bs[i] + '([^a-z]|$))'
+            }
+        }
+        ret += '.*'
+    } else {
+        ret = $('#qryInput').val()
+        if (!ret) ret = $('#qryInput').attr('placeholder')
+        ret = ret.replace(/([\+\=\.;])+/g, '$1')
+        var scont = ret.split('=')
+        if (scont.length > 2) return;
+        var as = scont[0].split('+');
+        ret = matchMode == 'mole' ? '^' : ''
+        for (let i = 0; i < as.length; i++) {
+            if (matchMode == 'mole') ret += "(?=(.*[+=]|)[0-9]?" + as[i] + "([+=]|$))"
+            else ret += '(?=.*' + as[i] + '([^a-z]|$))'
+        }
+        if (scont.length > 1) {
+            var bs = scont[1].split('+')
+            for (let i = 0; i < bs.length; i++) {
+                if (matchMode == 'mole') ret += "(?=(.*[+=]|)[0-9]?" + bs[i] + "([+=]|$))"
+                else ret += '(?=.*' + as[i] + '([^a-z]|$))'
+            }
+        }
+        ret += '.*'
+    }
+    return ret
+}
+function query() {
+    if (modeq == 'query' || modeq == 'add') {
+        var cont = getRegex();
+        $('.ok')[0].innerHTML = cont;
+        var bd = JSON.stringify({
+            content: cont,
+        })
+        console.log(bd)
+        fetch('/chem/query/' + nameq, {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json',
+            },
+            body: bd
+        }).then(res => {
+            res.text().then(resj => {
+                if (resj[0] == '!') {
+                    $('.frame')[1].innerHTML = '<pre class="text-danger bg-danger">' + resj + '</pre>';
+                } else {
+                    resj = JSON.parse(resj)
+                    $('.frame')[1].innerHTML = '';
+                    for (let i = 0; i < resj.length; i++) {
+                        console.log(resj[i])
+                        $('.frame')[1].innerHTML += renderEquation(resj[i].content) + '<br>';
+                        $('.frame')[1].innerHTML += '<span class="label label-default">' + resj[i].id + '</span>';
+                        if (resj[i].conditions) $('.frame')[1].innerHTML += '（' + resj[i].conditions + '）';
+                        $('.frame')[1].innerHTML += resj[i].descriptions + '<br>';
+                        if (resj[i].rel) {
+                            $('.frame')[1].innerHTML += 'rel: <span class="label label-default">' + resj[i].rel + '</span><br>';
+                        }
+                    }
+                    MathJax.typeset()
+                }
+            });
+        })
+    }
+    if (modeq == 'add') {
+        $('#balInput').val($('#qryInput').val() ? $('#qryInput').val() : $('#qryInput').attr('placeholder'))
+        setBal();
+        balance().then(e => {
+            console.log(e)
+            if (e[0] == '!') {
+                return;
+            }
+            input();
+            if (!$('#addDescription').val()) {
+                alert('无描述')
+                return;
+            }
+            var resp = confirm(e + '请确认')
+            if (!resp) return;
+            $('#qryInput').val(e)
+            var bd = JSON.stringify({
+                content: $('#qryInput').val(),
+                conditions: $('#addCondition').val(),
+                descriptions: $('#addDescription').val(),
+            })
+            console.log(bd)
+            fetch('/chem/add/' + nameq, {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                },
+                body: bd
+            }).then(re => {
+                fetch('/chem/query/' + nameq, {
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        content: $('#qryInput').val(),
+                    })
+                }).then(res => {
+                    res.text().then(resj => {
+                        console.log(resj)
+                        if (resj[0] == '!') {
+                            $('.frame')[1].innerHTML = '<pre class="text-danger bg-danger">' + resj + '</pre>';
+                        } else {
+                            resj = JSON.parse(resj)
+                            $('.frame')[1].innerHTML = '';
+                            for (let i = 0; i < resj.length; i++) {
+                                console.log(resj[i])
+                                $('.frame')[1].innerHTML += renderEquation(resj[i].content) + '<br>';
+                                $('.frame')[1].innerHTML += '<span class="label label-default">' + resj[i].id + '</span>';
+                                if (resj[i].conditions) $('.frame')[1].innerHTML += '（' + resj[i].conditions + '）';
+                                $('.frame')[1].innerHTML += resj[i].descriptions + '<br>';
+                                if (resj[i].rel) {
+                                    $('.frame')[1].innerHTML += 'rel: <span class="label label-default">' + resj[i].rel + '</span><br>';
+                                }
+                            }
+                            MathJax.typeset()
+                        }
+                    });
+                })
+            })
+        })
+    }
+    if (modeq == 'upd') {
+        $('#balInput').val($('#qryInput').val() ? $('#qryInput').val() : $('#qryInput').attr('placeholder'))
+        setBal();
+        balance().then(e => {
+            console.log(e)
+            if (e[0] == '!') {
+                return;
+            }
+            input();
+            if (!$('#addDescription').val()) {
+                alert('无描述')
+                return;
+            }
+            var resp = confirm(e + '请确认')
+            if (!resp) return;
+            $('#qryInput').val(e)
+            var bd = JSON.stringify({
+                content: $('#qryInput').val(),
+                id: $('#addIdText').val(),
+                conditions: $('#addCondition').val(),
+                descriptions: $('#addDescription').val(),
+            })
+            console.log(bd)
+            fetch('/chem/upd/' + nameq, {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                },
+                body: bd
+            })
+            input2();
+        })
+    }
+}
+
+function input2() {
+    if (modeq == 'upd') {
+        var bd = JSON.stringify({
+            content: $('#addIdText').val(),
+        })
+        if (!$('#addIdText').val()) {
+            $('.frame')[1].innerHTML = '';
+            return;
+        }
+        console.log(bd)
+        fetch('/chem/query/' + nameq + 'id', {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json',
+            },
+            body: bd
+        }).then(res => {
+            res.text().then(resj => {
+                if (resj[0] == '!') {
+                    $('.frame')[1].innerHTML = '<pre class="text-danger bg-danger">' + resj + '</pre>';
+                } else {
+                    resj = JSON.parse(resj)[0]
+                    if (resj) {
+                        $('.frame')[1].innerHTML = '';
+                        console.log(resj)
+                        $('.frame')[1].innerHTML += renderEquation(resj.content) + '<br>';
+                        $('.frame')[1].innerHTML += '<span class="label label-default">' + resj.id + '</span>';
+                        if (resj.conditions) $('.frame')[1].innerHTML += '（' + resj.conditions + '）';
+                        $('.frame')[1].innerHTML += resj.descriptions + '<br>';
+                        if (resj.rel) {
+                            $('.frame')[1].innerHTML += 'rel: <span class="label label-default">' + resj.rel + '</span><br>';
+                        }
+                        $('#qryInput').val(resj.content)
+                        $('#addCondition').val(resj.conditions)
+                        $('#addDescription').val(resj.descriptions)
+                        MathJax.typeset()
+                    } else $('.frame')[1].innerHTML = '';
+                }
+            });
+        })
+    } else if (modeq == 'query') {
+        $('.ok')[0].innerHTML = getRegex()
+    }
+}
+
+function qryToggleMatch() {
+    if (matchMode == 'mole') {
+        $('#qryMatch')[0].innerHTML = '匹配元素'
+        matchMode = 'elem'
+    } else {
+        $('#qryMatch')[0].innerHTML = '匹配分子'
+        matchMode = 'mole'
+    }
+}
+
 function qryUp() {
-    $('#qryInput').val($('#balInput').val());
+    var sp = $('#balInput').val().split('=')
+    if (sp.length > 1) {
+        if (modeq == 'query') {
+            $('#qryInput').val(sp[0])
+            $('#qryInput2').val(sp[1])
+            setQryEq2();
+        } else $('#qryInput').val($('#balInput').val());
+    } else $('#qryInput').val($('#balInput').val());
 }
