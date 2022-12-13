@@ -116,7 +116,6 @@ function weigh(hash, mode = 0) {
         }
     }
     return eps(ans, mode);
-    return eps(ans, mode);
 }
 function weighEquation(str, mode = 0) {
     str = str.replace(/<\d*e[\+\-]>*/g, "").replace(/[^\dA-Za-z<>\(\)\+\-=\.;]/g, "");
@@ -493,54 +492,56 @@ function query() {
                 },
                 body: bd
             })
-            input2();
+            inputId();
         })
     }
 }
 
 function input2() {
-    if (modeq == 'upd') {
-        var bd = JSON.stringify({
-            content: $('#addIdText').val(),
-        })
-        if (!$('#addIdText').val()) {
-            $('.frame')[1].innerHTML = '';
-            return;
-        }
-        console.log(bd)
-        fetch('/chem/query/' + nameq + 'id', {
-            method: 'POST',
-            headers: {
-                'Content-type': 'application/json',
-            },
-            body: bd
-        }).then(res => {
-            res.text().then(resj => {
-                if (resj[0] == '!') {
-                    $('.frame')[1].innerHTML = '<pre class="text-danger bg-danger">' + resj + '</pre>';
-                } else {
-                    resj = JSON.parse(resj)[0]
-                    if (resj) {
-                        $('.frame')[1].innerHTML = '';
-                        console.log(resj)
-                        $('.frame')[1].innerHTML += renderEquation(resj.content) + '<br>';
-                        $('.frame')[1].innerHTML += '<span class="label label-default">' + resj.id + '</span>';
-                        if (resj.conditions) $('.frame')[1].innerHTML += '（' + resj.conditions + '）';
-                        $('.frame')[1].innerHTML += resj.descriptions + '<br>';
-                        if (resj.rel) {
-                            $('.frame')[1].innerHTML += 'rel: <span class="label label-default">' + resj.rel + '</span><br>';
-                        }
-                        $('#qryInput').val(resj.content)
-                        $('#addCondition').val(resj.conditions)
-                        $('#addDescription').val(resj.descriptions)
-                        MathJax.typeset()
-                    } else $('.frame')[1].innerHTML = '';
-                }
-            });
-        })
-    } else if (modeq == 'query') {
+    if (modeq == 'query') {
         $('.ok')[0].innerHTML = getRegex()
     }
+}
+
+function inputId() {
+    var bd = JSON.stringify({
+        content: $('#addIdText').val(),
+    })
+    if (!$('#addIdText').val()) {
+        $('.frame')[1].innerHTML = '';
+        return;
+    }
+    console.log(bd)
+    fetch('/chem/query/' + nameq + 'id', {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json',
+        },
+        body: bd
+    }).then(res => {
+        res.text().then(resj => {
+            if (resj[0] == '!') {
+                $('.frame')[1].innerHTML = '<pre class="text-danger bg-danger">' + resj + '</pre>';
+            } else {
+                resj = JSON.parse(resj)[0]
+                if (resj) {
+                    $('.frame')[1].innerHTML = '';
+                    console.log(resj)
+                    $('.frame')[1].innerHTML += renderEquation(resj.content) + '<br>';
+                    $('.frame')[1].innerHTML += '<span class="label label-default">' + resj.id + '</span>';
+                    if (resj.conditions) $('.frame')[1].innerHTML += '（' + resj.conditions + '）';
+                    $('.frame')[1].innerHTML += resj.descriptions + '<br>';
+                    if (resj.rel) {
+                        $('.frame')[1].innerHTML += 'rel: <span class="label label-default">' + resj.rel + '</span><br>';
+                    }
+                    $('#qryInput').val(resj.content)
+                    $('#addCondition').val(resj.conditions)
+                    $('#addDescription').val(resj.descriptions)
+                    MathJax.typeset()
+                } else $('.frame')[1].innerHTML = '';
+            }
+        });
+    })
 }
 
 function qryToggleMatch() {
