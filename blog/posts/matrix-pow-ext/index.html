@@ -1,0 +1,97 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=2"><meta name="theme-color" content="#222"><meta name="generator" content="Hexo 4.2.0"><link rel="apple-touch-icon" sizes="180x180" href="/blog/blog/images/apple-touch-icon-next.png"><link rel="icon" type="image/png" sizes="32x32" href="/blog/blog/images/favicon-frog.png"><link rel="icon" type="image/png" sizes="16x16" href="/blog/blog/images/favicon-frog.png"><link rel="mask-icon" href="/blog/blog/images/logo.svg" color="#222"><link rel="stylesheet" href="/blog/css/main.css"><link rel="stylesheet" href="//fonts.googleapis.com/css?family=Comic Sans MS:300,300italic,400,400italic,700,700italic|Consolas:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext"><link rel="stylesheet" href="/blog/lib/font-awesome/css/font-awesome.min.css"><link rel="stylesheet" href="/blog/lib/pace/pace-theme-minimal.min.css"><script src="/blog/lib/pace/pace.min.js"></script><script id="hexo-configurations">var NexT=window.NexT||{},CONFIG={hostname:"schtonn.github.io",root:"/blog/",scheme:"Muse",version:"7.8.0",exturl:!1,sidebar:{position:"left",display:"post",padding:18,offset:12,onmobile:!1},copycode:{enable:!0,show_result:!0,style:"flat"},back2top:{enable:!0,sidebar:!1,scrollpercent:!0},bookmark:{enable:!1,color:"#222",save:"auto"},fancybox:!1,mediumzoom:!1,lazyload:!0,pangu:!1,comments:{style:"tabs",active:"valine",storage:!0,lazyload:!1,nav:null,activeClass:"valine"},algolia:{hits:{per_page:10},labels:{input_placeholder:"Search for Posts",hits_empty:"We didn't find any results for the search: ${query}",hits_stats:"${hits} results found in ${time} ms"}},localsearch:{enable:!1,trigger:"auto",top_n_per_article:1,unescape:!1,preload:!1},motion:{enable:!0,async:!1,transition:{post_block:"fadeIn",post_header:"slideDownIn",post_body:"slideDownIn",coll_header:"slideLeftIn",sidebar:"slideUpIn"}}}</script><meta name="description" content="前置知识 矩阵快速幂，聪明的头脑。 引入 这篇文章旨在记录丰富的矩阵快速幂应用。"><meta property="og:type" content="article"><meta property="og:title" content="矩阵快速幂扩展应用"><meta property="og:url" content="https://schtonn.github.io/blog/posts/matrix-pow-ext/index.html"><meta property="og:site_name" content="schtonn"><meta property="og:description" content="前置知识 矩阵快速幂，聪明的头脑。 引入 这篇文章旨在记录丰富的矩阵快速幂应用。"><meta property="og:locale" content="en_US"><meta property="article:published_time" content="2021-05-16T13:38:21.000Z"><meta property="article:modified_time" content="2022-10-19T15:02:06.666Z"><meta property="article:author" content="Alex"><meta property="article:tag" content="math"><meta property="article:tag" content="matrix"><meta name="twitter:card" content="summary"><link rel="canonical" href="https://schtonn.github.io/blog/posts/matrix-pow-ext/"><script id="page-configurations">CONFIG.page={sidebar:"",isHome:!1,isPost:!0,lang:"en"}</script><title>矩阵快速幂扩展应用 | schtonn</title><noscript><style>.sidebar-inner,.use-motion .brand,.use-motion .collection-header,.use-motion .comments,.use-motion .menu-item,.use-motion .pagination,.use-motion .post-block,.use-motion .post-body,.use-motion .post-header{opacity:initial}.use-motion .site-subtitle,.use-motion .site-title{opacity:initial;top:initial}.use-motion .logo-line-before i{left:initial}.use-motion .logo-line-after i{right:initial}</style></noscript></head><body itemscope itemtype="http://schema.org/WebPage"><div class="container use-motion"><div class="headband"></div><header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="header-inner"><div class="site-brand-container"><div class="site-nav-toggle"><div class="toggle" aria-label="Toggle navigation bar"><span class="toggle-line toggle-line-first"></span><span class="toggle-line toggle-line-middle"></span><span class="toggle-line toggle-line-last"></span></div></div><div class="site-meta"><a href="/blog/" class="brand" rel="start"><span class="logo-line-before"><i></i></span><h1 class="site-title">schtonn</h1><span class="logo-line-after"><i></i></span></a><p class="site-subtitle" itemprop="description">schtonn</p></div><div class="site-nav-right"><div class="toggle popup-trigger"></div></div></div><nav class="site-nav"><ul id="menu" class="menu"><li class="menu-item menu-item-home"><a href="/blog/" rel="section"><i class="fa fa-fw fa-home"></i> Home</a></li><li class="menu-item menu-item-tags"><a href="/blog/tags/" rel="section"><i class="fa fa-fw fa-tags"></i> Tags</a></li><li class="menu-item menu-item-archives"><a href="/blog/archives/" rel="section"><i class="fa fa-fw fa-archive"></i> Archives</a></li><li class="menu-item menu-item-games"><a href="/blog/games/" rel="section"><i class="fa fa-fw fa-gamepad"></i> Games</a></li></ul></nav></div></header><div class="back-to-top"><i class="fa fa-arrow-up"></i> <span>0%</span></div><main class="main"><div class="main-inner"><div class="content-wrap"><div class="content post posts-expand"><article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en"><link itemprop="mainEntityOfPage" href="https://schtonn.github.io/blog/posts/matrix-pow-ext/"><span hidden itemprop="author" itemscope itemtype="http://schema.org/Person"><meta itemprop="image" content="/blog/images/avatar.gif"><meta itemprop="name" content="Alex"><meta itemprop="description" content="blog"></span><script type="text/javascript" src="/blog/js/md5.js"></script><script></script><script>document.oncopy=function(e){window.event&&(e=window.event);try{var t=e.srcElement;return"INPUT"==t.tagName&&"text"==t.type.toLowerCase()||"TEXTAREA"==t.tagName}catch(e){return!1}}</script><span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization"><meta itemprop="name" content="schtonn"></span><header class="post-header"><h1 class="post-title" itemprop="name headline"> 矩阵快速幂扩展应用</h1><div class="post-meta"><span class="post-meta-item"><span class="post-meta-item-icon"><i class="fa fa-calendar-o"></i></span> <span class="post-meta-item-text">Posted on</span> <time title="Created: 2021-May-16 21:38:21" itemprop="dateCreated datePublished" datetime="2021-05-16T21:38:21+08:00">2021-May-16</time></span><span class="post-meta-item"><span class="post-meta-item-icon"><i class="fa fa-calendar-check-o"></i></span> <span class="post-meta-item-text">Edited on</span> <time title="Modified: 2022-Oct-19 23:02:06" itemprop="dateModified" datetime="2022-10-19T23:02:06+08:00">2022-Oct-19</time></span><span class="post-meta-item"><span class="post-meta-item-icon"><i class="fa fa-comment-o"></i></span> <span class="post-meta-item-text">Valine:</span><a title="valine" href="/blog/posts/matrix-pow-ext/#valine-comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/blog/posts/matrix-pow-ext/" itemprop="commentCount"></span></a></span></div></header><div class="post-body" itemprop="articleBody"><h2 id="前置知识">前置知识</h2><p><a href="/blog/posts/matrix-pow">矩阵快速幂</a>，聪明的头脑。</p><h2 id="引入">引入</h2><p>这篇文章旨在记录丰富的矩阵快速幂应用。</p><a id="more"></a><h2 id="多项式">多项式</h2><p>如果在递推式中加入一个和当前项相关的多项式，应该如何解决呢？</p><p>如： <span class="math display">\[F_n=F_{n-1}+F_{n-2}+n^3\]</span> 或者： <span class="math display">\[F_n=F_{n-1}+F_{n-2}+114514n^3+1919810n^2+123n+999\]</span></p><p>其实在<a href="/blog/posts/matrix-pow-complex">复杂矩阵快速幂</a>中已经有过这样的思想了，只不过加的只是一个常数。</p><p>我们可以对每一项分开考虑。</p><p>从 <span class="math inline">\(1\)</span> 到 <span class="math inline">\(1\)</span> 的转换只需要乘 <span class="math inline">\(1\)</span> 就好了。</p><p>从 <span class="math inline">\(n\)</span> 到 <span class="math inline">\(n+1\)</span> 的转换，首先加上 <span class="math inline">\(1\times n\)</span>，然后加上 <span class="math inline">\(1\times1\)</span>。</p><p>从 <span class="math inline">\(n^2\)</span> 到 <span class="math inline">\((n+1)^2\)</span> 的转换，则是 <span class="math inline">\(1\times n^2+2\times n+1\times 1\)</span>。</p><p>然后从 <span class="math inline">\(n^3\)</span> 到 <span class="math inline">\((n+1)^3\)</span> 是 <span class="math inline">\(1\times n^3+3\times n^2+3\times n+1\times 1\)</span>。</p><p>所以上面的例子的转移矩阵很轻松就求出来了：</p><p><span class="math display">\[ \left[ \begin{array}{cc} 1&amp;1&amp;1&amp;0&amp;0&amp;0\\ 1&amp;0&amp;0&amp;0&amp;0&amp;0\\ 0&amp;0&amp;1&amp;3&amp;3&amp;1\\ 0&amp;0&amp;0&amp;1&amp;2&amp;1\\ 0&amp;0&amp;0&amp;0&amp;1&amp;1\\ 0&amp;0&amp;0&amp;0&amp;0&amp;1\\ \end{array} \right]\times\left[ \begin{array}{c} F_{n-1}\\F_{n-2}\\n^3\\n^2\\n\\1 \end{array} \right] =\left[ \begin{array}{c} F_n\\F_{n-1}\\(n+1)^3\\(n+1)^2\\n+1\\1 \end{array} \right] \]</span></p><p>当然，对于那个花里胡哨的例子，转移矩阵也没有差太多：</p><p><span class="math display">\[ \left[ \begin{array}{cc} 1&amp;1&amp;114514&amp;1919810&amp;123&amp;999\\ 1&amp;0&amp;0&amp;0&amp;0&amp;0\\ 0&amp;0&amp;1&amp;3&amp;3&amp;1\\ 0&amp;0&amp;0&amp;1&amp;2&amp;1\\ 0&amp;0&amp;0&amp;0&amp;1&amp;1\\ 0&amp;0&amp;0&amp;0&amp;0&amp;1\\ \end{array} \right]\times\left[ \begin{array}{c} F_{n-1}\\F_{n-2}\\n^3\\n^2\\n\\1 \end{array} \right] =\left[ \begin{array}{c} F_n\\F_{n-1}\\(n+1)^3\\(n+1)^2\\n+1\\1 \end{array} \right] \]</span></p><h2 id="图论">图论</h2><p>其实图论和矩阵渊源挺深的，当我们刚刚开始学习图论时，一般都会接触到一个“邻接矩阵”，可以用来存储一张图。但是随着深入的学习，用到它的地方越来越少，因为它的存储效率属实很低。但是令人意想不到的是，这个矩阵可以用来计算一个看似很复杂的图论题：</p><p>给定一个 <span class="math inline">\(n\)</span> 个节点 <span class="math inline">\(m\)</span> 条边的图，求从 <span class="math inline">\(1\)</span> 号点出发到达 <span class="math inline">\(n\)</span> 号点，恰好走 <span class="math inline">\(k\)</span> 步的路径条数。</p><p>这道题的答案异常简单：只要把邻接矩阵转置一下，当成转移矩阵，直接套用矩阵快速幂就好了。</p><p>为什么是这样呢？看看一开始的邻接矩阵，它存储的实际上是所有长度为 <span class="math inline">\(1\)</span> 的路径。考虑从第 <span class="math inline">\(i-1\)</span> 个状态转移到第 <span class="math inline">\(i\)</span> 个状态，意思就是将所有路径都延长一步，由于路径只能沿着开始的邻接矩阵上的边走，所以乘上一个转置的邻接矩阵刚好就是一次成功的转移。</p><h2 id="循环">循环</h2><p>考虑这样一个数列</p><p><span class="math display">\[F_n=\left\{\begin{array}{cc}0&amp;n=0\\1&amp;n=1\\F_{n-1}+F_{n-2}+114&amp;n\bmod3=0\\F_{n-1}+F_{n-2}+514&amp;n\bmod3=1\\F_{n-1}+F_{n-2}+123&amp;n\bmod3=2\end{array}\right.\]</span></p><p>它的常数项是循环的。这样的转移，如果按照常规方式做会很难想，甚至完全不可能。但是有一种很巧妙的方法，就是让列向量里的常数也跟着旋转。</p><p>假设当前 <span class="math inline">\(n\bmod3=0\)</span>，我们先构造一个列向量：</p><p><span class="math display">\[ \left[ \begin{array}{c} F_{n-1}\\F_{n-2}\\114\\514\\123 \end{array} \right] \]</span></p><p>然后想办法通过设计转移矩阵，让这个列向量的下面三行“旋转”，也就是轮流来到第三行的位置。事实证明这并不难，只要按照下面的方式构造矩阵：</p><p><span class="math display">\[ \left[ \begin{array}{cc} 1&amp;1&amp;1&amp;0&amp;0\\ 1&amp;0&amp;0&amp;0&amp;0\\ 0&amp;0&amp;0&amp;1&amp;0\\ 0&amp;0&amp;0&amp;0&amp;1\\ 0&amp;0&amp;1&amp;0&amp;0\\ \end{array} \right]\times\left[ \begin{array}{c} F_{n-1}\\F_{n-2}\\114\\514\\123 \end{array} \right] =\left[ \begin{array}{c} F_n\\F_{n-1}\\514\\123\\114 \end{array} \right] \]</span></p></div><div><ul class="post-copyright"><li class="post-copyright-author"> <strong>Post author:</strong> Alex</li><li class="post-copyright-link"> <strong>Post link:</strong> <a href="https://schtonn.github.io/blog/posts/matrix-pow-ext/" title="矩阵快速幂扩展应用">https://schtonn.github.io/blog/posts/matrix-pow-ext/</a></li><li class="post-copyright-license"> <strong>Copyright Notice:</strong> All articles in this blog are licensed under<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i> BY-NC-SA</a> unless stating additionally.</li></ul></div><footer class="post-footer"><div class="post-tags"><a href="/blog/tags/math/" rel="tag"><i class="fa fa-tag"></i> math</a><a href="/blog/tags/matrix/" rel="tag"><i class="fa fa-tag"></i> matrix</a></div><div class="post-nav"><div class="post-nav-item"><a href="/blog/posts/fermat/" rel="prev" title="费马小定理"><i class="fa fa-chevron-left"></i> 费马小定理</a></div><div class="post-nav-item"> <a href="/blog/posts/group/" rel="next" title="关于群论的一些东西">关于群论的一些东西<i class="fa fa-chevron-right"></i></a></div></div></footer></article></div><div class="comments" id="valine-comments"></div><script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script></div><div class="toggle sidebar-toggle"><span class="toggle-line toggle-line-first"></span><span class="toggle-line toggle-line-middle"></span><span class="toggle-line toggle-line-last"></span></div><aside class="sidebar"><div class="sidebar-inner"><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc"> Table of Contents</li><li class="sidebar-nav-overview"> Overview</li></ul><div class="post-toc-wrap sidebar-panel"><div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前置知识"><span class="nav-number">1.</span> <span class="nav-text">前置知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#引入"><span class="nav-number">2.</span> <span class="nav-text">引入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多项式"><span class="nav-number">3.</span> <span class="nav-text">多项式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图论"><span class="nav-number">4.</span> <span class="nav-text">图论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#循环"><span class="nav-number">5.</span> <span class="nav-text">循环</span></a></li></ol></div></div><div class="site-overview-wrap sidebar-panel"><div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person"><p class="site-author-name" itemprop="name">Alex</p><div class="site-description" itemprop="description">blog</div></div><div class="site-state-wrap motion-element"><nav class="site-state"><div class="site-state-item site-state-posts"> <a href="/blog/archives"><span class="site-state-item-count">34</span> <span class="site-state-item-name">posts</span></a></div><div class="site-state-item site-state-tags"> <a href="/blog/tags/"><span class="site-state-item-count">8</span> <span class="site-state-item-name">tags</span></a></div></nav></div><div class="links-of-author motion-element"><span class="links-of-author-item"><a href="https://github.com/schtonn" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;schtonn" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i> GitHub</a></span><span class="links-of-author-item"><a href="mailto:schtonn@163.com" title="E-Mail → mailto:schtonn@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i> E-Mail</a></span></div><div class="links-of-blogroll motion-element"><div class="links-of-blogroll-title"><i class="fa fa-fw fa-link"></i> Links</div><ul class="links-of-blogroll-list"><li class="links-of-blogroll-item"> <a href="https://yonghong.github.io/" title="https:&#x2F;&#x2F;yonghong.github.io" rel="noopener" target="_blank">Yonghong</a></li><li class="links-of-blogroll-item"> <a href="https://source.unsplash.com/random/1600x900" title="https:&#x2F;&#x2F;source.unsplash.com&#x2F;random&#x2F;1600x900" rel="noopener" target="_blank">Background</a></li></ul></div></div></div></aside><div id="sidebar-dimmer"></div></div></main><footer class="footer"><div class="footer-inner"><div class="copyright"> &copy; 2019 – <span itemprop="copyrightYear">2022</span><span class="with-love"><i class="fa fa-user"></i></span> <span class="author" itemprop="copyrightHolder">Alexander</span></div></div></footer></div><script src="/blog/lib/anime.min.js"></script><script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script><script src="/blog/lib/velocity/velocity.min.js"></script><script src="/blog/lib/velocity/velocity.ui.min.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script><script>!function(){var t=document.createElement("script"),e=window.location.protocol.split(":")[0];t.src="https"===e?"https://zz.bdstatic.com/linksubmit/push.js":"http://push.zhanzhang.baidu.com/push.js";var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(t,s)}()</script><script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script><script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'BmologYYnRqCv0SLHDeDdA17-gzGzoHsz',
+      appKey     : 'w9mVebFMdCmY6Nh9vfcBGaGt',
+      placeholder: "Comment...",
+      avatar     : 'mp',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script></body></html>

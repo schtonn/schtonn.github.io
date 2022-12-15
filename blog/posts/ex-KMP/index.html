@@ -1,0 +1,97 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=2"><meta name="theme-color" content="#222"><meta name="generator" content="Hexo 4.2.0"><link rel="apple-touch-icon" sizes="180x180" href="/blog/blog/images/apple-touch-icon-next.png"><link rel="icon" type="image/png" sizes="32x32" href="/blog/blog/images/favicon-frog.png"><link rel="icon" type="image/png" sizes="16x16" href="/blog/blog/images/favicon-frog.png"><link rel="mask-icon" href="/blog/blog/images/logo.svg" color="#222"><link rel="stylesheet" href="/blog/css/main.css"><link rel="stylesheet" href="//fonts.googleapis.com/css?family=Comic Sans MS:300,300italic,400,400italic,700,700italic|Consolas:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext"><link rel="stylesheet" href="/blog/lib/font-awesome/css/font-awesome.min.css"><link rel="stylesheet" href="/blog/lib/pace/pace-theme-minimal.min.css"><script src="/blog/lib/pace/pace.min.js"></script><script id="hexo-configurations">var NexT=window.NexT||{},CONFIG={hostname:"schtonn.github.io",root:"/blog/",scheme:"Muse",version:"7.8.0",exturl:!1,sidebar:{position:"left",display:"post",padding:18,offset:12,onmobile:!1},copycode:{enable:!0,show_result:!0,style:"flat"},back2top:{enable:!0,sidebar:!1,scrollpercent:!0},bookmark:{enable:!1,color:"#222",save:"auto"},fancybox:!1,mediumzoom:!1,lazyload:!0,pangu:!1,comments:{style:"tabs",active:"valine",storage:!0,lazyload:!1,nav:null,activeClass:"valine"},algolia:{hits:{per_page:10},labels:{input_placeholder:"Search for Posts",hits_empty:"We didn't find any results for the search: ${query}",hits_stats:"${hits} results found in ${time} ms"}},localsearch:{enable:!1,trigger:"auto",top_n_per_article:1,unescape:!1,preload:!1},motion:{enable:!0,async:!1,transition:{post_block:"fadeIn",post_header:"slideDownIn",post_body:"slideDownIn",coll_header:"slideLeftIn",sidebar:"slideUpIn"}}}</script><meta name="description" content="前置知识 字符串基础操作；强烈建议先学习 KMP 和 manacher，对理解有很大帮助。 引入 假设模式串是 pat，文本串是 txt。 拓展 KMP，有时也叫 Z 函数，是求 pat 和 txt 的（所有）后缀的最大公共前缀长度，用 z[i] 表示。"><meta property="og:type" content="article"><meta property="og:title" content="拓展 KMP"><meta property="og:url" content="https://schtonn.github.io/blog/posts/ex-KMP/index.html"><meta property="og:site_name" content="schtonn"><meta property="og:description" content="前置知识 字符串基础操作；强烈建议先学习 KMP 和 manacher，对理解有很大帮助。 引入 假设模式串是 pat，文本串是 txt。 拓展 KMP，有时也叫 Z 函数，是求 pat 和 txt 的（所有）后缀的最大公共前缀长度，用 z[i] 表示。"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://schtonn.github.io/blog/images/ex-KMP-1.png"><meta property="og:image" content="https://schtonn.github.io/blog/images/ex-KMP-2.png"><meta property="article:published_time" content="2020-12-16T14:40:10.000Z"><meta property="article:modified_time" content="2021-04-17T03:45:55.482Z"><meta property="article:author" content="Alex"><meta property="article:tag" content="string"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://schtonn.github.io/blog/images/ex-KMP-1.png"><link rel="canonical" href="https://schtonn.github.io/blog/posts/ex-KMP/"><script id="page-configurations">CONFIG.page={sidebar:"",isHome:!1,isPost:!0,lang:"en"}</script><title>拓展 KMP | schtonn</title><noscript><style>.sidebar-inner,.use-motion .brand,.use-motion .collection-header,.use-motion .comments,.use-motion .menu-item,.use-motion .pagination,.use-motion .post-block,.use-motion .post-body,.use-motion .post-header{opacity:initial}.use-motion .site-subtitle,.use-motion .site-title{opacity:initial;top:initial}.use-motion .logo-line-before i{left:initial}.use-motion .logo-line-after i{right:initial}</style></noscript></head><body itemscope itemtype="http://schema.org/WebPage"><div class="container use-motion"><div class="headband"></div><header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="header-inner"><div class="site-brand-container"><div class="site-nav-toggle"><div class="toggle" aria-label="Toggle navigation bar"><span class="toggle-line toggle-line-first"></span><span class="toggle-line toggle-line-middle"></span><span class="toggle-line toggle-line-last"></span></div></div><div class="site-meta"><a href="/blog/" class="brand" rel="start"><span class="logo-line-before"><i></i></span><h1 class="site-title">schtonn</h1><span class="logo-line-after"><i></i></span></a><p class="site-subtitle" itemprop="description">schtonn</p></div><div class="site-nav-right"><div class="toggle popup-trigger"></div></div></div><nav class="site-nav"><ul id="menu" class="menu"><li class="menu-item menu-item-home"><a href="/blog/" rel="section"><i class="fa fa-fw fa-home"></i> Home</a></li><li class="menu-item menu-item-tags"><a href="/blog/tags/" rel="section"><i class="fa fa-fw fa-tags"></i> Tags</a></li><li class="menu-item menu-item-archives"><a href="/blog/archives/" rel="section"><i class="fa fa-fw fa-archive"></i> Archives</a></li><li class="menu-item menu-item-games"><a href="/blog/games/" rel="section"><i class="fa fa-fw fa-gamepad"></i> Games</a></li></ul></nav></div></header><div class="back-to-top"><i class="fa fa-arrow-up"></i> <span>0%</span></div><main class="main"><div class="main-inner"><div class="content-wrap"><div class="content post posts-expand"><article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en"><link itemprop="mainEntityOfPage" href="https://schtonn.github.io/blog/posts/ex-KMP/"><span hidden itemprop="author" itemscope itemtype="http://schema.org/Person"><meta itemprop="image" content="/blog/images/avatar.gif"><meta itemprop="name" content="Alex"><meta itemprop="description" content="blog"></span><script type="text/javascript" src="/blog/js/md5.js"></script><script></script><script>document.oncopy=function(e){window.event&&(e=window.event);try{var t=e.srcElement;return"INPUT"==t.tagName&&"text"==t.type.toLowerCase()||"TEXTAREA"==t.tagName}catch(e){return!1}}</script><span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization"><meta itemprop="name" content="schtonn"></span><header class="post-header"><h1 class="post-title" itemprop="name headline"> 拓展 KMP</h1><div class="post-meta"><span class="post-meta-item"><span class="post-meta-item-icon"><i class="fa fa-calendar-o"></i></span> <span class="post-meta-item-text">Posted on</span> <time title="Created: 2020-Dec-16 22:40:10" itemprop="dateCreated datePublished" datetime="2020-12-16T22:40:10+08:00">2020-Dec-16</time></span><span class="post-meta-item"><span class="post-meta-item-icon"><i class="fa fa-calendar-check-o"></i></span> <span class="post-meta-item-text">Edited on</span> <time title="Modified: 2021-Apr-17 11:45:55" itemprop="dateModified" datetime="2021-04-17T11:45:55+08:00">2021-Apr-17</time></span><span class="post-meta-item"><span class="post-meta-item-icon"><i class="fa fa-comment-o"></i></span> <span class="post-meta-item-text">Valine:</span><a title="valine" href="/blog/posts/ex-KMP/#valine-comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/blog/posts/ex-KMP/" itemprop="commentCount"></span></a></span></div></header><div class="post-body" itemprop="articleBody"><h2 id="前置知识">前置知识</h2><p>字符串基础操作；强烈建议先学习 <a href="/blog/posts/KMP">KMP</a> 和 <a href="/blog/posts/manacher">manacher</a>，对理解有很大帮助。</p><h2 id="引入">引入</h2><p>假设模式串是 <code>pat</code>，文本串是 <code>txt</code>。</p><p>拓展 KMP，有时也叫 Z 函数，是求 <code>pat</code> 和 <code>txt</code> 的（所有）后缀的最大公共前缀长度，用 <code>z[i]</code> 表示。</p><a id="more"></a><h2 id="预处理">预处理</h2><p>拓展 KMP 和 KMP 一样，都是预处理一个数组。</p><p>KMP 预处理的数组是这样的： <img data-src="/blog/images/ex-KMP-1.png" alt="KMP"></p><p>拓展 KMP 预处理的数组是这样的： <img data-src="/blog/images/ex-KMP-2.png" alt="exKMP"></p><p>如图，拓展 KMP 处理的实际上是模式串自身和它的所有后缀的最大公共前缀长度。</p><p>假设模式串是 <code>aabaaba</code>，那么我们一位一位地向前暴力匹配，最终得出的结果就是 <code>x104101</code>（第一位没有意义）。我们称这个预处理数组为 <code>extend[]</code>。</p><h2 id="过程">过程</h2><p>拓展 KMP 的思路与 manacher 很相类似，都是先通过朴素算法得出既有结论，再通过既有结论省去不需要的判断。</p><p>同样的，我们维护 <code>r</code> 和 <code>s</code> 表示当前匹配到的区间右边界最大值和那个区间的起始位置。</p><p>迭代 <code>i</code>，计算 <code>z[i]</code>： - 如果 <code>i&gt;r</code>： 运行朴素算法，找到向右匹配前缀的最大值。 - 如果<code>i&lt;=r</code>： 因为当前位置在之前匹配过的一个区间内，说明这个由 <code>s</code> 开始的区间和模式串的某个前缀是完全相等的，那么我们就可以把前面预处理的 <code>extend[]</code> 拿过来，认为 <code>z[i]</code> 至少为 <code>extend[i-s]</code> 和 <code>r-i</code> 中的最大值。</p><p>我们假设文本串是 <code>aaaabaabaabaa</code>；</p><p><span class="math display">\[\mathtt{aaaabaabaabaa}\]</span></p><p>首先朴素算法匹配到 <code>z[1]=2</code>，那么就出现了长度为 2 的区间，<code>r</code> 也变成了 2；</p><p><span class="math display">\[\begin{array}{clr}\mathtt{aaaabaabaabaa}\\\hspace{-6.3em}\uparrow\\\mathtt{2000000000000}\end{array}\]</span></p><p>接着根据 <code>extend[2-1]</code> 可以看出 <code>z[2]</code> 至少为 1，继续朴素匹配发现 <code>z[2]=2</code>，<code>r=3</code>；</p><p><span class="math display">\[\begin{array}{clr}\mathtt{aaaabaabaabaa}\\\hspace{-5.2em}\uparrow\\\mathtt{2200000000000}\end{array}\]</span></p><p><code>z[3]</code> 匹配得出 7，同理接下来的 <code>a</code>，<code>b</code>，<code>a</code> 至少为 1，0，4；</p><p><span class="math display">\[\begin{array}{clr}\mathtt{aaaabaabaabaa}\\\hspace{-4.1em}\uparrow\\\mathtt{2270000000000}\end{array}\]</span></p><p><code>z[6]</code> 再一次得出 7，接下来依然至少为1，0，4；</p><p><span class="math display">\[\begin{array}{clr}\mathtt{aaaabaabaabaa}\\\hspace{-1em}\uparrow\\\mathtt{2271070000000}\end{array}\]</span></p><p><code>z[9]</code> 碰到了边界，得出 5。很快我们可以看到，<code>z[12]</code> 的 <code>a</code> 由于碰到边界，至少为 2 而不是 4。</p><p><span class="math display">\[\begin{array}{clr}\mathtt{aaaabaabaabaa}\\\hspace{3.8em}\uparrow\hspace{1.2em}\uparrow\\\mathtt{2271071051021}\end{array}\]</span></p><h2 id="代码">代码</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"bits/stdc++.h"</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;<span class="string">"not yet"</span>&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div><div><ul class="post-copyright"><li class="post-copyright-author"> <strong>Post author:</strong> Alex</li><li class="post-copyright-link"> <strong>Post link:</strong> <a href="https://schtonn.github.io/blog/posts/ex-KMP/" title="拓展 KMP">https://schtonn.github.io/blog/posts/ex-KMP/</a></li><li class="post-copyright-license"> <strong>Copyright Notice:</strong> All articles in this blog are licensed under<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i> BY-NC-SA</a> unless stating additionally.</li></ul></div><footer class="post-footer"><div class="post-tags"><a href="/blog/tags/string/" rel="tag"><i class="fa fa-tag"></i> string</a></div><div class="post-nav"><div class="post-nav-item"><a href="/blog/posts/KMP/" rel="prev" title="KMP"><i class="fa fa-chevron-left"></i> KMP</a></div><div class="post-nav-item"> <a href="/blog/posts/combination/" rel="next" title="求组合数">求组合数<i class="fa fa-chevron-right"></i></a></div></div></footer></article></div><div class="comments" id="valine-comments"></div><script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script></div><div class="toggle sidebar-toggle"><span class="toggle-line toggle-line-first"></span><span class="toggle-line toggle-line-middle"></span><span class="toggle-line toggle-line-last"></span></div><aside class="sidebar"><div class="sidebar-inner"><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc"> Table of Contents</li><li class="sidebar-nav-overview"> Overview</li></ul><div class="post-toc-wrap sidebar-panel"><div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前置知识"><span class="nav-number">1.</span> <span class="nav-text">前置知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#引入"><span class="nav-number">2.</span> <span class="nav-text">引入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#预处理"><span class="nav-number">3.</span> <span class="nav-text">预处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过程"><span class="nav-number">4.</span> <span class="nav-text">过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码"><span class="nav-number">5.</span> <span class="nav-text">代码</span></a></li></ol></div></div><div class="site-overview-wrap sidebar-panel"><div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person"><p class="site-author-name" itemprop="name">Alex</p><div class="site-description" itemprop="description">blog</div></div><div class="site-state-wrap motion-element"><nav class="site-state"><div class="site-state-item site-state-posts"> <a href="/blog/archives"><span class="site-state-item-count">34</span> <span class="site-state-item-name">posts</span></a></div><div class="site-state-item site-state-tags"> <a href="/blog/tags/"><span class="site-state-item-count">8</span> <span class="site-state-item-name">tags</span></a></div></nav></div><div class="links-of-author motion-element"><span class="links-of-author-item"><a href="https://github.com/schtonn" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;schtonn" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i> GitHub</a></span><span class="links-of-author-item"><a href="mailto:schtonn@163.com" title="E-Mail → mailto:schtonn@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i> E-Mail</a></span></div><div class="links-of-blogroll motion-element"><div class="links-of-blogroll-title"><i class="fa fa-fw fa-link"></i> Links</div><ul class="links-of-blogroll-list"><li class="links-of-blogroll-item"> <a href="https://yonghong.github.io/" title="https:&#x2F;&#x2F;yonghong.github.io" rel="noopener" target="_blank">Yonghong</a></li><li class="links-of-blogroll-item"> <a href="https://source.unsplash.com/random/1600x900" title="https:&#x2F;&#x2F;source.unsplash.com&#x2F;random&#x2F;1600x900" rel="noopener" target="_blank">Background</a></li></ul></div></div></div></aside><div id="sidebar-dimmer"></div></div></main><footer class="footer"><div class="footer-inner"><div class="copyright"> &copy; 2019 – <span itemprop="copyrightYear">2022</span><span class="with-love"><i class="fa fa-user"></i></span> <span class="author" itemprop="copyrightHolder">Alexander</span></div></div></footer></div><script src="/blog/lib/anime.min.js"></script><script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script><script src="/blog/lib/velocity/velocity.min.js"></script><script src="/blog/lib/velocity/velocity.ui.min.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script><script>!function(){var t=document.createElement("script"),e=window.location.protocol.split(":")[0];t.src="https"===e?"https://zz.bdstatic.com/linksubmit/push.js":"http://push.zhanzhang.baidu.com/push.js";var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(t,s)}()</script><script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script><script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'BmologYYnRqCv0SLHDeDdA17-gzGzoHsz',
+      appKey     : 'w9mVebFMdCmY6Nh9vfcBGaGt',
+      placeholder: "Comment...",
+      avatar     : 'mp',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'en' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script></body></html>
