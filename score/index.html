@@ -55,13 +55,14 @@
 <body>
     <a class="btn btn-info" href="/" style="text-shadow: rgb(85, 85, 85) 3px 2px 4px;"><span
             class="glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp;返回</a>
-            （暴露优质接口-无安全意识、实在愚蠢；）
-    <div class="input-group">
+    <span class="fetch" style="display:none">（暴露优质接口-无安全意识、实在愚蠢；）</span>
+    <div class="input-group fetch" style="display:none">
         <span class="input-group-addon">考试编号</span>
         <input id="Id" type="text" class="form-control" autocomplete="off" placeholder="972" value="972">
     </div>
-    <div class="input-group">
-        <span class="input-group-addon">姓名或数字校园号</span>
+    <div class="input-group fetch" style="display:none">
+        <span class="input-group-addon"><a href="/js/e.json" onclick="setWeigh2()" data-toggle="tooltip" data-placement="bottom"
+            title="仅限2025届高考部">姓名</a>或数字校园号</span>
         <input id="Input" type="text" class="form-control" autocomplete="off" placeholder="20222001 或 小明">
         <span class="input-group-btn">
             <button type="button" class="btn btn-default" onclick="fetchMe($('#Input').val())"
@@ -72,7 +73,7 @@
         style="text-shadow: rgb(85, 85, 85) 3px 2px 4px;display:none;">
         <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
     </a>
-    <div class="hidable">
+    <div class="hidable fetch">
         <div class="page-header">
             <h1>
                 实验中学成绩整理
@@ -89,8 +90,7 @@
         <p>6. 此时应看到“{data: {,...”等数据，一定在数据第一行右键（或在其最后一行下方空白处右键），随后“<b>复制物体</b>”或“<b>Copy Object</b>”；</p>
         <p>7. 新建文本文档（格式为 txt，不可用 Word 文档），将所复制的内容粘贴并保存，于下方按钮打开。</p>
         <p style="font-size: 12px;font-style: italic;">
-            注：图表整理均在本地进行，你的成绩不会上传到网络。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<del>你获取的数据在心意答上未经加密并可直接访问，本质上对学生都是公开的，</del>（现在加密了，好在<a
-                href="../crypty/">加密算法</a>不算复杂，不过各位且用且珍惜吧）；但恶意使用这些数据造成的后果自负。
+            注：图表整理均在本地进行，你的成绩不会上传到网络。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;把所有人的成绩信息完整地公布在接口上，心意答我真服了你！
         </p>
         <h3>操作指南</h3>
         <p>1. 加载多个文件后，使用方向键或右下角控件可在文件间快速切换，方便比较；</p>
@@ -98,6 +98,7 @@
         <p>3. 一览表中 "0%" 代表最低分，"100%" 代表最高分，以此类推。</p>
         <br>
     </div>
+    <img>
     <div style="text-align: center;" class="hidable">
         <div class="btn-group">
             <a tabindex="0" class="btn btn-default" href="tutor/"
@@ -109,8 +110,14 @@
                 <span id="upicon" class="glyphicon glyphicon-open" aria-hidden="true"></span> <b>打开文件</b><input
                     style="display: none;" id="fileInput" type="file" onchange="getFiles(event)">
             </a>
+            <a id="upbtn" tabindex="0" class="btn btn-danger"
+                onclick="var a=aesEncrypt(prompt('我的班级')),b=aesEncrypt(prompt('我的学号'));if(a=='1170185235a2b833f24d4cf0e7d3f1c1'&&b=='b1b384c7b1e81d67482a132f60b3456e')$('.fetch').toggle();else alert('你非我')"
+                style="text-shadow: rgb(85, 85, 85) 3px 2px 4px;display:inline-block;">
+                <b class="blurred">?!</b>
+            </a>
+            <!-- If you must... -->
         </div>
-        <a tabindex="0" class="btn btn-warning toggleHide" onclick="toggleHide();"
+        <a tabindex="0" class="btn btn-warning toggleHide fetch" onclick="toggleHide();"
             style="text-shadow: rgb(85, 85, 85) 3px 2px 4px;display:inline-block;">
             <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
         </a>

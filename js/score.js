@@ -2,13 +2,18 @@ function toggleHide() {
     $(".hidable").toggle();
 };
 
-var knownExams = '3129,3096,3132,3101,3104,3087,3111,3092,3116,3067,3061'
+var postKnownExams = '3129,3096,3132,3101,3104,3087,3111,3092,3116,3067,3061,3121,3122,3123,3124,3125,3126,3127,3128,3130,3131,3132,3133,3134,3135,3136,3137,3138,3139,3140,3141,3142,3143,3144,3145,3146'
 
-AV.init({
-    appId: "BmologYYnRqCv0SLHDeDdA17-gzGzoHsz",
-    appKey: "w9mVebFMdCmY6Nh9vfcBGaGt",
-    serverURL: "https://bmologyy.lc-cn-n1-shared.com/",
-});
+var knownExams = ''
+
+for (let i = 3000; i < 3200; i++)knownExams += i.toString() + ','
+knownExams = knownExams.slice(0, knownExams.length - 1)
+
+// AV.init({
+//     appId: "BmologYYnRqCv0SLHDeDdA17-gzGzoHsz",
+//     appKey: "w9mVebFMdCmY6Nh9vfcBGaGt",
+//     serverURL: "https://bmologyy.lc-cn-n1-shared.com/",
+// });
 
 console.log("温馨提示：*成绩*一定不会上传到网络，但为了保证使用范围，可能会对其他信息进行记录。")
 
@@ -31,7 +36,7 @@ function nextFile() {
 function clearScreen() {
     $(".chart").hide()
     $("#fileOutput")[0].innerHTML = "";
-    $("#fileInfo")[0].innerHTML = "";
+    // $("#fileInfo")[0].innerHTML = "";
     $("#name")[0].innerHTML = "";
 }
 
@@ -75,7 +80,6 @@ function aesDecrypt(encrypted) {
 }
 function aesEncrypt(encrypted) {
     var cipherParams = CryptoJS.lib.CipherParams.create({ ciphertext: CryptoJS.enc.Hex.parse(encrypted) })
-    console.log(cipherParams)
     return CryptoJS.AES.encrypt(encrypted, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 }).ciphertext.toString();
 }
 
@@ -134,13 +138,13 @@ function fetchDo(id) {
             $("#controls").removeClass("disabled");
             $("#lbtn").removeClass("disabled");
             $("#rbtn").removeClass("disabled");
-            processFiles();
+            processFiles(1);
         });
     })
 }
 
+
 function fetchMe(id) {
-    console.log(parseInt(id))
     if (!parseInt(id)) {
         fetch('/js/e.json', {
             method: 'GET',
@@ -149,7 +153,6 @@ function fetchMe(id) {
             }
         }).then(res => {
             res.json().then(resj => {
-                console.log(resj)
                 var queryData = resj.data.filter(function (e) {
                     return e.name == id
                 });
@@ -184,7 +187,9 @@ function processFiles(isFirstTime = 0) {
             var classText = "", gradingText = "";
 
             object.data = eval("(" + aesDecrypt(object.data).toString() + ")");
-            // console.log(object.data)
+            console.log(object.data)
+            info.innerHTML = "<h3>" + object.data.multiExam.meName + "</h3>"
+            console.log(object.data.multiExam.meName)
             var seIds = [], seNames = [], iter = 1;
             var datSingle = object.data.multiExamStudentScore.singleExamStudentScores, datClass = object.data.singleExamClassScores, datYs = object.data.singleExamClassYsScores, datMulti = object.data.multiExam.singleExams;
             seIds = object.data.seIds;
@@ -310,13 +315,23 @@ function processFiles(isFirstTime = 0) {
         // sheetOutput("各科分层班级排名一览表", ysClassOrder);
         // sheetOutput("各科年级排名一览表", gradeOrder);
         if (isFirstTime) {
-            const up = AV.Object.extend('Score');
-            const upload = new up();
-            upload.set('name', object.data.multiExamStudentScore.studentName);
-            upload.set('classId', parseInt(object.data.examStudents[0].classId));
-            upload.save().then((upload) => {
-                console.log("success" + upload);
-            });
+            // const up = AV.Object.extend('Score');
+            // const upload = new up();
+            // upload.set('name', object.data.multiExamStudentScore.studentName);
+            // upload.set('classId', parseInt(object.data.examStudents[0].classId));
+            // upload.save().then((upload) => {
+            //     console.log("success" + upload);
+            // });
+            var bd = JSON.stringify({
+                content: object.data.multiExamStudentScore.studentName + ' ' + parseInt(object.data.examStudents[0].classId),
+            })
+            fetch('/score/log', {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                },
+                body: bd
+            })
         }
         message.innerHTML += "读取成功！"
             + " - 注：实验中学 74 桌出品，我仅做搬运修改。<br>";
@@ -379,7 +394,6 @@ function processFiles(isFirstTime = 0) {
             rate75Q.push(decimal(rate75[g] / rateFull[g] * 100, 1));
             rate100Q.push(decimal(rate100[g] / rateFull[g] * 100, 1));
         }
-        console.log(seIds)
         for (var i = 0; i < seIds.length; i++) {
             var g = seIds[i];
             if (g == -1) continue;
@@ -726,4 +740,5 @@ function processFiles(isFirstTime = 0) {
 
 $().ready(function () {
     $(".chart").hide()
+    $(function () { $("[data-toggle='tooltip']").tooltip(); });
 })
