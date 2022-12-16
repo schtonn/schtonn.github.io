@@ -1,95 +1,9 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <title>websocket demo</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <style>
-        .row {
-            margin: 1rem
-        }
-    </style>
-</head>
-
 <body>
-    <div class='row'>发送方：
-        <select id='sender'>
-            <option value="Bob" selected>Bob</option>
-            <option value="Alice">Alice</option>
-            <option value="Jack">Jack</option>
-        </select>
-    </div>
-    <div class='row'>接收方：
-        <select id='receiver'>
-            <option value="Bob">Bob</option>
-            <option value="Alice" selected>Alice</option>
-            <option value="Jack">Jack</option>
-        </select>
-    </div>
-    <textarea id='msg' class='row' rows="10" cols="30"></textarea>
-    <div class='row'>
-        <button id='sendBtn'>发送</button>
-    </div>
-    <h3 class='row'>收到的消息:</h3>
-    <div id='conversation' class='row'></div>
+    <canvas style="display: block; margin: auto; width: 512px; height: 512px;" width="512" height="512"></canvas>
     <script>
-        var sender = document.getElementById('sender');
-        var receiver = document.getElementById('receiver');
-        var conversation = document.getElementById('conversation');
-        var sendBtn = document.getElementById('sendBtn');
-        var socket = null;
-        var createSocket = function () {
-            if (socket) {
-                socket.close();
-            }
-            var url = 'ws://' + window.location.host + '/ws/' + sender.options[sender.selectedIndex].value;
-            socket = new WebSocket(url);
-            socket.onopen = function () {
-                console.log('connected to ' + url);
-            }
-            socket.onmessage = function (event) {
-                var data = JSON.parse(event.data);
-                conversation.innerHTML = conversation.innerHTML + data.from + ':' + data.content + '<br/>';
-            }
-            socket.onclose = function () {
-                console.log('close connect to' + url);
-            }
-        };
-        var sendMessage = function () {
-            var msg = document.getElementById('msg').value;
-            var bd=JSON.stringify({
-                from: sender.options[sender.selectedIndex].value,
-                content: msg,
-                to: receiver.options[receiver.selectedIndex].value
-            })
-            console.log(bd)
-            fetch('/rest/message', {
-                method: 'POST',
-                headers: {
-                    'Content-type': 'application/json',
-                },
-                body: bd
-            }).then(res => {
-                return res.json();
-            }).then(data => {
-                if (!data.succeed) {
-                    alert(data.msg);
-                }
-            })
-        };
-
-        sender.onchange = function () {
-            createSocket();
-        }
-
-        sendBtn.onclick = function () {
-            sendMessage();
-        }
-
-        createSocket();
-
+        var c = document.getElementsByTagName("canvas")[0].getContext("2d")
+    </script>
+    <script>
+        for (_ = '&&Zz,Y*bXy,Wy=Vx,U81Sa.RX.QRyQPRxQO,-1N+b.HMath.GGrandom()FF*27,E512C/C*12Bj,A),@d(Ab@$0,#3,#2@"--;){!w,Gsqrt(Rz.5)=>D(q,>0Z8@Gpow();));L(##8,for(+S)*27%S,ImageData.data[a++]=m(I(M(	K(	Aq,-2*j(a,h,p,q,g(F-)/3@1],[,w=MAyp=E-S+ES@wq==b=aL=(UVUz=x({UWz}MRxHURyHWHzKRxX,RyX,XDOx+Py+Qz;dPz-QWQx-OYOy-PxmK1/D(a)IMbNz=-7N#8n=Y4)u=m(d(1@nv=d(u,nt=A{T=S;V-/j.z;y(h=21[e,f,J]of[[1#2,2@4,0-"5,7"41,#4@8,6-1,1#4@#4,4@4],[7@5,4@1]]){b=2*D(AIeV(-b-bX-4*D(Ie+4*J*J/2,yT>yZ(T=Wh=1,g=fe)}return{}};oa+b?a%3&b%3&1?0):o(a/3|#b/3|0):5s=Ar,p({}=tjZh?h&1?		p,j)64g,p)*.7s(.4:	o((w.x,(w.y@(b=@s(	b,	d($b@@$@t(p).h?:1):rZF>.9?8):5,6,1-j.Y4i=0;=c.create(C,1(r{a=0;b=C;b!V0k=32;k!x=	Y	u,@v,)V	Ws(U			YnN0	u,v@-6	u,bB@v,iB)x1}k in y)y[k];255}c.put(,#ii++<CZsetTimeout(r)})()'; G = /[^ %-?DI-MT[-}]/.exec(_);)with (_.split(G)) _ = join(shift()); Function(_)()
     </script>
 </body>
-
-</html>

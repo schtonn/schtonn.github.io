@@ -1,5 +1,5 @@
 function toggleHide() {
-    $(".hidable").toggle();
+    $(".hidable").toggle(1000);
 };
 
 var postKnownExams = '3129,3096,3132,3101,3104,3087,3111,3092,3116,3067,3061,3121,3122,3123,3124,3125,3126,3127,3128,3130,3131,3132,3133,3134,3135,3136,3137,3138,3139,3140,3141,3142,3143,3144,3145,3146'
@@ -51,12 +51,6 @@ document.onkeydown = function (event) {
         else if (e.key == "ArrowRight") {
             nextFile();
         }
-        //  else if ('1' <= e.key && e.key <= '9') {
-        //     if (parseInt(e.key) <= fileCount) {
-        //         cur = parseInt(e.key) - 1;
-        //         processFiles();
-        //     }
-        // }
     }
 };
 
@@ -72,14 +66,11 @@ function getFiles(event) {
 
 const key = CryptoJS.enc.Utf8.parse("abcdefgabcdefg12");
 function aesDecrypt(encrypted) {
-    var encryptedHexStr = CryptoJS.enc.Hex.parse(encrypted);
     var cipherParams = CryptoJS.lib.CipherParams.create({ ciphertext: CryptoJS.enc.Hex.parse(encrypted) })
     var decrypted = CryptoJS.AES.decrypt(cipherParams, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 });
-    var decryptedStr = decrypted.toString(CryptoJS.enc.Utf8);
-    return decryptedStr;
+    return decrypted.toString(CryptoJS.enc.Utf8);
 }
 function aesEncrypt(encrypted) {
-    var cipherParams = CryptoJS.lib.CipherParams.create({ ciphertext: CryptoJS.enc.Hex.parse(encrypted) })
     return CryptoJS.AES.encrypt(encrypted, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 }).ciphertext.toString();
 }
 
@@ -106,7 +97,6 @@ function stringToByte(str) {
         }
     }
     return bytes;
-
 }
 
 $().ready(function () {
@@ -116,6 +106,8 @@ $().ready(function () {
         }
     });
 })
+
+var stuId = {}, examId = {}
 
 function fetchDo(id) {
     var bd = '{"meId":' + $('#Id').val() + ',"seIds":"' + knownExams + '","schoolId":19707,"studentId":"' + id + '"}';
@@ -143,7 +135,6 @@ function fetchDo(id) {
     })
 }
 
-
 function fetchMe(id) {
     if (!parseInt(id)) {
         fetch('/js/e.json', {
@@ -162,6 +153,40 @@ function fetchMe(id) {
     } else fetchDo(id)
 }
 
+function getSe(id) {
+    console.log(id)
+    if (!stuId[cur]) stuId[cur] = prompt('数字校园号？')
+    if (!examId[cur]) examId[cur] = prompt('考试编号？（心意答点击考试标题后，切换考试的列表里可见）')
+    var bd = '{"schoolId":19707,"seId":' + id + ',"studentId":"' + stuId[cur] + '"}';
+    console.log(bd)
+    bd = aesEncrypt(bd)
+    fetch('http://36.112.23.77/analysis/api/student/exam/getStudentReportSEVO', {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json',
+        },
+        body: bd
+    }).then(res => {
+        res.json().then(resj => {
+            // $('#singleDat').html(aesDecrypt(resj.data))
+        });
+    })
+    bd = '{"schoolId":19707,"meId":' + examId[cur] + ',"seId":' + id + ',"studentId":"' + stuId[cur] + '"}';
+    console.log(bd)
+    bd = aesEncrypt(bd)
+    fetch('http://36.112.23.77/analysis/api/student/exam/getStuExamDetailInfo', {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json',
+        },
+        body: bd
+    }).then(res => {
+        res.json().then(resj => {
+            $('#singleDat').html(aesDecrypt(resj.data))
+        });
+    })
+}
+
 function processFiles(isFirstTime = 0) {
     console.log("Start processing No. " + cur);
     var file = files[cur];
@@ -176,7 +201,6 @@ function processFiles(isFirstTime = 0) {
     upIcon.classList.add('glyphicon-open');
 
     var reader = new FileReader();
-    var content = "";
     reader.onload = function (event) {
         try {
 
@@ -185,9 +209,14 @@ function processFiles(isFirstTime = 0) {
             var name = $("#name")[0];
             var object = eval("(" + event.target.result + ")");
             var classText = "", gradingText = "";
+            $('#single').empty();
 
             object.data = eval("(" + aesDecrypt(object.data).toString() + ")");
-            console.log(object.data)
+
+            examId[cur] = object.data.meId.toString();
+            stuId[cur] = object.data.studentId;
+
+            console.log(examId[cur], stuId[cur])
             info.innerHTML = "<h3>" + object.data.multiExam.meName + "</h3>"
             console.log(object.data.multiExam.meName)
             var seIds = [], seNames = [], iter = 1;
@@ -239,13 +268,11 @@ function processFiles(isFirstTime = 0) {
                 rate75[dId] = datClass[i].secs3quatrerScore;
                 rate100[dId] = datClass[i].secsMaxScore;
                 rateFull[dId] = datMulti[seIdDic[i]].seFullScore;
-                // scoreRate[dId] = decimal(datSingle[i].essScore / datMulti[seIdDic[i]].seFullScore, 3);
                 classOrderP[dId] = datSingle[i].essClassOrder;
                 gradeOrderP[dId] = datSingle[i].essGradeOrder;
                 classOrder[dId] = decimal(1 - datSingle[i].essClassOrder / datClass[i].secsStudentCount, 3);
                 gradeOrder[dId] = decimal(1 - datSingle[i].essGradeOrder / datMulti[seIdDic[i]].seStudentCount, 3);
             }
-            // scoreRate["0"] = decimal(object.data.multiExamStudentScore.messScore / object.data.multiExam.meFullScore, 3);
             classOrder["0"] = decimal(1 - object.data.multiExamStudentScore.messClassOrder / object.data.multiExamClassScores[0].mecsStudentCount, 3); + "<br>"
             gradeOrder["0"] = decimal(1 - object.data.multiExamStudentScore.messGradeOrder / object.data.multiExamSchoolScore.mecsStudentCount, 3); + "<br>"
             classOrderP["0"] = object.data.multiExamStudentScore.messClassOrder;
@@ -270,6 +297,8 @@ function processFiles(isFirstTime = 0) {
                 // seIdDic {key(1-2): value(3-4),..}
                 var g = seIdRev[i];
                 if (!datSingle[g]) continue;
+
+                $('#single').append('<button class="btn btn-danger btn-how" onclick="getSe(' + seIds[i] + ');$(\'.btn-how\').removeClass(\'active\');$(this).addClass(\'active\')">' + seNameDic[datSingle[g].seId] + '</button>')
 
                 classText += "<h4>"
                     + seNameDic[datSingle[g].seId] + "</h4>"
@@ -310,18 +339,9 @@ function processFiles(isFirstTime = 0) {
             upIcon.classList.add('glyphicon-exclamation-sign');
             return;
         }
-        // sheetOutput("各科得分比例一览表", scoreRate);
-        // sheetOutput("各科班级排名一览表", classOrder);
-        // sheetOutput("各科分层班级排名一览表", ysClassOrder);
-        // sheetOutput("各科年级排名一览表", gradeOrder);
+
+        $('#single').append('<pre id="singleDat" style="word-wrap: break-word; white-space: normal"></pre><br><br><br>')
         if (isFirstTime) {
-            // const up = AV.Object.extend('Score');
-            // const upload = new up();
-            // upload.set('name', object.data.multiExamStudentScore.studentName);
-            // upload.set('classId', parseInt(object.data.examStudents[0].classId));
-            // upload.save().then((upload) => {
-            //     console.log("success" + upload);
-            // });
             var bd = JSON.stringify({
                 content: object.data.multiExamStudentScore.studentName + ' ' + parseInt(object.data.examStudents[0].classId),
             })
@@ -408,30 +428,14 @@ function processFiles(isFirstTime = 0) {
             ysClassOrderPP.push(ysClassOrderP[i]);
             ysClassOrderQ.push(decimal(ysClassOrder[i] * 100, 1));
         }
-        var sOp1 = {
-            textStyle: {
-                fontFamily: 'Noto Serif SC'
-            },
-            title: {
-                text: '分数',
-                textStyle: {
-                    fontSize: 14,
-                    fontStyle: 'normal',
-                    fontWeight: 'bold',
-                },
-            },
-            tooltip: {
-                trigger: 'axis'
-            },
-            legend: {
-                data: ['0%', '25%', '50%', '75%', '100%', '满分', '平均分', '我的分数']
-            },
+
+        var opBase = {
+            textStyle: { fontFamily: 'Noto Serif SC' },
+            tooltip: { trigger: 'axis' },
             toolbox: {
                 show: true,
                 feature: {
-                    saveAsImage: {
-                        show: true
-                    },
+                    saveAsImage: { show: true },
                     dataView: {
                         show: true,
                         readOnly: false
@@ -441,291 +445,161 @@ function processFiles(isFirstTime = 0) {
                 orient: 'vertical'
             },
             calculable: true,
-            xAxis: [{
-                type: 'category', data: seNameDicP,
-                name: '科目',
-                position: 'left'
-            }],
-            yAxis: [{
-                type: 'value', name: '分数', position: 'left'
-            }],
-            series: [{
-                name: '0%', type: 'line', data: rate0P, color: '#5cb85c'
-            }, {
-                name: '25%', type: 'line', data: rate25P, color: '#c7dc68'
-            }, {
-                name: '50%', type: 'line', data: rate50P, color: '#c7dc68'
-            }, {
-                name: '75%', type: 'line', data: rate75P, color: '#c7dc68'
-            }, {
-                name: '100%', type: 'line', data: rate100P, color: '#5cb85c'
-            }, {
-                name: '满分', type: 'line', data: rateFullP, color: '#f0ad4e'
-            }, {
-                name: '平均分', type: 'line', data: avgPP, color: '#337ab7'
-            }, {
-                name: '我的分数', type: 'line', data: scorePP, color: '#e2041b'
-            }],
-        };
-        var sOp2 = {
+        }
+        var sOp1 = { ...opBase }, sOp2 = { ...opBase }, oOp1 = { ...opBase }, oOp2 = { ...opBase }, oOp3 = { ...opBase }, oOp4 = { ...opBase };
+        sOp1.title = {
+            text: '分数',
             textStyle: {
-                fontFamily: 'Noto Serif SC'
+                fontSize: 14,
+                fontStyle: 'normal',
+                fontWeight: 'bold',
             },
-            title: {
-                text: '得分率',
-                textStyle: {
-                    fontSize: 14,
-                    fontStyle: 'normal',
-                    fontWeight: 'bold',
-                },
-            },
-            tooltip: {
-                trigger: 'axis'
-            },
-            legend: {
-                data: ['0%', '25%', '50%', '75%', '100%', '平均得分率', '我的得分率']
-            },
-            toolbox: {
-                show: true,
-                feature: {
-                    saveAsImage: {
-                        show: true
-                    },
-                    dataView: {
-                        show: true,
-                        readOnly: false
-                    }
-                },
-                padding: 25,
-                orient: 'vertical'
-            },
-            calculable: true,
-            xAxis: [{
-                type: 'category',
+        }
+        sOp1.legend = { data: ['0%', '25%', '50%', '75%', '100%', '满分', '平均分', '我的分数'] }
+        sOp1.xAxis = [{
+            type: 'category', data: seNameDicP,
+            name: '科目',
+            position: 'left'
+        }]
+        sOp1.yAxis = [{
+            type: 'value', name: '分数', position: 'left'
+        }]
+        sOp1.series = [
+            { name: '0%', type: 'line', data: rate0P, color: '#5cb85c' },
+            { name: '25%', type: 'line', data: rate25P, color: '#c7dc68' },
+            { name: '50%', type: 'line', data: rate50P, color: '#c7dc68' },
+            { name: '75%', type: 'line', data: rate75P, color: '#c7dc68' },
+            { name: '100%', type: 'line', data: rate100P, color: '#5cb85c' },
+            { name: '满分', type: 'line', data: rateFullP, color: '#f0ad4e' },
+            { name: '平均分', type: 'line', data: avgPP, color: '#337ab7' },
+            { name: '我的分数', type: 'line', data: scorePP, color: '#e2041b' }
+        ]
 
-                data: seNameDicP,
-                name: '科目',
-                position: 'left'
-            }],
-            yAxis: [{
-                type: 'value',
-                name: '得分率(%)',
-                position: 'left'
-            }],
-            series: [{
-                name: '0%', type: 'line', data: rate0Q, color: '#5cb85c'
-            }, {
-                name: '25%', type: 'line', data: rate25Q, color: '#c7dc68'
-            }, {
-                name: '50%', type: 'line', data: rate50Q, color: '#c7dc68'
-            }, {
-                name: '75%', type: 'line', data: rate75Q, color: '#c7dc68'
-            }, {
-                name: '100%', type: 'line', data: rate100Q, color: '#5cb85c'
-            }, {
-                name: '平均得分率', type: 'line', data: avgQ, color: '#337ab7'
-            }, {
-                name: '我的得分率', type: 'line', data: scoreQ, color: '#d9534f'
-            }
-
-            ]
-        };
-
-        var oOp1 = {
+        sOp2.title = {
+            text: '得分率',
             textStyle: {
-                fontFamily: 'Noto Serif SC'
-            }, title: {
-                text: '行政排名位次',
-                textStyle: {
-                    fontSize: 14,
-                    fontStyle: 'normal',
-                    fontWeight: 'bold'
-                },
+                fontSize: 14,
+                fontStyle: 'normal',
+                fontWeight: 'bold',
             },
-            tooltip: {
-                trigger: 'axis'
-            },
-            legend: {
-                data: ['班级排名', '年级排名']
-            },
-            toolbox: {
-                show: true,
-                feature: {
-                    saveAsImage: {
-                        show: true
-                    },
-                    dataView: {
-                        show: true,
-                        readOnly: false
-                    }
-                },
-                padding: 25,
-                orient: 'vertical'
-            },
-            calculable: true,
-            xAxis: [{
-                type: 'category', data: seNameDicP2,
-                name: '科目',
-                position: 'left'
-            }],
-            yAxis: [{
-                type: 'value',
-                name: '排名',
-                position: 'left'
-            }],
-            series: [{
-                name: '班级排名', type: 'bar', data: classOrderPP, color: '#5bc0de'
-            }, {
-                name: '年级排名', type: 'bar', data: gradeOrderPP, color: '#337ab7'
-            }
-            ]
-        };
+        }
+        sOp2.legend = { data: ['0%', '25%', '50%', '75%', '100%', '平均得分率', '我的得分率'] }
+        sOp2.xAxis = [{
+            type: 'category',
+            data: seNameDicP,
+            name: '科目',
+            position: 'left'
+        }]
+        sOp2.yAxis = [{
+            type: 'value',
+            name: '得分率(%)',
+            position: 'left'
+        }]
+        sOp2.series = [
+            { name: '0%', type: 'line', data: rate0Q, color: '#5cb85c' },
+            { name: '25%', type: 'line', data: rate25Q, color: '#c7dc68' },
+            { name: '50%', type: 'line', data: rate50Q, color: '#c7dc68' },
+            { name: '75%', type: 'line', data: rate75Q, color: '#c7dc68' },
+            { name: '100%', type: 'line', data: rate100Q, color: '#5cb85c' },
+            { name: '平均得分率', type: 'line', data: avgQ, color: '#337ab7' },
+            { name: '我的得分率', type: 'line', data: scoreQ, color: '#d9534f' }
+        ]
 
-        var oOp2 = {
-            textStyle: {
-                fontFamily: 'Noto Serif SC'
-            }, title: {
-                text: '行政排名比例',
-                textStyle: {
-                    fontSize: 14,
-                    fontStyle: 'normal',
-                    fontWeight: 'bold'
-                },
-            },
-            tooltip: {
-                trigger: 'axis'
-            },
-            legend: {
-                data: ['班级排名(%)', '年级排名(%)']
-            },
-            toolbox: {
-                show: true,
-                feature: {
-                    saveAsImage: {
-                        show: true
-                    },
-                    dataView: {
-                        show: true,
-                        readOnly: false
-                    }
-                },
-                padding: 25,
-                orient: 'vertical'
-            },
-            calculable: true,
-            xAxis: [{
-                type: 'category', data: seNameDicP2,
-                name: '科目',
-                position: 'left'
-            }],
-            yAxis: [{
-                type: 'value',
-                name: '排名(%)',
-                position: 'left'
-            }],
-            series: [{
-                name: '班级排名(%)', type: 'bar', data: classOrderQ, color: '#5bc0de'
-            }, {
-                name: '年级排名(%)', type: 'bar', data: gradeOrderQ, color: '#337ab7'
-            }
-            ]
-        };
 
-        var oOp3 = {
+        oOp1.title = {
+            text: '行政排名位次',
             textStyle: {
-                fontFamily: 'Noto Serif SC'
-            }, title: {
-                text: '分班排名位次',
-                textStyle: {
-                    fontSize: 14,
-                    fontStyle: 'normal',
-                    fontWeight: 'bold'
-                },
+                fontSize: 14,
+                fontStyle: 'normal',
+                fontWeight: 'bold',
             },
-            tooltip: {
-                trigger: 'axis'
-            },
-            legend: {
-                data: ['分班排名']
-            },
-            toolbox: {
-                show: true,
-                feature: {
-                    saveAsImage: {
-                        show: true
-                    },
-                    dataView: {
-                        show: true,
-                        readOnly: false
-                    }
-                },
-                padding: 25,
-                orient: 'vertical'
-            },
-            calculable: true,
-            xAxis: [{
-                type: 'category', data: seNameDicP3,
-                name: '科目',
-                position: 'left'
-            }],
-            yAxis: [{
-                type: 'value',
-                name: '排名',
-                position: 'left'
-            }],
-            series: [{
-                name: '分班排名', type: 'bar', data: ysClassOrderPP, color: '#5cb85c'
-            }
-            ]
-        };
+        }
+        oOp1.legend = { data: ['班级排名', '年级排名'] }
+        oOp1.xAxis = [{
+            type: 'category', data: seNameDicP2,
+            name: '科目',
+            position: 'left'
+        }]
+        oOp1.yAxis = [{
+            type: 'value',
+            name: '排名',
+            position: 'left'
+        }]
+        oOp1.series = [
+            { name: '班级排名', type: 'bar', data: classOrderPP, color: '#5bc0de' },
+            { name: '年级排名', type: 'bar', data: gradeOrderPP, color: '#337ab7' }
+        ]
 
-        var oOp4 = {
+        oOp2.title = {
+            text: '行政排名比例',
             textStyle: {
-                fontFamily: 'Noto Serif SC'
-            }, title: {
-                text: '分班排名比例',
-                textStyle: {
-                    fontSize: 14,
-                    fontStyle: 'normal',
-                    fontWeight: 'bold'
-                },
+                fontSize: 14,
+                fontStyle: 'normal',
+                fontWeight: 'bold',
             },
-            tooltip: {
-                trigger: 'axis'
+        }
+        oOp2.legend = { data: ['班级排名(%)', '年级排名(%)'] }
+        oOp2.xAxis = [{
+            type: 'category', data: seNameDicP2,
+            name: '科目',
+            position: 'left'
+        }]
+        oOp2.yAxis = [{
+            type: 'value',
+            name: '排名(%)',
+            position: 'left'
+        }]
+        oOp2.series = [
+            { name: '班级排名(%)', type: 'bar', data: classOrderQ, color: '#5bc0de' },
+            { name: '年级排名(%)', type: 'bar', data: gradeOrderQ, color: '#337ab7' }
+        ]
+
+        oOp3.title = {
+            text: '分班排名位次',
+            textStyle: {
+                fontSize: 14,
+                fontStyle: 'normal',
+                fontWeight: 'bold',
             },
-            legend: {
-                data: ['分班排名(%)']
+        }
+        oOp3.legend = { data: ['分班排名'] }
+        oOp3.xAxis = [{
+            type: 'category', data: seNameDicP3,
+            name: '科目',
+            position: 'left'
+        }]
+        oOp3.yAxis = [{
+            type: 'value',
+            name: '排名',
+            position: 'left'
+        }]
+        oOp3.series = [{
+            name: '分班排名', type: 'bar', data: ysClassOrderPP, color: '#5cb85c'
+        }]
+
+        oOp4.title = {
+            text: '分班排名比例',
+            textStyle: {
+                fontSize: 14,
+                fontStyle: 'normal',
+                fontWeight: 'bold',
             },
-            toolbox: {
-                show: true,
-                feature: {
-                    saveAsImage: {
-                        show: true
-                    },
-                    dataView: {
-                        show: true,
-                        readOnly: false
-                    }
-                },
-                padding: 25,
-                orient: 'vertical'
-            },
-            calculable: true,
-            xAxis: [{
-                type: 'category', data: seNameDicP3,
-                name: '科目',
-                position: 'left'
-            }],
-            yAxis: [{
-                type: 'value',
-                name: '排名(%)',
-                position: 'left'
-            }],
-            series: [{
-                name: '分班排名(%)', type: 'bar', data: ysClassOrderQ, color: '#5cb85c'
-            }
-            ]
-        };
+        }
+        oOp4.legend = { data: ['分班排名(%)'] }
+        oOp4.xAxis = [{
+            type: 'category', data: seNameDicP3,
+            name: '科目',
+            position: 'left'
+        }]
+        oOp4.yAxis = [{
+            type: 'value',
+            name: '排名(%)',
+            position: 'left'
+        }]
+        oOp4.series = [{
+            name: '分班排名(%)', type: 'bar', data: ysClassOrderQ, color: '#5cb85c'
+        }]
+
 
         // 为echarts对象加载数据 
         sChart1.setOption(sOp1);

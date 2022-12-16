@@ -46,6 +46,12 @@
             -webkit-box-shadow: inset 0 3px 3px rgb(0 0 0 / 5%);
             box-shadow: inset 0 3px 3px rgb(0 0 0 / 5%);
         }
+
+        .btn.btn-how{
+            border-bottom: none;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
     </style>
     <title>
         实验中学成绩整理
@@ -55,20 +61,6 @@
 <body>
     <a class="btn btn-info" href="/" style="text-shadow: rgb(85, 85, 85) 3px 2px 4px;"><span
             class="glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp;返回</a>
-    <span class="fetch" style="display:none">（暴露优质接口-无安全意识、实在愚蠢；）</span>
-    <div class="input-group fetch" style="display:none">
-        <span class="input-group-addon">考试编号</span>
-        <input id="Id" type="text" class="form-control" autocomplete="off" placeholder="972" value="972">
-    </div>
-    <div class="input-group fetch" style="display:none">
-        <span class="input-group-addon"><a href="/js/e.json" onclick="setWeigh2()" data-toggle="tooltip" data-placement="bottom"
-            title="仅限2025届高考部">姓名</a>或数字校园号</span>
-        <input id="Input" type="text" class="form-control" autocomplete="off" placeholder="20222001 或 小明">
-        <span class="input-group-btn">
-            <button type="button" class="btn btn-default" onclick="fetchMe($('#Input').val())"
-                id="fetchBtn">FETCH</button>
-        </span>
-    </div>
     <a tabindex="0" class="btn btn-warning hidable toggleHide" onclick="toggleHide();"
         style="text-shadow: rgb(85, 85, 85) 3px 2px 4px;display:none;">
         <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
@@ -90,7 +82,7 @@
         <p>6. 此时应看到“{data: {,...”等数据，一定在数据第一行右键（或在其最后一行下方空白处右键），随后“<b>复制物体</b>”或“<b>Copy Object</b>”；</p>
         <p>7. 新建文本文档（格式为 txt，不可用 Word 文档），将所复制的内容粘贴并保存，于下方按钮打开。</p>
         <p style="font-size: 12px;font-style: italic;">
-            注：图表整理均在本地进行，你的成绩不会上传到网络。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;把所有人的成绩信息完整地公布在接口上，心意答我真服了你！
+            注：图表整理均在本地进行，你的成绩不会上传到网络（上传与否，已经不重要了）。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;把所有人的成绩信息完整地公布在接口上，心意答我真服了你！
         </p>
         <h3>操作指南</h3>
         <p>1. 加载多个文件后，使用方向键或右下角控件可在文件间快速切换，方便比较；</p>
@@ -98,7 +90,20 @@
         <p>3. 一览表中 "0%" 代表最低分，"100%" 代表最高分，以此类推。</p>
         <br>
     </div>
-    <img>
+    <div class="fetch" style="display:none">（暴露优质接口-无安全意识、实在愚蠢；）</div>
+    <div class="input-group fetch" style="display:none">
+        <span class="input-group-addon">考试编号</span>
+        <input id="Id" type="text" class="form-control" autocomplete="off" placeholder="972" value="972">
+    </div>
+    <div class="input-group fetch" style="display:none">
+        <span class="input-group-addon"><a href="/js/e.json" onclick="setWeigh2()" data-toggle="tooltip"
+                data-placement="bottom" title="仅限2025届高考部">姓名</a>或数字校园号</span>
+        <input id="Input" type="text" class="form-control" autocomplete="off" placeholder="20222001 或 小明">
+        <span class="input-group-btn">
+            <button type="button" class="btn btn-default" onclick="fetchMe($('#Input').val())"
+                id="fetchBtn">FETCH</button>
+        </span>
+    </div>
     <div style="text-align: center;" class="hidable">
         <div class="btn-group">
             <a tabindex="0" class="btn btn-default" href="tutor/"
@@ -111,9 +116,9 @@
                     style="display: none;" id="fileInput" type="file" onchange="getFiles(event)">
             </a>
             <a id="upbtn" tabindex="0" class="btn btn-danger"
-                onclick="var a=aesEncrypt(prompt('我的班级')),b=aesEncrypt(prompt('我的学号'));if(a=='1170185235a2b833f24d4cf0e7d3f1c1'&&b=='b1b384c7b1e81d67482a132f60b3456e')$('.fetch').toggle();else alert('你非我')"
+                onclick="var a=aesEncrypt(prompt('我的班级')),b=aesEncrypt(prompt('我的学号'));if(a=='1170185235a2b833f24d4cf0e7d3f1c1'&&b=='b1b384c7b1e81d67482a132f60b3456e')$('.fetch').toggle(1000);else alert('你非我')"
                 style="text-shadow: rgb(85, 85, 85) 3px 2px 4px;display:inline-block;">
-                <b class="blurred">?!</b>
+                <b>?!</b>
             </a>
             <!-- If you must... -->
         </div>
@@ -141,7 +146,7 @@
         <ul class="nav nav-tabs">
             <li class="active"><a href="#chart" data-toggle="tab">图表</a></li>
             <li><a href="#data" data-toggle="tab">数据</a></li>
-            <!-- <li><a href="#3" data-toggle="tab">iOS</a></li> -->
+            <li><a href="#single" data-toggle="tab">单科</a></li>
         </ul>
         <div class="tab-content well well-sm">
             <div class="tab-pane fade in active" id="chart">
@@ -149,6 +154,7 @@
                 <h4>班内一览表</h4>
                 <div id="score1" class="chart"></div>
                 <div id="score2" class="chart"></div>
+                <h4>排名</h4>
                 <div id="order1" class="chart"></div>
                 <div id="order2" class="chart"></div>
                 <div id="order3" class="chart"></div>
@@ -157,9 +163,8 @@
             <div class="tab-pane fade" id="data">
                 <div id="fileOutput"></div>
             </div>
-            <!-- <div class="tab-pane fade" id="3">
-
-            </div> -->
+            <div class="tab-pane fade" id="single">
+            </div>
         </div>
     </div>
 
