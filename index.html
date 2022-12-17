@@ -137,13 +137,14 @@
                 $('body,.btn,.btn-xs,code,.secret').toggleClass('gee')
                 console.log(e)
             })
-            if(document.domain=='43.143.233.184')$('.alert').hide();
+            if (document.domain == '43.143.233.184') $('.alert').hide();
         })
     </script>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" style="height:100vh">
-    <div class="alert alert-warning">注意：正在将网站迁移至<a href="http://43.143.233.184/">http://43.143.233.184/</a>，此页面内容可能已经过时。</div>
+    <div class="alert alert-warning">注意：正在将网站迁移至<a href="http://43.143.233.184/">http://43.143.233.184/</a>，此页面内容可能已经过时。
+    </div>
     <script src="js/cursorEffects.js"></script>
     <script type="text/javascript">
         new cursoreffects.bubbleCursor();
@@ -203,15 +204,22 @@
     <div class="col-md-10">
         <hr>
         <h3>> 小工具</h3>
-        <p>
+        <div>
             <a class="btn btn-danger" id="score" href="/score/"><span class="glyphicon glyphicon-stats"
                     aria-hidden="true"></span>&nbsp;&nbsp;成绩整理</a>
-            <a class="btn btn-info" href="/crypty/">Crypty</a>
+            <div class="btn-group">
+                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">Crypty&nbsp;
+                    <span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                    <li><a href="/crypty/">Crypty</a></li>
+                    <li><a href="/crypty-2/">Hardcoded AES</a></li>
+                </ul>
+            </div>
             <a class="btn btn-info" id="log" href="/log/"><span class="glyphicon glyphicon-list"
                     aria-hidden="true"></span>&nbsp;日志</a>
             <a class="btn btn-warning" id="chem" href="/chem/"><span class="glyphicon glyphicon-fire"
                     aria-hidden="true"></span>&nbsp;化学</a>
-        </p>
+        </div>
     </div>
     <div class="col-md-2">
         <hr><button class="btn btn-danger btn-dang"><span class="glyphicon glyphicon-heart"

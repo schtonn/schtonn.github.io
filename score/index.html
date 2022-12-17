@@ -16,6 +16,10 @@
     <!-- <link rel="stylesheet" href="/css/style.css"> -->
     <script type="text/javascript" src="../js/score.js"></script>
     <style>
+        body {
+            transition-duration: 300ms;
+        }
+
         #controls {
             position: fixed;
             bottom: 20px;
@@ -47,10 +51,15 @@
             box-shadow: inset 0 3px 3px rgb(0 0 0 / 5%);
         }
 
-        .btn.btn-how{
+        .btn.btn-how {
             border-bottom: none;
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
+        }
+
+        img {
+            border: 3px dotted grey;
+            width: 30%;
         }
     </style>
     <title>
@@ -147,6 +156,7 @@
             <li class="active"><a href="#chart" data-toggle="tab">图表</a></li>
             <li><a href="#data" data-toggle="tab">数据</a></li>
             <li><a href="#single" data-toggle="tab">单科</a></li>
+            <li><a href="#other" data-toggle="tab">；</a></li>
         </ul>
         <div class="tab-content well well-sm">
             <div class="tab-pane fade in active" id="chart">
@@ -164,6 +174,23 @@
                 <div id="fileOutput"></div>
             </div>
             <div class="tab-pane fade" id="single">
+            </div>
+            <div class="tab-pane fade" id="other">
+                <p>你是否还想看看别人考的怎么样？</p>
+                <p>想看别人考的怎么样，首先你得安装并启用<a href="https://greasyfork.org/zh-CN/scripts/456705-wangshaui-simulator"
+                        target="_blank">这个脚本</a>。</p>
+                <p>假如你安装脚本都费劲，那无论如何你得先装上 Chrome 浏览器，我已经帮你把 Tampermonkey 搞来了，你只需要<a href="tutor/tamper.crx">下载</a>，Chrome
+                    大概率会自动安装，你再<a href="https://greasyfork.org/zh-CN/scripts/456705-wangshaui-simulator"
+                        target="_blank">从这里</a>就能直接安装脚本了。</p>
+                <p>随后进入心意答界面。多刷新几次，你会发现你来到了后台，然后你得进入学情分析页。</p>
+                <p>这时按
+                    <kbd>F12</kbd> 打开 DevTools 界面，从顶栏分页找到 Network，再刷新一次。
+                </p>
+                <p>此时应出现一堆文件的列表，从里面找到以 'app.9739...'
+                    开头的那个文件，右键选择 Block request URL 屏蔽它。</p>
+                <p>不要关闭 DevTools，再次刷新，你就能看到别人考的怎么样了。假如你还想从不同老师的视角看，可以点击顶端的
+                    changeId 按钮，至于老师的 id 是多少，你可以上数字校园邮箱里面翻一翻。</p>
+                <img async src="tutor/5.png">
             </div>
         </div>
     </div>

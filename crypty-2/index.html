@@ -1,0 +1,70 @@
+<head>
+	<meta charset="UTF-8">
+	<title>crypty</title>
+	<script src="../js/jquery-1.7.2.js"></script>
+	<script src="../js/aes.js"></script>
+	<script src="../js/pad-pkcs7.js"></script>
+	<script src="../js/mode-ecb.js"></script>
+	<!-- <link async rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous"> -->
+	<link rel="stylesheet" href="../css/bootstrap.min.css" crossorigin="anonymous">
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
+&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="../css/style.css">
+	<style>
+		.sel:hover {
+			background-color: rgb(220, 220, 220);
+			cursor: pointer;
+		}
+
+		.sel input:hover {
+			cursor: pointer;
+		}
+
+		textarea {
+			outline: none;
+			border: 4px double grey;
+			border-radius: 5px;
+		}
+	</style>
+	<script>
+		const key = CryptoJS.enc.Utf8.parse("abcdefgabcdefg12");
+		function aesDecrypt(encrypted) {
+			var cipherParams = CryptoJS.lib.CipherParams.create({ ciphertext: CryptoJS.enc.Hex.parse(encrypted) })
+			var decrypted = CryptoJS.AES.decrypt(cipherParams, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 });
+			return decrypted.toString(CryptoJS.enc.Utf8);
+		}
+		function aesEncrypt(encrypted) {
+			return CryptoJS.AES.encrypt(encrypted, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 }).ciphertext.toString();
+		}
+		$().ready(e=>{
+			$("#dec").val('aes~~~\nuses pad-pkcs7, ecb\nkey=abcdefgabcdefg12')
+			$('#enc').val(aesEncrypt($("#dec").val()))
+		})
+	</script>
+</head>
+
+<body>
+	<a class="btn btn-info" href="/" style="text-shadow: rgb(85, 85, 85) 3px 2px 4px;"><span
+			class="glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp;返回</a>
+	<div>
+		<div class="row">
+			<div class="col-lg-6 col-md-6 col-xs-12">
+				明文：
+				<textarea class="col-xs-12" rows="10" name="message" id="dec" class="text_source"
+					onclick="this.select();" style="resize:vertical"
+					oninput="$('#enc').val(aesEncrypt($(this).val()))"></textarea>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-6 col-md-6 col-xs-12">
+				<div>密文：</div>
+				<textarea rows="10" class="col-xs-12" name="cipher" id="enc" onclick="this.select();"
+					style="resize:vertical" oninput="$('#dec').val(aesDecrypt($(this).val()))"></textarea>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

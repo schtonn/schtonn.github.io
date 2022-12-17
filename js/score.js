@@ -608,6 +608,16 @@ function processFiles(isFirstTime = 0) {
         oChart2.setOption(oOp2);
         oChart3.setOption(oOp3);
         oChart4.setOption(oOp4);
+        window.onresize = function () {
+            setTimeout(function () {
+                sChart1.resize()
+                sChart2.resize()
+                oChart1.resize()
+                oChart2.resize()
+                oChart3.resize()
+                oChart4.resize()
+            }, 300)
+        }
     }
     reader.readAsText(file);
 }
