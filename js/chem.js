@@ -357,7 +357,7 @@ function getRegex() {
             var bs = scont[1].split('+')
             for (let i = 0; i < bs.length; i++) {
                 if (matchMode == 'mole') ret += "(?=(.*[+=]|)[0-9]?" + bs[i] + "([+=]|$))"
-                else ret += '(?=.*' + as[i] + '([^a-z]|$))'
+                else ret += '(?=.*' + bs[i] + '([^a-z]|$))'
             }
         }
         ret += '.*'
