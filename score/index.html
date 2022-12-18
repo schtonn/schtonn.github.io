@@ -4,8 +4,7 @@
     <link rel="stylesheet" href="../css/bootstrap.min.css" crossorigin="anonymous">
     <script type="text/javascript" src="../js/bootstrap.min.js" crossorigin="anonymous"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/echarts@4.3.0/dist/echarts.min.js"></script>
-    <script src="../js/av-min.js"></script>
+    <script async src="../js/echarts-4.7.0.min.js"></script>
     <script src="../js/aes.js"></script>
     <script src="../js/pad-pkcs7.js"></script>
     <script src="../js/mode-ecb.js"></script>
@@ -14,7 +13,7 @@
 &family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
     <!-- <link rel="stylesheet" href="/css/style.css"> -->
-    <script type="text/javascript" src="../js/score.js"></script>
+    <script type="text/javascript" src="../js/score.min.js"></script>
     <style>
         body {
             transition-duration: 300ms;
@@ -82,50 +81,56 @@
             </h1>
         </div>
         <h3>如何获取数据</h3>
-        <p>尽量使用 Google Chrome 浏览器，不保证其他浏览器操作相同。</p>
-        <p>1. 进入心意答查分页面；</p>
-        <p>2. 按下 F12 打开控制台，若无反应，尝试 Fn+F12；</p>
-        <p>3. 控制台顶栏分页中找到“<b>网络</b>”或“<b>Network</b>”（可能需要从下拉框里面找）；</p>
-        <p>4. 刷新页面（用 F5 刷新），此时应看到控制台中出现一批文件，点击其中的“<b>getStudentReportMEVO</b>”；</p>
-        <p>5. 在新出现的小页面的顶栏分页中找到“<b>预览</b>”或“<b>Preview</b>”；</p>
-        <p>6. 此时应看到“{data: {,...”等数据，一定在数据第一行右键（或在其最后一行下方空白处右键），随后“<b>复制物体</b>”或“<b>Copy Object</b>”；</p>
-        <p>7. 新建文本文档（格式为 txt，不可用 Word 文档），将所复制的内容粘贴并保存，于下方按钮打开。</p>
-        <p style="font-size: 12px;font-style: italic;">
-            注：图表整理均在本地进行，你的成绩不会上传到网络（上传与否，已经不重要了）。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;把所有人的成绩信息完整地公布在接口上，心意答我真服了你！
-        </p>
+        <p>点击 <span class="text-danger">?!</span> 按钮即可获取，如有疑问请咨询我。</p>
+        <a onclick="$('.getData').toggle(500)">我不会、我不知道，我还想用原始方法</a>
+        <div class="getData" style="display: none;">
+            <p>尽量使用 Google Chrome 浏览器，不保证其他浏览器操作相同。</p>
+            <p>1. 进入心意答查分页面；</p>
+            <p>2. 按下 F12 打开控制台，若无反应，尝试 Fn+F12；</p>
+            <p>3. 控制台顶栏分页中找到“<b>网络</b>”或“<b>Network</b>”（可能需要从下拉框里面找）；</p>
+            <p>4. 刷新页面（用 F5 刷新），此时应看到控制台中出现一批文件，点击其中的“<b>getStudentReportMEVO</b>”；</p>
+            <p>5. 在新出现的小页面的顶栏分页中找到“<b>预览</b>”或“<b>Preview</b>”；</p>
+            <p>6. 此时应看到“{data: {,...”等数据，一定在数据第一行右键（或在其最后一行下方空白处右键），随后“<b>复制物体</b>”或“<b>Copy Object</b>”；</p>
+            <p>7. 新建文本文档（格式为 txt，不可用 Word 文档），将所复制的内容粘贴并保存，于下方按钮打开。</p>
+            <p style="font-size: 12px;font-style: italic;">
+                注：图表整理均在本地进行，你的成绩不会上传到网络（上传与否，已经不重要了）。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;把所有人的成绩信息完整地公布在接口上，心意答我真服了你！
+            </p>
+        </div>
         <h3>操作指南</h3>
         <p>1. 加载多个文件后，使用方向键或右下角控件可在文件间快速切换，方便比较；</p>
         <p>2. 点击图例可隐藏部分内容；</p>
         <p>3. 一览表中 "0%" 代表最低分，"100%" 代表最高分，以此类推。</p>
         <br>
     </div>
-    <div class="fetch" style="display:none">（暴露优质接口-无安全意识、实在愚蠢；）</div>
+    <div class="fetch" style="display:none">（高质量接口）</div>
     <div class="input-group fetch" style="display:none">
-        <span class="input-group-addon">考试编号</span>
+        <span class="input-group-addon">考试编号<a data-toggle="tooltip" data-placement="bottom"
+                title="心意答点击考试标题后，切换考试的列表里可见" aria-hidden="true">*</a></span>
         <input id="Id" type="text" class="form-control" autocomplete="off" placeholder="972" value="972">
     </div>
     <div class="input-group fetch" style="display:none">
-        <span class="input-group-addon"><a href="/js/e.json" onclick="setWeigh2()" data-toggle="tooltip"
-                data-placement="bottom" title="仅限2025届高考部">姓名</a>或数字校园号</span>
+        <span class="input-group-addon">姓名<a href="/js/e.json" onclick="setWeigh2()" data-toggle="tooltip"
+                data-placement="bottom" title="仅限2025届高考部">*</a>或数字校园号</span>
         <input id="Input" type="text" class="form-control" autocomplete="off" placeholder="20222001 或 小明">
         <span class="input-group-btn">
-            <button type="button" class="btn btn-default" onclick="fetchMe($('#Input').val())"
+            <button type="button" class="btn btn-success" onclick="fetchMe($('#Input').val())"
                 id="fetchBtn">FETCH</button>
         </span>
     </div>
     <div style="text-align: center;" class="hidable">
         <div class="btn-group">
-            <a tabindex="0" class="btn btn-default" href="tutor/"
-                style="text-shadow: rgb(185, 185, 185) 3px 2px 4px;display:inline-block;">
-                <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>&nbsp;<b>查看示例截图</b>
-            </a>
-            <a id="upbtn" tabindex="0" class="btn btn-info" onclick="document.getElementById('fileInput').click();"
+            <a id="upbtn" tabindex="0" class="btn btn-info"
+                onclick="document.getElementById('fileInput').click();"
                 style="text-shadow: rgb(85, 85, 85) 3px 2px 4px;display:inline-block;">
                 <span id="upicon" class="glyphicon glyphicon-open" aria-hidden="true"></span> <b>打开文件</b><input
                     style="display: none;" id="fileInput" type="file" onchange="getFiles(event)">
             </a>
+            <a tabindex="0" class="btn btn-default fetch" href="tutor/"
+                style="text-shadow: rgb(185, 185, 185) 3px 2px 4px;display:inline-block;">
+                <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>&nbsp;<b>查看示例截图</b>
+            </a>
             <a id="upbtn" tabindex="0" class="btn btn-danger"
-                onclick="var a=aesEncrypt(prompt('我的班级')),b=aesEncrypt(prompt('我的学号'));if(a=='1170185235a2b833f24d4cf0e7d3f1c1'&&b=='b1b384c7b1e81d67482a132f60b3456e')$('.fetch').toggle(1000);else alert('你非我')"
+                onclick="/*var a=aesEncrypt(prompt('我的班级')),b=aesEncrypt(prompt('我的学号'));if(a=='1170185235a2b833f24d4cf0e7d3f1c1'&&b=='b1b384c7b1e81d67482a132f60b3456e')*/$('.fetch').toggle(1000);/*else alert('你非我')*/"
                 style="text-shadow: rgb(85, 85, 85) 3px 2px 4px;display:inline-block;">
                 <b>?!</b>
             </a>
@@ -156,19 +161,22 @@
             <li class="active"><a href="#chart" data-toggle="tab">图表</a></li>
             <li><a href="#data" data-toggle="tab">数据</a></li>
             <li><a href="#single" data-toggle="tab">单科</a></li>
-            <li><a href="#other" data-toggle="tab">；</a></li>
+            <li><a href="#other" data-toggle="tab">谁问你了</a></li>
         </ul>
         <div class="tab-content well well-sm">
             <div class="tab-pane fade in active" id="chart">
                 <br>
+                <button id="resizeBtn" class="btn btn-default" onclick="resizeChart()"
+                    style="display: none;">图表没显示？暴力重置一下</button>
                 <h4>班内一览表</h4>
                 <div id="score1" class="chart"></div>
                 <div id="score2" class="chart"></div>
                 <h4>排名</h4>
-                <div id="order1" class="chart"></div>
                 <div id="order2" class="chart"></div>
-                <div id="order3" class="chart"></div>
                 <div id="order4" class="chart"></div>
+                <div id="order1" class="chart"></div>
+                <div id="order3" class="chart"></div>
+                <br><br>
             </div>
             <div class="tab-pane fade" id="data">
                 <div id="fileOutput"></div>
@@ -176,7 +184,9 @@
             <div class="tab-pane fade" id="single">
             </div>
             <div class="tab-pane fade" id="other">
-                <p>你是否还想看看别人考的怎么样？</p>
+                Nobody asked
+                <br><br><br>
+                <!-- <p>你是否还想看看别人考的怎么样？</p>
                 <p>想看别人考的怎么样，首先你得安装并启用<a href="https://greasyfork.org/zh-CN/scripts/456705-wangshaui-simulator"
                         target="_blank">这个脚本</a>。</p>
                 <p>假如你安装脚本都费劲，那无论如何你得先装上 Chrome 浏览器，我已经帮你把 Tampermonkey 搞来了，你只需要<a href="tutor/tamper.crx">下载</a>，Chrome
@@ -190,7 +200,7 @@
                     开头的那个文件，右键选择 Block request URL 屏蔽它。</p>
                 <p>不要关闭 DevTools，再次刷新，你就能看到别人考的怎么样了。假如你还想从不同老师的视角看，可以点击顶端的
                     changeId 按钮，至于老师的 id 是多少，你可以上数字校园邮箱里面翻一翻。</p>
-                <img async src="tutor/5.png">
+                <img async src="tutor/5.png"> -->
             </div>
         </div>
     </div>
