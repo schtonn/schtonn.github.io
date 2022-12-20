@@ -57,8 +57,39 @@
         }
 
         img {
+            transition-duration: 300ms;
             border: 3px dotted grey;
-            width: 30%;
+            width: 100%;
+        }
+
+        .minus {
+            transition-duration: 300ms;
+            color: rgb(217, 83, 79);
+            font-weight: 800;
+            font-family: 'Consolas';
+            background-color: rgba(215, 215, 215, 0.7);
+            position: absolute;
+            border-radius: 4px;
+            padding: 2px;
+        }
+
+        .minus.full {
+            color: rgb(92, 184, 92);
+        }
+
+        .sp {
+            outline: 1px solid rgba(15, 15, 15, 0.7);
+            background-color: rgba(215, 215, 215, 0.7);
+            position: absolute;
+            border-radius: 1px;
+        }
+
+        .sp.cor {
+            background-color: rgba(92, 184, 92, 0.7);
+        }
+
+        .sp.err {
+            background-color: rgba(217, 83, 79, 0.7);
         }
     </style>
     <title>
@@ -99,7 +130,7 @@
         <h3>操作指南</h3>
         <p>1. 加载多个文件后，使用方向键或右下角控件可在文件间快速切换，方便比较；</p>
         <p>2. 点击图例可隐藏部分内容；</p>
-        <p>3. 一览表中 "0%" 代表最低分，"100%" 代表最高分，以此类推。</p>
+        <p>3. 鼠标悬浮于右下角控件可让图片半透明，方便查看小分。</p>
         <br>
     </div>
     <div class="fetch" style="display:none">（高质量接口）</div>
@@ -119,8 +150,7 @@
     </div>
     <div style="text-align: center;" class="hidable">
         <div class="btn-group">
-            <a id="upbtn" tabindex="0" class="btn btn-info"
-                onclick="document.getElementById('fileInput').click();"
+            <a id="upbtn" tabindex="0" class="btn btn-info" onclick="document.getElementById('fileInput').click();"
                 style="text-shadow: rgb(85, 85, 85) 3px 2px 4px;display:inline-block;">
                 <span id="upicon" class="glyphicon glyphicon-open" aria-hidden="true"></span> <b>打开文件</b><input
                     style="display: none;" id="fileInput" type="file" onchange="getFiles(event)">
@@ -142,7 +172,8 @@
         </a>
     </div>
 
-    <div id="controls" class="disabled" style="text-align: center;">
+    <div id="controls" class="disabled" style="text-align: center;" onmouseenter="$('img').css('opacity','0.1')"
+        onmouseleave="$('img').css('opacity','1')">
         <div id="name"></div>
         <div class="btn-group">
             <a id="lbtn" tabindex="0" class="btn btn-default btn-lg disabled" onclick="prevFile();">
@@ -158,9 +189,9 @@
     <div id="fileInfo" class="hideble"></div>
     <div class="chart">
         <ul class="nav nav-tabs">
-            <li class="active"><a href="#chart" data-toggle="tab">图表</a></li>
+            <li class="active"><a href="#chart" data-toggle="tab" onclick="resizeChart()">图表</a></li>
             <li><a href="#data" data-toggle="tab">数据</a></li>
-            <li><a href="#single" data-toggle="tab">单科</a></li>
+            <li><a href="#single" data-toggle="tab" onclick="resizeChart()">单科</a></li>
             <li><a href="#other" data-toggle="tab">谁问你了</a></li>
         </ul>
         <div class="tab-content well well-sm">
@@ -180,8 +211,14 @@
             </div>
             <div class="tab-pane fade" id="data">
                 <div id="fileOutput"></div>
+                <div style="text-align:center">
+                    <a id="downbtn" tabindex="0" class="btn btn-default" onclick="down()">
+                        <span id="upicon" class="glyphicon glyphicon-save" aria-hidden="true"></span> <b>下载文件</b><input
+                            style="display: none;" id="fileInput" type="file" onchange="getFiles(event)">
+                    </a>
+                </div>
             </div>
-            <div class="tab-pane fade" id="single">
+            <div class="tab-pane fade" id="single" style="min-height: 1000px;">
             </div>
             <div class="tab-pane fade" id="other">
                 Nobody asked

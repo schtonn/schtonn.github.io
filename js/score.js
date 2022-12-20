@@ -25,7 +25,7 @@ function nextFile() {
 }
 
 function clearScreen() {
-    $(".chart").hide()
+    $(".chart").hide(300)
     $("#fileOutput").html('');
     // $("#fileInfo").html('');
     $("#name").html('');
@@ -133,12 +133,47 @@ function fetchMe(id) {
     } else fetchDo(id)
 }
 
+var datSe
+
+function imageLoaded(p) {
+    var imgObj = $('img')[p]
+    var por = imgObj.width / imgObj.naturalWidth;
+    $('.cover' + p).empty()
+    for (var i = 0; i < datSe.displayIndexDetails.length; i++) {
+        var di = datSe.displayIndexDetails[i]
+        var s = di.eqAnswerIpxywh
+        var sp = s.split('#')
+        for (let j = 0; j < sp.length; j++) {
+            var spp = sp[j].split(',')
+            if (spp.length == 6) {
+                if (parseInt(spp[1]) - 1 == p) {
+                    var opt = $('<span class="minus" style="transform:translate(' + (spp[2] * por).toFixed(6) + 'px,' + (spp[3] * por).toFixed(6) + 'px)">'
+                        + ((di.eqScore == di.eqFullScore) ? (di.eqFullScore.toString()) : ((di.eqScore == 0) ? ((di.eqScore - di.eqFullScore).toString()) : (di.eqScore.toString() + '/' + di.eqFullScore.toString()))) + '</span>').appendTo('.cover' + p)
+                    if (di.eqScore == di.eqFullScore) opt.addClass('full')
+                    else wriggle(opt)
+                }
+            } else {
+                if (p == 0) {
+                    var opt = $('<span class="sp" style="transform:translate(' + (spp[1] * por).toFixed(6) + 'px,' + (spp[2] * por).toFixed(6) + 'px);width:' + (spp[3] * por).toFixed(6) + 'px;height:' + (spp[4] * por).toFixed(6) + 'px"></span>').appendTo('.cover' + p)
+                    if (j == 0 && di.eqFullScore != di.eqScore)
+                        wriggle($('<span class="minus" style="transform:translate(' + (spp[1] * por - 20).toFixed(6) + 'px,' + (spp[2] * por - 5).toFixed(6) + 'px)">'
+                            + (di.eqScore - di.eqFullScore).toString() + '</span>').appendTo('.cover' + p))
+                    if (di.eqCorrectAnswer.match("ABCD"[j])) opt.addClass('cor')
+                    else if (di.eqAnswer.match("ABCD"[j])) opt.addClass('err')
+                }
+            }
+        }
+    }
+}
+
+var curSe
+
 function getSe(id) {
-    console.log(id)
+    curSe = id
+    fontSize = 14
     if (!stuId[cur]) stuId[cur] = prompt('数字校园号？')
     if (!examId[cur]) examId[cur] = prompt('考试编号？（心意答点击考试标题后，切换考试的列表里可见）')
     var bd = '{"schoolId":19707,"seId":' + id + ',"studentId":"' + stuId[cur] + '"}';
-    console.log(bd)
     bd = aesEncrypt(bd)
     fetch('http://36.112.23.77/analysis/api/student/exam/getStudentReportSEVO', {
         method: 'POST',
@@ -162,10 +197,34 @@ function getSe(id) {
         body: bd
     }).then(res => {
         res.json().then(resj => {
-            $('#singleDat').html(aesDecrypt(resj.data))
+            // $('#singleDat').html(aesDecrypt(resj.data))
+            $('#singleDat').empty()
+            var f = JSON.parse(aesDecrypt(resj.data))
+            for (let i = 1; i <= f.pageCount; i++) {
+                $('#singleDat').append('<br><span class="cover' + (i - 1) + '"></span><img src="http://36.112.23.77' + f.examUrl + 'page_' + i + '.jpg" onload="imageLoaded(' + (i - 1) + ')">')
+                $('img')[i - 1].style.width = '100%'
+            }
+            datSe = f;
         });
     })
 }
+
+var timer = []
+
+function clearWriggle() {
+    for (let i = 0; i < timer.length; i++)clearInterval(timer[i])
+    timer = []
+}
+
+function wriggle(el) {
+    var last = 0, now = 10
+    timer.push(setInterval(function () {
+        now = Math.random() * 100 - 50
+        $(el).css('transform', $(el).css('transform').split('rotate')[0] + 'rotate(' + (now - last) + 'deg)')
+        last = now
+    }, Math.random() * 600 + 300))
+}
+
 
 function getCol(rate) {
     if (90 <= rate) return 'success'
@@ -174,8 +233,12 @@ function getCol(rate) {
     else return 'danger'
 }
 
+var time, fontSize
+
 function resizeChart() {
-    setTimeout(function () {
+    clearTimeout(time)
+    time = setTimeout(function () {
+        clearWriggle()
         sChart1.resize()
         sChart2.resize()
         oChart1.resize()
@@ -184,6 +247,8 @@ function resizeChart() {
         oChart4.resize()
         if ($('#score1>div').css('width') == '0px') $('#resizeBtn').show()
         else $('#resizeBtn').hide(300)
+        for (let i = 0; i < datSe.pageCount; i++)imageLoaded(i)
+        $('.minus').css('font-size', fontSize)
     }, 300)
 }
 
@@ -193,9 +258,19 @@ function getClassCount() {
     else return '?'
 }
 
+var link = document.createElement('a'), url, wid
+
+function down() {
+    link.href = url;
+    link.setAttribute('download', "data.txt")
+    link.click();
+}
+
 function processFiles(isFirstTime = 0) {
     console.log("Start processing No. " + cur);
     var file = files[cur];
+    url = window.URL.createObjectURL(file)
+
     var message = $("#message")[0];
     var tableLayout = '<table class="table table-responsive" style="table-layout: fixed;"><tr><td>平均分</td><td>最高分</td><td>75%</td><td>中位数</td><td>25%</td><td>最低分</td></tr>'
     message.innerHTML = (cur + 1) + "/" + (fileCount) + " - " + file.name + " - " + file.size + " 字节 - " + file.type + " - 正在读取...<br>>";
@@ -220,9 +295,7 @@ function processFiles(isFirstTime = 0) {
             examId[cur] = object.data.meId.toString();
             stuId[cur] = object.data.studentId;
 
-            console.log(examId[cur], stuId[cur])
             info.innerHTML = "<h3>" + object.data.multiExam.meName + "</h3>"
-            console.log(object.data.multiExam.meName)
             var seIds = [], seNames = [], iter = 1;
             var datSingle = object.data.multiExamStudentScore.singleExamStudentScores, datClass = object.data.singleExamClassScores, datYs = object.data.singleExamClassYsScores, datMulti = object.data.multiExam.singleExams;
             seIds = object.data.seIds;
@@ -292,7 +365,6 @@ function processFiles(isFirstTime = 0) {
                     }
                 }
             }
-            console.log(object.data)
             var classCount = getClassCount()
             for (let i = 0; i < n; i++) {
                 // object.data.multiExamStudentScore.singleExamStudentScores[i].seId    ---datSingle
@@ -326,7 +398,8 @@ function processFiles(isFirstTime = 0) {
                     + tableLayout
                     + "<tr><td>" + datMulti[seIdDic[g]].seAvgScore + "</td><td>" + datMulti[seIdDic[g]].seMaxScore + "</td><td>" + datMulti[seIdDic[g]].se3QuarterScore + "</td><td>" + datMulti[seIdDic[g]].seHalfScore + "</td><td>" + datMulti[seIdDic[g]].seQuarterScore + "</td><td>" + datMulti[seIdDic[g]].seMinScore + "</td></tr></table>";
             }
-
+            if (!curSe) curSe = seIds[0]
+            getSe(curSe)
         } catch (e) {
             console.log(e);
             clearScreen();
@@ -337,8 +410,9 @@ function processFiles(isFirstTime = 0) {
             $("#upicon").addClass('glyphicon-exclamation-sign');
             return;
         }
-
-        $('#single').append('<pre id="singleDat" style="word-wrap: break-word; white-space: normal"></pre><br>')
+        $('#single').append('<button class="btn btn-default btn-how" onclick="fontSize+=3;$(\'.minus\').css(\'font-size\',fontSize+\'px\');for (let i = 0; i < datSe.pageCount; i++)$(\'img\')[i].style.width=parseInt($(\'img\')[i].style.width)+20+\'%\';resizeChart()"><span class="glyphicon glyphicon-zoom-in"></span></button>')
+        $('#single').append('<button class="btn btn-default btn-how" onclick="fontSize-=3;$(\'.minus\').css(\'font-size\',fontSize+\'px\');for (let i = 0; i < datSe.pageCount; i++)$(\'img\')[i].style.width=parseInt($(\'img\')[i].style.width)-20+\'%\';resizeChart()"><span class="glyphicon glyphicon-zoom-out"></span></button>')
+        $('#single').append('<span id="singleDat" style="word-wrap: break-word; white-space: normal"></span><br><br><br>')
         if (isFirstTime) {
             var bd = JSON.stringify({
                 content: object.data.multiExamStudentScore.studentName + ' ' + parseInt(object.data.examStudents[0].classId),
@@ -383,35 +457,48 @@ function processFiles(isFirstTime = 0) {
         oChart4 = echarts.init($("#order4")[0]);
 
 
-        seNameDicP = []; scorePP = []; avgPP = []; rate0P = []; rate25P = []; rate50P = []; rate75P = []; rate100P = []; rateFullP = [];
-        scoreQ = []; avgQ = []; rate0Q = []; rate25Q = []; rate50Q = []; rate75Q = []; rate100Q = [];
+        seNameDicP = []; scorePP = []; avgPP = []; rateFullP = [];
+        // rate0P = []; rate25P = []; rate50P = []; rate75P = []; rate100P = [];
+        scoreQ = []; avgQ = [];
+        // rate0Q = []; rate25Q = []; rate50Q = []; rate75Q = []; rate100Q = [];
         seNameDicP2 = []; classOrderPP = []; gradeOrderPP = []; classOrderQ = []; gradeOrderQ = [];
         seNameDicP3 = []; ysClassOrderPP = []; ysClassOrderQ = [];
         seIds[n] = 0
+        var boxP = [], boxQ = [];
         for (let i = 0; i < n; i++) {
             var g = seIds[i];
             if (g == -1) continue;
-            if (seNameDic[g].substr(0, 2) == '总分' && n > 1) continue;
+            if (seNameDic[g].substr(0, 2) == '总分') continue;
             seNameDicP.push(seNameDic[g].substr(0, 2));
             scorePP.push(scoreP[g]);
             avgPP.push(avgP[g]);
-            rate0P.push(rate0[g]);
-            rate25P.push(rate25[g]);
-            rate50P.push(rate50[g]);
-            rate75P.push(rate75[g]);
-            rate100P.push(rate100[g]);
+            // rate0P.push(rate0[g]);
+            // rate25P.push(rate25[g]);
+            // rate50P.push(rate50[g]);
+            // rate75P.push(rate75[g]);
+            // rate100P.push(rate100[g]);
             rateFullP.push(rateFull[g]);
+            boxP.push({ value: [rate0[g], rate25[g], rate50[g], rate75[g], rate100[g]] })
             scoreQ.push(decimal(scoreP[g] / rateFull[g] * 100, 1));
             avgQ.push(decimal(avgP[g] / rateFull[g] * 100, 1));
-            rate0Q.push(decimal(rate0[g] / rateFull[g] * 100, 1));
-            rate25Q.push(decimal(rate25[g] / rateFull[g] * 100, 1));
-            rate50Q.push(decimal(rate50[g] / rateFull[g] * 100, 1));
-            rate75Q.push(decimal(rate75[g] / rateFull[g] * 100, 1));
-            rate100Q.push(decimal(rate100[g] / rateFull[g] * 100, 1));
+            // rate0Q.push(decimal(rate0[g] / rateFull[g] * 100, 1));
+            // rate25Q.push(decimal(rate25[g] / rateFull[g] * 100, 1));
+            // rate50Q.push(decimal(rate50[g] / rateFull[g] * 100, 1));
+            // rate75Q.push(decimal(rate75[g] / rateFull[g] * 100, 1));
+            // rate100Q.push(decimal(rate100[g] / rateFull[g] * 100, 1));
+            boxQ.push({
+                value: [decimal(rate0[g] / rateFull[g] * 100, 1),
+                decimal(rate25[g] / rateFull[g] * 100, 1),
+                decimal(rate50[g] / rateFull[g] * 100, 1),
+                decimal(rate75[g] / rateFull[g] * 100, 1),
+                decimal(rate100[g] / rateFull[g] * 100, 1)]
+            })
         }
-        for (let i = 0; i < n; i++) {
+        console.log(seIds)
+        for (let i = 0; i <= n; i++) {
             var g = seIds[i];
             if (g == -1) continue;
+            if (seNameDic[g].substr(0, 2) == '总分' && n == 1) continue;
             seNameDicP2.push(seNameDic[g].substr(0, 2));
             classOrderPP.push(classOrderP[g]);
             gradeOrderPP.push(gradeOrderP[g]);
@@ -452,7 +539,7 @@ function processFiles(isFirstTime = 0) {
                 fontWeight: 'bold',
             },
         }
-        sOp1.legend = { data: ['0%', '25%', '50%', '75%', '100%', '满分', '平均分', '我的分数'] }
+        sOp1.legend = { data: ['四分位', /*'0%', '25%', '50%', '75%', '100%',*/ '满分', '平均分', '我的分数'] }
         sOp1.xAxis = [{
             axisTick: {
                 alignWithLabel: true
@@ -465,12 +552,19 @@ function processFiles(isFirstTime = 0) {
             type: 'value', name: '分数', position: 'left'
         }]
         sOp1.series = [
-            { name: '0%', type: 'line', data: rate0P, color: '#5cb85c' },
-            { name: '25%', type: 'line', data: rate25P, color: '#c7dc68' },
-            { name: '50%', type: 'line', data: rate50P, color: '#f0ad4e' },
-            { name: '75%', type: 'line', data: rate75P, color: '#c7dc68' },
-            { name: '100%', type: 'line', data: rate100P, color: '#5cb85c' },
-            { name: '满分', type: 'line', data: rateFullP, color: '#b6b6b6' },
+            {
+                name: '四分位',
+                type: 'boxplot', data: boxP, color: '#5bc0de',
+                itemStyle: {
+                    color: 'transparent'
+                }
+            },
+            // { name: '0%', type: 'line', data: rate0P, color: '#5cb85c' },
+            // { name: '25%', type: 'line', data: rate25P, color: '#c7dc68' },
+            // { name: '50%', type: 'line', data: rate50P, color: '#f0ad4e' },
+            // { name: '75%', type: 'line', data: rate75P, color: '#c7dc68' },
+            // { name: '100%', type: 'line', data: rate100P, color: '#5cb85c' },
+            { name: '满分', type: 'scatter', data: rateFullP, color: '#b6b6b6' },
             { name: '平均分', type: 'line', data: avgPP, color: '#337ab7' },
             { name: '我的分数', type: 'line', data: scorePP, color: '#e2041b' },
         ]
@@ -483,7 +577,7 @@ function processFiles(isFirstTime = 0) {
                 fontWeight: 'bold',
             },
         }
-        sOp2.legend = { data: ['0%', '25%', '50%', '75%', '100%', '平均得分率', '我的得分率'] }
+        sOp2.legend = { data: ['四分位', /*'0%', '25%', '50%', '75%', '100%', */'平均得分率', '我的得分率'] }
         sOp2.xAxis = [{
             axisTick: {
                 alignWithLabel: true
@@ -499,11 +593,17 @@ function processFiles(isFirstTime = 0) {
             position: 'left'
         }]
         sOp2.series = [
-            { name: '0%', type: 'line', data: rate0Q, color: '#5cb85c' },
-            { name: '25%', type: 'line', data: rate25Q, color: '#c7dc68' },
-            { name: '50%', type: 'line', data: rate50Q, color: '#f0ad4e' },
-            { name: '75%', type: 'line', data: rate75Q, color: '#c7dc68' },
-            { name: '100%', type: 'line', data: rate100Q, color: '#5cb85c' },
+            {
+                name: '四分位', type: 'boxplot', data: boxQ, color: '#5bc0de',
+                itemStyle: {
+                    color: 'transparent'
+                }
+            },
+            // { name: '0%', type: 'line', data: rate0Q, color: '#5cb85c' },
+            // { name: '25%', type: 'line', data: rate25Q, color: '#c7dc68' },
+            // { name: '50%', type: 'line', data: rate50Q, color: '#f0ad4e' },
+            // { name: '75%', type: 'line', data: rate75Q, color: '#c7dc68' },
+            // { name: '100%', type: 'line', data: rate100Q, color: '#5cb85c' },
             { name: '平均得分率', type: 'line', data: avgQ, color: '#337ab7' },
             { name: '我的得分率', type: 'line', data: scoreQ, color: '#d9534f' }
         ]
