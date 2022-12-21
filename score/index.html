@@ -191,7 +191,7 @@
         <ul class="nav nav-tabs">
             <li class="active"><a href="#chart" data-toggle="tab" onclick="resizeChart()">图表</a></li>
             <li><a href="#data" data-toggle="tab">数据</a></li>
-            <li><a href="#single" data-toggle="tab" onclick="resizeChart()">单科</a></li>
+            <li><a href="#single" data-toggle="tab" onclick="getSe(curSe,1)">单科</a></li>
             <li><a href="#other" data-toggle="tab">谁问你了</a></li>
         </ul>
         <div class="tab-content well well-sm">
@@ -221,7 +221,9 @@
             <div class="tab-pane fade" id="single" style="min-height: 1000px;">
             </div>
             <div class="tab-pane fade" id="other">
-                Nobody asked
+                <p>Nobody asked</p>
+                <p>原为实验中学 74 桌出品，我仅做搬运修改。</p>
+                <p><a href="/js/score.js">源代码</a></p>
                 <br><br><br>
                 <!-- <p>你是否还想看看别人考的怎么样？</p>
                 <p>想看别人考的怎么样，首先你得安装并启用<a href="https://greasyfork.org/zh-CN/scripts/456705-wangshaui-simulator"

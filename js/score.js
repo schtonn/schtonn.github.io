@@ -4,7 +4,7 @@ function toggleHide() {
 
 var knownExams = ''
 
-for (let i = 3000; i < 3200; i++)knownExams += i.toString() + ','
+for (let i = 3000; i < 3400; i++)knownExams += i.toString() + ','
 knownExams = knownExams.slice(0, knownExams.length - 1)
 
 function decimal(x, n) {
@@ -91,9 +91,9 @@ function stringToByte(str) {
 
 function fetchDo(id) {
     var bd = '{"meId":' + $('#Id').val() + ',"seIds":"' + knownExams + '","schoolId":19707,"studentId":"' + id + '"}';
-    console.log(bd)
+    // console.log(bd)
     bd = aesEncrypt(bd)
-    console.log(bd)
+    // console.log(bd)
     fetch('http://36.112.23.77/analysis/api/student/exam/getStudentReportMEVO', {
         method: 'POST',
         headers: {
@@ -138,6 +138,7 @@ var datSe
 function imageLoaded(p) {
     var imgObj = $('img')[p]
     var por = imgObj.width / imgObj.naturalWidth;
+    if (por == 1) por = ($('.tab-content')[0].clientWidth - 12) / imgObj.naturalWidth;
     $('.cover' + p).empty()
     for (var i = 0; i < datSe.displayIndexDetails.length; i++) {
         var di = datSe.displayIndexDetails[i]
@@ -166,9 +167,12 @@ function imageLoaded(p) {
     }
 }
 
-var curSe
+var curSe, shown
 
-function getSe(id) {
+function getSe(id, force, force2) {
+    if (!force && !$('.nav-tabs>li')[2].classList[0]) return
+    if (!force2 && id == curSe && shown) return
+    shown = 1
     curSe = id
     fontSize = 14
     if (!stuId[cur]) stuId[cur] = prompt('数字校园号？')
@@ -182,12 +186,11 @@ function getSe(id) {
         },
         body: bd
     }).then(res => {
-        res.json().then(resj => {
+        res.json().then(() => {
             // $('#singleDat').html(aesDecrypt(resj.data))
         });
     })
     bd = '{"schoolId":19707,"meId":' + examId[cur] + ',"seId":' + id + ',"studentId":"' + stuId[cur] + '"}';
-    console.log(bd)
     bd = aesEncrypt(bd)
     fetch('http://36.112.23.77/analysis/api/student/exam/getStuExamDetailInfo', {
         method: 'POST',
@@ -239,26 +242,31 @@ function resizeChart() {
     clearTimeout(time)
     time = setTimeout(function () {
         clearWriggle()
-        sChart1.resize()
-        sChart2.resize()
-        oChart1.resize()
-        oChart2.resize()
-        oChart3.resize()
-        oChart4.resize()
-        if ($('#score1>div').css('width') == '0px') $('#resizeBtn').show()
-        else $('#resizeBtn').hide(300)
-        for (let i = 0; i < datSe.pageCount; i++)imageLoaded(i)
-        $('.minus').css('font-size', fontSize)
+        if ($('.nav-tabs>li')[0].classList[0] == 'active') {
+            console.log('reload chart')
+            sc1.resize()
+            sc2.resize()
+            oc1.resize()
+            oc2.resize()
+            oc3.resize()
+            oc4.resize()
+            if ($('#score1>div').css('width') == '0px') $('#resizeBtn').show()
+            else $('#resizeBtn').hide(300)
+        } else if ($('.nav-tabs>li')[2].classList[0] == 'active') {
+            console.log('reload image')
+            for (let i = 0; i < datSe.pageCount; i++)imageLoaded(i)
+            $('.minus').css('font-size', fontSize)
+        }
     }, 300)
 }
 
 function getClassCount() {
-    if (examId[cur] == 972 || examId[cur] == 957 || examId[cur] == 951) return '15'
+    if (examId[cur] == 1021 || examId[cur] == 972 || examId[cur] == 957 || examId[cur] == 951) return '15'
     else if (examId[cur] == 970) return '13'
     else return '?'
 }
 
-var link = document.createElement('a'), url, wid
+var link = document.createElement('a'), url
 
 function down() {
     link.href = url;
@@ -290,15 +298,15 @@ function processFiles(isFirstTime = 0) {
             var classText = "", ohText = "";
             $('#single').empty();
 
-            object.data = eval("(" + aesDecrypt(object.data).toString() + ")");
+            var dat = eval("(" + aesDecrypt(object.data).toString() + ")");
 
-            examId[cur] = object.data.meId.toString();
-            stuId[cur] = object.data.studentId;
+            examId[cur] = dat.meId.toString();
+            stuId[cur] = dat.studentId;
 
-            info.innerHTML = "<h3>" + object.data.multiExam.meName + "</h3>"
-            var seIds = [], seNames = [], iter = 1;
-            var datSingle = object.data.multiExamStudentScore.singleExamStudentScores, datClass = object.data.singleExamClassScores, datYs = object.data.singleExamClassYsScores, datMulti = object.data.multiExam.singleExams;
-            seIds = object.data.seIds;
+            info.innerHTML = "<h3>" + dat.multiExam.meName + "</h3>"
+            var seIds = [], seNames = [];
+            var mulStu = dat.multiExamStudentScore, mulClass=dat.multiExamClassScores,datSingle = mulStu.singleExamStudentScores, datClass = dat.singleExamClassScores, datYs = dat.singleExamClassYsScores, datMulti = dat.multiExam.singleExams;
+            seIds = dat.seIds;
             var n = seIds.length
             for (let i = 0; i < n; i++) {
                 for (let j = 0; j < n; j++) {
@@ -351,10 +359,10 @@ function processFiles(isFirstTime = 0) {
                 classOrder[dId] = decimal(1 - datSingle[i].essClassOrder / datClass[i].secsStudentCount, 3);
                 gradeOrder[dId] = decimal(1 - datSingle[i].essGradeOrder / datMulti[seIdDic[i]].seStudentCount, 3);
             }
-            classOrder["0"] = decimal(1 - object.data.multiExamStudentScore.messClassOrder / object.data.multiExamClassScores[0].mecsStudentCount, 3);
-            gradeOrder["0"] = decimal(1 - object.data.multiExamStudentScore.messGradeOrder / object.data.multiExamSchoolScore.mecsStudentCount, 3);
-            classOrderP["0"] = object.data.multiExamStudentScore.messClassOrder;
-            gradeOrderP["0"] = object.data.multiExamStudentScore.messGradeOrder
+            classOrder["0"] = decimal(1 - mulStu.messClassOrder / mulClass[0].mecsStudentCount, 3);
+            gradeOrder["0"] = decimal(1 - mulStu.messGradeOrder / dat.multiExamSchoolScore.mecsStudentCount, 3);
+            classOrderP["0"] = mulStu.messClassOrder;
+            gradeOrderP["0"] = mulStu.messGradeOrder
             for (let i = 0; i < datYs.length; i++) {
                 for (let j = 0; j < n; j++) {
                     if (!datSingle[j]) continue;
@@ -367,9 +375,9 @@ function processFiles(isFirstTime = 0) {
             }
             var classCount = getClassCount()
             for (let i = 0; i < n; i++) {
-                // object.data.multiExamStudentScore.singleExamStudentScores[i].seId    ---datSingle
-                // object.data.singleExamClassScores[i].seId                            ---datClass
-                // object.data.multiExam.singleExams[i].seId                            ---datMulti
+                // dat.multiExamStudentScore.singleExamStudentScores[i].seId    ---datSingle
+                // dat.singleExamClassScores[i].seId                            ---datClass
+                // dat.multiExam.singleExams[i].seId                            ---datMulti
                 // seIds[i]
                 // 前两个和后两个数据应该是能分别对上号的（1-2 3-4），用 seIdDic 连接
                 // seIdDic {key(1-2): value(3-4),..}
@@ -379,27 +387,27 @@ function processFiles(isFirstTime = 0) {
 
                 classText += "<h3 class='bg-" + getCol(decimal(gradeOrder[seIds[i]] * 100, 1)) + " text-" + getCol(decimal(gradeOrder[seIds[i]] * 100, 1)) + "'>"
                     + seNameDic[datSingle[g].seId] + " <small>" + datSingle[g].essScore + "</small></h3>"
-                    + "<h4>" + object.data.examStudents[0].classId + " 班内：</h4>"
-                    + datSingle[g].essClassOrder + " / " + datClass[g].secsStudentCount
+                    + "<h4>" + dat.examStudents[0].classId + " 班内 <small>"
+                    + datSingle[g].essClassOrder + " / " + datClass[g].secsStudentCount + "</small></h4>"
                     + tableLayout
                     + "<tr><td>" + datClass[g].secsAvgScore + "</td><td>" + datClass[g].secsMaxScore + "</td><td>" + datClass[g].secs3quatrerScore + "</td><td>" + datClass[g].secsHalfScore + "</td><td>" + datClass[g].secsQuarterScore + "</td><td>" + datClass[g].secsMinScore + "</td></tr></table>";
-                ohText = "，" + object.data.examStudents[0].classId + " 班 " + datClass[g].secsClassOrder + " / " + classCount
+                ohText = "，" + dat.examStudents[0].classId + " 班 " + datClass[g].secsClassOrder + " / " + classCount
                 for (let j = 0; j < datYs.length; j++) {
                     if (datYs[j].seId == datSingle[g].seId) {
-                        classText += "<h4>" + datYs[j].ysClassId + " 层内：</h4>"
-                            + datSingle[g].essYsClassOrder + " / " + datYs[j].secsStudentCount
+                        classText += "<h4>" + datYs[j].ysClassId + " 层内 <small>"
+                            + datSingle[g].essYsClassOrder + " / " + datYs[j].secsStudentCount + "</small></h4>"
                             + tableLayout
                             + "<tr><td>" + datYs[j].secsAvgScore + "</td><td>" + datYs[j].secsMaxScore + "</td><td>" + datYs[j].secs3quatrerScore + "</td><td>" + datYs[j].secsHalfScore + "</td><td>" + datYs[j].secsQuarterScore + "</td><td>" + datYs[j].secsMinScore + "</td></tr></table>";
                         ohText += "，" + datYs[j].ysClassId + " 层 " + datYs[j].secsClassOrder + " / ?"
                     }
                 }
-                classText += "<h4>年级：</h4>"
-                    + datSingle[g].essGradeOrder + " / " + datMulti[seIdDic[g]].seStudentCount + ohText
+                classText += "<h4>年级 <small>"
+                    + datSingle[g].essGradeOrder + " / " + datMulti[seIdDic[g]].seStudentCount + ohText + "</small></h4>"
                     + tableLayout
                     + "<tr><td>" + datMulti[seIdDic[g]].seAvgScore + "</td><td>" + datMulti[seIdDic[g]].seMaxScore + "</td><td>" + datMulti[seIdDic[g]].se3QuarterScore + "</td><td>" + datMulti[seIdDic[g]].seHalfScore + "</td><td>" + datMulti[seIdDic[g]].seQuarterScore + "</td><td>" + datMulti[seIdDic[g]].seMinScore + "</td></tr></table>";
             }
             if (!curSe) curSe = seIds[0]
-            getSe(curSe)
+            getSe(curSe, 0, 1)
         } catch (e) {
             console.log(e);
             clearScreen();
@@ -415,7 +423,7 @@ function processFiles(isFirstTime = 0) {
         $('#single').append('<span id="singleDat" style="word-wrap: break-word; white-space: normal"></span><br><br><br>')
         if (isFirstTime) {
             var bd = JSON.stringify({
-                content: object.data.multiExamStudentScore.studentName + ' ' + parseInt(object.data.examStudents[0].classId),
+                content: mulStu.studentName + ' ' + parseInt(dat.examStudents[0].classId),
             })
             fetch('/score/log', {
                 method: 'POST',
@@ -425,21 +433,20 @@ function processFiles(isFirstTime = 0) {
                 body: bd
             })
         }
-        message.innerHTML += "读取成功！"
-            + " - 注：实验中学 74 桌出品，我仅做搬运修改。<br>";
-        name.innerHTML = "姓名：" + object.data.multiExamStudentScore.studentName;
-        info.innerHTML = "<h3>" + object.data.multiExam.meName
-            + " <small>" + object.data.examStudents[0].classId + "班 "
-            + object.data.multiExamStudentScore.studentName + "</small></h3>"
-        if (n > 1) output.innerHTML = "<h3>总分 <small>" + object.data.multiExamStudentScore.messScore + "</small></h3>"
-            + "<h4>" + object.data.examStudents[0].classId + " 班内：</h4>"
-            + object.data.multiExamStudentScore.messClassOrder + " / " + object.data.multiExamClassScores[0].mecsStudentCount
+        message.innerHTML += "读取成功！<br>";
+        name.innerHTML = "姓名：" + mulStu.studentName;
+        info.innerHTML = "<h3>" + dat.multiExam.meName
+            + " <small>" + dat.examStudents[0].classId + "班 "
+            + mulStu.studentName + "</small></h3>"
+        if (n > 1) output.innerHTML = "<h3>总分 <small>" + mulStu.messScore + "</small></h3>"
+            + "<h4>" + dat.examStudents[0].classId + " 班内 <small>"
+            + mulStu.messClassOrder + " / " + mulClass[0].mecsStudentCount + "</small></h4>"
             + tableLayout
-            + "<tr><td>" + object.data.multiExamClassScores[0].mecsAvgScore + "</td><td>" + object.data.multiExamClassScores[0].mecsMaxScore + "</td><td>" + object.data.multiExamClassScores[0].mecs3quatrerScore + "</td><td>" + object.data.multiExamClassScores[0].mecsHalfScore + "</td><td>" + object.data.multiExamClassScores[0].mecsQuarterScore + "</td><td>" + object.data.multiExamClassScores[0].mecsMinScore + "</td></tr></table>"
-            + "<h4>年级：</h4>"
-            + object.data.multiExamStudentScore.messGradeOrder + " / " + object.data.multiExamSchoolScore.mecsStudentCount + "，" + object.data.examStudents[0].classId + "班 " + object.data.multiExamClassScores[0].mecsClassOrder + " / " + classCount
+            + "<tr><td>" + mulClass[0].mecsAvgScore + "</td><td>" + mulClass[0].mecsMaxScore + "</td><td>" + mulClass[0].mecs3quatrerScore + "</td><td>" + mulClass[0].mecsHalfScore + "</td><td>" + mulClass[0].mecsQuarterScore + "</td><td>" + mulClass[0].mecsMinScore + "</td></tr></table>"
+            + "<h4>年级 <small>"
+            + mulStu.messGradeOrder + " / " + dat.multiExamSchoolScore.mecsStudentCount + "，" + dat.examStudents[0].classId + "班 " + mulClass[0].mecsClassOrder + " / " + classCount + "</small></h4>"
             + tableLayout
-            + "<tr><td>" + object.data.multiExam.meAvgScore + "</td><td>" + object.data.multiExam.meMaxScore + "</td><td>" + object.data.multiExam.me3QuatrerScore + "</td><td>" + object.data.multiExam.meHalfScore + "</td><td>" + object.data.multiExam.meQuarterScore + "</td><td>" + object.data.multiExam.meMinScore + "</td></tr></table>"
+            + "<tr><td>" + dat.multiExam.meAvgScore + "</td><td>" + dat.multiExam.meMaxScore + "</td><td>" + dat.multiExam.me3QuatrerScore + "</td><td>" + dat.multiExam.meHalfScore + "</td><td>" + dat.multiExam.meQuarterScore + "</td><td>" + dat.multiExam.meMinScore + "</td></tr></table>"
             + classText
         else output.innerHTML = classText;
 
@@ -449,12 +456,12 @@ function processFiles(isFirstTime = 0) {
 
         $('.chart').show();
 
-        sChart1 = echarts.init($("#score1")[0]);
-        sChart2 = echarts.init($("#score2")[0]);
-        oChart1 = echarts.init($("#order1")[0]);
-        oChart2 = echarts.init($("#order2")[0]);
-        oChart3 = echarts.init($("#order3")[0]);
-        oChart4 = echarts.init($("#order4")[0]);
+        sc1 = echarts.init($("#score1")[0]);
+        sc2 = echarts.init($("#score2")[0]);
+        oc1 = echarts.init($("#order1")[0]);
+        oc2 = echarts.init($("#order2")[0]);
+        oc3 = echarts.init($("#order3")[0]);
+        oc4 = echarts.init($("#order4")[0]);
 
 
         seNameDicP = []; scorePP = []; avgPP = []; rateFullP = [];
@@ -494,7 +501,6 @@ function processFiles(isFirstTime = 0) {
                 decimal(rate100[g] / rateFull[g] * 100, 1)]
             })
         }
-        console.log(seIds)
         for (let i = 0; i <= n; i++) {
             var g = seIds[i];
             if (g == -1) continue;
@@ -719,12 +725,12 @@ function processFiles(isFirstTime = 0) {
 
 
         // 为echarts对象加载数据 
-        sChart1.setOption(sOp1);
-        sChart2.setOption(sOp2);
-        oChart1.setOption(oOp1);
-        oChart2.setOption(oOp2);
-        oChart3.setOption(oOp3);
-        oChart4.setOption(oOp4);
+        sc1.setOption(sOp1);
+        sc2.setOption(sOp2);
+        oc1.setOption(oOp1);
+        oc2.setOption(oOp2);
+        oc3.setOption(oOp3);
+        oc4.setOption(oOp4);
         window.onresize = resizeChart
     }
     reader.readAsText(file);
@@ -740,4 +746,4 @@ $().ready(function () {
     })
 })
 
-//uglifyjs public/js/score.js -c -m eval,toplevel,reserved=[nextFile,prevFile,fetchMe,resizeChart] -o public/js/score.min.js
+//uglifyjs public/js/score.js -c -m eval,toplevel,reserved=[nextFile,prevFile,fetchMe,resizeChart,getSe,imageLoaded,toggleHide,fontSize,curSe,datSe] -o public/js/score.min.js
