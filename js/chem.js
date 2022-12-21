@@ -318,13 +318,16 @@ function setUpdMo() {
     $('.qryInputHidable').hide()
     $('#qryBtn').text('修改分子')
 }
+function replaceRegex(s) {
+    return s.replace(/([\+\=\.;])+/g, '$1').replace(/([\(\)])/g,'\\\\$1')
+}
 function getRegex() {
     var ret = ''
     if (strict) {
         var acont = $('#qryInput').val(), bcont = $('#qryInput2').val();
         if (!acont && !bcont) acont = $('#qryInput').attr('placeholder')
-        acont = acont.replace(/([\+\=\.;])+/g, '$1')
-        bcont = bcont.replace(/([\+\=\.;])+/g, '$1')
+        acont = replaceRegex(acont)
+        bcont = replaceRegex(bcont)
         ret = '^'
         if (acont) {
             var as = acont.split('+')
@@ -344,7 +347,7 @@ function getRegex() {
     } else {
         ret = $('#qryInput').val()
         if (!ret) ret = $('#qryInput').attr('placeholder')
-        ret = ret.replace(/([\+\=\.;])+/g, '$1')
+        ret = replaceRegex(ret)
         var scont = ret.split('=')
         if (scont.length > 2) return;
         var as = scont[0].split('+');
