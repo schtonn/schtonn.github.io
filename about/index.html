@@ -1,0 +1,43 @@
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="../js/jquery.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../css/bootstrap.min.css" crossorigin="anonymous">
+    <script type="text/javascript" src="../js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
+&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <title>关于</title>
+    <script>
+        var a = "?????????!????!"
+        function addchr(i) {
+            if (i == a.length) a += 'Do you miss me? ';
+            console.log(i)
+            $('#miss').html($('#miss').html() + '<span style="font-size:' + parseInt(Math.random() * 20 + 10) + 'px">' + a.slice(i - 2, i) + '</span>')
+            setTimeout(function () { addchr(i + 2) }, 1000)
+        }
+    </script>
+</head>
+
+<body>
+    <a class="btn btn-info" href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp;返回</a>
+    <div class="page-header">
+        <h2>关于我<small></small></h2>
+    </div>
+    <p><span>我是</span><span id="miss">向量。我还能说啥。</span></p>
+    <p>...我目前在读实验中学，想找我玩可以来 2025 届十一班！我是信竞狗，进省队无望，自从北京今年（2022）的 NOIP
+        取消后，我现在也基本想退役了。</p>
+    <p>别去查我的成绩，不管是信息还是文化课。捞的一批。</p>
+
+    <div class="page-header">
+        <h2>关于本网站<small></small></h2>
+    </div>
+    <p>原先我只是在<a href="/blog" target="_blank">这</a>写博客，记录信息学知识点，后来把实现的几个小功能（扒来的 js
+        小游戏、随机壁纸、搬运来的成绩整理）拉起来拼凑了个页面。我这人版权意识很薄弱，经常从别人手里偷代码，哪天他们会起诉我的。不过从偷的代码里面，我慢慢也学会了一些东西。
+    </p>
+    <p>随着技术的增进，我研究清楚了<a href="/score" target="_blank">心意答</a>的接口，用 WebSocket 实现了实时对战<a href="/chess"
+            target="_blank">五子棋</a>，又做了个可上传的<a href="/paint" target="_blank">在线画板</a>（虽然没人画）。</p>
+    <p>具体可以看看<a href="/log" target="_blank">网站日志</a>。</p>
+    <button class="btn btn-danger" onclick="$('#miss').html('');addchr(1);$('.btn').hide(100)" title="end"></button>
+
+</body>

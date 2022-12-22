@@ -39,6 +39,10 @@
             transition-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
         }
 
+        .btn.btn-lg {
+            text-shadow: black 5px 3px 3px;
+        }
+
         .btn:hover {
             text-shadow: rgb(33, 33, 30, 0.8) 3px 3px 5px;
             transform: rotate(2deg) translate(-2px, -4px);
@@ -69,9 +73,8 @@
             text-shadow: red -1px -2px 3px, yellow 1px 2px 3px, green -1px 2px 3px;
         }
 
-        .btn {
-            text-shadow: rgb(85, 85, 85) 3px 2px 4px;
-            display: inline-block;
+        .btn.btn-primary:hover {
+            text-shadow: seagreen -1px -2px 3px, grey 1px 2px 3px, whitesmoke 2px 2px 3px, rgb(151, 124, 225) -2px 2px 3px, rgb(124, 186, 225) 2px -2px 3px, rgb(226, 218, 131) -2px -2px 3px;
         }
 
         .btn-xs.gee {
@@ -156,25 +159,14 @@
     </div>
     <div class="col-md-10">
         <h3>> <span class="glyphicon glyphicon-link" aria-hidden="true"></span></h3>
-        <p><a class="btn btn-primary btn-lg" href="/blog" style="text-shadow: black 5px 3px 3px;">
-                <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>&nbsp;Blog</a></p>
-        <p><a class="btn btn-primary" href="https://schtonn.github.io/" style="text-shadow: black 3px 2px 4px;">
-                <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>&nbsp;View on github</a>
-            <a class="btn btn-warning" href="https://schtonn.gitee.io/"
-                style="text-shadow: rgb(155,55,55) 3px 2px 4px;"><span class="glyphicon glyphicon-thumbs-down"
-                    aria-hidden="true"></span>&nbsp;<del>View on gitee</del>(outdated)</a>
+        <p><a class="btn btn-primary btn-lg" href="/blog">
+                <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>&nbsp;Blog</a>&nbsp;
+            <a id="about" class="btn btn-primary btn-lg" href="/about">
+                <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span>&nbsp;关于</a>
         </p>
+
     </div>
 
-    <div class="col-md-10">
-        <p><a class="btn btn-primary" href="https://github.com/schtonn/schtonn.github.io"
-                style="text-shadow: black 3px 2px 4px;"><span class="glyphicon glyphicon-folder-open"
-                    aria-hidden="true"></span>&nbsp;&nbsp;Repo on github</a>
-            <a class="btn btn-warning" href="https://gitee.com/schtonn/schtonn"
-                style="text-shadow: rgb(155,55,55) 3px 2px 4px;"><span class="glyphicon glyphicon-folder-close"
-                    aria-hidden="true"></span>&nbsp;<del>Repo on gitee</del> (outdated)</a>
-        </p>
-    </div>
 
     <div class="col-md-10">
         <hr>
@@ -198,6 +190,8 @@
                     aria-hidden="true"></span>&nbsp;&nbsp;五子棋</a>
             <a class="btn btn-info" id="gravity" href="/gravity/"><span class="glyphicon glyphicon-magnet"
                     aria-hidden="true"></span>&nbsp;&nbsp;引力</a>
+            <!-- <a class="btn btn-info" id="article" href="/article/"><span class="glyphicon glyphicon-book"
+                    aria-hidden="true"></span>&nbsp;&nbsp;一些好玩的文章</a> -->
         </div>
     </div>
 
@@ -224,6 +218,26 @@
     <div class="col-md-2">
         <hr><button class="btn btn-danger btn-dang"><span class="glyphicon glyphicon-heart"
                 aria-hidden="true"></span></button>
+    </div>
+    <div class="col-md-10">
+        <hr>
+        <h3>> 已过时</h3>
+        <p><a class="btn btn-primary btn-sm" href="https://schtonn.github.io/">
+                <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>&nbsp;schtonn.github.io</a>
+            <a class="btn btn-primary btn-sm" href="https://schtonn.gitee.io/"><span
+                    class="glyphicon glyphicon-thumbs-down"
+                    aria-hidden="true"></span>&nbsp;schtonn.gitee.io</a>
+        </p>
+    </div>
+
+    <div class="col-md-10">
+        <p><a class="btn btn-warning btn-sm" href="https://github.com/schtonn/schtonn.github.io"><span
+                    class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>&nbsp;&nbsp;github.com/schtonn</a>
+            <a class="btn btn-warning btn-sm" href="https://gitee.com/schtonn/schtonn"><span
+                    class="glyphicon glyphicon-folder-open"
+                    aria-hidden="true"></span>&nbsp;gitee.com/schtonn</a>
+        </p>
+
     </div>
     <div class="col-md-8 secret">
         secret message: i love <code>regex</code>
