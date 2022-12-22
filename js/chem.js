@@ -385,7 +385,8 @@ function query() {
                     $('.frame')[1].innerHTML = '<pre class="text-danger bg-danger">' + resj + '</pre>';
                 } else {
                     resj = JSON.parse(resj)
-                    $('.frame')[1].innerHTML = '';
+                    $('.frame')[1].innerHTML = '<span id="qryInputRender">' + renderEquation($('#qryInput').val()) + '</span><br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>';
+                    console.log(renderEquation($('#qryInput').val()), $('.frame')[1].innerHTML)
                     for (let i = 0; i < resj.length; i++) {
                         $('.frame')[1].innerHTML += renderEquation(resj[i].content) + '<br>';
                         $('.frame')[1].innerHTML += '<span class="label label-default">' + resj[i].id + '</span>';
@@ -497,6 +498,8 @@ function input2() {
     if (modeq == 'query') {
         $('.ok')[0].innerHTML = getRegex()
     }
+    $('#qryInputRender')[0].innerHTML = renderEquation($('#qryInput').val())
+    MathJax.typeset()
 }
 
 function inputId() {

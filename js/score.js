@@ -244,6 +244,7 @@ function resizeChart() {
         clearWriggle()
         if ($('.nav-tabs>li')[0].classList[0] == 'active') {
             console.log('reload chart')
+            cc.resize()
             sc1.resize()
             sc2.resize()
             oc1.resize()
@@ -273,6 +274,9 @@ function down() {
     link.setAttribute('download', "data.txt")
     link.click();
 }
+
+var gScore = [], gName = []
+const colorList = ["#5bc0de", "#5a7ddd", "#795add", "#ba5add", "#dd5abf", "#dd5a7d", "#dd795a", "#ddba5a", "#bfdd5a", "#7ddd5a", "#5add79", "#5addba", "#2aa9cf", "#20809d", "#cf512a", "#9d3d20"];
 
 function processFiles(isFirstTime = 0) {
     console.log("Start processing No. " + cur);
@@ -305,7 +309,7 @@ function processFiles(isFirstTime = 0) {
 
             info.innerHTML = "<h3>" + dat.multiExam.meName + "</h3>"
             var seIds = [], seNames = [];
-            var mulStu = dat.multiExamStudentScore, mulClass=dat.multiExamClassScores,datSingle = mulStu.singleExamStudentScores, datClass = dat.singleExamClassScores, datYs = dat.singleExamClassYsScores, datMulti = dat.multiExam.singleExams;
+            var mulStu = dat.multiExamStudentScore, mulClass = dat.multiExamClassScores, datSingle = mulStu.singleExamStudentScores, datClass = dat.singleExamClassScores, datYs = dat.singleExamClassYsScores, datMulti = dat.multiExam.singleExams;
             seIds = dat.seIds;
             var n = seIds.length
             for (let i = 0; i < n; i++) {
@@ -375,7 +379,7 @@ function processFiles(isFirstTime = 0) {
             }
             var classCount = getClassCount()
             for (let i = 0; i < n; i++) {
-                // dat.multiExamStudentScore.singleExamStudentScores[i].seId    ---datSingle
+                // dat.multiExamStudentScore.singleExamStudentScores[i].seId    ---mulStu
                 // dat.singleExamClassScores[i].seId                            ---datClass
                 // dat.multiExam.singleExams[i].seId                            ---datMulti
                 // seIds[i]
@@ -418,8 +422,8 @@ function processFiles(isFirstTime = 0) {
             $("#upicon").addClass('glyphicon-exclamation-sign');
             return;
         }
-        $('#single').append('<button class="btn btn-default btn-how" onclick="fontSize+=3;$(\'.minus\').css(\'font-size\',fontSize+\'px\');for (let i = 0; i < datSe.pageCount; i++)$(\'img\')[i].style.width=parseInt($(\'img\')[i].style.width)+20+\'%\';resizeChart()"><span class="glyphicon glyphicon-zoom-in"></span></button>')
-        $('#single').append('<button class="btn btn-default btn-how" onclick="fontSize-=3;$(\'.minus\').css(\'font-size\',fontSize+\'px\');for (let i = 0; i < datSe.pageCount; i++)$(\'img\')[i].style.width=parseInt($(\'img\')[i].style.width)-20+\'%\';resizeChart()"><span class="glyphicon glyphicon-zoom-out"></span></button>')
+        $('#single').append('<button class="btn btn-default btn-how" onclick="fontSize+=3;$(\'.minus\').css(\'font-size\',fontSize+\'px\');for (let i=0;i<datSe.pageCount;i++)$(\'img\')[i].style.width=parseInt($(\'img\')[i].style.width)+20+\'%\';resizeChart()"><span class="glyphicon glyphicon-zoom-in"></span></button>')
+        $('#single').append('<button class="btn btn-default btn-how" onclick="fontSize-=3;$(\'.minus\').css(\'font-size\',fontSize+\'px\');for (let i=0;i<datSe.pageCount;i++)$(\'img\')[i].style.width=parseInt($(\'img\')[i].style.width)-20+\'%\';resizeChart()"><span class="glyphicon glyphicon-zoom-out"></span></button>')
         $('#single').append('<span id="singleDat" style="word-wrap: break-word; white-space: normal"></span><br><br><br>')
         if (isFirstTime) {
             var bd = JSON.stringify({
@@ -455,7 +459,10 @@ function processFiles(isFirstTime = 0) {
         $("#fileOutput table").css("margin-bottom", "0px");
 
         $('.chart').show();
+        if (fileCount <= 1) $('#comp').hide();
+        else $('#comp').show(), cc.resize();
 
+        cc = echarts.init($("#comp")[0]);
         sc1 = echarts.init($("#score1")[0]);
         sc2 = echarts.init($("#score2")[0]);
         oc1 = echarts.init($("#order1")[0]);
@@ -464,17 +471,15 @@ function processFiles(isFirstTime = 0) {
         oc4 = echarts.init($("#order4")[0]);
 
 
-        seNameDicP = []; scorePP = []; avgPP = []; rateFullP = [];
-        // rate0P = []; rate25P = []; rate50P = []; rate75P = []; rate100P = [];
-        scoreQ = []; avgQ = [];
-        // rate0Q = []; rate25Q = []; rate50Q = []; rate75Q = []; rate100Q = [];
-        seNameDicP2 = []; classOrderPP = []; gradeOrderPP = []; classOrderQ = []; gradeOrderQ = [];
-        seNameDicP3 = []; ysClassOrderPP = []; ysClassOrderQ = [];
+        var seNameDicP = [], scorePP = [], scoreSe = {}, avgPP = [], rateFullP = [], scoreQ = [], avgQ = [];
+        var seNameDicP2 = [], classOrderPP = [], gradeOrderPP = [], classOrderQ = [], gradeOrderQ = [];
+        var seNameDicP3 = [], ysClassOrderPP = [], ysClassOrderQ = [];
         seIds[n] = 0
         var boxP = [], boxQ = [];
         for (let i = 0; i < n; i++) {
             var g = seIds[i];
             if (g == -1) continue;
+            scoreSe[seNameDic[g]] = scoreP[g];
             if (seNameDic[g].substr(0, 2) == '总分') continue;
             seNameDicP.push(seNameDic[g].substr(0, 2));
             scorePP.push(scoreP[g]);
@@ -516,7 +521,9 @@ function processFiles(isFirstTime = 0) {
             ysClassOrderPP.push(ysClassOrderP[i]);
             ysClassOrderQ.push(decimal(ysClassOrder[i] * 100, 1));
         }
-
+        gScore[cur] = scoreSe
+        gName[cur] = mulStu.studentName
+        console.log(gScore)
         var opBase = {
             textStyle: { fontFamily: 'Noto Serif SC' },
             tooltip: { trigger: 'axis' },
@@ -536,7 +543,46 @@ function processFiles(isFirstTime = 0) {
             },
             calculable: true,
         }
-        var sOp1 = { ...opBase }, sOp2 = { ...opBase }, oOp1 = { ...opBase }, oOp2 = { ...opBase }, oOp3 = { ...opBase }, oOp4 = { ...opBase };
+        var cOp = { ...opBase }, sOp1 = { ...opBase }, sOp2 = { ...opBase }, oOp1 = { ...opBase }, oOp2 = { ...opBase }, oOp3 = { ...opBase }, oOp4 = { ...opBase };
+        var cName = [], cSe = [], cSeries = []
+        for (let i = 0; i < fileCount; i++) {
+            for (let j in gScore[i]) {
+                console.log(j)
+                if (cName.indexOf(j) == -1) cName.push(j)
+            }
+        }
+        console.log(cName)
+        for (let i = 0; i < fileCount; i++) {
+            cSe.push([])
+            if (gScore[i]) {
+                for (let j = 0; j < cName.length; j++) {
+                    cSe[i].push(gScore[i][cName[j]])
+                }
+                cSeries.push({ name: gName[i], type: 'line', data: cSe[i], color: colorList[i] })
+            }
+        }
+        console.log(cSeries)
+        cOp.title = {
+            text: '你想跟人比比？',
+            textStyle: {
+                fontSize: 14,
+                fontStyle: 'normal',
+                fontWeight: 'bold',
+            },
+        }
+        cOp.legend = { data: gName }
+        cOp.xAxis = [{
+            axisTick: {
+                alignWithLabel: true
+            },
+            type: 'category', data: cName,
+            name: '科目',
+            position: 'left'
+        }]
+        cOp.yAxis = [{
+            type: 'value', name: '分数', position: 'left'
+        }]
+        cOp.series = cSeries
         sOp1.title = {
             text: '分数',
             textStyle: {
@@ -725,6 +771,7 @@ function processFiles(isFirstTime = 0) {
 
 
         // 为echarts对象加载数据 
+        cc.setOption(cOp);
         sc1.setOption(sOp1);
         sc2.setOption(sOp2);
         oc1.setOption(oOp1);
