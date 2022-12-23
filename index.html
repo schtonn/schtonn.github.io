@@ -32,11 +32,23 @@
         * {
             transition-duration: 300ms;
         }
+        /* https://i.328888.xyz/2022/12/23/Dn9eo.jpeg */
+        body {
+            background-image: url(https://i.328888.xyz/2022/12/23/DnIEL.jpeg);
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: 65% 50%;
+        }
 
         .btn {
             text-shadow: rgb(133, 133, 130) 1px 2px 3px;
             transition-duration: 100ms;
             transition-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+
+        .btn:not(.btn-sm) {
+            margin-top: 5px;
         }
 
         .btn.btn-lg {
@@ -99,7 +111,7 @@
 
         .gee {
             color: white;
-            background-color: black;
+            background-color: rgba(0,0,0,0.4);
         }
 
         .btn-dang {
@@ -130,117 +142,138 @@
         .secret>code.gee {
             scale: 1;
             display: inline-block;
-            background-color: black;
-            color: black
+            background-color: transparent;
+            color: transparent
+        }
+
+        .full {
+            background-color: rgba(202, 202, 202, 0.5);
+            border-radius: 10px;
+            margin-top: 50px;
+        }
+
+        .full.gee {
+            background-color: rgba(22, 22, 22, 0.5);
+            border-radius: 10px;
+            margin: 0;
+            padding-top: 50px;
+            padding-bottom: 50px;
+            backdrop-filter: blur(5px);
         }
     </style>
     <script>
         $().ready(function () {
             $('.btn-dang').on('click', function (e) {
-                $('body,.btn,.btn-xs,code,.secret').toggleClass('gee')
+                $('body,.btn,.btn-xs,code,.secret,.full').toggleClass('gee')
                 console.log(e)
             })
-            if (document.domain == '43.143.233.184') $('.alert').hide();
+            if (document.domain != '43.143.233.184') $('.alert').show();
         })
     </script>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" style="height:100vh">
-    <div class="alert alert-warning">注意：正在将网站迁移至<a href="http://43.143.233.184/">http://43.143.233.184/</a>，此页面内容可能已经过时。
+    <div class="alert alert-warning" style="display:none">注意：正在将网站迁移至<a
+            href="http://43.143.233.184/">http://43.143.233.184/</a>，此页面内容可能已经过时。
     </div>
     <script src="js/cursorEffects.js"></script>
     <script type="text/javascript">
         new cursoreffects.bubbleCursor();
     </script>
-    <div class="page-header">
-        <h1>> schtonn
-            <small>yee</small>
-        </h1>
-    </div>
-    <div class="col-md-10">
-        <h3>> <span class="glyphicon glyphicon-link" aria-hidden="true"></span></h3>
-        <p><a class="btn btn-primary btn-lg" href="/blog">
-                <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>&nbsp;Blog</a>&nbsp;
-            <a id="about" class="btn btn-primary btn-lg" href="/about">
-                <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span>&nbsp;关于</a>
-        </p>
+    <div class="full col-md-12">
+        <div class="page-header">
+            <h1>> schtonn
+            </h1>
+        </div>
+        <div class="col-md-10">
+            <h3>> <span class="glyphicon glyphicon-link" aria-hidden="true"></span></h3>
+            <p><a class="btn btn-primary btn-lg" href="/blog">
+                    <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>&nbsp;Blog</a>&nbsp;
+                <!-- <a id="about" class="btn btn-primary btn-lg" href="/about">
+                <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span>&nbsp;关于</a> -->
+            </p>
 
-    </div>
+        </div>
 
 
-    <div class="col-md-10">
-        <hr>
-        <h3>> 娱乐</h3>
-        <div>
-            <a class="btn btn-info" href="/core/">Core</a>
-            <div class="btn-group">
-                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">sans&nbsp;<span
-                        class="caret"></span></button>
-                <ul class="dropdown-menu">
-                    <li><a href="/sans/">sans</a></li>
-                    <li><a href="/sans-cheat/"><span class="glyphicon glyphicon-wrench"
-                                aria-hidden="true"></span>&nbsp;&nbsp;sans</a></li>
-                </ul>
-            </div>
-            <a class="btn btn-info" id="random" href="/random/"><span class="glyphicon glyphicon-random"
-                    aria-hidden="true"></span>&nbsp;&nbsp;random</a>
-            <a class="btn btn-info" id="paint" href="/paint/"><span class="glyphicon glyphicon-pencil"
-                    aria-hidden="true"></span>&nbsp;&nbsp;绘画板</a>
-            <a class="btn btn-info" id="chess" href="/chess/"><span class="glyphicon glyphicon-record"
-                    aria-hidden="true"></span>&nbsp;&nbsp;五子棋</a>
-            <a class="btn btn-info" id="gravity" href="/gravity/"><span class="glyphicon glyphicon-magnet"
-                    aria-hidden="true"></span>&nbsp;&nbsp;引力</a>
-            <!-- <a class="btn btn-info" id="article" href="/article/"><span class="glyphicon glyphicon-book"
+        <div class="col-md-10">
+            <hr>
+            <h3>> 娱乐</h3>
+            <div>
+                <a class="btn btn-info" href="/core/">Core</a>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">sans&nbsp;<span
+                            class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li><a href="/sans/">sans</a></li>
+                        <li><a href="/sans-cheat/"><span class="glyphicon glyphicon-wrench"
+                                    aria-hidden="true"></span>&nbsp;&nbsp;sans</a></li>
+                    </ul>
+                </div>
+                <a class="btn btn-info" id="random" href="/random/"><span class="glyphicon glyphicon-random"
+                        aria-hidden="true"></span>&nbsp;&nbsp;random</a>
+                <a class="btn btn-info" id="paint" href="/paint/"><span class="glyphicon glyphicon-pencil"
+                        aria-hidden="true"></span>&nbsp;&nbsp;绘画板</a>
+                <a class="btn btn-info" id="chess" href="/chess/"><span class="glyphicon glyphicon-record"
+                        aria-hidden="true"></span>&nbsp;&nbsp;五子棋</a>
+                <a class="btn btn-info" id="gravity" href="/gravity/"><span class="glyphicon glyphicon-magnet"
+                        aria-hidden="true"></span>&nbsp;&nbsp;引力</a>
+                <a class="btn btn-info" id="raytrack" href="/test/"><span class="glyphicon glyphicon-cog"
+                        aria-hidden="true"></span>&nbsp;&nbsp;1k光追</a>
+                <!-- <a class="btn btn-info" id="article" href="/article/"><span class="glyphicon glyphicon-book"
                     aria-hidden="true"></span>&nbsp;&nbsp;一些好玩的文章</a> -->
-        </div>
-    </div>
-
-    <div class="col-md-10">
-        <hr>
-        <h3>> 小工具</h3>
-        <div>
-            <a class="btn btn-danger" id="score" href="/score/"><span class="glyphicon glyphicon-stats"
-                    aria-hidden="true"></span>&nbsp;&nbsp;成绩整理</a>
-            <div class="btn-group">
-                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">Crypty&nbsp;
-                    <span class="caret"></span></button>
-                <ul class="dropdown-menu">
-                    <li><a href="/crypty/">Crypty</a></li>
-                    <li><a href="/crypty-2/">Hardcoded AES</a></li>
-                </ul>
             </div>
-            <a class="btn btn-info" id="log" href="/log/"><span class="glyphicon glyphicon-list"
-                    aria-hidden="true"></span>&nbsp;日志</a>
-            <a class="btn btn-warning" id="chem" href="/chem/"><span class="glyphicon glyphicon-fire"
-                    aria-hidden="true"></span>&nbsp;化学</a>
+        </div>
+
+        <div class="col-md-10">
+            <hr>
+            <h3>> 小工具</h3>
+            <div>
+                <a class="btn btn-danger" id="score" href="/score/"><span class="glyphicon glyphicon-stats"
+                        aria-hidden="true"></span>&nbsp;&nbsp;成绩整理</a>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">Crypty&nbsp;
+                        <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li><a href="/crypty/">Crypty</a></li>
+                        <li><a href="/crypty-2/">Hardcoded AES</a></li>
+                    </ul>
+                </div>
+                <a class="btn btn-info" id="log" href="/log/"><span class="glyphicon glyphicon-list"
+                        aria-hidden="true"></span>&nbsp;日志</a>
+                <a class="btn btn-warning" id="chem" href="/chem/"><span class="glyphicon glyphicon-fire"
+                        aria-hidden="true"></span>&nbsp;化学</a>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <hr><button class="btn btn-danger btn-dang"><span class="glyphicon glyphicon-heart"
+                    aria-hidden="true"></span></button>
+        </div>
+        <div class="col-md-10">
+            <hr>
+            <h3>> 已过时</h3>
+            <p><a class="btn btn-primary btn-sm" href="https://schtonn.github.io/">
+                    <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>&nbsp;schtonn.github.io</a>
+                <a class="btn btn-primary btn-sm" href="https://schtonn.gitee.io/"><span
+                        class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span>&nbsp;schtonn.gitee.io</a>
+            </p>
+        </div>
+
+        <div class="col-md-10">
+            <p><a class="btn btn-warning btn-sm" href="https://github.com/schtonn/schtonn.github.io"><span
+                        class="glyphicon glyphicon-folder-open"
+                        aria-hidden="true"></span>&nbsp;&nbsp;github.com/schtonn</a>
+                <a class="btn btn-warning btn-sm" href="https://gitee.com/schtonn/schtonn"><span
+                        class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>&nbsp;gitee.com/schtonn</a>
+            </p>
+
+        </div>
+        <div class="col-md-8 secret">
+            secret message: iee
         </div>
     </div>
-    <div class="col-md-2">
-        <hr><button class="btn btn-danger btn-dang"><span class="glyphicon glyphicon-heart"
-                aria-hidden="true"></span></button>
-    </div>
-    <div class="col-md-10">
-        <hr>
-        <h3>> 已过时</h3>
-        <p><a class="btn btn-primary btn-sm" href="https://schtonn.github.io/">
-                <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>&nbsp;schtonn.github.io</a>
-            <a class="btn btn-primary btn-sm" href="https://schtonn.gitee.io/"><span
-                    class="glyphicon glyphicon-thumbs-down"
-                    aria-hidden="true"></span>&nbsp;schtonn.gitee.io</a>
-        </p>
-    </div>
-
-    <div class="col-md-10">
-        <p><a class="btn btn-warning btn-sm" href="https://github.com/schtonn/schtonn.github.io"><span
-                    class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>&nbsp;&nbsp;github.com/schtonn</a>
-            <a class="btn btn-warning btn-sm" href="https://gitee.com/schtonn/schtonn"><span
-                    class="glyphicon glyphicon-folder-open"
-                    aria-hidden="true"></span>&nbsp;gitee.com/schtonn</a>
-        </p>
-
-    </div>
-    <div class="col-md-8 secret">
-        secret message: i love <code>regex</code>
+    <div style="position:absolute; left:0px; bottom:0px;color:rgba(202, 202, 202, 0.5)">
+        背景摄于潭柘寺
     </div>
 </body>
 

@@ -38,7 +38,7 @@
 		function aesEncrypt(encrypted) {
 			return CryptoJS.AES.encrypt(encrypted, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 }).ciphertext.toString();
 		}
-		$().ready(e=>{
+		$().ready(e => {
 			$("#dec").val('aes~~~\nuses pad-pkcs7, ecb\nkey=abcdefgabcdefg12')
 			$('#enc').val(aesEncrypt($("#dec").val()))
 		})
@@ -46,8 +46,7 @@
 </head>
 
 <body>
-	<a class="btn btn-info" href="/" style="text-shadow: rgb(85, 85, 85) 3px 2px 4px;"><span
-			class="glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp;返回</a>
+	<a class="btn btn-info" href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp;返回</a>
 	<div>
 		<div class="row">
 			<div class="col-lg-6 col-md-6 col-xs-12">

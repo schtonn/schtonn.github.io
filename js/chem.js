@@ -388,8 +388,7 @@ function query() {
                     $('.frame')[1].innerHTML = '<span id="qryInputRender">' + renderEquation($('#qryInput').val()) + '</span><br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>';
                     console.log(renderEquation($('#qryInput').val()), $('.frame')[1].innerHTML)
                     for (let i = 0; i < resj.length; i++) {
-                        $('.frame')[1].innerHTML += renderEquation(resj[i].content) + '<br>';
-                        $('.frame')[1].innerHTML += '<span class="label label-default">' + resj[i].id + '</span>';
+                        $('.frame')[1].innerHTML += renderEquation(resj[i].content) + '<br><span class="label label-default">' + resj[i].id + '</span>';
                         if (resj[i].conditions) $('.frame')[1].innerHTML += '（' + resj[i].conditions + '）';
                         $('.frame')[1].innerHTML += resj[i].descriptions + '<br>';
                         if (resj[i].rel) {

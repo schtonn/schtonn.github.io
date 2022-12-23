@@ -1,7 +1,3 @@
-function toggleHide() {
-    $(".hidable").toggle(1000);
-};
-
 var knownExams = ''
 
 for (let i = 3000; i < 3400; i++)knownExams += i.toString() + ','
@@ -563,7 +559,7 @@ function processFiles(isFirstTime = 0) {
         }
         console.log(cSeries)
         cOp.title = {
-            text: '你想跟人比比？',
+            text: '比一比',
             textStyle: {
                 fontSize: 14,
                 fontStyle: 'normal',
@@ -793,4 +789,4 @@ $().ready(function () {
     })
 })
 
-//uglifyjs public/js/score.js -c -m eval,toplevel,reserved=[nextFile,prevFile,fetchMe,resizeChart,getSe,imageLoaded,toggleHide,fontSize,curSe,datSe] -o public/js/score.min.js
+//uglifyjs public/js/score.js -c -m eval,toplevel,reserved=[nextFile,prevFile,fetchMe,resizeChart,getSe,imageLoaded,getFiles,fontSize,curSe,datSe] -o public/js/score.min.js
