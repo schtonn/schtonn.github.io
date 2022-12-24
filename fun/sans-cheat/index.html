@@ -40,7 +40,7 @@
     </style>
 	
 
-<script src="offlineClient.js"></script></head> 
+<script src="/fun/sansdat/offlineClient.js"></script></head> 
  
 <body data-gr-c-s-loaded="true" class="vsc-initialized"> 
 	<div id="fb-root"></div>
@@ -76,13 +76,13 @@
 	<!-- Pages load faster with scripts at the bottom -->
 	
 	<!-- Construct 2 exported games require jQuery. -->
-	<script src="jquery-3.4.1.min.js"></script>
+	<script src="/js/jquery.min.js"></script>
 
 
 	
     <!-- The runtime script.  You can rename it, but don't forget to rename the reference here as well.
     This file will have been minified and obfuscated if you enabled "Minify script" during export. -->
-	<script src="c2runtime.js"></script>
+	<script src="/fun/sansdat/c2runtime.js"></script>
 
     <script>
 		// Start the Construct 2 project running on window load.
@@ -118,7 +118,7 @@
 				return;		// no SW support, ignore call
 			
 			try {
-				navigator.serviceWorker.register("sw.js", { scope: "./" })
+				navigator.serviceWorker.register("/fun/sansdat/sw.js", { scope: "./" })
 				.then(function (reg)
 				{
 					console.log("Registered service worker on " + reg.scope);
