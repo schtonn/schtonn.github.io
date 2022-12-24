@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <!-- <link async rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
         integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous"> -->
-        <script type="text/javascript" src="../js/jquery.min.js" crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="../css/bootstrap.min.css" crossorigin="anonymous">
-        <script type="text/javascript" src="../js/bootstrap.min.js" crossorigin="anonymous"></script>
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com">
+    <script type="text/javascript" src="/js/jquery.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+    <script type="text/javascript" src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
 &family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
 
     <title>random</title>
 
@@ -61,6 +61,10 @@
             z-index: 3;
         }
 
+        .shadow {
+            text-shadow: -3px -3px 3px rosybrown, 3px 3px 3px royalblue, 3px -3px 5px whitesmoke, -3px 3px 5px whitesmoke, -3px -3px 5px yellow;
+        }
+
         @media screen {
             .content {
                 padding: 20px 5px 5px 5px;
@@ -87,9 +91,9 @@
 <body itemscope itemtype="http://schema.org/WebPage" style="padding: 0px 0px 0px 0px">
     <div class="bg">
         <div class="content">
-            <a class="btn btn-default" href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a>
-            <a class="btn btn-default" onclick="location.reload()"><span class="glyphicon glyphicon-refresh"
-                    aria-hidden="true"></span></a>
+            <button class="btn btn-default shadow" onclick="history.back()"><span
+                    class="glyphicon glyphicon-home"></span></button>
+            <a class="btn btn-default" onclick="location.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
             <h1>> schtonn</h1>
         </div>
     </div>
