@@ -227,9 +227,8 @@
                 <button class="btn btn-info" id="check"><i class=" glyphicon glyphicon-exclamation-sign"
                         aria-hidden="true"></i>&nbsp;下哪了</button>
             </div>
-            <button class="btn btn-default noshadow" id="help"
-                onclick="alert('说明：普通五子棋，需双人对战，同一设备只能使用一种颜色。\n（找不到同伴可以自己用两个设备玩）\n右侧按钮可用于发送信号，但请勿频繁点击。\n两个指示灯分别表示自身颜色和当前颜色，两者相同时说明该你了')"><i
-                    class="glyphicon glyphicon-question-sign" aria-hidden="true"></i></button>
+            <a class="btn btn-default noshadow" onclick="$('.help').toggle()" href="#help"><i
+                    class="glyphicon glyphicon-question-sign"></i></a>
             <div class="led mylight"></div>
             <div class="led light"></div>
             <button class="btn btn-danger word message1">快</button>
@@ -241,6 +240,12 @@
             <span class="black pointer"></span>
         </div>
         <div style="display:inline-block">在线人数：<il id="messageServer"></il>
+        </div>
+        <div class="help" style="display:none">
+            <h4 id="help">说明</h4>
+            <p>普通五子棋，需双人对战，同一设备只能使用一种颜色。（找不到同伴可以自己用两个设备玩）</p>
+            <p>右侧按钮可用于发送信号，但请勿频繁点击。</p>
+            <p>两个指示灯分别表示自身颜色和当前颜色，两者相同时说明该你了。</p>
         </div>
     </div>
     </div>

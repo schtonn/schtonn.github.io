@@ -34,7 +34,6 @@
 	    return ECB;
 	}());
 
-
 	return CryptoJS.mode.ECB;
 
 }));

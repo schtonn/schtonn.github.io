@@ -224,7 +224,6 @@ function wriggle(el) {
     }, Math.random() * 600 + 300))
 }
 
-
 function getCol(rate) {
     if (90 <= rate) return 'success'
     if (75 <= rate) return 'info'
@@ -423,7 +422,7 @@ function processFiles(isFirstTime = 0) {
         $('#single').append('<span id="singleDat" style="word-wrap: break-word; white-space: normal"></span><br><br><br>')
         if (isFirstTime) {
             var bd = JSON.stringify({
-                content: mulStu.studentName + ' ' + parseInt(dat.examStudents[0].classId),
+                content: stuId[cur] + ' (' + parseInt(dat.examStudents[0].classId) + ' ' + mulStu.studentName + ') fetched ' + examId[cur] + ' ("' + dat.multiExam.meName + '")',
             })
             fetch('/score/log', {
                 method: 'POST',
@@ -450,7 +449,6 @@ function processFiles(isFirstTime = 0) {
             + classText
         else output.innerHTML = classText;
 
-
         $("#fileOutput table").css("display", "inline-table");
         $("#fileOutput table").css("margin-bottom", "0px");
 
@@ -465,7 +463,6 @@ function processFiles(isFirstTime = 0) {
         oc2 = echarts.init($("#order2")[0]);
         oc3 = echarts.init($("#order3")[0]);
         oc4 = echarts.init($("#order4")[0]);
-
 
         var seNameDicP = [], scorePP = [], scoreSe = {}, avgPP = [], rateFullP = [], scoreQ = [], avgQ = [];
         var seNameDicP2 = [], classOrderPP = [], gradeOrderPP = [], classOrderQ = [], gradeOrderQ = [];
@@ -656,7 +653,6 @@ function processFiles(isFirstTime = 0) {
             { name: '我的得分率', type: 'line', data: scoreQ, color: '#d9534f' }
         ]
 
-
         oOp1.title = {
             text: '行政排名位次',
             textStyle: {
@@ -764,7 +760,6 @@ function processFiles(isFirstTime = 0) {
         oOp4.series = [{
             name: '分班排名(%)', type: 'bar', data: ysClassOrderQ, color: '#5cb85c'
         }]
-
 
         // 为echarts对象加载数据 
         cc.setOption(cOp);

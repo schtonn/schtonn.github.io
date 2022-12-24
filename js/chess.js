@@ -12,7 +12,6 @@ $(window).on({
 
 var curCol = 0, myCol = 2, cur, messages = [0, 0, 0];
 
-
 function isMobile() {
     let flag = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     // alert(navigator.userAgent + '\n' + flag)
@@ -88,7 +87,6 @@ function uploadMessages() {
     st = 0;
 }
 
-
 function updateCol() {
     updateCurLight();
     if (curCol) {
@@ -99,7 +97,6 @@ function updateCol() {
         $('.pointer').addClass("black");
     }
 }
-
 
 class Chess {
     constructor(ele) {

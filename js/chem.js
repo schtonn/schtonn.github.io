@@ -174,6 +174,11 @@ $().ready(function () {
             $("#balBtn")[0].click();
         }
     });
+    $("#qryInput").keydown(function (e) {
+        if (e.keyCode == 13 && mode == 'bal') {
+            $("#qryBtn")[0].click();
+        }
+    });
     $(function () { $("[data-toggle='tooltip']").tooltip(); });
 })
 function setBal() {
