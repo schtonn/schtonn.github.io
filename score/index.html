@@ -4,6 +4,7 @@
     <link rel="stylesheet" href="../css/bootstrap.min.css" crossorigin="anonymous">
     <script type="text/javascript" src="../js/bootstrap.min.js" crossorigin="anonymous"></script>
 
+    <script async src="../js/saver.min.js"></script>
     <script async src="../js/echarts-4.7.0.min.js"></script>
     <script src="../js/aes.js"></script>
     <script src="../js/pad-pkcs7.js"></script>
@@ -99,7 +100,8 @@
 
 <body>
     <a class="btn btn-info" href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp;返回</a>
-    <a tabindex="0" class="btn btn-warning hidable toggleHide" onclick="$('.hidable').show(1000);$('.toggleHide').toggle(1000)" style="display:none;">
+    <a tabindex="0" class="btn btn-warning hidable toggleHide"
+        onclick="$('.hidable').show(1000);$('.toggleHide').toggle(1000)" style="display:none;">
         <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
     </a>
     <div class="hidable fetch">
@@ -111,7 +113,7 @@
         </div>
         <h3>如何获取数据</h3>
         <p>点击 <span class="text-danger">?!</span> 按钮即可获取，如有疑问请咨询我。</p>
-        <a onclick="$('.getData').toggle(500)">我不会、我不知道，我还想用原始方法</a>
+        <a onclick="$('.getData').toggle(500)">原始方法</a>
         <div class="getData" style="display: none;">
             <p>尽量使用 Google Chrome 浏览器，不保证其他浏览器操作相同。</p>
             <p>1. 进入心意答查分页面；</p>
@@ -124,6 +126,9 @@
             <p style="font-size: 12px;font-style: italic;">
                 注：图表整理均在本地进行，你的成绩不会上传到网络（上传与否，已经不重要了）。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;把所有人的成绩信息完整地公布在接口上，心意答我真服了你！
             </p>
+            <a tabindex="0" class="btn btn-default fetch" href="tutor/">
+                <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>&nbsp;<b>查看示例截图</b>
+            </a>
         </div>
         <h3>操作指南</h3>
         <p>1. 加载多个文件后，使用方向键或右下角控件可在文件间快速切换，方便比较；</p>
@@ -151,16 +156,14 @@
                 <span id="upicon" class="glyphicon glyphicon-open" aria-hidden="true"></span> <b>打开文件</b><input
                     style="display: none;" id="fileInput" type="file" onchange="getFiles(event)">
             </a>
-            <a tabindex="0" class="btn btn-default fetch" href="tutor/">
-                <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>&nbsp;<b>查看示例截图</b>
-            </a>
             <a id="upbtn" tabindex="0" class="btn btn-danger"
                 onclick="/*var a=aesEncrypt(prompt('我的班级')),b=aesEncrypt(prompt('我的学号'));if(a=='1170185235a2b833f24d4cf0e7d3f1c1'&&b=='b1b384c7b1e81d67482a132f60b3456e')*/$('.fetch').toggle(1000);/*else alert('你非我')*/">
                 <b>?!</b>
             </a>
             <!-- If you must... -->
         </div>
-        <a tabindex="0" class="btn btn-warning toggleHide fetch" onclick="$('.hidable').hide(1000);$('.toggleHide').toggle(1000)">
+        <a tabindex="0" class="btn btn-warning toggleHide fetch"
+            onclick="$('.hidable').hide(1000);$('.toggleHide').toggle(1000)">
             <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
         </a>
     </div>
@@ -207,8 +210,12 @@
                 <div id="fileOutput"></div>
                 <div style="text-align:center">
                     <a id="downbtn" tabindex="0" class="btn btn-default" onclick="down()">
-                        <span id="upicon" class="glyphicon glyphicon-save" aria-hidden="true"></span> <b>下载文件</b><input
-                            style="display: none;" id="fileInput" type="file" onchange="getFiles(event)">
+                        <span id="upicon" class="glyphicon glyphicon-save" aria-hidden="true"></span> <b>导出源文件</b><input
+                            style="display: none;">
+                    </a>
+                    <a id="downbtn" tabindex="0" class="btn btn-default" onclick="$('.active.in').wordExport('data')">
+                        <span id="upicon" class="glyphicon glyphicon-save" aria-hidden="true"></span> <b>导出
+                            Word</b><input style="display: none;">
                     </a>
                 </div>
             </div>
@@ -217,7 +224,8 @@
             <div class="tab-pane fade" id="other">
                 <p>Nobody asked</p>
                 <p>原为实验中学 74 桌出品，我仅做搬运修改。</p>
-                <p><a href="/js/score.js">源代码</a></p>
+                <p><a href="/js/score.js">压缩前代码</a></p>
+                <p>如恶意使用接口，后果自负、、</p>
                 <br><br><br>
                 <!-- <p>你是否还想看看别人考的怎么样？</p>
                 <p>想看别人考的怎么样，首先你得安装并启用<a href="https://greasyfork.org/zh-CN/scripts/456705-wangshaui-simulator"
