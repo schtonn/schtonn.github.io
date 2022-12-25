@@ -203,6 +203,7 @@ function getSe(id, force, force2) {
                 $('#singleDat').append('<br><span class="cover' + (i - 1) + '"></span><img src="http://36.112.23.77' + f.examUrl + 'page_' + i + '.jpg" onload="imageLoaded(' + (i - 1) + ')">')
                 $('img')[i - 1].style.width = '100%'
             }
+            if(!f.pageCount)$('#singleDat').append('<p>无答题卡数据</p>')
             datSe = f;
         });
     })

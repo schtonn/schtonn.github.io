@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -57,7 +56,13 @@
         img {
             transition-duration: 300ms;
             border: 3px dotted grey;
-            width: 30%;
+            width: 300px;
+        }
+
+        .btn.nohover:hover {
+            transform: none;
+            outline: none;
+            text-shadow: none;
         }
     </style>
 </head>
@@ -65,7 +70,7 @@
 <body itemscope itemtype="http://schema.org/WebPage">
     <a class="btn btn-info" href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp;返回</a>
     <div class="page-header">
-        <h2>> 娱乐<small>（首页放不下了，根目录也太挤了，再有千奇百怪的想法我都往这扔）</small></h2>
+        <h2>> 娱乐 <small>首页放不下了，根目录也太挤了，再有千奇百怪的想法我都往这扔</small></h2>
     </div>
     <div>
         <a class="btn btn-warning" href="core/">Core</a>
@@ -86,10 +91,17 @@
                 aria-hidden="true"></span>&nbsp;&nbsp;五子棋</a>
         <a class="btn btn-info" id="gravity" href="/gravity/"><span class="glyphicon glyphicon-magnet"
                 aria-hidden="true"></span>&nbsp;&nbsp;引力</a>
-        <a class="btn btn-info" id="raytrack" href="raytrace/"><span class="glyphicon glyphicon-cog"
+        <a class="btn btn-warning" id="raytrack" href="raytrace/"><span class="glyphicon glyphicon-cog"
                 aria-hidden="true"></span>&nbsp;&nbsp;1k光追</a>
         <a class="btn btn-info" id="article" href="article/"><span class="glyphicon glyphicon-book"
                 aria-hidden="true"></span>&nbsp;&nbsp;一些好玩的文章</a>
+        <a class="btn btn-info" id="music" href="music/"><span class="glyphicon glyphicon-music"
+                aria-hidden="true"></span>&nbsp;&nbsp;音乐创作</a>
+        <div style="text-align:right">
+            <span class="btn btn-xs btn-warning nohover">纯搬运</span> - <span
+                class="btn btn-xs btn-info nohover">小工程</span> -
+            <span class="btn btn-xs btn-success nohover">大工程</span>
+        </div>
     </div>
     <hr>
     <img src="1.png">

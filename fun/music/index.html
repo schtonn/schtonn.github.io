@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+
+    <link rel="canonical" href="https://schtonn.github.io/">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
+&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- <link rel="stylesheet" href="/css/style.css"> -->
+    <title>音乐创作</title>
+    <script type="text/javascript" src="/js/audio.js"></script>
+    <script>
+        document.writeln('<button class="btn btn-info" onclick="history.back()"><span class="glyphicon glyphicon-home"></span>&nbsp;返回</button><div class="page-header"><h3>音乐创作？<small>、heneuh94830y9]][]]--08</small></h3></div><p>按创作时间排序。<br>玄学的命名规则：一般取开头几个比较重要的音符，数字代表版本，假如不是这个格式那就是我照着谱抄的。</p>')
+        var list = ['katyusha,-', 'avengers,-', 'e-e-edfe', 'grasswalk,-', 'where am i going,-', 'sad,-', 'tom,-', 'a#d#cc#c', 'ffgaf', 'bcabc', 'bga#c#', 'cdbc', 'aaccgg', 'dddc', 'cdd#', 'gddf#dd', 'ag#ag#f#', 'f#g#c#g#a#c#', 'ef#c#ag#', 'friend,-', 'd#ba#g#g', 'a#agaa#c', 'ggaa#ag', 'a#agaa#c2,~', 'c#d#fc#c', 'da#gf#g,~', 'cdd#d#', 'ef#d#c#2', 'bbbdcb,~', 'efcaa', 'cag#g,~', 'dc#da', 'ebcdcb', 'aeaba,~']
+        for (let i = list.length - 1; i >= 0; i--) {
+            var g = list[i].split(',')
+            document.writeln('<div class="panel panel-' + ((g[1]) ? ((g[1] == '~') ? 'success' : 'info') : 'default') + ' col-md-4 col-sm-6" style="padding:0;transform:translateY(' + ((list.length - i - 1) % 3 * 25 + (list.length - i) * 20) + 'px)"><div class="panel-heading">' + g[0] + '</div><div class="panel-body"><audio src="' + g[0].replace(/#/g, '%23') + '.mp3"></audio><div class="pgs"><span style="font-family:\'Consolas\', Courier, monospace;font-size:10px"></span></div><div class="controls"><span class="played-time">00:00</span><button class="btn btn-default play-pause toggle"><span class="glyphicon glyphicon-play" id="icon-btn"></span></button><span class="audio-time" id="audioTime">0</span></div></div></div>')
+        }
+        //同时只能播放一个
+        var audios = $('audio');
+        function pauseAll() {
+            var self = this;
+            [].forEach.call(audios, function (i) {
+                i !== self && (i.pause(),
+                    $(i).parents('div').children('.controls').children('button').children().removeClass('glyphicon-pause').addClass('glyphicon-play'))
+            });
+        }
+        [].forEach.call(audios, function (i) {
+            i.addEventListener("play", pauseAll.bind(i));
+        })
+    </script>
+</head>
+
+<body>
+    <style>
+        .pgs {
+            text-align: center;
+        }
+
+        .pgs span {
+            width: 100%;
+            position: relative;
+            z-index: 2;
+        }
+
+        .play-pause {
+            border: 0;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            margin: 0 28px;
+            background: none;
+        }
+
+        .controls span {
+            color: #b3b5b7;
+            font-size: 12px;
+            display: inline-block;
+        }
+    </style>
+</body>
