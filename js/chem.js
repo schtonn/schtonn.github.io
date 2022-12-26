@@ -390,8 +390,7 @@ function query() {
                     $('.frame')[1].innerHTML = '<pre class="text-danger bg-danger">' + resj + '</pre>';
                 } else {
                     resj = JSON.parse(resj)
-                    $('.frame')[1].innerHTML = '<span id="qryInputRender">' + renderEquation($('#qryInput').val()) + '</span><br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>';
-                    console.log(renderEquation($('#qryInput').val()), $('.frame')[1].innerHTML)
+                    $('.frame')[1].innerHTML = '<span id="qryInputRender">' + (strict ? renderEquation($('#qryInput').val() + '=' + $('#qryInput2').val()) : renderEquation($('#qryInput').val())) + ' - 匹配到 ' + resj.length + ' 个</span><br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>';
                     for (let i = 0; i < resj.length; i++) {
                         $('.frame')[1].innerHTML += renderEquation(resj[i].content) + '<br><span class="label label-default">' + resj[i].id + '</span>';
                         if (resj[i].conditions) $('.frame')[1].innerHTML += '（' + resj[i].conditions + '）';
@@ -502,7 +501,7 @@ function input2() {
     if (modeq == 'query') {
         $('.ok')[0].innerHTML = getRegex()
     }
-    $('#qryInputRender')[0].innerHTML = renderEquation($('#qryInput').val())
+    if ($('#qryInputRender')[0]) $('#qryInputRender')[0].innerHTML = (strict ? renderEquation($('#qryInput').val() + '=' + $('#qryInput2').val()) : renderEquation($('#qryInput').val()))
     MathJax.typeset()
 }
 

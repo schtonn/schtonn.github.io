@@ -1,0 +1,80 @@
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="/js/jquery.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+    <script type="text/javascript" src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
+&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>chat</title>
+    <script>
+        var running = 0, inputText;
+        function input() {
+            inputText = $('#chatInput').val()
+        }
+        function chat() {
+            input()
+            if (running);
+            $('#chatBtn').text('Send...')
+            $('#chatBtn').addClass('disabled')
+            $('.frame').addClass('text-muted')
+            running = 1;
+            return $.get('/chat?' + ((inputText == '') ? case1 : inputText), function (e) {
+                $('.frame')[0].innerHTML = (e.charAt(0) == '!') ? ('<pre class="text-danger bg-danger">' + e.slice(1, e.length) + '</pre>') : e;
+                if (e.charAt(0) != '!') balText = e
+                $('#chatBtn').text('Send')
+                $('#chatBtn').removeClass('disabled')
+                $('.frame').removeClass('text-muted')
+                running = 0;
+            })
+        }
+        $(function(){
+            $("#chatInput").keydown(function (e) {
+                if (e.keyCode == 13) {
+                    $("#chatBtn")[0].click();
+                }
+            })
+        });
+    </script>
+    <style>
+        .well {
+            padding: 10px;
+            border: 1px solid rgb(173, 173, 173);
+            background-color: #f5f5f5;
+            margin-top: 5px;
+            min-height: 160px;
+            border-radius: 5px;
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: auto;
+        }
+
+        pre {
+            overflow-x: auto;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="row">
+        <div class="col-lg-2 col-md-2 col-xs-12">
+            <a class="btn btn-info" href="/fun"><i class="glyphicon glyphicon-home" aria-hidden="true"></i>&nbsp;返回</a>
+            <hr>
+        </div>
+        <div class="col-lg-8 col-md-10 col-xs-12">
+            输入英语句子与 ChatGPT 对话。不要滥用接口，是直接在服务器上跑的 python。
+            <div class="input-group">
+                <input id="chatInput" type="text" class="form-control" oninput="input()" autocomplete="off">
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" onclick="chat()" id="chatBtn">Send</button>
+                </span>
+            </div>
+            <hr>
+            <div class="well frame">
+            </div>
+        </div>
+    </div>
+</body>

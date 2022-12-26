@@ -33,9 +33,9 @@ $(function () {
         var rate = (e.offsetX) / $(this).width();
         audio = $(this).parents('div').children('audio')[0]
         audio.currentTime = audio.duration * rate;
-        var value = Math.round((Math.floor(audio.currentTime) / Math.floor(audio.duration)) * dot, 0);
+        var value = Math.floor((audio.currentTime / audio.duration) * dot - 0.01);
         var s = '';
-        for (let i = 0; i < dot; i++)s += (i > value) ? '.' : '>'
+        for (let i = 0; i < dot; i++)s += (i > value) ? '.' : ((i == value) ? '|' : '=')
         $(audio).siblings('.pgs').children('span').html(s)
         $(audio).siblings('.controls').children('.played-time').html(transTime(audio.currentTime));
     });
@@ -62,9 +62,9 @@ function transTime(time) {
 }
 
 function updateProgress(e) {
-    var value = (this.currentTime / this.duration) * dot;
+    var value = Math.floor((this.currentTime / this.duration) * dot - 0.01);
     var s = '';
-    for (let i = 0; i < dot; i++)s += (i >= value) ? '.' : '>'
+    for (let i = 0; i < dot; i++)s += (i > value) ? '.' : ((i == value) ? (this.paused?'|':'>') : '=')
     $(this).siblings('.pgs').children('span').html(s)
     $(this).siblings('.controls').children('.played-time').html(transTime(this.currentTime));
 }

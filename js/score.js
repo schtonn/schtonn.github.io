@@ -258,7 +258,7 @@ function resizeChart() {
 }
 
 function getClassCount() {
-    if (examId[cur] == 1021 || examId[cur] == 972 || examId[cur] == 957 || examId[cur] == 951) return '15'
+    if (examId[cur] == 1028 ||examId[cur] == 1021 || examId[cur] == 972 || examId[cur] == 957 || examId[cur] == 951) return '15'
     else if (examId[cur] == 970) return '13'
     else return '?'
 }
