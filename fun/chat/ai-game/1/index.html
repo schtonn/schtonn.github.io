@@ -1,0 +1,124 @@
+<body>
+    <h1>Duck Challenge</h1>
+    <div class="game">
+        <div id="duck"></div>
+        <div class="water"></div>
+        <div class="pad left">
+            <div class="lily"></div>
+        </div>
+        <div class="pad right">
+            <div class="lily"></div>
+        </div>
+    </div>
+    <div class="score">
+        <span>Score: </span><span id="score">0</span>
+    </div>
+    <p>Help the duck get to the other side by jumping from lily pad to lily pad!</p>
+</body>
+
+<style>
+    body {
+        background-color: #8ED2C9;
+        color: #2F4858;
+        font-family: sans-serif;
+        margin: 0;
+        text-align: center;
+    }
+
+    h1 {
+        margin: 0;
+        padding: 0.25em 0;
+    }
+
+    .game {
+        position: relative;
+        margin: 1em 0;
+    }
+
+    #duck {
+        width: 4em;
+        height: 4em;
+        background-image: url('duck.png');
+        position: absolute;
+        bottom: -2em;
+        left: 2em;
+        transition: left 2s;
+        z-index: 2;
+    }
+
+    .water {
+        width: 92%;
+        height: 2em;
+        margin-right: 4%;
+        background-color: #54A0FF;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+    }
+
+    .pad {
+        position: absolute;
+        width: 8%;
+        left: 2%;
+        bottom: 8px;
+    }
+
+    .pad.left {
+        left: 0;
+    }
+
+    .pad.right {
+        left: 92%;
+    }
+
+    .lily {
+        width: 5em;
+        height: 5em;
+        border-radius: 5em;
+        background-color: #16A085;
+        position: absolute;
+        bottom: -3em;
+        left: 2em;
+    }
+
+    .score {
+        width: 70%;
+        margin: 1em auto 0;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    p {
+        font-size: 0.9rem;
+        margin: 0;
+        padding: 0.25em 0;
+    }
+</style>
+<script>
+    let score = 0;
+    let leftPad, rightPad;
+
+    document.addEventListener("DOMContentLoaded", function () {
+        rightPad = document.querySelector(".pad.right")
+        leftPad = document.querySelector(".pad.left")
+
+        leftPad.addEventListener("click", duckJumpLeft);
+        rightPad.addEventListener("click", duckJumpRight);
+    });
+
+    let duckJumpLeft = function () {
+        document.querySelector("#duck").style.left = "2%";
+        score++;
+        updateScore(score);
+    }
+
+    let duckJumpRight = function () {
+        document.querySelector("#duck").style.left = "92%";
+        score++;
+        updateScore(score);
+    }
+
+    let updateScore = function (newScore) {
+        document.querySelector("#score").innerHTML = newScore;
+    }
+</script>

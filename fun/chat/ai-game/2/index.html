@@ -1,0 +1,73 @@
+<title> Disaster Game </title>
+<script>
+    var userHealth = 100;
+    var enemyHealth = 100;
+
+    //Function to damage the players
+    function damagePlayer(player, amount) {
+        player.health -= amount;
+    }
+
+    //Function to display the health of the players
+    function displayPlayerHealth() {
+        document.getElementById("userHealth").innerHTML = "Your Health: " + userHealth + "<br>";
+        document.getElementById("enemyHealth").innerHTML = "Enemy Health: " + enemyHealth;
+    }
+
+    //Function to start the game
+    function startGame() {
+        document.getElementById("game").style.visibility = "visible";
+        document.getElementById("start").style.visibility = "hidden";
+    }
+
+    //Function to attack the enemy
+    function attack() {
+        var userAttack = Math.floor(Math.random() * 10) + 1;
+
+        enemyHealth -= userAttack;
+        document.getElementById("status").innerHTML = "You hit the enemy for " + userAttack + " damage."
+        //Display enemy health
+        displayPlayerHealth()
+        //Check if enemy health is 0
+        if (enemyHealth <= 0) {
+            alert("You win!")
+            resetGame()
+        } else {
+            //Enemy attacks
+            var enemyAttack = Math.floor(Math.random() * 8) + 1
+            userHealth -= enemyAttack;
+            document.getElementById("status").innerHTML += "<br>" + "The enemy hits you for " + enemyAttack + " damage."
+            //Display user health
+            displayPlayerHealth()
+            //Check if user health is 0
+            if (userHealth <= 0) {
+                alert("You lose!")
+                resetGame()
+            }
+        }
+    }
+
+    //Function to reset the game
+    function resetGame() {
+        userHealth = 100
+        enemyHealth = 100
+        document.getElementById("game").style.visibility = "hidden";
+        document.getElementById("start").style.visibility = "visible";
+        document.getElementById("status").innerHTML = "";
+    }
+</script>
+
+
+
+
+<h1> Disaster Game </h1>
+<div id="start">
+    <button onclick="startGame()"> Start the Game </button>
+</div>
+
+<div id="game" style="visibility:hidden;">
+    <div id="userHealth"> Your Health: 100 </div>
+    <div id="enemyHealth"> Enemy Health: 100 </div>
+    <button onclick="attack()"> Attack! </button>
+    <div id="status"></div>
+</div>
