@@ -1,4 +1,7 @@
 User-agent: *
+Allow: /
+Allow: /score/
+Allow: /chem/
 Allow: /blog/
 Allow: /blog/archives/
 Allow: /blog/categories/
@@ -7,4 +10,5 @@ Allow: /blog/about/
 Allow: /blog/posts/
 Disallow: /blog/lib/
 Disallow: /js/
-Sitemap: /blog/sitemap.xml
+Disallow: /css/
+Sitemap: /sitemap.xml
