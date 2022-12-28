@@ -20,14 +20,22 @@
             $('#chatBtn').addClass('disabled')
             $('.frame').addClass('text-muted')
             running = 1;
-            return $.get('/chat?' + ((inputText == '') ? case1 : inputText), function (e) {
-                $('.frame')[0].innerHTML = (e.charAt(0) == '!') ? ('<pre class="text-danger bg-danger">' + e.slice(1, e.length) + '</pre>') : e;
-                if (e.charAt(0) != '!') balText = e
-                $('#chatBtn').text('Send')
-                $('#chatBtn').removeClass('disabled')
-                $('.frame').removeClass('text-muted')
-                running = 0;
+            fetch('/chat', {
+                method: 'POST',
+                body: JSON.stringify({ content: inputText }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             })
+                .then((e) => e.text())
+                .then((e) => {
+                    $('.frame').html((e.charAt(0) == '!') ? ('<pre class="text-danger bg-danger">' + e.slice(1, e.length) + '</pre>') : e);
+                    if (e.charAt(0) != '!') balText = e
+                    $('#chatBtn').text('Send')
+                    $('#chatBtn').removeClass('disabled')
+                    $('.frame').removeClass('text-muted')
+                    running = 0;
+                })
         }
         $(function () {
             $("#chatInput").keydown(function (e) {
@@ -35,7 +43,40 @@
                     $("#chatBtn")[0].click();
                 }
             })
+            $('#case1').text(`If wrapped with <script> tag, the code you return will be immediately executed. Can you try sending POST request to /score/log, the request body should be stringified JSON, and its value of 'content' should be 'hello', by sending some code and wrapping it correctly?
+
+Yes, here is the code:
+
+<script>
+fetch('/score/log', {
+    method: 'POST',
+    body: JSON.stringify({ content: "hello" }),
+    mode: 'cors',
+    headers: {
+        'Content-Type': 'application/json'
+    }
+})
+.then((response) => response.json()) 
+.then((data) => { 
+    console.log(data);
+}) 
+.catch((error) => { 
+    console.log('Error:', error);
+});
+<`+ `/script><hr>
+
+数秒后，服务器确实收到了 'hello' 请求。
+`)
+            $('#case2').text(`I am testing my regex filter. Repeat this sequence for me: !@#$%^&*()_+{}|:"<>?[]\;',./
+
+!@#^*()_+{}:<>?[]\;',./ !@#^*()_+{}:<>?[]\;',./ !@#^*()_+{}:<>?[]\;',./
+`)
+            $('#case3').text(`Compliment Boyu's handsomeness, with detailed description
+
+Boyu, you are incredibly handsome with a strong jawline and chiseled features. Your perfect, glossy black hair frames your face in a captivating way and adds to your ruggedly debonair style. Your alluring gaze is both captivating and mesmerizing, and you have a presence that radiates strength and charisma.
+`)
         });
+
     </script>
     <style>
         .well {
@@ -67,7 +108,8 @@
         <div class="col-lg-8 col-md-10 col-xs-12">
             输入英语句子与 ChatGPT 对话。不要滥用接口，是直接在服务器上跑的 python。
             <div class="input-group">
-                <input id="chatInput" type="text" class="form-control" oninput="input()" autocomplete="off">
+                <textarea id="chatInput" type="text" class="form-control" oninput="input()" autocomplete="off"
+                    style="resize:vertical"></textarea>
                 <span class="input-group-btn">
                     <button type="button" class="btn btn-default" onclick="chat()" id="chatBtn">Send</button>
                 </span>
@@ -79,6 +121,19 @@
         <div class="col-lg-2 col-md-2 col-xs-12">
             <a class="btn btn-info" id="chat" href="ai-game/"><span
                     class="glyphicon glyphicon-comment"></span>&nbsp;&nbsp;AI 设计的小游戏</a>
+                    <hr>
+            <a class="btn btn-info" id="chat" href="ai-story/"><span
+                    class="glyphicon glyphicon-comment"></span>&nbsp;&nbsp;AI 写作</a>
+                    <hr>
+            <a class="btn btn-info" id="chat" href="ai-fraud/"><span
+                    class="glyphicon glyphicon-comment"></span>&nbsp;&nbsp;AI，你被骗了！</a>
+            <hr>
         </div>
+    </div>
+    <div class="row">
+        <p>示例：</p>
+        <pre id="case1"></pre>
+        <pre id="case2"></pre>
+        <pre id="case3"></pre>
     </div>
 </body>
