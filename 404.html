@@ -1,24 +1,234 @@
-<!doctype html>  
+<!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		
-		<title>404</title>
-		
-		<link rel="stylesheet" href="/blog/404/404.css">
+
+<head>
+	<script type="text/javascript" src="/js/jquery.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+    <script type="text/javascript" src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
+&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+	<meta charset="utf-8">
+
+	<title>404</title>
+
+	<!-- <link rel="stylesheet" href="/blog/404/404.css">
 		<link rel="stylesheet" href="/blog/404/reset.css">
 		<link rel="stylesheet" href="/blog/404/main.css">
-		
-	<body>
-		
-		<div id="fof">
-			<div></div>
-			<canvas></canvas>
-		</div>
-		
-		<p style="font-family: Consolas; color: black; font-size: 40px; text-align: center; transform: translate(0px,-100px);">404 PAGE NOT FOUND</p>
+		 -->
+	<style>
+		body,
+		html {
+			width: 100%;
+			height: 100%;
+			background: #111;
+			overflow: clip;
+		}
 
-		<script src="/blog/404/404.js"></script>
-		
-	</body>
+		p {
+			width: 100%;
+			height: 100%;
+			color: transparent;
+			background-image: url('/fun/chat/ai-game/1/duck.png');
+			background-size: 8%;
+			/* transform: scale(1.8); */
+			filter: invert(1);
+			mix-blend-mode: hard-light;
+		}
+
+		.text-magic {
+			position: absolute;
+			top: 50%;
+			left: 70%;
+			transform: scale(3.4);
+			width: 500px;
+			font-size: 36px;
+			font-family: 'Courier New', serif, 'Anonymous Pro', monospace;
+			color: #fff;
+		}
+
+		.white {
+			position: absolute;
+			left: -10px;
+			width: 500px;
+			height: 3px;
+			background: #000;
+			z-index: 4;
+			animation: whiteMove 3s cubic-bezier(0, 1.59, 0, 1.4) infinite;
+		}
+
+		.text-magic::before {
+			content: attr(data-word);
+			position: absolute;
+			top: 0;
+			left: 0.5px;
+			height: 0px;
+			color: rgba(255, 255, 255, 0.9);
+			overflow: hidden;
+			z-index: 2;
+			animation: redShadow 1s cubic-bezier(0, 1.07, 0, 1.04) infinite;
+			filter: contrast(200%);
+			text-shadow: 1px 0 0 red;
+		}
+
+		.text1::before {
+			animation-delay: 0.4s;
+		}
+
+		.text2::before {
+			animation-delay: 0.6s;
+		}
+
+		.text3::before {
+			animation-delay: 0.7s;
+		}
+
+		.text4::before {
+			animation-delay: 0.2s;
+		}
+
+		.text-magic::after {
+			content: attr(data-word);
+			position: absolute;
+			top: 0;
+			left: -3px;
+			height: 36px;
+			color: rgba(255, 255, 255, 0.8);
+			overflow: hidden;
+			z-index: 3;
+			background: rgba(0, 0, 0, 0.9);
+			animation: redHeight 1.5s cubic-bezier(0, 1.59, 0, 1.4) infinite;
+			filter: contrast(200%);
+			text-shadow: -1px 0 0 cyan;
+			mix-blend-mode: darken;
+		}
+
+		@keyframes redShadow {
+			20% {
+				font-style: italic;
+				height: 32px;
+			}
+
+			60% {
+				height: 6px;
+			}
+
+			100% {
+				font-style: normal;
+				height: 42px;
+			}
+		}
+
+		@keyframes redHeight {
+			20% {
+				height: 42px;
+			}
+
+			35% {
+				height: 12px;
+			}
+
+			50% {
+				height: 40px;
+			}
+
+			60% {
+				height: 20px;
+			}
+
+			70% {
+				height: 34px;
+			}
+
+			80% {
+				height: 22px;
+			}
+
+			100% {
+				height: 0px;
+			}
+		}
+
+		@keyframes whiteMove {
+			8% {
+				top: 38px;
+			}
+
+			14% {
+				top: 8px;
+			}
+
+			20% {
+				top: 42px;
+			}
+
+			32% {
+				top: 2px;
+			}
+
+			99% {
+				top: 30px;
+			}
+		}
+	</style>
+</head>
+
+<body>
+
+	<!-- <div id="fof">
+		<div></div>
+		<canvas></canvas>
+	</div> -->
+	
+	<p>THE LUMINIOUS DUCKS ARE WATCHING YOU</p>
+	<div class="text-magic text1" data-word="You clicked a link, thinking you would find something fun and exciting. "
+		style="transform: scale(0.3);left:-45%;top:10%;width:2000px">
+		<div class="white"></div>
+	</div>
+	<div class="text-magic text2"
+		data-word="Instead, you found yourself facing a duck void and a deep sense of humour. "
+		style="transform: scale(0.3);left:-30%;top:17%;width:2000px;font-family: 'Courier New', Courier, monospace;">
+		<div class="white"></div>
+	</div>
+	<div class="text-magic text4"
+		data-word="Instead, you found yourself facing a dark void and a deep sense of terror. "
+		style="transform: scale(0.3);left:-30%;top:17%;width:2000px;font-family: 'Courier New', Courier, monospace;">
+		<div class="white"></div>
+	</div>
+	<div class="text-magic text1"
+		data-word="Just as a chill of fear washes over you, the feeling of being watched intensifies."
+		style="transform: scale(0.3);left:-34%;top:22%;width:2000px">
+		<div class="white"></div>
+	</div>
+	<div class="text-magic text3" data-word="You can almost feel the breath on your neck, and the eyes on your back."
+		style="transform: scale(0.3) ;left:-15%;top:28%;width:2000px">
+		<div class="white"></div>
+	</div>
+	<div class="text-magic text4" data-word="Every little sound makes you jump, and hold your breath."
+		style="transform: scale(0.3) ;left:-10%;top:34%;width:2000px">
+		<div class="white"></div>
+	</div>
+	<div class="text-magic text4" data-word="Something is out there, and it's coming closer."
+		style="transform: scale(0.35) ;left:0%;top:39%;width:2000px">
+		<div class="white"></div>
+	</div>
+	<div class="text-magic text3" data-word="You'll never know what was waiting here in this luminous duck."
+		style="transform: scale(0.3);left:15%;top:30%;width:2000px">
+		<div class="white"></div>
+	</div>
+	<div class="text-magic text2" data-word="You'll never know what was waiting here in th#u8tMF)OI)(*N)(*#U)("
+		style="transform: scale(0.3) ;left:15%;top:30%;width:2000px;">
+		<div class="white"></div>
+	</div>
+	<div class="text-magic text1" data-word="$0$ Not FoμnD" style="font-family:'Courier'">
+		<div class="white"></div>
+	</div>
+	<div class="text-magic" data-word="404 Not Found" style="font-family:'Courier New',Courier, monospace">
+		<div class="white"></div>
+	</div>
+
+	<!-- <script src="/blog/404/404.js"></script> -->
+
+</body>
+
 </html>
