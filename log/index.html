@@ -3,10 +3,10 @@
 <head>
     <!-- <link async rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
         integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous"> -->
-    <script type="text/javascript" src="../js/jquery.min.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="../css/bootstrap.min.css" crossorigin="anonymous">
-    <script type="text/javascript" src="../js/bootstrap.min.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="../css/style.css">
+    <script type="text/javascript" src="/js/jquery.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+    <script type="text/javascript" src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
 &family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -89,6 +89,22 @@
         <h1>网站日志</h1>
     </div>
 
+    <h3 id="22.12.28">
+        2022.12.28
+    </h3>
+    <p>嗯。。看来 ip 扫描，网站入侵这个事已经产业化了。</p>
+    <p>我记录日志这段时间内，有各种各样不同来源、不同方式嗅探漏洞的请求，都是 GET 或 POST 某个（我没有的）接口或文件，尝试利用已知的漏洞，但凡你部署的时候把这些漏洞放出去了，很快就会让人扫到，然后入侵。</p>
+    <p>倒是我的 git 文件夹真叫人从头到尾扫了一遍，不过反正我也没存什么敏感信息，都和 github 上同步的。现在我把对 git 的请求屏蔽了，一切都好。</p>
+    <hr>
+
+    <h3 id="22.12.26">
+        2022.12.26
+    </h3>
+    <p>今天建立了三天的访问日志，结果发现一件怪事——</p>
+    <p>我的 GET 请求总会在 5 到 10 分钟后被重复一次，内容完全相同。对正常内容没什么影响，但是对于吃性能的化学式计算之类还是挺有影响的。</p>
+    <p>我得着手调查一下了，以及按照行业规范，含参的请求应该用 POST，回头重写一下代码。</p>
+    <hr>
+
     <h3 id="22.12.25">
         2022.12.25
         <small>fun/<a href="/fun/music">music</a></small>
@@ -114,7 +130,8 @@
     <p>用 Git Hooks 科技实现了博客的自动推送更新，这样就不用我每次都暴力粘贴了。hook 这个名字听着很高大上，其实就是 <code>git push</code>
         之后执行一个脚本，把原来的博客文件夹覆盖了而已，也就是把暴力粘贴的工作自动化。</p>
     <p>给首页加上了背景图，是我在潭柘寺拍的鸽子。这张图太大了，我云服务器的公网出流量要省着用，所以我托管到图床上了。（我后来看了一下，好像我一个月只能用掉流量包的 0.86%... 但无论如何图床还是更快）</p>
-    <p>发现了一个很神奇的 js 压缩工具，<a href="https://lifthrasiir.github.io/roadroller/">Roadroller</a>，能把代码压到原来的百分之几大小，所以我稍微压了一下成绩查询和化学数据库的代码。</p>
+    <p>发现了一个很神奇的 js 压缩工具，<a
+            href="https://lifthrasiir.github.io/roadroller/">Roadroller</a>，能把代码压到原来的百分之几大小，所以我稍微压了一下成绩查询和化学数据库的代码。</p>
     <hr>
 
     <h3 id="22.12.22">
@@ -262,7 +279,7 @@
     ▐█▄▪▐█▐███▌██▌▐▀ ▐█▌·▐█▌.▐▌██▐█▌██▐█▌
      ▀▀▀▀ ·▀▀▀ ▀▀▀ · ▀▀▀  ▀█▄▀▪▀▀ █▪▀▀ █▪
     </pre>
-<a href="/a.log" style="color:floralwhite">（真正的日志）</a>
+    <a href="/a.log" style="color:floralwhite">（真正的日志）</a>
 </body>
 
 </html>
