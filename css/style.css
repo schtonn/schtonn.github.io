@@ -16,7 +16,6 @@ h4 {
     }
 }
 
-
 @media screen and (min-width:699px) {
     body {
         padding: 20px 75px 40px 75px;
@@ -72,6 +71,10 @@ h4 {
     outline: 5px dashed rgba(95, 177, 221, 0.5);
 }
 
+.btn-success:is(:not(:hover):focus, :active:focus, :active:hover:focus) {
+    outline: 5px dashed rgba(121, 184, 121, 0.5);
+}
+
 .btn-primary:is(:not(:hover):focus, :active:focus, :active:hover:focus) {
     outline: 5px dashed rgba(46, 109, 164, 0.5);
 }
@@ -86,6 +89,10 @@ h4 {
 
 .btn-info:is(:hover, :focus:hover) {
     outline: 10px double rgba(95, 177, 221, 0.5);
+}
+
+.btn-success:is(:hover, :focus:hover) {
+    outline: 10px double rgba(121, 184, 121, 0.5);
 }
 
 .btn-primary:is(:hover, :focus:hover) {
