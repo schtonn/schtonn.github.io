@@ -16,12 +16,13 @@
     <title>音乐创作</title>
     <script type="text/javascript" src="/js/audio.js"></script>
     <script>
-        document.cookie="IfIWereANosyCrawlerIWouldDepositMyselfInTheSeaImmediately=true"
-        document.writeln('<a class="btn btn-info" href="/fun"><span class="glyphicon glyphicon-home"></span>&nbsp;返回</a>\
-        <div class="page-header"><h3>音乐创作？<small>、heneuh94830y9]][]]--08</small></h3></div><p>按创作时间排序。<br>\
-                玄学的命名规则：一般取开头几个比较重要的音符，数字代表版本，假如不是这个格式那就是我照着谱抄的，或是别人写的。</p>\
-                <button class="btn btn-default" onclick="$(\'audio\').attr(\'loop\',\'\');$(this).text(\'ok\')">loop</button>')
-        var list = ['katyusha,-', 'tetris,-', 'avengers,-,那时还不知道小号要转调，直接跑了...', 'e-e-edfe', 'grasswalk,-', 'where am i going,-', 'sad,-', 'tom,-', 'a#d#cc#c', 'ffgaf', 'bcabc', 'bga#c#', 'cdbc', 'aaccgg,~,灵光一现，但很难接下去了，只好重复', 'dddc,,看到标题就让人猜到节奏了', 'cdd#', 'gddf#dd', 'ag#ag#f#', 'f#g#c#g#a#c#', 'ef#c#ag#', 'friend,-,这个八音盒音色真的很带感', 'd#ba#g#g', 'a#agaa#c', 'ggaa#ag', 'a#agaa#c2,~,挺经典的', 'c#d#fc#c', 'da#gf#g,~,这个音色其实是大提琴...', 'cdd#d#', 'ef#d#c#2', 'bbbdcb,~', 'efcaa', 'cag#g,~', 'dc#da', 'ebcdcb', 'aeaba,~,首次真正琢磨了一下和弦']
+        document.cookie = "IfIWereANosyCrawlerIWouldDepositMyselfInTheSeaImmediately=true"
+        document.writeln(`<a class="btn btn-info" href="/fun"><span class="glyphicon glyphicon-home"></span>&nbsp;返回</a>
+        <div class="page-header"><h3>音乐创作？<small>、heneuh94830y9]][]]--08</small></h3></div><p>按创作时间排序。<br>
+玄学的命名规则：一般取开头几个比较重要的音符，数字代表版本，假如不是这个格式那就是我照着谱搬运的。绿=自认为挺好；蓝=搬运</p>
+<p>你能想象，拿着未激活的水果软件，好不容易写完了一首曲子，等心满意足关闭之后才发现格式存反了，这件事有多么绝望吗？？</p>
+<button class="btn btn-default" onclick="$(\'audio\').attr(\'loop\',\'\');$(this).text(\'ok\')">loop</button>`)
+        var list = ['katyusha,-', 'tetris,-', 'avengers,-,那时还不知道小号要转调，直接跑了...', 'e-e-edfe', 'grasswalk,-', 'where am i going,-', 'sad,-', 'tom,-', 'a#d#cc#c', 'ffgaf', 'bcabc', 'bga#c#', 'cdbc', 'aaccgg,~,灵光一现，但很难接下去了，只好重复', 'dddc,,看到标题就让人猜到节奏了', 'cdd#', 'gddf#dd', 'ag#ag#f#', 'f#g#c#g#a#c#', 'ef#c#ag#', 'friend,-,这个八音盒音色真的很带感', 'd#ba#g#g', 'a#agaa#c', 'ggaa#ag,~', 'a#agaa#c2,~,挺经典的', 'c#d#fc#c,~', 'da#gf#g,~,这个音色其实是大提琴...', 'cdd#d#', 'ef#d#c#2,~', 'bbbdcb,~', 'efcaa', 'cag#g', 'dc#da', 'ebcdcb', 'aeaba,~,首次真正琢磨了一下和弦']
         for (let i = list.length - 1; i >= 0; i--) {
             var g = list[i].split(',')
             document.writeln('<div class="panel panel-' + ((g[1]) ? ((g[1] == '~') ? 'success' : 'info') : 'default') + ' col-md-4 col-sm-6" style="padding:0;transform:translateY(' + ((list.length - i - 1) % 3 * 25 + (list.length - i) * 20) + 'px)">\
