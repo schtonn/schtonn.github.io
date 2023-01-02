@@ -72,6 +72,27 @@
             transform: translate(-7px, -7px);
             outline: 150px double rgba(162, 6, 6, 0.5)
         }
+
+
+        hr {
+            overflow: visible;
+            /* For IE */
+            padding: 0;
+            border: none;
+            border-top: medium double #333;
+            color: #333;
+            text-align: center;
+        }
+
+        hr:after {
+            content: "§";
+            display: inline-block;
+            position: relative;
+            top: -0.7em;
+            font-size: 1.5em;
+            padding: 0 0.25em;
+            background: floralwhite;
+        }
     </style>
     <script>
         $().ready(function () {
@@ -88,6 +109,20 @@
     <div class="page-header">
         <h1>网站日志</h1>
     </div>
+
+    <h3 id="23.01.01">
+        2023.01.01
+    </h3>
+    <p>今天可算是干了两件大事。</p>
+    <p>首先，我把邮箱服务运行起来了，虽然目前大部分邮箱不接收我的邮件，但至少我能收到他们发来的邮件。我以后愿意的时候，就可以用<a
+            href="malito:1@schtonn.top">1@schtonn.top</a>来收邮件了。</p>
+    <p>当然，这个邮箱是可以无限注册的，所以谁想要拿它玩玩也可以找我注册。</p>
+    <p>第二件大事是我用 acme.sh 搞定了 SSL 的证书，虽然没用，但它很难搞定，因此搞定后让人极度舒适。看着左上角那个锁终于没再说“不安全”，我真是感到发自内心地满足。</p>
+    <p>愚蠢的是，心意答的接口居然没有 https（考虑到他对安全性的种种忽视，这也在情理之中），导致我想继续查成绩，就得把成绩查询的页面回退到 http 上。好在我把剩下大部分能搬迁到本地的服务都搬过来了，所以只有那一个页面受影响。
+    </p>
+    <p>为了方便，我把服务交给了 nginx 来代理，让它来处理 http，https 之间各种胡乱的转换。</p>
+    <p>其实还有件小事，就是我注册了<a href="https://太帅了.cn">太帅了.cn</a>，正如我在首页所强调的，这么好的域名没人注册，凸显出中国人是在不懂浪漫。</p>
+    <hr>
 
     <h3 id="22.12.28">
         2022.12.28

@@ -56,10 +56,10 @@
             text-shadow: black 5px 3px 3px;
         }
 
-        .btn:hover {
+        /* .btn:hover {
             text-shadow: rgb(33, 33, 30, 0.8) 3px 3px 5px;
             transform: rotate(2deg) translate(-2px, -4px);
-        }
+        } */
 
         #random:hover {
             text-shadow: -3px -3px 3px rosybrown, 3px 3px 3px royalblue, 3px -3px 5px whitesmoke, -3px 3px 5px whitesmoke, -3px -3px 5px yellow;
@@ -162,7 +162,21 @@
             padding-bottom: 30px;
             backdrop-filter: blur(5px);
         }
+
+        .btn {
+            position: relative;
+            top: 0px;
+        }
+
+        .btn:hover {
+            top: -2px;
+        }
+
+        .btn:active {
+            top: 5px;
+        }
     </style>
+    <script src="js/cursorEffects.js"></script>
     <script>
         $().ready(function () {
             $('.btn-dang').on('click', function (e) {
@@ -170,6 +184,9 @@
                 console.log(e)
             })
             if (document.domain != '43.143.233.184') $('.alert').show();
+            new cursoreffects.bubbleCursor();
+
+            $("[data-toggle='tooltip']").tooltip();
         })
     </script>
 </head>
@@ -178,10 +195,6 @@
     <div class="alert alert-warning" style="display:none">注意：正在将网站迁移至<a
             href="http://43.143.233.184/">http://43.143.233.184/</a>，此页面内容可能已经过时。
     </div>
-    <script src="js/cursorEffects.js"></script>
-    <script type="text/javascript">
-        new cursoreffects.bubbleCursor();
-    </script>
     <div class="full col-md-12">
         <div class="page-header">
             <h1>> schtonn
@@ -205,8 +218,9 @@
                         aria-hidden="true"></span>&nbsp;&nbsp;绘画板</a>
                 <a class="btn btn-info" id="chess" href="/chess/"><span class="glyphicon glyphicon-record"
                         aria-hidden="true"></span>&nbsp;&nbsp;五子棋</a>
-                <a class="btn btn-info" id="gravity" href="/gravity/"><span class="glyphicon glyphicon-magnet"
-                        aria-hidden="true"></span>&nbsp;&nbsp;引力</a>
+                <a class="btn btn-info" id="gravity" href="https://太帅了.cn" data-toggle="tooltip" data-placement="top"
+                    title="中国人不懂浪漫，这么好的域名让我注册了"><span class="glyphicon glyphicon-link"
+                        aria-hidden="true"></span>&nbsp;&nbsp;太帅了.cn</a>
                 <a class="btn btn-primary" href="/fun/"><span class="glyphicon glyphicon-chevron-right"
                         aria-hidden="true"></span>&nbsp;&nbsp;更多</a>
             </div>
@@ -230,6 +244,8 @@
                 </div>
                 <a class="btn btn-info" id="log" href="/log/"><span class="glyphicon glyphicon-list"
                         aria-hidden="true"></span>&nbsp;日志</a>
+                <a class="btn btn-info" id="mail" href="http://43.143.233.184:90"><span
+                        class="glyphicon glyphicon-envelope" aria-hidden="true"></span>&nbsp;邮箱</a>
             </div>
         </div>
 
@@ -237,7 +253,7 @@
             <hr><button class="btn btn-danger btn-dang"><span class="glyphicon glyphicon-heart"
                     aria-hidden="true"></span></button>
         </div>
-        
+
         <div class="col-md-10">
             <hr>
             <h3>> 已过时</h3>

@@ -32,10 +32,10 @@
             margin-top: 5px;
         }
 
-        .btn:hover {
+        /* .btn:hover {
             text-shadow: rgb(33, 33, 30, 0.8) 3px 3px 5px;
             transform: rotate(2deg) translate(-2px, -4px);
-        }
+        } */
 
         #random:hover {
             text-shadow: -3px -3px 3px rosybrown, 3px 3px 3px royalblue, 3px -3px 5px whitesmoke, -3px 3px 5px whitesmoke, -3px -3px 5px yellow;
@@ -68,6 +68,16 @@
         body {
             background: url('../fun/chat/ai-game/1/duck.png'), #f88;
             background-blend-mode: screen
+        }
+
+        .btn {
+            position: relative;
+            top: 0px;
+            transition: all 0.2s;
+        }
+
+        .btn:active {
+            top: 5px;
         }
     </style>
 </head>
