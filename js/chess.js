@@ -72,7 +72,11 @@ function updateMessages() {
     if (messages[3]) $('.message4').addClass("red");
     else $('.message4').removeClass("red");
     $("#messageText")[0].value = messages[4];
-    $("#messageServer")[0].innerHTML = messages[5];    
+    $("#messageServer")[0].innerHTML = messages[5];
+    if (messages[5] == 2) $("#messageServer").addClass('label-success')
+    else $("#messageServer").removeClass('label-success')
+    if (messages[5] > 2) $("#messageServer").addClass('label-warning')
+    else $("#messageServer").removeClass('label-warning')
 }
 
 var timer, st = 1;
@@ -326,7 +330,10 @@ var createSocket = function () {
     var url = 'wss://' + window.location.host + '/ws/chess';
     socket = new WebSocket(url);
     socket.onopen = function () {
-        console.log('connected to ' + url);
+        $('.ws').removeClass('glyphicon-remove')
+        $('.ws').addClass('glyphicon-ok')
+        $("#messageServer").removeClass('label-danger')
+        console.log('Connected: ' + url);
     }
     socket.onmessage = function (event) {
         var map = JSON.parse(event.data).content;
@@ -353,8 +360,12 @@ var createSocket = function () {
         }
         console.log('Updated')
     }
-    socket.onclose = function () {
-        console.log('close connect to' + url);
+    socket.onclose = function (e) {
+        $('.ws').removeClass('glyphicon-ok')
+        $('.ws').addClass('glyphicon-remove')
+        $("#messageServer").addClass('label-danger')
+        $("#messageServer")[0].innerHTML = '连接断开，请刷新页面'
+        console.log('Disconnected: ' + url + ',' + e.code + ',' + e.reason + ',' + e.wasClean)
     }
 };
 var sendMessage = function (map = game.arr, msg = messages, type = '') {
