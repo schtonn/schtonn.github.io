@@ -323,7 +323,7 @@ var createSocket = function () {
     if (socket) {
         socket.close();
     }
-    var url = 'ws://' + window.location.host + '/ws/chess';
+    var url = 'wss://' + window.location.host + '/ws/chess';
     socket = new WebSocket(url);
     socket.onopen = function () {
         console.log('connected to ' + url);
