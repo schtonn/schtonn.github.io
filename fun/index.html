@@ -15,7 +15,7 @@
     <!-- <link rel="stylesheet" href="/css/style.css"> -->
     <title>娱乐</title>
     <style>
-        * {
+        *:not(svg, path, g) {
             transition-duration: 300ms;
         }
 
@@ -54,7 +54,6 @@
         }
 
         img {
-            transition-duration: 300ms;
             border: 3px dotted grey;
             width: 300px;
         }
@@ -76,10 +75,78 @@
             transition: all 0.2s;
         }
 
+        .btn:hover {
+            top: -2px;
+        }
+
         .btn:active {
             top: 5px;
         }
+
+        svg {
+            margin-top: 1rem;
+            width: 30vmin;
+            height: auto;
+            filter: url(#shadow-large);
+        }
     </style>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js'></script>
+
+    <script>
+        const zeroPadded = number => ((number >= 10) ? number.toString() : `0${number}`);
+        const twelveClock = (twentyFourClock) => {
+            if (twentyFourClock === 0) {
+                return 12;
+            } if (twentyFourClock > 12) {
+                return twentyFourClock - 12;
+            }
+            return twentyFourClock;
+        };
+        var tot = 0;
+        function getTime() {
+            setTimeout(() => {
+                var click = new Audio('clock.mp3');
+                click.volume = .3;
+                click.preload = true;
+                click.play();
+            }, 900);
+            var now = new Date();
+            var hours = now.getHours();
+            var minutes = now.getMinutes();
+            if (now.getSeconds() == 0) tot++;
+            console.log(tot, now.getSeconds())
+            var seconds = now.getSeconds() + tot * 60;
+            var time = {
+                hours: twelveClock(hours), // 1-12
+                minutes, // 0-59
+                seconds, // 0-59
+            };
+
+            var rotation = {
+                hours: twelveClock(hours),
+                minutes,
+                seconds,
+            };
+
+            var entries = Object.entries(time);
+            entries.forEach(([key, value]) => {
+                console.log((key === 'hours') ? `rotate(${-15 + value * 30})` : `rotate(${value * 6})`)
+                anime({
+                    targets: `g.${key}`,
+                    transform: (key === 'hours') ? `rotate(${-15 + value * 30})` : `rotate(${value * 6})`,
+                    duration: 400,
+                });
+            });
+        }
+        $().ready(function () {
+            const clockFace = $('svg g.clock--face')[0];
+            for (let i = 0; i < 12; i += 1) {
+                clockFace.innerHTML += `<text transform="rotate(${-90 + 30 * (i + 1)}) translate(34 0) rotate(${90 - 30 * (i + 1)})" >${zeroPadded(i + 1)}</text>`;
+            }
+            getTime();
+            setInterval(getTime, 1000);
+        })
+    </script>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -118,6 +185,7 @@
                 aria-hidden="true"></span>&nbsp;&nbsp;ChatGPT 测试</a>
         <a class="btn btn-success" id="gravity" href="https://太帅了.cn" title="中国人不懂浪漫，这么好的域名让我注册了"><span
                 class="glyphicon glyphicon-link" aria-hidden="true"></span>&nbsp;&nbsp;太帅了.cn</a>
+        <a class="btn btn-success" href="/minecraft">Minecraft</a>
         <div style="text-align:right">
             <span class="btn btn-xs btn-warning nohover">纯搬运</span> - <span
                 class="btn btn-xs btn-info nohover">小工程</span> -
@@ -125,6 +193,45 @@
         </div>
     </div>
     <hr>
+    <p>（自我提醒，不要在这浪费太多时间）</p>
+    <svg viewBox="0 0 100 100" width="100" height="100">
+        <defs>
+            <filter id="shadow-large">
+                <feDropShadow dx="0" dy="0" stdDeviation="4" />
+            </filter>
+            <filter id="shadow-small">
+                <feDropShadow dx="0" dy="0" stdDeviation="0.2" />
+            </filter>
+
+            <mask id="mask">
+                <g transform="translate(50 50)">
+                    <g class="hours" transform="rotate(-15)">
+                        <circle cx="0" cy="0" r="50" fill="#fff"> </circle>
+                        <path d="M 0 -50 v 50 l 28.86 -50" fill="#000"> </path>
+                    </g>
+                </g>
+            </mask>
+        </defs>
+
+        <circle cx="50" cy="50" r="46" fill="#303335"> </circle>
+
+        <circle cx="50" cy="50" r="42" fill="#EA3F3F" filter="url(#shadow-large)"> </circle>
+
+        <g class="clock--face" font-size="8px" transform="translate(50 50)" text-anchor="middle"
+            dominant-baseline="middle"></g>
+        <circle mask="url(#mask)" cx="50" cy="50" r="50" fill="#303335"></circle>
+        <circle cx="50" cy="50" r="4" filter="url(#shadow-small)" fill="#303335"></circle>
+        <g class="hands" transform="translate(50 50)">
+            <g class="minutes" transform="rotate(240)">
+                <path fill="#fff" d="M -0.4 8 h 0.8 v -33 h -0.8 z"></path>
+                <circle fill="#303335" cx="0" cy="0" r="0.6"></circle>
+            </g>
+            <g class="seconds" transform="rotate(80)">
+                <path fill="#EA3F3F" d="M -0.4 10 h 0.8 v -45 h -0.8 z"></path>
+                <circle stroke-width="0.4" stroke="#EA3F3F" fill="#303335" cx="0" cy="0" r="0.8"></circle>
+            </g>
+        </g>
+    </svg>
 </body>
 
 </html>
