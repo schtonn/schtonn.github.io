@@ -1,33 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
 
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>schtonn</title>
+
     <link rel="manifest" href="/site.webmanifest">
     <meta name="description" content="Schtonn site">
     <meta property="og:type" content="website">
     <meta property="og:title" content="schtonn">
-    <meta property="og:url" content="https://schtonn.github.io/index.html">
+    <meta property="og:url" content="https://43.143.233.184/index.html">
     <meta property="og:site_name" content="schtonn site">
     <meta property="og:description" content="Schtonn site">
-    <meta property="og:locale" content="en_US">
     <meta property="article:author" content="Alex">
-    <meta name="twitter:card" content="summary">
 
     <script type="text/javascript" src="js/jquery.min.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="css/bootstrap.min.css" crossorigin="anonymous">
     <script type="text/javascript" src="js/bootstrap.min.js" crossorigin="anonymous"></script>
 
-    <link rel="canonical" href="https://schtonn.github.io/">
-    <!-- <link async rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
-        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous"> -->
-    <!-- <link rel="stylesheet" href="css/bootstrap.min.css" crossorigin="anonymous"> -->
+    <link rel="canonical" href="https://43.143.233.184/">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
 &family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    <!-- <link rel="stylesheet" href="/css/style.css"> -->
-    <title>schtonn</title>
     <style>
         * {
             transition-duration: 300ms;
@@ -89,12 +83,12 @@
             text-shadow: seagreen -1px -2px 3px, grey 1px 2px 3px, whitesmoke 2px 2px 3px, rgb(151, 124, 225) -2px 2px 3px, rgb(124, 186, 225) 2px -2px 3px, rgb(226, 218, 131) -2px -2px 3px;
         }
 
-        .btn-xs.gee {
+        .btn-xs.dark {
             background-color: rgb(70, 59, 150);
             color: white;
         }
 
-        code.gee {
+        code.dark {
             background-color: rgb(70, 59, 150);
         }
 
@@ -102,14 +96,14 @@
             text-shadow: none;
         }
 
-        .gee ::selection {
+        .dark ::selection {
             color: white;
             text-decoration: underline wavy #FF3028;
             text-shadow: 1px 1px 2px red, 0 0 1em blue, 0 0 0.2em blue;
             background-color: transparent;
         }
 
-        .gee {
+        .dark {
             color: white;
             background-color: rgba(0, 0, 0, 0.4);
         }
@@ -122,7 +116,7 @@
             outline: 50px solid rgba(58, 58, 58, 0.5)
         }
 
-        .btn-dang.gee:hover {
+        .btn-dang.dark:hover {
             outline: 50px solid rgba(202, 202, 202, 0.5)
         }
 
@@ -138,8 +132,8 @@
             color: floralwhite;
         }
 
-        .secret.gee,
-        .secret>code.gee {
+        .secret.dark,
+        .secret>code.dark {
             scale: 1;
             display: inline-block;
             background-color: transparent;
@@ -154,7 +148,7 @@
             padding-top: 15px;
         }
 
-        .full.gee {
+        .full.dark {
             background-color: rgba(22, 22, 22, 0.5);
             border-radius: 10px;
             margin: 0;
@@ -180,7 +174,7 @@
     <script>
         $().ready(function () {
             $('.btn-dang').on('click', function (e) {
-                $('body,.btn,.btn-xs,code,.secret,.full').toggleClass('gee')
+                $('body,.btn,.btn-xs,code,.secret,.full').toggleClass('dark')
                 console.log(e)
             })
             if (document.domain != '43.143.233.184') $('.alert').show();
