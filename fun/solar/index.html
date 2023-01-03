@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="/js/jquery.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+    <script type="text/javascript" src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
+&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title id="pgtitle">solar system</title>
+    <link href="./style.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+    <div id="introwrap" style="position:relative;color:white;top:100px;left:10px">
+        <p><a class="btn btn-info" href="/fun" style="background:#000"><span
+                    class="glyphicon glyphicon-home"></span>&nbsp;返回</a></p>
+        <br>
+        <p>你好，向后翻吧 <i class="glyphicon glyphicon-arrow-right"></i></p>
+        <p>1 像素 = 3474.8km = 月亮的直径</p>
+    </div>
+    </div>
+    <div id="bigspace">
+        <div class="planetwrapper">
+            <div id="sunwrap">
+                <svg version="1.1" id="sun" xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="10px" height="10px"
+                    viewBox="0 0 10 10">
+                    <circle cx="5" cy="5" r="5"></circle>
+                </svg>
+                <div id="suntxt" class="labeltext">太阳</div>
+            </div>
+
+            <svg version="1.1" id="mercury" xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="10px" height="10px"
+                viewBox="0 0 10 10">
+                <circle cx="5" cy="5" r="5"></circle>
+            </svg>
+            <div id="merctxt" class="labeltext">
+                <img src="./arrow.svg"><br>
+                <span id="merclabel">水星</span><br>
+            </div>
+
+            <svg version="1.1" id="venus" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px" y="0px" width="10px" height="10px" viewBox="0 0 10 10">
+                <circle cx="5" cy="5" r="5"></circle>
+            </svg>
+            <div id="venustxt" class="labeltext">
+                <img src="./arrow.svg"><br>
+                <span id="venuslabel">金星</span>
+            </div>
+
+            <svg version="1.1" id="earth" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px" y="0px" width="10px" height="10px" viewBox="0 0 10 10">
+                <circle cx="5" cy="5" r="5"></circle>
+            </svg>
+            <div id="earthtxt" class="labeltext">
+                <img src="./arrow.svg"><br>
+                <span id="earthlabel">地球</span><br>
+                <div id="you-are-here" style="font-size:.3em; color:#737373">(你在这)</div>
+            </div>
+
+            <div id="moontxt" class="labeltext">
+                <span id="moonlabel">月球</span><br>
+                <img src="./arrow2.svg">
+            </div>
+            <svg version="1.1" id="moon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px" y="0px" width="10px" height="10px" viewBox="0 0 10 10">
+                <circle cx="5" cy="5" r="5"></circle>
+            </svg>
+
+            <svg version="1.1" id="mars" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px" y="0px" width="10px" height="10px" viewBox="0 0 10 10">
+                <circle cx="5" cy="5" r="5"></circle>
+            </svg>
+            <div id="marstxt" class="labeltext">
+                <img src="./arrow.svg"><br>
+                <span id="marslabel">火星</span>
+            </div>
+
+            <svg version="1.1" id="jupiter" xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="10px" height="10px"
+                viewBox="0 0 10 10">
+                <circle cx="5" cy="5" r="5"></circle>
+            </svg>
+            <div id="jupitertxt" class="labeltext">
+                <img src="./arrow.svg" style="margin-left:15px"><br>
+                <span id="jupiterlabel">木星</span>
+            </div>
+
+            <div id="jupitermoons" class="labeltext">
+                <span id="io"><img src="./moondot.png" height="1px" width="1px" class="moondot"><span
+                        id="iolabel">木卫一</span></span>
+                <span id="europa"><img src="./moondot.png" height="1px" width="1px" class="moondot"><span
+                        id="europalabel">木卫二</span></span>
+                <span id="ganymede"><img src="./moondot.png" height="2px" width="2px" class="moondot"><span
+                        id="ganymedelabel">木卫三</span></span>
+                <span id="callisto"><img src="./moondot.png" height="1px" width="1px" class="moondot"><span
+                        id="callistolabel">木卫四</span></span>
+            </div>
+
+            <img src="./saturn.svg" id="saturn"><br>
+            <div id="saturntxt" class="labeltext">
+                <img src="./arrow.svg"><br>
+                <span id="saturnlabel">土星</span>
+            </div>
+
+            <div id="saturnmoons" class="labeltext">
+                <span id="titan"><img src="./moondot.png" height="1px" width="1px" class="moondot"><span
+                        id="titanlabel">土卫六</span></span>
+            </div>
+
+            <svg version="1.1" id="uranus" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px" y="0px" width="10px" height="10px" viewBox="0 0 10 10">
+                <circle cx="5" cy="5" r="5"></circle>
+            </svg>
+            <div id="uranustxt" class="labeltext">
+                <img src="./arrow.svg"><br>
+                <span id="uranuslabel">天王星</span>
+            </div>
+
+            <svg version="1.1" id="neptune" xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="10px" height="10px"
+                viewBox="0 0 10 10">
+                <circle cx="5" cy="5" r="5"></circle>
+            </svg>
+            <div id="neptunetxt" class="labeltext">
+                <img src="./arrow.svg"><br>
+                <span id="neptunelabel">海王星</span>
+            </div>
+
+            <svg version="1.1" id="pluto" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px" y="0px" width="10px" height="10px" viewBox="0 0 10 10">
+                <circle cx="5" cy="5" r="5"></circle>
+            </svg>
+            <div id="plutotxt" class="labeltext">
+                <img src="./arrow.svg"><br>
+                <span id="plutolabel">冥王星</span><span style="font-size:.25em"><br></span>
+                <span id="we-still-love" style="font-size:.25em; text-transform:none">(我们依然爱你)</span>
+            </div>
+            <div class="essay l10n" style="left:2885px">我们刚走过了一千万公里（6,213,710英里）</div>
+            <div class="essay" style="left:8275px">这里挺空的。</div>
+            <div class="essay" style="left:13666px">第一颗行星就要来啦。</div>
+            <div class="essay" style="left:20666px">原来，一切都这么遥远。</div>
+            <div class="essay" style="left:26666px">坐稳了，下一个行星就要来了。</div>
+            <div class="essay" style="left:33666px">大部分空间只是空荡荡的。</div>
+            <div class="essay" style="left:37100px">快到家啦。</div>
+            <div class="essay" style="left:48200px">目的地：火星！</div>
+            <div class="essay" style="left:55100px"><span id="it-would-take">坐宇宙飞船飞到火星都要花七个月时间。</span><span
+                    style="margin-left:100px">&nbsp;</span><span id="better-be-some">最好有点好玩的机上娱乐活动。</span>
+                <span style="margin-left:100px">&nbsp;</span><span
+                    id="in-case-youre">如果你想知道：你需要看大概2000部电影长片才能消磨掉旅途中醒着的时光。</span>
+            </div>
+            <div class="essay" style="left:67100px">从这里到木星的距离是我们已经走过距离的三倍。</div>
+            <div class="essay" style="left:80038px">我们啥时候能到？</div>
+            <div class="essay" style="left:100038px">说真的，我们啥时候能到木星？</div>
+            <div class="essay" style="left:120038px"><span id="this-is-where">这里本应有些小行星让我们打起精神。</span><span
+                    style="margin-left:100px">&nbsp;</span><span id="too-bad-theyre">可惜它们太小了，在这地图上显示不出来。</span></div>
+            <div class="essay" style="left:130000px">黑夜给了我黑色的眼睛，却只能看见一片虚无~</div>
+            <div class="essay" style="left:140000px">假如你以120km/h的速度开车从地球出发，那你要花500年才能到这。</div>
+            <div class="essay" style="left:170000px"><span id="all-these-distances">友情提示：这些距离都只是平均值。</span> <span
+                    style="margin-left:200px">&nbsp;</span><span
+                    id="the-distance-between">两颗行星间的实际距离取决于它们在公转轨道上的相对位置。</span><span
+                    style="margin-left:200px">&nbsp;</span><span id="so-if-youre">也就是说假如你计划去木星玩玩，你可能不能用这张地图了。</span>
+            </div>
+            <div class="essay" style="left:180000px"><span id="if-you-plan">假如规划得当，你在行星间的旅行会快得多。</span><span
+                    style="margin-left:200px">&nbsp;</span><span
+                    id="the-new-horizons">比如2006年发射的新地平线号探测器只用了13个月就到了木星。</span><span
+                    style="margin-left:200px">&nbsp;</span><span id="dont-worry-itll">别太担心，滚动条滚到木星的时间肯定比13个月短多了。</span>
+            </div>
+            <div class="essay" style="left:200000px">快到木星啦。</div>
+            <div class="essay" style="left:215000px">骗你的，现在才快到木星啦。</div>
+
+            <div class="essay" style="left:245000px">在这里我们有很多时间思考…</div>
+            <div class="essay" style="left:287786px">庆祝一下吧！我们刚走过了十亿公里。</div>
+            <div class="essay" style="left:305000px"><span id="i-guess-this">我猜这就是为什么大部分太阳系地图都不会按比例来画。</span><span
+                    style="margin-left:100px">&nbsp;</span><span id="its-not-hard">按比例画行星倒不难。</span><span
+                    style="margin-left:100px">&nbsp;</span><span id="its-the-empty">这之间的空间是个问题。</span></div>
+            <div class="essay" style="left:322000px">大部分太阳系空间图都遗漏了最重要的部分——空间。</div>
+            <div class="essay" style="left:349000px">我们习惯了处理琐碎而微小的事务。</div>
+            <div class="essay" style="left:376000px"><span id="when-it-comes">当我们研究的问题是地球的年龄、西伯利亚的雪花、美国国债…</span><span
+                    style="margin-left:100px">&nbsp;</span><span id="those-things-are">这些数字对于我们的大脑来说还是太大了。</span></div>
+
+            <div class="essay" style="left:430000px">为了理解大的东西，我们需要把它们分解成易于理解的小事物。</div>
+            <div class="essay" style="left:457000px">为此，我们常常打比方，但多数时候达不到效果。</div>
+            <div class="essay" style="left:484000px">无论如何，我们还是来打几个比方…</div>
+            <div class="essay" style="left:511000px"><span id="you-would-need">要显示完整的地图，你需要 </span> <span
+                    id="monitors">886</span> <span id="of-these-screens"> 个屏幕一个接一个连在一起。</span><span id="depth"></span>
+            </div>
+            <div class="essay" style="left:538000px"><span
+                    id="if-this-map">假如用高清打印机来打印这张地图（每英寸300个像素），这张地图上根本看不到地球，而且整张纸的长度大概会有 145 米。</span><span
+                    style="margin-left:200px">&nbsp;</span><span id="475-feet-is">145 米大概是一个半足球场的长度。</span>
+            </div>
+            <div class="essay" style="left:565000px"><span id="even-though-we">当时空的尺度被放大，会发生许多事情。</span><span
+                    style="margin-left:100px">&nbsp;</span> <span id="a-drop-of">滴水可以穿石。</span><span
+                    style="margin-left:100px">&nbsp;</span><span id="an-amoeba-can">变形虫能变成海豚。</span><span
+                    style="margin-left:100px">&nbsp;</span><span id="a-star-can">恒星会向内坍缩。</span></div>
+            <div class="essay" style="left:592000px">
+                没有比喻能描述虚无，因为根据定义，只要虚无被描述了出来，它就不是虚无了。</div>
+            <div class="essay" style="left:619000px"><span
+                    id="its-a-good">我们能看到这些微小的恒星和行星真的是挺好的，否则我们就没有任何参考点了。</span><span
+                    style="margin-left:200px">&nbsp;</span><span id="wed-be-surrounded">我们被不可理解的虚无包围了。</span></div>
+            <div class="essay" style="left:646000px">
+                这个空虚的世界很容易让你发疯。举个例子，假如你在一个五感尽失的大缸子里呆久了，你的大脑就会产生幻觉，你会看到或是听到根本不存在的东西。</div>
+            <div class="essay" style="left:673000px">所以说大脑是理解不了虚无的。</div>
+            <div class="essay" style="left:700000px">
+                “不好意思，人类们。”进化说，“因为要对付这些想吃你们的老虎、你们毛发里的寄生虫、以及永不停歇对吃吃吃的渴望，我有点忙。我并没有这个时间来让你们理解虚无。”</div>
+            <div class="essay" style="left:727000px">
+                从神经学上说，我们只能处理某几个特定大小、特定能量的波长。对于我们处理不了的其它东西，我们得编一些抽象的模型，然后努力地把它们往我们能理解的东西上靠。</div>
+            <div class="essay" style="left:754000px"><span
+                    id="the-mental-models">数学里的概念模型对理解这么长的距离有特别大的帮助，但是…</span><span
+                    style="margin-left:100px">&nbsp;</span><span id="abstraction-is-pretty">抽象法还是不能令人满意。</span></div>
+            <div class="essay" style="left:781000px">
+                当你听到别人讲起“这个宇宙的奥妙太多了啊！我们根本没办法了解的”这一般是一个科幻小说里UFO或者超能力故事的开头，假如你晚上看这个的话你肯定会睡不着。</div>
+            <div class="essay" style="left:808000px">
+                莎士比亚说过：“在这天地间有许多事情是人类哲学所不能解释的。”这肯定是他为了增加鬼故事可信度而卖的破绽。</div>
+
+            <div class="essay" style="left:860000px">
+                总而言之我们的大脑是理解不了所有这些虚空、这些大范围的东西的。这幅地图、这些隐喻也帮不了忙。
+            </div>
+            <div class="essay" style="left:889000px">你看到了这个点，然后你去找下一个点，这中间的虚空是无趣的。</div>
+            <div class="essay" style="left:916000px">
+                实际上到处都是虚空，它们占领了99.9999999999999999999958%的已知宇宙。</div>
+            <div class="essay" style="left:943000px">就算是原子，它内部也大都是空的。</div>
+            <div class="essay" style="left:970000px">
+                假如氢原子的质子就是这幅地图上太阳那么大，我们还需要11个这么大的地图来表示从氢原子质子到电子的平均距离。
+            </div>
+            <div class="essay" style="left:997000px"><span
+                    id="some-theories-say">有些理论说：所有的这些虚空实际上全部都是充满能量的暗物质，并没有什么真正的虚空…</span><span
+                    style="margin-left:100px">&nbsp;</span><span id="but-come-on">拜托，只有实在的东西对我们才有价值。</span></div>
+            <div class="essay" style="left:1024000px">其实你也可以说宇宙是“总的来说没啥东西”。</div>
+            <div class="essay" style="left:1051000px">假如宇宙的这么多部分都是由虚空构成的，那像我们这种活在中间的一小片灰尘上的人类又算是什么呢？
+            </div>
+            <div class="essay" style="left:1078000px"><span
+                    id="is-the-known">已知的宇宙是99.9999999999999999999958%的空？</span><span
+                    style="margin-left:100px">&nbsp;</span><span id="or-is-it">还是说0.0000000000000000000042%的实？</span>
+            </div>
+            <div class="essay" style="left:1105000px">
+                既然虚空占了世界的这么大一部分，那某种意义上恒星、行星和人类是不是这优雅整齐的虚无里的差错呢？就像黑毛衣上的一根白色绒毛？</div>
+            <div class="essay" style="left:1132000px">不过假如没有了这些差错，也就不会有可以测量出来的虚无，或者说也就没有人来测量了。
+            </div>
+            <div class="essay" style="left:1159000px"><span
+                    id="you-might-say">你也可以说是这么多的虚空让微小的点变得更有意义——简而言之事实就是：它们并不是空的。</span><span
+                    style="margin-left:100px">&nbsp;</span><span
+                    id="if-youre-drowning">假如你在大海中间快被淹死了，这时一小块浮木就有很大的意义了。</span>
+            </div>
+            <div class="essay" style="left:1186000px">如果说千万个星球全部一个接一个地紧挨在一起会怎么样？那就不会有哪一个星球是特殊的了。
+            </div>
+            <div class="essay" style="left:1213000px">这样看来我们都同时都渺小得可怜，也奇迹般伟大。</div>
+            <div class="essay" style="left:1240000px"><span
+                    id="whether-you-more">你感受到更多是渺小的伟大还是无尽的虚无，取决于你是什么样的人以及你的大脑激素在这瞬间是怎么平衡的。</span><span
+                    id="we-walk-around">我们一路走来，原来身体内部还有一个小型的感性的宇宙。</span></div>
+            <div class="essay" style="left:1267000px">
+                所以说不论我们自轻还是自大，按宇宙的构造看来，它对这两个极端都有很好的包容度呢。这么一想还是挺安心的。</div>
+
+            <div class="essay" style="left:1421000px">你停下来仔细思考的话，你会发现你能在这一片虚无的中间其实是蛮神奇的一件事情。</div>
+            <div class="essay" style="left:1550000px">祝贺你走了这么远。</div>
+            <ul class="navi">
+                <li><a href="#suntxt" class="planetjump">日</a></li>
+                <li><a href="#merctxt" class="planetjump">水</a></li>
+                <li><a href="#venustxt" class="planetjump">金</a></li>
+                <li><a href="#earthtxt" class="planetjump">地</a></li>
+                <li><a href="#marstxt" class="planetjump">火</a></li>
+                <li><a href="#jupitertxt" class="planetjump">木</a></li>
+                <li><a href="#saturntxt" class="planetjump">土</a></li>
+                <li><a href="#uranustxt" class="planetjump">天</a></li>
+                <li><a href="#neptunetxt" class="planetjump">海</a></li>
+                <li><a href="#plutotxt" class="planetjump">冥</a></li>
+            </ul>
+            <div id="distance-counter">
+                <div id="counter">8.4 光分</div><span id="selectarrow"><img src="./select-arrow.svg"></span>
+                <div id="unitselect" style="display: none;">
+                    <ul>
+                        <li><a href="" id="km">千米</a></li>
+                        <li><a href="" id="mi">英里</a></li>
+                        <li><a href="" id="au">天文单位</a></li>
+                        <li><a href="" id="lightminutes">光分</a></li>
+                        <li><a href="" id="earths">地球直径</a></li>
+                        <li><a href="" id="pixels">像素</a></li>
+                        <li><a href="" id="buses">公交车长度</a></li>
+                        <li><a href="" id="bluewhales">蓝鲸长度</a></li>
+                        <li><a href="" id="greatwalls">长城</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div id="lightspeeder"><a href="" style="opacity: 0.7;">太慢了！我要光速前进！<i
+                        class="glyphicon glyphicon-arrow-right"></i><span class="warpfactor"> </span></a>
+            </div>
+            <div id="lightspeedmsg" style="display: none;">
+                <div id="msg1" style="display: none;">光前进的速度就这么快…</div>
+            </div>
+            <script type="text/javascript" src="./jquery.easing.1.3.js"></script>
+            <script type="text/javascript" src="./jquery.mousewheel.min.js"></script>
+            <script type="text/javascript" src="./pxmoon.js"></script>
+</body>
