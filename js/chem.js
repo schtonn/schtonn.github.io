@@ -186,7 +186,7 @@ function setBal() {
     MathJax.typeset()
     $('#balBtn').text('配平')
     $('#balShare').removeClass('disabled')
-    $('#balInput').attr('placeholder', case1)
+    $('#balInput').attr('placeholder', case1 + '（输入化学式以配平）')
     $('#balBtn').attr('href', '/chem?' + case1)
     $('#balBtn').removeClass('disabled')
     mode = 'bal'
@@ -195,7 +195,7 @@ function setBal() {
 function setWeigh() {
     $('#balBtn').text('相对质量')
     $('#balShare').addClass('disabled')
-    $('#balInput').attr('placeholder', case2)
+    $('#balInput').attr('placeholder', case2 + '（输入化学式以计算相对质量）')
     $('#balBtn').attr('href', '')
     $('#balBtn').addClass('disabled')
     mode = 'weigh'
@@ -204,7 +204,7 @@ function setWeigh() {
 function setWeigh2() {
     $('#balBtn').text('相对质量*')
     $('#balShare').addClass('disabled')
-    $('#balInput').attr('placeholder', case2)
+    $('#balInput').attr('placeholder', case2 + '（输入化学式以计算相对质量）')
     $('#balBtn').attr('href', '')
     $('#balBtn').addClass('disabled')
     mode = 'weigh2'
@@ -261,7 +261,7 @@ function setQryEq() {
     modeq = 'query', nameq = 'eq', strict = false
     $('.qryInputHidable').hide()
     $('#qryBtn').text('查询方程式')
-    $('#qryInput').attr('placeholder', 'O2=H2O')
+    $('#qryInput').attr('placeholder', 'O2=H2O'+'（输入化学式查询数据库，支持模糊搜索）')
     input2();
 }
 function setQryEq2() {
@@ -291,7 +291,7 @@ function setAddEq() {
     modeq = 'add', nameq = 'eq'
     $('.qryInputHidable').hide()
     $('#qryBtn').text('上传方程式')
-    $('#qryInput').attr('placeholder', 'H2+O2=H2O')
+    $('#qryInput').attr('placeholder', 'H2+O2=H2O'+'（输入化学式上传至数据库）')
 }
 function setAddMo() {
     $('#qryMatch').hide()
@@ -310,7 +310,7 @@ function setUpdEq() {
     modeq = 'upd', nameq = 'eq'
     $('.qryInputHidable').hide()
     $('#qryBtn').text('修改方程式')
-    $('#qryInput').attr('placeholder', '')
+    $('#qryInput').attr('placeholder', '（输入 id 修改已有化学式）')
 }
 function setUpdMo() {
     $('#qryMatch').hide()
@@ -328,7 +328,7 @@ function getRegex() {
     var ret = ''
     if (strict) {
         var acont = $('#qryInput').val(), bcont = $('#qryInput2').val();
-        if (!acont && !bcont) acont = $('#qryInput').attr('placeholder')
+        if (!acont && !bcont) acont = $('#qryInput').attr('placeholder').split('（')[0]
         acont = replaceRegex(acont)
         bcont = replaceRegex(bcont)
         ret = '^'
@@ -349,7 +349,7 @@ function getRegex() {
         ret += '.*'
     } else {
         ret = $('#qryInput').val()
-        if (!ret) ret = $('#qryInput').attr('placeholder')
+        if (!ret) ret = $('#qryInput').attr('placeholder').split('（')[0]
         ret = replaceRegex(ret)
         var scont = ret.split('=')
         if (scont.length > 2) return;
@@ -405,7 +405,7 @@ function query() {
         })
     }
     if (modeq == 'add') {
-        $('#balInput').val($('#qryInput').val() ? $('#qryInput').val() : $('#qryInput').attr('placeholder'))
+        $('#balInput').val($('#qryInput').val() ? $('#qryInput').val() : $('#qryInput').attr('placeholder').split('（')[0])
         setBal();
         balance().then(e => {
             if (e[0] == '!') {
@@ -464,7 +464,7 @@ function query() {
         })
     }
     if (modeq == 'upd') {
-        $('#balInput').val($('#qryInput').val() ? $('#qryInput').val() : $('#qryInput').attr('placeholder'))
+        $('#balInput').val($('#qryInput').val() ? $('#qryInput').val() : $('#qryInput').attr('placeholder').split('（')[0])
         setBal();
         balance().then(e => {
             if (e[0] == '!') {

@@ -159,8 +159,8 @@
             </div>
         </div>
         <div class="col-lg-2 col-md-12 col-xs-12">
-            <button class="btn btn-default" onclick="$('.help').toggle(300)"><i
-                    class="glyphicon glyphicon-question-sign"></i></button>
+            <button class="btn btn-default" onclick="$('.help').toggle(300);$('.helpicon').toggleClass('glyphicon-arrow-down')"><i
+                    class="glyphicon glyphicon-question-sign helpicon"></i></button>
         </div>
     </div>
     <div class="row help" style="display:none;">
@@ -170,6 +170,7 @@
         <p>我运用了聪明绝顶的正则表达式（也就是那一串火星文），保证了查询方程式时，只要所有分子完全匹配，无论顺序都能查得到。你也可以改为只查包含某种元素的化学式，按左边的按钮就行。</p>
         <p>左边的箭头按钮考虑的是在上下之间快速复制粘贴方程式，不过这个功能还没完全实现。以及根据描述查询方程式的功能也还没实现。</p>
         <p>我目前只录入了高一上学期讲的一些式子，你要是吃饱了闲着没事干也可以帮我录入。查到的方程式带着的数字就是它的 id，修改的时候用得到。</p>
+        <p>小提示：<code>&lt;e+&gt;</code>、<code>&lt;2e-&gt;</code> 用于标注电荷，<code>.</code> 用于代替水合物等中间的点，假如配平结果有一堆变量说明你的方程有多解。</p>
     </div>
 </body>
 
