@@ -128,6 +128,7 @@
             $('#new').text(dat.toISOString().split('T')[0].replace(/-/g, '.'))
         })
         function upload(str, small) {
+            str = '<p>' + str.replace(/\n/g, '</p><p>') + '</p>'
             str = `<h3 id='${dat.toISOString().split('T')[0].replace(/-/g, '.').slice(2)}'>${dat.toISOString().split('T')[0].replace(/-/g, '.')} <small>${small}</small></h3>${str}`
             str += '<hr>'
             console.log(str)

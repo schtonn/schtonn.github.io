@@ -1,0 +1,120 @@
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Minecraft</title>
+    <script type="text/javascript" src="/js/jquery.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+    <script type="text/javascript" src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
+&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        img {
+            max-width: 100%;
+            position: relative;
+        }
+
+        .pad {
+            padding-bottom: 500px;
+        }
+        h2{
+            margin-top: 30px;
+            margin-bottom: -3px;
+        }
+    </style>
+    <script>
+        $().ready(function () {
+            var img = [
+                "2021-07-16_08.56.05.png,2021.7.16,hi",
+                "2021-07-16_17.35.27.png,,村民交易初版",
+                "2021-07-20_13.36.31.png,7.20,最初的基地",
+                "2021-07-20_18.05.35.png,,村民交易二版",
+                "2021-07-23_12.42.08.png,7.23",
+                "2021-07-23_12.43.43.png,,史莱姆农场",
+                "2021-07-23_12.43.50.png,,",
+                "2021-07-23_14.47.35.png",
+                "2021-07-24_18.14.36.png,7.24,暴力获取下界合金",
+                "2021-07-24_18.17.23.png",
+                "2021-07-26_16.57.13.png,7.26",
+                "2021-08-09_15.39.05.png,8.9,红石大佬唐朝设计抽奖机",
+                "2021-08-09_15.46.43.png,,与大佬的合影",
+                "2021-08-11_16.16.33.png,8.11",
+                "2021-08-12_13.50.52.png,8.12",
+                "2021-08-12_13.53.31.png,",
+                "2021-08-13_22.49.34.png,8.13,基地在发展",
+                "2021-08-15_14.21.24.png,8.15,哈哈哈哈哈哈",
+                "2021-08-17_19.54.50.png,8.17,大佬开始设计密码门",
+                "2021-08-17_19.56.05.png,,我在电路里拿着水桶吓唬他",
+                "2021-08-17_19.57.05.png",
+                "2021-08-17_20.02.11.png",
+                "2021-08-24_18.51.23.png,8.24,公寓",
+                "2021-08-24_18.54.51.png",
+                "2021-08-24_22.15.06.png,,与小武合影",
+                "2021-08-25_18.32.02.png,8.25,珍珠电梯，垂直交通最快方式之一",
+                "2021-08-28_15.27.53.png,8.28,小黑在淋浴间...",
+                "2021-08-30_20.16.39.png,8.30,与高速熔炉（和小武）合影",
+                "2021-09-01_21.27.29.png,9.1,三座毛坯房",
+                "2021-09-08_19.01.33.png,9.8,牛、猪、羊、him",
+                "2021-09-09_20.02.34.png,9.9,开始炸大沟",
+                "2021-09-09_20.02.58.png,,大沟初具雏形",
+                "2021-09-10_19.14.15.png,9.10,忽然发现一处连着七种矿物的地方",
+                "2021-09-10_19.14.57.png,,可惜这里很快就要被炸掉了",
+                "2021-09-10_19.52.17.png,,大沟完成咯",
+                "2021-09-15_20.47.12.png,9.15,世界吞噬者",
+                "2021-09-15_20.51.00.png",
+                "2021-09-15_20.55.26.png,,出生点小屋岌岌可危",
+                "2021-09-16_19.25.23.png,9.16",
+                "2021-09-17_19.12.33.png,9.17",
+                "2021-09-17_21.04.56.png",
+                "2021-09-17_21.05.43.png",
+                "2021-09-18_21.15.04.png,9.18",
+                "2021-09-18_21.15.23.png",
+                "2021-09-18_21.16.26.png,,再见了，出生点小屋",
+                "2021-09-20_09.14.41.png,9.20,空置域完成咯",
+                "2021-09-28_23.55.51.png,9.28,基地欣欣向荣",
+                "2021-09-28_23.56.08.png,,某人设计的很漂亮的景观",
+                "2021-09-29_00.00.03.png,9.29,小武家，真美",
+                "2021-09-29_00.06.57.png,,出生点成这样了",
+                "2021-10-01_21.16.32.png,10.1,炸不够，开始炸末地",
+                "2021-11-06_14.42.19.png,11.6",
+                "2021-11-06_14.45.09.png,,大佬又整了一个抽奖机",
+                "2021-11-06_14.45.21.png,,后面和下面是（shit mountain）电路",
+                "2021-11-19_18.44.08.png,11.19,我设计的萝卜机，因为大佬爱吃萝卜",
+                "2021-11-21_15.40.09.png,11.21,合影（你怎么不看镜头！）",
+                "2021-12-26_08.45.29.png,12.26,him 乃廉价劳动力",
+                "2022-01-18_14.05.42.png,2022.1.18,彩虹！(中考前最后一次登录，随后关服）",
+                "2022-12-06_10.23.50.png,2022.12.6,测试新服务器，树场 MSPT<50，好耶！"
+            ]
+            img.sort()
+            console.log(img)
+            for (let i = 0; i < img.length; i++) {
+                let str = ''
+                if (img[i].split(',')[1]) str += `<h2>${img[i].split(',')[1]}</h2>`
+                else str+= `<h2>&nbsp;</h2>`
+                if (img[i].split(',')[2]) str += `${img[i].split(',')[2]}`
+                else str+='&nbsp;'
+                $('.images').append(`<div class="col-md-4 col-lg-3">${str}<img src="img/${img[i].split(',')[0]}" onclick="fun(this)"></div>`)
+            }
+            $('.images').append('<div class="pad"></div>')
+        })
+        function fun(e) {
+            $(e).attr('src', 'image/' + $(e).attr('src').split('/')[1]).attr('onclick', 'notfun(this)').css('max-width', 'none').css('z-index', 10)
+        }
+        function notfun(e) {
+            $(e).attr('src', 'img/' + $(e).attr('src').split('/')[1]).attr('onclick', 'fun(this)').css('max-width', '100%').css('z-index', 1)
+        }
+    </script>
+</head>
+
+<body>
+    <a class="btn btn-info" href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp;返回</a>
+    <div class="page-header">
+        <h2>Minecraft<small></small></h2>
+    </div>
+    <p>这是我在初三时便启动的项目。1.16.4，原版生存，但不锁生存。人少，没有领地之类的插件。</p>
+    <p>服务器地址就是现在网站的 ip，但多数时候你可能访问不了。因为 MC 不是一个便宜云服务器能带动的，稍微高配的服务器<sup class="cite-parent" id="refe_1"><a class="cite" href="#note_1">[1]</a></sup>很吵，所以我平时并没有开机。你要想玩，完全可以<a href="mailto:1@schtonn.top?subject=开机&body=i wanna play minecraft!!!!">喊我开机</a>。</p>
+    <p class="cite-parent" id="note_1"><a class="cite" href="#refe_1">^</a>[1] 特别感谢小崔提供服务器，放在我家里，所以我玩就没有延迟哈哈哈。</p>
+    <p>下面是一些历史（点击查看大图）：</p>
+    <div class="images"></div>
+</body>
