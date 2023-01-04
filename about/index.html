@@ -17,6 +17,11 @@
             setTimeout(function () { addchr(i + 2) }, 1000)
         }
     </script>
+    <style>
+        img {
+            max-width: 80%;
+        }
+    </style>
 </head>
 
 <body>
@@ -26,18 +31,22 @@
     <div class="page-header">
         <h2>关于此网站<small></small></h2>
     </div>
-    <p>原先我只是在<a href="/blog" target="_blank">这</a>写博客，记录信息学知识点，后来把实现的几个小功能（扒来的 js
-        小游戏、随机壁纸、搬运来的成绩整理）拉起来拼凑了个页面。我这人版权意识很薄弱，经常从别人手里偷代码，哪天他们会起诉我的。不过从偷的代码里面，我慢慢也学会了一些东西。
-    </p>
-    <p>随着技术的增进，我研究清楚了心意答的接口，用 WebSocket 实现了实时对战五子棋，又做了个可上传的在线画板（虽然没人画）。</p>
-    <p>现在 25565 端口上跑着 Minecraft，90 端口上跑着邮箱，25，78，143 都是邮箱服务器的端口，80 和 443上跑着 nginx，1999，1984（），222 全都给内网穿透用了，哈哈早晚把端口用完咯。</p>
-    <p>具体可以看看<a href="/log" target="_blank">网站日志</a>。</p>
-    <!-- <div class="page-header">
-        <h2>关于我<small></small></h2>
+    <div class="col-md-6">
+        <p>原先我只是在<a href="/blog" target="_blank">这</a>写博客，记录信息学知识点，后来把实现的几个小功能（扒来的 js
+            小游戏、随机壁纸、搬运来的成绩整理）拉起来拼凑了个页面。我这人版权意识很薄弱，经常从别人手里偷代码，哪天他们会起诉我的。不过从偷的代码里面，我慢慢也学会了一些东西。
+        </p>
+        <p>随着技术的增进，我研究清楚了心意答的接口，用 WebSocket 实现了实时对战五子棋，又做了个可上传的在线画板（虽然没人画），建立了化学数据库，建立了邮件服务器（schtonn.top），用内网穿透打通了 Minecraft。</p>
+        <p>具体可以看看<a href="/log" target="_blank">网站日志</a>。</p>
+        <!-- <div class="page-header">
+            <h2>关于我<small></small></h2>
+        </div>
+        <p><span>我是</span><span id="miss">向量。我还能说啥。</span></p>
+        <p>...我目前在读实验中学，想找我玩可以来 2025 届十一班；我是信竞狗，进省队无望，自从北京今年（2022）的 NOIP
+            取消后，我现在也基本想退役了。</p>
+            <button class="btn btn-danger" onclick="$('#miss').html('');addchr(1);$('.btn').hide(100)" title="end"></button> -->
     </div>
-    <p><span>我是</span><span id="miss">向量。我还能说啥。</span></p>
-    <p>...我目前在读实验中学，想找我玩可以来 2025 届十一班；我是信竞狗，进省队无望，自从北京今年（2022）的 NOIP
-        取消后，我现在也基本想退役了。</p>
-    <button class="btn btn-danger" onclick="$('#miss').html('');addchr(1);$('.btn').hide(100)" title="end"></button> -->
-
+    <div class="col-md-6">
+        <p>端口简图，防止我自己忘了：</p>
+        <img src="1.png">
+    </div>
 </body>
