@@ -40,7 +40,7 @@
     const LOST = 0.3;
     var canvas = document.getElementById('canvas');
     var context = canvas.getContext('2d');
-    var planets = [];
+    var g = [];
     const MAX_MASS = 3000;
     const PLANET_COUNT = 300;
     const FRAGMENT_COUNT = 100;
@@ -64,11 +64,11 @@
     var arrFrequency = [196.00, 220.00, 246.94, 261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25, 587.33, 659.25, 698.46, 783.99, 880.00, 987.77, 1046.50];
 
     function init(count) {
-        if (planets.length > 300) return;
+        if (g.length > 300) return;
         var w = canvas.clientWidth;
         var h = canvas.clientHeight;
         for (var i = 0; i < count; i++) {
-            planets.push({ x: Math.random() * w, y: Math.random() * h, mass: DEFAULT_MASS, vx: Math.random() * 2 - 1, vy: Math.random() * 2 - 1, lock: 0 });
+            g.push({ x: Math.random() * w, y: Math.random() * h, mass: DEFAULT_MASS, vx: Math.random() * 2 - 1, vy: Math.random() * 2 - 1, lock: 0 });
         }
     }
     function fillRound(cx, cy, r, color) {
@@ -85,18 +85,18 @@
         context.stroke();
     }
     function collide() {
-        for (var i = 0, count = planets.length; i < count; i++) {
+        for (var i = 0, count = g.length; i < count; i++) {
             for (var i1 = 0; i1 < count; i1++) {
-                if (i1 != i && planets[i1]) {
-                    if (planets[i].lock > 0 && planets[i1].lock > 0) continue;
-                    if ((planets[i].lock > 0 || planets[i1].lock > 0) && Math.random() > 0.1) continue;
-                    var r = Math.sqrt(Math.pow((planets[i].x - planets[i1].x), 2) + Math.pow((planets[i].y - planets[i1].y), 2));
-                    if (r <= Math.max(Math.sqrt(planets[i1].mass) / Math.PI + Math.sqrt(planets[i].mass) / Math.PI) && planets[i1].mass >= planets[i].mass) {
-                        var amplitude = Math.min(planets[i1].mass, planets[i].mass) / 1000 + (planets[i1].mass + planets[i].mass) / 2000;
-                        planets[i1].vy = (planets[i1].mass * planets[i1].vy + planets[i].mass * planets[i].vy) / (planets[i1].mass + planets[i].mass);
-                        planets[i1].vx = (planets[i1].mass * planets[i1].vx + planets[i].mass * planets[i].vx) / (planets[i1].mass + planets[i].mass);
-                        planets[i1].mass += planets[i].mass;
-                        planets[i] = null;
+                if (i1 != i && g[i1]) {
+                    if (g[i].lock > 0 && g[i1].lock > 0) continue;
+                    if ((g[i].lock > 0 || g[i1].lock > 0) && Math.random() > 0.1) continue;
+                    var r = Math.sqrt(Math.pow((g[i].x - g[i1].x), 2) + Math.pow((g[i].y - g[i1].y), 2));
+                    if (r <= Math.max(Math.sqrt(g[i1].mass) / Math.PI + Math.sqrt(g[i].mass) / Math.PI) && g[i1].mass >= g[i].mass) {
+                        var amplitude = Math.min(g[i1].mass, g[i].mass) / 1000 + (g[i1].mass + g[i].mass) / 2000;
+                        g[i1].vy = (g[i1].mass * g[i1].vy + g[i].mass * g[i].vy) / (g[i1].mass + g[i].mass);
+                        g[i1].vx = (g[i1].mass * g[i1].vx + g[i].mass * g[i].vx) / (g[i1].mass + g[i].mass);
+                        g[i1].mass += g[i].mass;
+                        g[i] = null;
                         var frequency = arrFrequency[Math.floor(Math.random() * 15)];
                         var oscillator = audioCtx.createOscillator();
                         var gainNode = audioCtx.createGain();
@@ -116,13 +116,13 @@
         }
     }
     function explode() {
-        for (var i = 0, count = planets.length; i < count; i++) {
-            if (planets[i] && planets[i].mass >= MAX_MASS) {
+        for (var i = 0, count = g.length; i < count; i++) {
+            if (g[i] && g[i].mass >= MAX_MASS) {
                 for (var i1 = 0; i1 < FRAGMENT_COUNT; i1++) {
-                    planets.push({
-                        x: planets[i].x + Math.random(),
-                        y: planets[i].y + Math.random(),
-                        mass: planets[i].mass / FRAGMENT_COUNT,
+                    g.push({
+                        x: g[i].x + Math.random(),
+                        y: g[i].y + Math.random(),
+                        mass: g[i].mass / FRAGMENT_COUNT,
                         vx: FRAGMENT_SPEED * (Math.random() * 2 - 1),
                         vy: FRAGMENT_SPEED * (Math.random() * 2 - 1),
                         lock: LOCK_TIME * (Math.random() + 1)
@@ -140,7 +140,7 @@
                 oscillator.start(audioCtx.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 10);
                 oscillator.stop(audioCtx.currentTime + 10);
-                planets[i] = null;
+                g[i] = null;
             }
         }
     }
@@ -155,72 +155,72 @@
         var h = canvas.clientHeight;
         collide();
         explode();
-        for (var i = 0, count = planets.length; i < count; i++) {
-            if (planets[i]) {
-                if (planets[i].vx === NaN) {
-                    planets[i].vx = 0
+        for (var i = 0, count = g.length; i < count; i++) {
+            if (g[i]) {
+                if (g[i].vx === NaN) {
+                    g[i].vx = 0
                 }
-                if (planets[i].vy === NaN) {
-                    planets[i].vy = 0
+                if (g[i].vy === NaN) {
+                    g[i].vy = 0
                 }
             }
         }
-        planets = planets.filter(e => e && e.x !== NaN && e.y !== NaN && e.vx !== NaN && e.vy !== NaN && e.mass !== NaN);
+        g = g.filter(e => e && e.x !== NaN && e.y !== NaN && e.vx !== NaN && e.vy !== NaN && e.mass !== NaN);
 
-        for (var i = 0, count = planets.length; i < count; i++) {
-            if (planets[i].x > w) {
-                planets[i].x -= (planets[i].x - w) * 2;
-                planets[i].vx *= -(1 - LOST);
-            } else if (planets[i].x < 0) {
-                planets[i].x += planets[i].x * -2;
-                planets[i].vx *= -(1 - LOST);
+        for (var i = 0, count = g.length; i < count; i++) {
+            if (g[i].x > w) {
+                g[i].x -= (g[i].x - w) * 2;
+                g[i].vx *= -(1 - LOST);
+            } else if (g[i].x < 0) {
+                g[i].x += g[i].x * -2;
+                g[i].vx *= -(1 - LOST);
             }
-            if (planets[i].y > h) {
-                planets[i].y -= (planets[i].y - h) * 2;
-                planets[i].vy *= -(1 - LOST);
-            } else if (planets[i].y < 0) {
-                planets[i].y += planets[i].y * -2;
-                planets[i].vy *= -(1 - LOST);
+            if (g[i].y > h) {
+                g[i].y -= (g[i].y - h) * 2;
+                g[i].vy *= -(1 - LOST);
+            } else if (g[i].y < 0) {
+                g[i].y += g[i].y * -2;
+                g[i].vy *= -(1 - LOST);
             }
-            fillRound(planets[i].x, planets[i].y, planets[i].mass, COLOR)
+            fillRound(g[i].x, g[i].y, g[i].mass, COLOR)
             for (var i1 = 0; i1 < count; i1++) {
                 if (i1 != i) {
-                    var r = Math.sqrt(Math.pow((planets[i].x - planets[i1].x), 2) + Math.pow((planets[i].y - planets[i1].y), 2));
-                    var f = r != 0 ? G * G * planets[i1].mass / Math.pow(r, 2) : 0;
-                    var dx = planets[i1].x - planets[i].x;
-                    var dy = planets[i1].y - planets[i].y;
-                    if (planets[i].mass > 0) {
-                        planets[i].vy += f / r * dy;
-                        planets[i].vx += f / r * dx;
+                    var r = Math.sqrt(Math.pow((g[i].x - g[i1].x), 2) + Math.pow((g[i].y - g[i1].y), 2));
+                    var f = r != 0 ? G * G * g[i1].mass / Math.pow(r, 2) : 0;
+                    var dx = g[i1].x - g[i].x;
+                    var dy = g[i1].y - g[i].y;
+                    if (g[i].mass > 0) {
+                        g[i].vy += f / r * dy;
+                        g[i].vx += f / r * dx;
                     }
                     if (i1 > i && r <= maxLineLength) {
-                        drawLine(planets[i].x, planets[i].y, planets[i1].x, planets[i1].y, LINE_COLOR)
+                        drawLine(g[i].x, g[i].y, g[i1].x, g[i1].y, LINE_COLOR)
                     }
                 }
             }
             //
-            var r = Math.max(1, Math.sqrt(Math.pow((planets[i].x - mousepoint.x), 2) + Math.pow((planets[i].y - mousepoint.y), 2)));
+            var r = Math.max(1, Math.sqrt(Math.pow((g[i].x - mousepoint.x), 2) + Math.pow((g[i].y - mousepoint.y), 2)));
             if (r > maxLineLength / 8) {
                 var f = r != 0 ? G * G * MOUSE_MASS / Math.pow(r, 2) : 0;
-                var dx = mousepoint.x - planets[i].x;
-                var dy = mousepoint.y - planets[i].y;
-                if (planets[i].mass > 0) {
-                    planets[i].vy += f / r * dy;
-                    planets[i].vx += f / r * dx;
+                var dx = mousepoint.x - g[i].x;
+                var dy = mousepoint.y - g[i].y;
+                if (g[i].mass > 0) {
+                    g[i].vy += f / r * dy;
+                    g[i].vx += f / r * dx;
                 }
                 if (r <= maxLineLength) {
-                    drawLine(planets[i].x, planets[i].y, mousepoint.x, mousepoint.y, LINE_COLOR);
+                    drawLine(g[i].x, g[i].y, mousepoint.x, mousepoint.y, LINE_COLOR);
                 }
             }
             //
-            var speedNow = Math.sqrt(Math.pow(planets[i].vx, 2) + Math.pow(planets[i].vy, 2))
+            var speedNow = Math.sqrt(Math.pow(g[i].vx, 2) + Math.pow(g[i].vy, 2))
             if (speedNow > MAX_SPEED) {
-                planets[i].vx = planets[i].vx * MAX_SPEED / speedNow;
-                planets[i].vy = planets[i].vy * MAX_SPEED / speedNow;
+                g[i].vx = g[i].vx * MAX_SPEED / speedNow;
+                g[i].vy = g[i].vy * MAX_SPEED / speedNow;
             }
-            planets[i].x += planets[i].vx;
-            planets[i].y += planets[i].vy;
-            planets[i].lock--;
+            g[i].x += g[i].vx;
+            g[i].y += g[i].vy;
+            g[i].lock--;
         }
     }
     // init(PLANET_COUNT);
