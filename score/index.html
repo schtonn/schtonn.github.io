@@ -144,7 +144,7 @@
         <input id="Input" type="text" class="form-control" autocomplete="off" placeholder="20222001 或 小明">
         <span class="input-group-btn">
             <button type="button" class="btn btn-success" onclick="fetchMe($('#Input').val())"
-                id="fetchBtn">FETCH</button>
+                id="fetchBtn"><span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span> FETCH</button>
         </span>
     </div>
     <div style="text-align: center;" class="hidable">
@@ -184,7 +184,7 @@
         <ul class="nav nav-tabs">
             <li class="active"><a href="#chart" data-toggle="tab" onclick="resizeChart()">图表</a></li>
             <li><a href="#data" data-toggle="tab">数据</a></li>
-            <li><a href="#single" data-toggle="tab" onclick="getSe(curSe,1)">单科</a></li>
+            <li><a href="#single" data-toggle="tab" onclick="getSe(curSe,1)">答题卡</a></li>
             <li><a href="#other" data-toggle="tab">谁问你了</a></li>
         </ul>
         <div class="tab-content well well-sm">
