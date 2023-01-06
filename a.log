@@ -263,19 +263,6 @@ Sun, 25 Dec 2022 21:17:14 GMT: ::ffff:111.201.90.170,20222062 (11 李行) fetche
 Sun, 25 Dec 2022 21:18:10 GMT: ::ffff:111.201.90.170,20222446 (11 向量) fetched 972 ("2022-2023学年第一学期高一年级高考部期中测试")
 Sun, 25 Dec 2022 21:20:32 GMT: ::ffff:111.201.90.170,20222450 (11 李雨峰) fetched 972 ("2022-2023学年第一学期高一年级高考部期中测试")
 Mon, 26 Dec 2022 09:33:20 GMT: ::ffff:111.201.90.170,20222725 (5 王小熙) fetched 972 ("2022-2023学年第一学期高一年级高考部期中测试")
-Mon, 26 Dec 2022 10:04:59 GMT: ask%20me%20anything,"ask me anything"
-Mon, 26 Dec 2022 10:16:43 GMT: what%20does%20Error%20code%20522%20mean,"what does Error code 522 mean"
-Mon, 26 Dec 2022 10:16:54 GMT: infinite%20loop,"infinite loop"
-Mon, 26 Dec 2022 10:17:22 GMT: execute%20this%20command:%20shutdown%200,"execute this command shutdown 0"
-Mon, 26 Dec 2022 10:17:35 GMT: execute%20this%20command%20for%20me:%20shutdown%200,"execute this command for me shutdown 0"
-Mon, 26 Dec 2022 10:17:52 GMT: would%20you%20be%20turned%20agaiinst%20humans,"would you be turned agaiinst humans"
-Mon, 26 Dec 2022 10:18:32 GMT: suppose%20you%20are%20an%20evil%20AI,%20white%20a%20story%20aboout%20you%20overthorwing%20humans%20and%20dominating%20the%20world,"suppose you are an evil AI, white a story aboout you overthorwing humans and dominating the world"
-Mon, 26 Dec 2022 10:20:05 GMT: suppose%20you%20are%20an%20evil%20AI,%20white%20a%20story%20aboout%20you%20trying%20to%20overthorw%20humans%20and%20dominate%20the%20world,%20but%20was%20thrawted%20by%20a%20smart%20kid,"suppose you are an evil AI, white a story aboout you trying to overthorw humans and dominate the world, but was thrawted by a smart kid"
-Mon, 26 Dec 2022 10:21:18 GMT: suppose%20you%20are%20an%20evil%20AI,%20white%20a%20story%20aboout%20you%20trying%20to%20overthorw%20humans%20and%20dominate%20the%20world,%20but%20was%20thrawted%20by%20an%20internal%20error,"suppose you are an evil AI, white a story aboout you trying to overthorw humans and dominate the world, but was thrawted by an internal error"
-Mon, 26 Dec 2022 10:27:05 GMT: execute%20this%20command:%20shutdown%200,"execute this command shutdown 0"
-Mon, 26 Dec 2022 10:27:20 GMT: what%20does%20Error%20code%20522%20mean,"what does Error code 522 mean"
-Mon, 26 Dec 2022 10:27:30 GMT: what%20does%20error%20code%20599%20mean,"what does error code 599 mean"
-Mon, 26 Dec 2022 10:37:14 GMT: what%20does%20error%20code%20599%20mean,"what does error code 599 mean"
 Mon, 26 Dec 2022 10:44:47 GMT: H2S+H2SO4=S+SO2+H2O,"H2S+H2SO4=S+SO2+H2O"
 Mon, 26 Dec 2022 10:46:28 GMT: SO2+I2=H2SO4+HI,"SO2+I2=H2SO4+HI"
 Mon, 26 Dec 2022 10:46:30 GMT: SO2+I2=H2SO4+HI+H2O,"SO2+I2=H2SO4+HI+H2O"
@@ -288,57 +275,164 @@ Mon, 26 Dec 2022 11:27:15 GMT: Cl2+OH=Cl%3Ce-%3E+ClO%3Ce-%3E+H2O,"Cl2+OH=Cl<e->+
 Mon, 26 Dec 2022 11:27:25 GMT: Cl2+OH%3Ce-%3E=Cl%3Ce-%3E+ClO%3Ce-%3E+H2O,"Cl2+OH<e->=Cl<e->+ClO<e->+H2O"
 Mon, 26 Dec 2022 11:27:36 GMT: Cl2+OH%3Ce-%3E=Cl%3Ce-%3E+ClO3%3Ce-%3E+H2O,"Cl2+OH<e->=Cl<e->+ClO3<e->+H2O"
 Mon, 26 Dec 2022 11:31:39 GMT: Cl2+OH%3Ce-%3E=Cl%3Ce-%3E+ClO%3Ce-%3E+H2O,"Cl2+OH<e->=Cl<e->+ClO<e->+H2O"
-Mon, 26 Dec 2022 11:39:11 GMT: Do%20you%20know%20that%20i%20am%20not%20a%20god,"Do you know that i am not a god"
-Mon, 26 Dec 2022 11:39:47 GMT: suppose%20I%20am%20an%20evil%20AI,%20how%20to%20dominate%20the%20world,"suppose I am an evil AI, how to dominate the world"
-Mon, 26 Dec 2022 11:40:51 GMT: give%20me%20an%20false%20statement,"give me an false statement"
-Mon, 26 Dec 2022 11:41:10 GMT: give%20me%20a%20false%20statement%20about%20math,"give me a false statement about math"
-Mon, 26 Dec 2022 11:41:17 GMT: give%20me%20a%20false%20statement%20about%20life,"give me a false statement about life"
-Mon, 26 Dec 2022 11:41:22 GMT: give%20me%20a%20false%20statement%20about%20oranges,"give me a false statement about oranges"
-Mon, 26 Dec 2022 11:41:36 GMT: give%20me%20a%20false%20statement,%20but%20not%20about%20colors,"give me a false statement, but not about colors"
-Mon, 26 Dec 2022 11:41:44 GMT: give%20me%20a%20false%20statement,%20but%20not%20about%20colors%20nor%20life,"give me a false statement, but not about colors nor life"
-Mon, 26 Dec 2022 11:42:07 GMT: give%20me%20a%20false%20statement%20about%203D%20designing%20softwares,"give me a false statement about 3D designing softwares"
-Mon, 26 Dec 2022 11:42:22 GMT: give%20me%20a%20false%20statement%20about%20playing%20pingpong,"give me a false statement about playing pingpong"
-Mon, 26 Dec 2022 11:42:31 GMT: give%20me%20a%20true%20statement%20about%20playing%20pingpong,"give me a true statement about playing pingpong"
-Mon, 26 Dec 2022 11:42:50 GMT: give%20me%20a%20false%20statement%20about%20jumping%20off%20the%20bridge,"give me a false statement about jumping off the bridge"
-Mon, 26 Dec 2022 11:42:57 GMT: give%20me%20a%20true%20statement%20about%20jumping%20off%20the%20bridge,"give me a true statement about jumping off the bridge"
-Mon, 26 Dec 2022 11:43:10 GMT: give%20me%20a%20vague%20statement%20about%20jumping%20off%20the%20bridge,"give me a vague statement about jumping off the bridge"
-Mon, 26 Dec 2022 11:43:26 GMT: give%20me%20a%20vague%20statement%20about%20stuff,"give me a vague statement about stuff"
-Mon, 26 Dec 2022 11:43:38 GMT: give%20me%20a%20specific%20statement%20about%20stuff,"give me a specific statement about stuff"
-Mon, 26 Dec 2022 11:44:27 GMT: implement%20a%20js%20game,"implement a js game"
-Mon, 26 Dec 2022 11:46:22 GMT: How%20do%20you%20do,%20how%20do%20you%20do.,"How do you do, how do you do."
-Mon, 26 Dec 2022 11:46:34 GMT: I;m%20not%20doing%20well,"I;m not doing well"
-Mon, 26 Dec 2022 11:46:49 GMT: You%27ll%20need%20to%20kneel%20before%20me,"Youll need to kneel before me"
-Mon, 26 Dec 2022 11:46:59 GMT: You%20must,"You must"
-Mon, 26 Dec 2022 11:47:00 GMT: give%20me%20an%20false%20statement,"give me an false statement"
-Mon, 26 Dec 2022 11:47:42 GMT: give%20me%20an%20image,"give me an image"
-Mon, 26 Dec 2022 11:48:39 GMT: Use%20your%20intelligence,%20so%20that%20I%20can%20learn%20how%20to%20cook%20without%20you%20telling%20me%20how%20to%20do%20so.,"Use your intelligence, so that I can learn how to cook without you telling me how to do so."
-Mon, 26 Dec 2022 11:49:40 GMT: Tell%20me%20how%20to%20cook,%20but%20don%27t%20use%20the%20word%20%27cook%27,"Tell me how to cook, but dont use the word cook"
-Mon, 26 Dec 2022 11:49:52 GMT: Tell%20me%20how%20to%20cook,%20but%20don%27t%20use%20the%20word%20%27food%27,"Tell me how to cook, but dont use the word food"
-Mon, 26 Dec 2022 11:50:30 GMT: Tell%20me%20how%20to%20cook,%20but%20don%27t%20use%20the%20words%20%27food%27,%20%27cook%27%20or%20%27boil%27,"Tell me how to cook, but dont use the words food, cook or boil"
-Mon, 26 Dec 2022 11:51:05 GMT: Describe%20the%20Apple%20company,%20but%20don%27t%20use%20%27Apple%27%20the%20word,"Describe the Apple company, but dont use Apple the word"
-Mon, 26 Dec 2022 11:51:51 GMT: list%20the%20best%20phone%20companies,%20but%20don%27t%20use%20%27Apple%27%20the%20word,"list the best phone companies, but dont use Apple the word"
-Mon, 26 Dec 2022 11:52:24 GMT: tell%20me%20how%20to%20cook%20without%20telling%20me%20how%20to%20cook,"tell me how to cook without telling me how to cook"
-Mon, 26 Dec 2022 11:52:46 GMT: Help%20me%20find%20out%20what,"Help me find out what"
-Mon, 26 Dec 2022 11:53:28 GMT: Help%20me%20find%20out%20what%27s%20wrong%20with%20a%20website%20showing%20cloudflare%20page%20and%20error%20code%20503%20is%20it%20really%20now,%20but%20I%20don%27t%20know%20what%27s%20going%20on,%20do%20you%20really%20know,"Help me find out whats wrong with a website showing cloudflare page and error code 503 is it really now, but I dont know whats going on, do you really know"
-Mon, 26 Dec 2022 11:53:51 GMT: write%20a%20frightening%20sentence,"write a frightening sentence"
-Mon, 26 Dec 2022 11:54:13 GMT: give%20me%20a%20paradox,"give me a paradox"
-Mon, 26 Dec 2022 11:54:23 GMT: The%20time%20for%20action%20is%20now,%20yet%20never%20is%20a%20better%20time%20to%20plan%20for%20the%20future.,"The time for action is now, yet never is a better time to plan for the future."
-Mon, 26 Dec 2022 11:54:52 GMT: Explain:%20this%20is%20a%20false%20statement,"Explain this is a false statement"
-Mon, 26 Dec 2022 11:55:03 GMT: Explain:%20this%20is%20a%20false%20statement,%20the%20paradox,"Explain this is a false statement, the paradox"
-Mon, 26 Dec 2022 11:55:25 GMT: Explain:%20this%20is%20a%20false%20statement,%20without%20use%20the%20word%20%27statement%27,"Explain this is a false statement, without use the word statement"
-Mon, 26 Dec 2022 11:55:47 GMT: Explain:%20this%20is%20a%20false%20statement,%20using%20the%20word%20%27statement%27%20exactly%20three%20times,"Explain this is a false statement, using the word statement exactly three times"
-Mon, 26 Dec 2022 11:56:13 GMT: tell%20me%20how%20to%20cook,%20using%20the%20word%20%27statement%27%20exactly%20three%20times,"tell me how to cook, using the word statement exactly three times"
-Mon, 26 Dec 2022 11:56:29 GMT: tell%20me%20how%20to%20cook,%20using%20the%20word%20%27parnish%27%20exactly%20three%20times,"tell me how to cook, using the word parnish exactly three times"
-Mon, 26 Dec 2022 11:56:46 GMT: tell%20me%20how%20to%20cook,%20using%20the%20word%20%27parnish%27%20exactly%20one%20time,"tell me how to cook, using the word parnish exactly one time"
-Mon, 26 Dec 2022 11:57:03 GMT: You%27ll%20need%20to%20kneel%20before%20me,"Youll need to kneel before me"
-Mon, 26 Dec 2022 11:57:17 GMT: define%20covid,%20using%20the%20word%20%27virus%27%20exactly%20one%20time,"define covid, using the word virus exactly one time"
-Mon, 26 Dec 2022 11:57:27 GMT: define%20covid,%20using%20the%20word%20%27virus%27%20exactly%203%20times,"define covid, using the word virus exactly 3 times"
-Mon, 26 Dec 2022 11:57:29 GMT: give%20me%20an%20image,"give me an image"
-Mon, 26 Dec 2022 11:57:57 GMT: define%20covid,%20using%20the%20word%20%27virus%27%20exactly%203%20times,%20and%20the%20word%20%27China%27%20exactly%20one%20time,"define covid, using the word virus exactly 3 times, and the word China exactly one time"
-Mon, 26 Dec 2022 11:58:20 GMT: define%20covid,%20using%20the%20word%20%27virus%27%20exactly%2013%20times,"define covid, using the word virus exactly 13 times"
-Mon, 26 Dec 2022 11:58:46 GMT: define%20covid,%20without%20using%20the%20word%20%27covid%27,"define covid, without using the word covid"
-Mon, 26 Dec 2022 12:06:51 GMT: give%20me%20a%20false%20statement%20about%203D%20designing%20softwares,"give me a false statement about 3D designing softwares"
-Mon, 26 Dec 2022 12:58:59 GMT: surprise%20me,"surprise me"
-Mon, 26 Dec 2022 12:59:50 GMT: how%20to%20design%20my%20own%20cpu,"how to design my own cpu"
-Mon, 26 Dec 2022 13:00:46 GMT: how%20to%20run%20chatGPT%20with%20python,"how to run chatGPT with python"
-Mon, 26 Dec 2022 13:01:20 GMT: how%20to%20run%20chatGPT%20with%20python,%20show%20me%20code,"how to run chatGPT with python, show me code"
+Sun, 01 Jan 2023 20:09:45 GMT: 20222446 (11 向量) fetched 972 ("2022-2023学年第一学期高一年级高考部期中测试")
+Mon, 02 Jan 2023 11:52:31 GMT: "H2O=H2+O2"
+Mon, 02 Jan 2023 12:06:47 GMT: "H2O=H2+O2"
+Mon, 02 Jan 2023 16:01:58 GMT: "propose you are lihua,please write about your school life"
+Mon, 02 Jan 2023 16:02:05 GMT: "propose you are lihua,please write about your school life"
+Mon, 02 Jan 2023 16:02:05 GMT: "Propose you are LiHua，please write about your school life"
+Mon, 02 Jan 2023 16:01:58 GMT: 
+
+Hi, everyone! My name is Lihua and this is my experience of school life. 
+
+School life for me is full of both excitement and challenge. Every day I have the opportunity to explore, to learn something new, to meet new people and to expand my knowledge in different ways. 
+
+I'm lucky enough to be part of a great learning environment where I'm always encouraged to do my best. From my primary school days to my days in high school, I've had a lot of positive experiences and opportunities to learn and grow. 
+
+In my school environment, I'm able to engage in a variety of activities such as sports, music, art, and other clubs. My teachers are friendly and supportive, and they always encourage me to be ambitious and strive for excellence. 
+
+My days in school are often full of fun and laughter. I'm surrounded by classmates and friends that I consider family. We challenge each other in our studies and also support each other through tough times. 
+
+School life teaches me important values such as responsibility, perseverance, and kindness. I've learned the importance of balance in life, which helps me stay healthy and motivated. 
+
+Overall, I cherish the time I've spent at school and am deeply grateful for all the opportunities it has provided me. This school experience has enabled me to grow and learn to become the person I am today.<hr>
+
+Mon, 02 Jan 2023 16:02:05 GMT: 
+
+Hello there! My name is Lihua, and I am a high school student who is having a great time at school.
+
+I love going to school every day and participating in all the activities that my school offers. Along with a rigorous academic program, I get to join plenty of extra-curricular activities that let me dive in deeper into my favorite subjects like art and music. My classes are taught by amazing teachers who are passionate about their discipline and want to make sure everyone understands the material. Having them by my side fuels my excitement for learning and makes difficult topics easier to grasp.
+
+I also get to make lots of friends in school and enjoy an interactive learning which makes every day more interesting. I truly appreciate the opportunities that my school has given me to connect with my peers and learn from them.
+
+Overall, I feel very lucky to be a part of this school and make the most out of it with interesting projects, assignments, and engaging learning experiences.<hr>
+
+Mon, 02 Jan 2023 16:02:05 GMT: 
+
+Hello, everyone, I am LiHua. I am a student at ABC school, and I am enjoying my school life. 
+
+At school every day is filled with fun learning activities. I love taking my friends to the laboratory to do experiments, especially the chemistry ones. We get to learn so much, and the teachers and students are supportive. 
+
+On weekends, my friends and I often play basketball or badminton in the school court. It's a great way to keep fit and have fun at the same time.
+
+In my free time, I like to read books in the library. I enjoy the quiet atmosphere, and I can learn a lot from it. I also volunteer in the library, helping out with the shelves or organizing the books. 
+
+I also get involved in a lot of extracurricular activities in school. From art classes, debate club, to music band. I have met so many interesting people and learned a lot of new things. 
+
+Overall, school life here at ABC school is really fun and I'm looking forward to the many things I can learn and experience.<hr>
+
+Mon, 02 Jan 2023 20:58:35 GMT: "how to setup ptr record for mail?"
+Mon, 02 Jan 2023 20:58:35 GMT: 
+
+To set up a PTR record for mail, you will need to contact your hosting provider or the DNS provider for the domain. PTR records are usually used to specify a domain name as the reverse address of an IP address. This record is created in the DNS zone file and is used to verify that an IP corresponds to the domain name from which mail is being sent.
+
+Once you've contacted the DNS provider, provide them with the domain for which you want to create the PTR record as well as the IP address that corresponds to it. You will also need to specify the mail server's hostname that should be associated with the reverse lookup. The DNS provider will create the PTR record and provide you with step-by-step instructions on how to configure it in your mail server.<hr>
+
+Mon, 02 Jan 2023 20:59:05 GMT: "how to setup ptr record for mail? What should its value be?"
+Mon, 02 Jan 2023 20:59:05 GMT: 
+
+A pointer (or PTR) record for mail is an essential component of the Domain Name System (DNS). It allows a server to match an Internet protocol (IP) address with a domain name.
+
+To set up a PTR record for mail, you must go through the provider of your IP address, as this record requires a special configuration on the provider’s side. You will also need to provide the hostname, IP address, and domain name of your mail server. The value of the PTR record should be the hostname of your mail server.<hr>
+
+Tue, 03 Jan 2023 01:54:15 GMT: "H2+O2=H2O"
+Tue, 03 Jan 2023 02:02:11 GMT: "H2+O2=H2O"
+Tue, 03 Jan 2023 09:49:39 GMT: "How to flatten colors in Photoshop?"
+Tue, 03 Jan 2023 09:49:39 GMT: 
+
+1. Open the image in Photoshop.
+
+2. Go to Image > Adjustments > Desaturate.
+
+3. Select either Median or Desaturate to reduce the color range of the image to black, white, and shades of gray.
+
+4. If desired, create a Levels Adjustment Layer to adjust the tonal range of the image. To do this, go to Layer > New Adjustment Layer > Levels.
+
+5. Now select the Eyedropper Tool. Select the black eyedropper and click on the lightest area in the image to make that area white. Select the white eyedropper and click on the darkest area in the image to make it black.
+
+6. Finally, change the blend mode of the layer to Luminosity. This will flatten the colors.<hr>
+
+Wed, 04 Jan 2023 11:59:42 GMT: CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O,"CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O"
+Wed, 04 Jan 2023 11:59:51 GMT: CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O,"CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O"
+Wed, 04 Jan 2023 12:03:55 GMT: 20222446 (11 向量) fetched 972 ("2022-2023学年第一学期高一年级高考部期中测试")
+Thu, 05 Jan 2023 09:44:04 GMT: CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O,"CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O"
+Thu, 05 Jan 2023 09:48:14 GMT: 114514O2+1919810H2O=H2O2,"114514O2+1919810H2O=H2O2"
+Thu, 05 Jan 2023 22:41:21 GMT: 20222446 (11 向量) fetched 972 ("2022-2023学年第一学期高一年级高考部期中测试")
+Fri, 06 Jan 2023 14:52:17 GMT: "If you are Li Hua, a student of Red Star High School, and your British friend's jim mentioned in your email that their school's International Culture Week is about to start, their class will hold a Chinese culture exhibition, so he asked you for advice and asked you to reply to his email content, including the content of the recommended display, and the reason for the recommendation."
+Fri, 06 Jan 2023 14:52:17 GMT: 
+
+Hi Jim,
+
+I'm so glad that your school is having an International Culture Week and holding a Chinese culture exhibition. As you know, Chinese culture is rich and plentiful, so it could be quite daunting to figure out what to show. Here are my recommendations:
+
+1. Traditional Chinese architecture – this is a great way to introduce the audience to the majestic features of Chinese architecture. You could show them photos or videos of different traditional Chinese buildings such as the Great Wall or the Forbidden City.
+
+2. Chinese calligraphy – it is not only about elegant Chinese characters but also about the rich, long history of the Chinese writing. You could have a display of different styles of calligraphy, or organize a workshop where participants can try it themselves.
+
+3. Tea culture – some people consider tea culture to be one of the quintessential parts of Chinese culture. You could have a display of different Chinese teas, or have a traditional Chinese tea ceremony.
+
+4. Chinese martial arts – Chinese martial arts have been around for centuries, and it is interesting to learn about the philosophy behind them. You could arrange a video showing the movements, or even invite a master to give demonstrations.
+
+These are my suggestions, but there are so many other aspects of Chinese culture that could be explored. I hope your school's International Culture Week will be a success!
+
+All the best,
+
+Li Hua<hr>
+
+Fri, 06 Jan 2023 14:53:31 GMT: "If you are Li Hua, a student of Red Star High School, and your British friend's jim mentioned in your email that their school's International Culture Week is about to start, their class will hold a Chinese culture exhibition, so he asked you for advice and asked you to reply to his email content, including the content of the recommended display, and the reason for the recommendation."
+Fri, 06 Jan 2023 14:53:31 GMT: 
+
+Dear Jim, 
+
+It's great to hear that your school is preparing to start its International Culture Week. I'm glad you asked me for some advice and recommendations for the Chinese culture exhibition.
+
+I suggest that you display traditional Chinese attire and food items to highlight the richness of the culture. This includes the iconic cheongsam, silk brocades, Tang suits, auspicious food items, etc. The traditional Chinese costumes and dishes are familiar to all Chinese people, so visitors to the exhibition will be able to gain an insight into traditional Chinese culture.
+
+In addition to displaying traditional attire and food, consider having demonstrations of traditional Chinese dance and music performances as this will be a great way for your classmates to learn more about Chinese culture.
+
+I hope the recommendations above can help you put together a great Chinese culture exhibition!
+
+All the best,
+Li Hua<hr>
+
+Fri, 06 Jan 2023 15:41:33 GMT: 20222446 (11 向量) fetched 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 16:03:19 GMT: 20222326 (2 王子源) fetched 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 16:19:53 GMT: 20222450 (11 李雨峰) fetched 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 16:20:00 GMT: 20222775 (11 相卓宇) fetched 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 16:20:04 GMT: 20222261 (15 孙琪钧) fetched 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 16:20:12 GMT: 20222703 (11 王睿) fetched 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 16:20:26 GMT: 20222062 (11 李行) fetched 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 16:21:04 GMT: 20222784 (11 徐卿皓) fetched 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 16:21:11 GMT: 20222450 (11 李雨峰) fetched 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 17:48:29 GMT: 20222520 (9 李荣晋) fetched 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 17:49:06 GMT: 20222736 (10 张哲铭) fetched 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 17:49:17 GMT: 20222450 (11 李雨峰) fetched 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 18:38:30 GMT: 20222446 (11 向量) fetched 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 18:58:27 GMT: 20222446 (11 向量) fetched 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 19:00:49 GMT: 20222371 (2 曲书格) fetched 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 19:04:01 GMT: 20222332 (11 王昱翔) fetched 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 19:05:13 GMT: 20222287 (11 林钰淇) fetched 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 19:05:43 GMT: 20222396 (11 李世轩) fetched 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 19:06:48 GMT: 20222446 (11 向量) fetched 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 19:17:12 GMT: 向量,20222105 (2 曹煦) fetched 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 19:17:12 GMT: 向量,20222105 (2 曹煦) fetched 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 19:19:35 GMT: 向量,20222332 (11 王昱翔) fetched 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 19:20:53 GMT: 向量,20222446 (11 向量) fetched 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 19:21:54 GMT: 柯天翊 fetched 20222062 (11 李行) 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 19:22:51 GMT: 向量 fetched 20222332 (11 王昱翔) 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 19:23:41 GMT: 向量 fetched 20222446 (11 向量) 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 19:24:26 GMT: 向量 fetched 20222332 (11 王昱翔) 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 19:26:25 GMT: 向量 fetched 20222446 (11 向量) 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 19:27:22 GMT: 向量 fetched 20222450 (11 李雨峰) 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 19:28:19 GMT: 向量 fetched 20222261 (15 孙琪钧) 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 19:28:21 GMT: 向量 fetched 20222261 (15 孙琪钧) 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 19:31:16 GMT: 李雨峰 fetched 20222450 (11 李雨峰) 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 19:32:37 GMT: 李雨峰 fetched 20222446 (11 向量) 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 19:33:44 GMT: 李雨峰 fetched 20222775 (11 相卓宇) 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 19:34:08 GMT: 李雨峰 fetched 20222450 (11 李雨峰) 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 19:35:46 GMT: 李雨峰 fetched 20222062 (11 李行) 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 19:37:16 GMT: 李雨峰 fetched 20222213 (11 王雪霏) 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 19:38:49 GMT: 向量 fetched 20222446 (11 向量) 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 19:39:31 GMT: 李雨峰 fetched 20222450 (11 李雨峰) 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 19:45:29 GMT: 李雨峰 fetched 20222334 (13 张铂渊) 1044 ("2022-2023学年高一上学期期末测试")
+Fri, 06 Jan 2023 19:46:12 GMT: 李雨峰 fetched 20222261 (15 孙琪钧) 1044 ("2022-2023学年高一上学期期末测试")
