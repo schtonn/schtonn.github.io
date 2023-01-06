@@ -95,7 +95,7 @@
 </head>
 
 <body>
-    <a class="btn btn-info" href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp;返回</a>
+    <a class="btn btn-info" href="https://43.143.233.184/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp;返回</a>
     <a tabindex="0" class="btn btn-warning hidable toggleHide"
         onclick="$('.hidable').show(1000);$('.toggleHide').toggle(1000)" style="display:none;">
         <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
@@ -135,7 +135,7 @@
     <div class="input-group fetch" style="display:none">
         <span class="input-group-addon">考试编号<a data-toggle="tooltip" data-placement="bottom"
                 title="心意答点击考试标题后，切换考试的列表里可见" aria-hidden="true">*</a></span>
-        <input id="Id" type="text" class="form-control" autocomplete="off" placeholder="972" value="972">
+        <input id="Id" type="text" class="form-control" autocomplete="off" placeholder="高一上期中: 972; 期末: 1044">
     </div>
     <div class="input-group fetch" style="display:none">
         <span class="input-group-addon">姓名<a href="/js/e.json" onclick="setWeigh2()" data-toggle="tooltip"
@@ -153,7 +153,7 @@
                     style="display: none;" id="fileInput" type="file" onchange="getFiles(event)">
             </a>
             <a id="upbtn" tabindex="0" class="btn btn-danger"
-                onclick="/*var a=aesEncrypt(prompt('我的班级')),b=aesEncrypt(prompt('我的学号'));if(a=='1170185235a2b833f24d4cf0e7d3f1c1'&&b=='b1b384c7b1e81d67482a132f60b3456e')*/$('.fetch').toggle(1000);/*else alert('你非我')*/">
+                onclick="check()">
                 <b>?!</b>
             </a>
             <!-- If you must... -->

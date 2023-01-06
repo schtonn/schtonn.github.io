@@ -8,7 +8,7 @@ function decimal(x, n) {
     return x.toFixed(n);
 }
 var fileCount = 0, cur = 0, files = {};
-var stuId = {}, examId = {}
+var stuId = {}, examId = {}, user
 
 function prevFile() {
     cur = (cur - 1 + fileCount) % fileCount;
@@ -111,6 +111,29 @@ function fetchDo(id) {
     })
 }
 
+function check() {
+    var a = prompt('验证身份\n我的数字校园号是：')
+    fetch('/js/e.json', {
+        method: 'GET',
+        headers: {
+            'Content-type': 'application/json',
+        }
+    }).then(res => {
+        res.json().then(resj => {
+            var queryData = resj.data.filter(function (e) {
+                return e.no == a
+            });
+            var o = queryData[0].organization
+
+            if (o.slice(o.length - 3) == '11班') {
+                user = queryData[0].name
+                $('.fetch').toggle(1000)
+            }
+            else alert('no')
+        });
+    })
+}
+
 function fetchMe(id) {
     if (!parseInt(id)) {
         fetch('/js/e.json', {
@@ -203,7 +226,7 @@ function getSe(id, force, force2) {
                 $('#singleDat').append('<br><span class="cover' + (i - 1) + '"></span><img src="http://36.112.23.77' + f.examUrl + 'page_' + i + '.jpg" onload="imageLoaded(' + (i - 1) + ')">')
                 $('img')[i - 1].style.width = '100%'
             }
-            if(!f.pageCount)$('#singleDat').append('<p>无答题卡数据</p>')
+            if (!f.pageCount) $('#singleDat').append('<p>无答题卡数据</p>')
             datSe = f;
         });
     })
@@ -258,7 +281,7 @@ function resizeChart() {
 }
 
 function getClassCount() {
-    if (examId[cur] == 1028 ||examId[cur] == 1021 || examId[cur] == 972 || examId[cur] == 957 || examId[cur] == 951) return '15'
+    if (examId[cur] == 1044 || examId[cur] == 1028 || examId[cur] == 1021 || examId[cur] == 972 || examId[cur] == 957 || examId[cur] == 951) return '15'
     else if (examId[cur] == 970) return '13'
     else return '?'
 }
@@ -423,7 +446,7 @@ function processFiles(isFirstTime = 0) {
         $('#single').append('<span id="singleDat" style="word-wrap: break-word; white-space: normal"></span><br><br><br>')
         if (isFirstTime) {
             var bd = JSON.stringify({
-                content: stuId[cur] + ' (' + parseInt(dat.examStudents[0].classId) + ' ' + mulStu.studentName + ') fetched ' + examId[cur] + ' ("' + dat.multiExam.meName + '")',
+                content: user + ' fetched ' + stuId[cur] + ' (' + parseInt(dat.examStudents[0].classId) + ' ' + mulStu.studentName + ') ' + examId[cur] + ' ("' + dat.multiExam.meName + '")',
             })
             fetch('/score/log', {
                 method: 'POST',
@@ -785,4 +808,4 @@ $().ready(function () {
     })
 })
 
-//uglifyjs public/js/score.js -c -m eval,toplevel,reserved=[nextFile,prevFile,fetchMe,resizeChart,getSe,imageLoaded,getFiles,fontSize,curSe,datSe] -o public/js/score.min.js
+//uglifyjs public/js/score.js -c -m eval,toplevel,reserved=[check,nextFile,prevFile,fetchMe,resizeChart,getSe,imageLoaded,getFiles,fontSize,curSe,datSe] -o public/js/score.min.js
