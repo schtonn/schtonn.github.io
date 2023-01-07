@@ -1,7 +1,7 @@
 var knownExams = ''
 
-for (let i = 3000; i < 3400; i++)knownExams += i.toString() + ','
-knownExams = knownExams.slice(0, knownExams.length - 1)
+// for (let i = 3000; i < 3400; i++)knownExams += i.toString() + ','
+// knownExams = knownExams.slice(0, knownExams.length - 1)
 
 function decimal(x, n) {
     x = Math.round(x * 10 ** n) / 10 ** n;
@@ -111,6 +111,36 @@ function fetchDo(id) {
     })
 }
 
+function addExam(arr) {
+    for (let i = 1; i < arr.length; i++) {
+        if (knownExams) knownExams += ','
+        knownExams += arr[i].seId.toString()
+    }
+}
+
+function getExams(id) {
+    var bd = '{"schoolId":19707,"studentId":"' + id + '"}';
+    // console.log(bd)
+    bd = aesEncrypt(bd)
+    fetch('http://36.112.23.77/analysis/api/student/exam/getUserMultiExamByStudentIdAndSchoolId', {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json',
+        },
+        body: bd
+    }).then(res => {
+        res.json().then(e => {
+            let s = JSON.parse(aesDecrypt(e.data))
+            let str = ''
+            for (let i = 0; i < s.length; i++) {
+                str += s[i].examName.slice(s[i].examName.length - 4, s[i].examName.length - 2) + ' - ' + s[i].meId + (i == s.length - 1 ? '' : ', ');
+                addExam(s[i].studentReportInfos)
+            }
+            $('#Id').attr('placeholder', str)
+        })
+    })
+}
+
 function check() {
     var a = prompt('验证身份\n我的数字校园号是：')
     fetch('/js/e.json', {
@@ -127,6 +157,7 @@ function check() {
 
             if (o.slice(o.length - 3) == '11班') {
                 user = queryData[0].name
+                getExams(queryData[0].no)
                 $('.fetch').toggle(1000)
             }
             else alert('no')
@@ -194,21 +225,7 @@ function getSe(id, force, force2) {
     shown = 1
     curSe = id
     fontSize = 14
-    if (!stuId[cur]) stuId[cur] = prompt('数字校园号？')
-    if (!examId[cur]) examId[cur] = prompt('考试编号？（心意答点击考试标题后，切换考试的列表里可见）')
-    var bd = '{"schoolId":19707,"seId":' + id + ',"studentId":"' + stuId[cur] + '"}';
-    bd = aesEncrypt(bd)
-    fetch('http://36.112.23.77/analysis/api/student/exam/getStudentReportSEVO', {
-        method: 'POST',
-        headers: {
-            'Content-type': 'application/json',
-        },
-        body: bd
-    }).then(res => {
-        res.json().then(() => {
-            // $('#singleDat').html(aesDecrypt(resj.data))
-        });
-    })
+
     bd = '{"schoolId":19707,"meId":' + examId[cur] + ',"seId":' + id + ',"studentId":"' + stuId[cur] + '"}';
     bd = aesEncrypt(bd)
     fetch('http://36.112.23.77/analysis/api/student/exam/getStuExamDetailInfo', {
@@ -222,12 +239,48 @@ function getSe(id, force, force2) {
             // $('#singleDat').html(aesDecrypt(resj.data))
             $('#singleDat').empty()
             var f = JSON.parse(aesDecrypt(resj.data))
+            console.log(f)
             for (let i = 1; i <= f.pageCount; i++) {
                 $('#singleDat').append('<br><span class="cover' + (i - 1) + '"></span><img src="http://36.112.23.77' + f.examUrl + 'page_' + i + '.jpg" onload="imageLoaded(' + (i - 1) + ')">')
                 $('img')[i - 1].style.width = '100%'
             }
-            if (!f.pageCount) $('#singleDat').append('<p>无答题卡数据</p>')
+            if (!f.pageCount) $('#singleDat').append('<p>...</p>')
             datSe = f;
+        });
+    })
+}
+
+var personScoreList = []
+
+function getSec(id) {
+    if (!stuId[cur]) stuId[cur] = prompt('数字校园号？')
+    if (!examId[cur]) examId[cur] = prompt('考试编号？（心意答点击考试标题后，切换考试的列表里可见）')
+    var bd = '{"schoolId":19707,"seId":' + id + ',"studentId":"' + stuId[cur] + '"}';
+    bd = aesEncrypt(bd)
+    fetch('http://36.112.23.77/analysis/api/student/exam/getStudentReportSEVO', {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json',
+        },
+        body: bd
+    }).then(res => {
+        res.json().then(resj => {
+            let d = JSON.parse(aesDecrypt(resj.data))
+            let str = '<ul class="list-unstyled">'
+            str += `<li class="text-warning">**. <span class="sc avgSc" style="left:${d.singleExam.seAvgScore / d.singleExam.seFullScore * 300}">.</span>`
+            str += `<span class="sc mySc" style="left:${personScoreList[id] / d.singleExam.seFullScore * 300}">${personScoreList[id]}</span>`
+            str += `<span class="sc fullSc" style="left:${300 - 8 * personScoreList[id].toString().length}">${d.singleExam.seFullScore}</span></li>`
+            let q = d.examQuestions;
+            let ofs = -8;
+            for (let i = 0; i < q.length; i++) {
+                if (i == 9) ofs = 0;
+                idc = (q[i].personScore == q[i].eqFullScore ? 'success fullScore' : 'danger"');
+                str += `<li class="text-${idc}">${q[i].eqDisplayIndex}. <span class="sc avgSc" style="left:${q[i].eqAvgScore / q[i].eqFullScore * 300 - ofs}">.</span>`
+                if (q[i].personScore != q[i].eqFullScore) str += `<span class="sc mySc" style="left:${q[i].personScore / q[i].eqFullScore * 300 - ofs}">${q[i].personScore}</span>`
+                str += `<span class="sc fullSc" style="left:${300 - 8 * q[i].personScore.toString().length * (q[i].personScore != q[i].eqFullScore) - ofs}">${q[i].eqFullScore}</span>`
+                str += `<span class="sc" style="left:${350 - 8 * q[i].personScore.toString().length * (q[i].personScore != q[i].eqFullScore) - 8 * q[i].eqFullScore.toString().length - ofs}">${q[i].qstTagName}</span></li>`
+            }
+            $('#detailDat').html(str + '</ul>')
         });
     })
 }
@@ -281,9 +334,10 @@ function resizeChart() {
 }
 
 function getClassCount() {
-    if (examId[cur] == 1044 || examId[cur] == 1028 || examId[cur] == 1021 || examId[cur] == 972 || examId[cur] == 957 || examId[cur] == 951) return '15'
-    else if (examId[cur] == 970) return '13'
-    else return '?'
+    // if (examId[cur] == 1044 || examId[cur] == 1028 || examId[cur] == 1021 || examId[cur] == 972 || examId[cur] == 957 || examId[cur] == 951) 
+    return '15'
+    // else if (examId[cur] == 970) return '13'
+    // else return '?'
 }
 
 var link = document.createElement('a'), url
@@ -320,6 +374,7 @@ function processFiles(isFirstTime = 0) {
             var object = eval("(" + event.target.result + ")");
             var classText = "", ohText = "";
             $('#single').empty();
+            $('#detail').empty();
 
             var dat = eval("(" + aesDecrypt(object.data).toString() + ")");
 
@@ -369,6 +424,7 @@ function processFiles(isFirstTime = 0) {
                 if (!datSingle[i]) continue;
 
                 var dId = datSingle[i].seId;
+                personScoreList[dId] = datSingle[i].essScore;
                 scoreP[dId] = datSingle[i].essScore;
                 avgP[dId] = datClass[i].secsAvgScore;
                 rate0[dId] = datClass[i].secsMinScore;
@@ -407,6 +463,7 @@ function processFiles(isFirstTime = 0) {
                 var g = seIdRev[i];
                 if (!datSingle[g]) continue;
                 $('#single').append('<button class="btn btn-' + getCol(decimal(gradeOrder[seIds[i]] * 100, 1)) + ' btn-how" onclick="getSe(' + seIds[i] + ');$(\'.btn-how\').removeClass(\'active\');$(this).addClass(\'active\')">' + seNameDic[datSingle[g].seId] + '</button>')
+                $('#detail').append('<button class="btn btn-' + getCol(decimal(gradeOrder[seIds[i]] * 100, 1)) + ' btn-how" onclick="getSec(' + seIds[i] + ');$(\'.btn-how\').removeClass(\'active\');$(this).addClass(\'active\')">' + seNameDic[datSingle[g].seId] + '</button>')
 
                 classText += "<h3 class='bg-" + getCol(decimal(gradeOrder[seIds[i]] * 100, 1)) + " text-" + getCol(decimal(gradeOrder[seIds[i]] * 100, 1)) + "'>"
                     + seNameDic[datSingle[g].seId] + " <small>" + datSingle[g].essScore + "</small></h3>"
@@ -431,6 +488,9 @@ function processFiles(isFirstTime = 0) {
             }
             if (!curSe) curSe = seIds[0]
             getSe(curSe, 0, 1)
+            getSec(curSe)
+            $('#single>button')[0].classList.add('active')
+            $('#detail>button')[0].classList.add('active')
         } catch (e) {
             console.log(e);
             clearScreen();
@@ -444,6 +504,8 @@ function processFiles(isFirstTime = 0) {
         $('#single').append('<button class="btn btn-default btn-how" onclick="fontSize+=3;$(\'.minus\').css(\'font-size\',fontSize+\'px\');for (let i=0;i<datSe.pageCount;i++)$(\'img\')[i].style.width=parseInt($(\'img\')[i].style.width)+20+\'%\';resizeChart()"><span class="glyphicon glyphicon-zoom-in"></span></button>')
         $('#single').append('<button class="btn btn-default btn-how" onclick="fontSize-=3;$(\'.minus\').css(\'font-size\',fontSize+\'px\');for (let i=0;i<datSe.pageCount;i++)$(\'img\')[i].style.width=parseInt($(\'img\')[i].style.width)-20+\'%\';resizeChart()"><span class="glyphicon glyphicon-zoom-out"></span></button>')
         $('#single').append('<span id="singleDat" style="word-wrap: break-word; white-space: normal"></span><br><br><br>')
+        $('#detail').append('<button class="btn btn-default btn-how" onclick="$(\'.fullScore\').toggle(500)"><span class="glyphicon glyphicon-eye-close"></span></button>')
+        $('#detail').append('<span id="detailDat" style="word-wrap: break-word; white-space: normal"></span><br><br><br>')
         if (isFirstTime) {
             var bd = JSON.stringify({
                 content: user + ' fetched ' + stuId[cur] + ' (' + parseInt(dat.examStudents[0].classId) + ' ' + mulStu.studentName + ') ' + examId[cur] + ' ("' + dat.multiExam.meName + '")',
@@ -540,7 +602,6 @@ function processFiles(isFirstTime = 0) {
         }
         gScore[cur] = scoreSe
         gName[cur] = mulStu.studentName
-        console.log(gScore)
         var opBase = {
             textStyle: { fontFamily: 'Noto Serif SC' },
             tooltip: { trigger: 'axis' },
@@ -564,11 +625,9 @@ function processFiles(isFirstTime = 0) {
         var cName = [], cSe = [], cSeries = []
         for (let i = 0; i < fileCount; i++) {
             for (let j in gScore[i]) {
-                console.log(j)
                 if (cName.indexOf(j) == -1) cName.push(j)
             }
         }
-        console.log(cName)
         for (let i = 0; i < fileCount; i++) {
             cSe.push([])
             if (gScore[i]) {
@@ -578,7 +637,6 @@ function processFiles(isFirstTime = 0) {
                 cSeries.push({ name: gName[i], type: 'line', data: cSe[i], color: colorList[i] })
             }
         }
-        console.log(cSeries)
         cOp.title = {
             text: '比一比',
             textStyle: {
