@@ -13,7 +13,7 @@
     <link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
 &family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
-    <script type="text/javascript" src="/js/score.min.js"></script>
+    <script type="text/javascript" src="/js/score.js"></script>
     <style>
         body {
             transition-duration: 300ms;
@@ -91,11 +91,40 @@
         .sp.err {
             background-color: rgba(217, 83, 79, 0.7);
         }
+
+        .avgSc {
+            background-color: rgba(199, 217, 79, 0.3);
+            font-family: 'Courier New', Courier;
+        }
+
+        .fullSc {
+            background-color: rgba(199, 217, 79, 0.3);
+            font-family: 'Courier New', Courier;
+        }
+
+        .mySc {
+            color: white;
+            background-color: rgba(6, 65, 106, 0.505);
+            font-family: 'Courier New', Courier;
+        }
+        .list-unstyled>li {
+            background-color: rgba(217, 83, 79, 0.2);
+        }
+
+        .list-unstyled>li.fullScore {
+            background-color: rgba(199, 217, 79, 0.3);
+        }
+
+
+        .sc {
+            position: relative;
+        }
     </style>
 </head>
 
 <body>
-    <a class="btn btn-info" href="https://43.143.233.184/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp;返回</a>
+    <a class="btn btn-info" href="https://43.143.233.184/"><span class="glyphicon glyphicon-home"
+            aria-hidden="true"></span>&nbsp;返回</a>
     <a tabindex="0" class="btn btn-warning hidable toggleHide"
         onclick="$('.hidable').show(1000);$('.toggleHide').toggle(1000)" style="display:none;">
         <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
@@ -132,18 +161,20 @@
         <p>3. 鼠标悬浮于右下角控件可让图片半透明，方便查看小分。</p>
     </div>
     <div class="fetch" style="display:none">（高质量接口）</div>
-    <div class="input-group fetch" style="display:none">
+    <!-- style="display:none" -->
+    <div class="input-group fetch">
         <span class="input-group-addon">考试编号<a data-toggle="tooltip" data-placement="bottom"
                 title="心意答点击考试标题后，切换考试的列表里可见" aria-hidden="true">*</a></span>
-        <input id="Id" type="text" class="form-control" autocomplete="off">
+        <input id="Id" type="text" class="form-control" autocomplete="off" value="972">
     </div>
-    <div class="input-group fetch" style="display:none">
+    <!-- style="display:none" -->
+    <div class="input-group fetch">
         <span class="input-group-addon">姓名<a href="/js/e.json" onclick="setWeigh2()" data-toggle="tooltip"
                 data-placement="bottom" title="仅限2025届高考部">*</a>或数字校园号</span>
-        <input id="Input" type="text" class="form-control" autocomplete="off" placeholder="20222001 或 小明">
+        <input id="Input" type="text" class="form-control" autocomplete="off" placeholder="20222001 或 小明" value="向量">
         <span class="input-group-btn">
-            <button type="button" class="btn btn-success" onclick="fetchMe($('#Input').val())"
-                id="fetchBtn"><span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span> FETCH</button>
+            <button type="button" class="btn btn-success" onclick="fetchMe($('#Input').val())" id="fetchBtn"><span
+                    class="glyphicon glyphicon-hand-right" aria-hidden="true"></span> FETCH</button>
         </span>
     </div>
     <div style="text-align: center;" class="hidable">
@@ -152,8 +183,7 @@
                 <span id="upicon" class="glyphicon glyphicon-open" aria-hidden="true"></span> <b>打开文件</b><input
                     style="display: none;" id="fileInput" type="file" onchange="getFiles(event)">
             </a>
-            <a id="upbtn" tabindex="0" class="btn btn-danger"
-                onclick="check()">
+            <a id="upbtn" tabindex="0" class="btn btn-danger" onclick="check()">
                 <b>?!</b>
             </a>
             <!-- If you must... -->
@@ -168,11 +198,11 @@
         onmouseleave="$('img').css('opacity','1')">
         <div id="name"></div>
         <div class="btn-group">
-            <a id="lbtn" tabindex="0" class="btn btn-default btn-lg disabled" onclick="prevFile();">
-                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+            <a id="lbtn" tabindex="0" class="btn btn-default disabled" onclick="prevFile();">
+                <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
             </a>
-            <a id="rbtn" tabindex="0" class="btn btn-default btn-lg disabled" onclick="nextFile();">
-                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            <a id="rbtn" tabindex="0" class="btn btn-default disabled" onclick="nextFile();">
+                <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
             </a>
         </div>
     </div>
@@ -184,6 +214,7 @@
             <li class="active"><a href="#chart" data-toggle="tab" onclick="resizeChart()">图表</a></li>
             <li><a href="#data" data-toggle="tab">数据</a></li>
             <li><a href="#single" data-toggle="tab" onclick="getSe(curSe,1)">答题卡</a></li>
+            <li><a href="#detail" data-toggle="tab">小分</a></li>
             <li><a href="#other" data-toggle="tab">谁问你了</a></li>
         </ul>
         <div class="tab-content well well-sm">
@@ -217,11 +248,13 @@
             </div>
             <div class="tab-pane fade" id="single" style="min-height: 1000px;">
             </div>
+            <div class="tab-pane fade" id="detail" style="min-height: 1000px;">
+            </div>
             <div class="tab-pane fade" id="other">
                 <p>Nobody asked</p>
                 <p>原为实验中学 74 桌出品，我仅做搬运修改。</p>
                 <p>我削减了请求大小，所以要想查到新出的成绩需先刷新页面。</p>
-                <p><a href="/how">有关如何破解接口（备忘）</a></p>
+                <p><a href="how">有关如何破解接口（备忘）</a></p>
                 <p><a href="/js/score.js">压缩前代码</a></p>
                 <p>如恶意使用接口，后果自负、、</p>
                 <br><br><br>
@@ -243,5 +276,4 @@
             </div>
         </div>
     </div>
-
 </body>
