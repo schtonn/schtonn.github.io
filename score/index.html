@@ -107,6 +107,7 @@
             background-color: rgba(6, 65, 106, 0.505);
             font-family: 'Courier New', Courier;
         }
+
         .list-unstyled>li {
             background-color: rgba(217, 83, 79, 0.2);
         }
@@ -161,17 +162,15 @@
         <p>3. 鼠标悬浮于右下角控件可让图片半透明，方便查看小分。</p>
     </div>
     <div class="fetch" style="display:none">（高质量接口）</div>
-    <!-- style="display:none" -->
-    <div class="input-group fetch">
+    <div class="input-group fetch" style="display:none">
         <span class="input-group-addon">考试编号<a data-toggle="tooltip" data-placement="bottom"
                 title="心意答点击考试标题后，切换考试的列表里可见" aria-hidden="true">*</a></span>
-        <input id="Id" type="text" class="form-control" autocomplete="off" value="972">
+        <input id="Id" type="text" class="form-control" autocomplete="off">
     </div>
-    <!-- style="display:none" -->
-    <div class="input-group fetch">
+    <div class="input-group fetch" style="display:none">
         <span class="input-group-addon">姓名<a href="/js/e.json" onclick="setWeigh2()" data-toggle="tooltip"
                 data-placement="bottom" title="仅限2025届高考部">*</a>或数字校园号</span>
-        <input id="Input" type="text" class="form-control" autocomplete="off" placeholder="20222001 或 小明" value="向量">
+        <input id="Input" type="text" class="form-control" autocomplete="off" placeholder="20222001 或 小明">
         <span class="input-group-btn">
             <button type="button" class="btn btn-success" onclick="fetchMe($('#Input').val())" id="fetchBtn"><span
                     class="glyphicon glyphicon-hand-right" aria-hidden="true"></span> FETCH</button>
