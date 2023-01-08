@@ -23,7 +23,6 @@ function nextFile() {
 function clearScreen() {
     $(".chart").hide(300)
     $("#fileOutput").html('');
-    // $("#fileInfo").html('');
     $("#name").html('');
 }
 
@@ -86,29 +85,32 @@ function stringToByte(str) {
 }
 
 function fetchDo(id) {
-    var bd = '{"meId":' + $('#Id').val() + ',"seIds":"' + knownExams + '","schoolId":19707,"studentId":"' + id + '"}';
-    // console.log(bd)
-    bd = aesEncrypt(bd)
-    // console.log(bd)
-    fetch('http://36.112.23.77/analysis/api/student/exam/getStudentReportMEVO', {
-        method: 'POST',
-        headers: {
-            'Content-type': 'application/json',
-        },
-        body: bd
+    getExams(id).then(function () {
+        var bd = '{"meId":' + $('#Id').val() + ',"seIds":"' + knownExams + '","schoolId":19707,"studentId":"' + id + '"}';
+        // console.log(bd)
+        bd = aesEncrypt(bd)
+        // console.log(bd)
+        return fetch('http://36.112.23.77/analysis/api/student/exam/getStudentReportMEVO', {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json',
+            },
+            body: bd
+        })
     }).then(res => {
-        res.text().then(resj => {
-            files[fileCount] = new Blob([resj], {
-                type: 'text/plain'
-            });;
-            cur = fileCount;
-            fileCount++;
-            $("#controls").removeClass("disabled");
-            $("#lbtn").removeClass("disabled");
-            $("#rbtn").removeClass("disabled");
-            processFiles(1);
-        });
-    })
+        return res.text()
+    }).then(resj => {
+        files[fileCount] = new Blob([resj], {
+            type: 'text/plain'
+        });;
+        cur = fileCount;
+        fileCount++;
+        $("#controls").removeClass("disabled");
+        $("#lbtn").removeClass("disabled");
+        $("#rbtn").removeClass("disabled");
+        processFiles(1);
+    });
+
 }
 
 function addExam(arr) {
@@ -122,22 +124,22 @@ function getExams(id) {
     var bd = '{"schoolId":19707,"studentId":"' + id + '"}';
     // console.log(bd)
     bd = aesEncrypt(bd)
-    fetch('http://36.112.23.77/analysis/api/student/exam/getUserMultiExamByStudentIdAndSchoolId', {
+    return fetch('http://36.112.23.77/analysis/api/student/exam/getUserMultiExamByStudentIdAndSchoolId', {
         method: 'POST',
         headers: {
             'Content-type': 'application/json',
         },
         body: bd
     }).then(res => {
-        res.json().then(e => {
-            let s = JSON.parse(aesDecrypt(e.data))
-            let str = ''
-            for (let i = 0; i < s.length; i++) {
-                str += s[i].examName.slice(s[i].examName.length - 4, s[i].examName.length - 2) + ' - ' + s[i].meId + (i == s.length - 1 ? '' : ', ');
-                addExam(s[i].studentReportInfos)
-            }
-            $('#Id').attr('placeholder', str)
-        })
+        return res.json()
+    }).then(e => {
+        let s = JSON.parse(aesDecrypt(e.data))
+        let str = ''
+        for (let i = 0; i < s.length; i++) {
+            str += s[i].examName.slice(s[i].examName.length - 4, s[i].examName.length - 2) + ' - ' + s[i].meId + (i == s.length - 1 ? '' : ', ');
+            addExam(s[i].studentReportInfos)
+        }
+        $('#Id').attr('placeholder', str)
     })
 }
 
@@ -149,20 +151,20 @@ function check() {
             'Content-type': 'application/json',
         }
     }).then(res => {
-        res.json().then(resj => {
-            var queryData = resj.data.filter(function (e) {
-                return e.no == a
-            });
-            var o = queryData[0].organization
-
-            if (o.slice(o.length - 3) == '11班') {
-                user = queryData[0].name
-                getExams(queryData[0].no)
-                $('.fetch').toggle(1000)
-            }
-            else alert('no')
+        return res.json()
+    }).then(resj => {
+        var queryData = resj.data.filter(function (e) {
+            return e.no == a
         });
-    })
+        var o = queryData[0].organization
+
+        if (o.slice(o.length - 3) == '11班') {
+            user = queryData[0].name
+            getExams(queryData[0].no)
+            $('.fetch').toggle(1000)
+        }
+        else alert('no')
+    });
 }
 
 function fetchMe(id) {
@@ -173,13 +175,13 @@ function fetchMe(id) {
                 'Content-type': 'application/json',
             }
         }).then(res => {
-            res.json().then(resj => {
-                var queryData = resj.data.filter(function (e) {
-                    return e.name == id
-                });
-                fetchDo(queryData[0].no)
+            return res.json()
+        }).then(resj => {
+            var queryData = resj.data.filter(function (e) {
+                return e.name == id
             });
-        })
+            fetchDo(queryData[0].no)
+        });
     } else fetchDo(id)
 }
 
@@ -235,24 +237,31 @@ function getSe(id, force, force2) {
         },
         body: bd
     }).then(res => {
-        res.json().then(resj => {
-            // $('#singleDat').html(aesDecrypt(resj.data))
-            $('#singleDat').empty()
-            var f = JSON.parse(aesDecrypt(resj.data))
-            console.log(f)
-            for (let i = 1; i <= f.pageCount; i++) {
-                $('#singleDat').append('<br><span class="cover' + (i - 1) + '"></span><img src="http://36.112.23.77' + f.examUrl + 'page_' + i + '.jpg" onload="imageLoaded(' + (i - 1) + ')">')
-                $('img')[i - 1].style.width = '100%'
-            }
-            if (!f.pageCount) $('#singleDat').append('<p>...</p>')
-            datSe = f;
-        });
-    })
+        return res.json()
+    }).then(resj => {
+        $('#singleDat').empty()
+        var f = JSON.parse(aesDecrypt(resj.data))
+        console.log(f)
+        for (let i = 1; i <= f.pageCount; i++) {
+            $('#singleDat').append('<br><span class="cover' + (i - 1) + '"></span><img src="http://36.112.23.77' + f.examUrl + 'page_' + i + '.jpg" onload="imageLoaded(' + (i - 1) + ')">')
+            $('img')[i - 1].style.width = '100%'
+        }
+        if (!f.pageCount) $('#singleDat').append('<p>...</p>')
+        datSe = f;
+    });
 }
 
 var personScoreList = []
-
+function procName(str, o = 0) {
+    if (o) {
+        if (str[0] == '第') return '';
+        else return `data-toggle="tooltip" data-placement="left" title="${str.match('-') ? str.slice(str.split('-')[0].length + 1) : ''}"`
+    }
+    if (str[0] == '第') return str.slice(1, str.length - 1) + ':';
+    else return str.split('-')[0] + '.';
+}
 function getSec(id) {
+    curSe = id
     if (!stuId[cur]) stuId[cur] = prompt('数字校园号？')
     if (!examId[cur]) examId[cur] = prompt('考试编号？（心意答点击考试标题后，切换考试的列表里可见）')
     var bd = '{"schoolId":19707,"seId":' + id + ',"studentId":"' + stuId[cur] + '"}';
@@ -264,25 +273,26 @@ function getSec(id) {
         },
         body: bd
     }).then(res => {
-        res.json().then(resj => {
-            let d = JSON.parse(aesDecrypt(resj.data))
-            let str = '<ul class="list-unstyled">'
-            str += `<li class="text-warning">**. <span class="sc avgSc" style="left:${d.singleExam.seAvgScore / d.singleExam.seFullScore * 300}">.</span>`
-            str += `<span class="sc mySc" style="left:${personScoreList[id] / d.singleExam.seFullScore * 300}">${personScoreList[id]}</span>`
-            str += `<span class="sc fullSc" style="left:${300 - 8 * personScoreList[id].toString().length}">${d.singleExam.seFullScore}</span></li>`
-            let q = d.examQuestions;
-            let ofs = -8;
-            for (let i = 0; i < q.length; i++) {
-                if (i == 9) ofs = 0;
-                idc = (q[i].personScore == q[i].eqFullScore ? 'success fullScore' : 'danger"');
-                str += `<li class="text-${idc}">${q[i].eqDisplayIndex}. <span class="sc avgSc" style="left:${q[i].eqAvgScore / q[i].eqFullScore * 300 - ofs}">.</span>`
-                if (q[i].personScore != q[i].eqFullScore) str += `<span class="sc mySc" style="left:${q[i].personScore / q[i].eqFullScore * 300 - ofs}">${q[i].personScore}</span>`
-                str += `<span class="sc fullSc" style="left:${300 - 8 * q[i].personScore.toString().length * (q[i].personScore != q[i].eqFullScore) - ofs}">${q[i].eqFullScore}</span>`
-                str += `<span class="sc" style="left:${350 - 8 * q[i].personScore.toString().length * (q[i].personScore != q[i].eqFullScore) - 8 * q[i].eqFullScore.toString().length - ofs}">${q[i].qstTagName}</span></li>`
-            }
-            $('#detailDat').html(str + '</ul>')
-        });
-    })
+        return res.json()
+    }).then(resj => {
+        let d = JSON.parse(aesDecrypt(resj.data))
+        let str = '<ul class="list-unstyled">'
+        str += `<li class="text-warning">**. <span class="sc avgSc" style="left:${d.singleExam.seAvgScore / d.singleExam.seFullScore * 300}">.</span>`
+        str += `<span class="sc mySc" style="left:${personScoreList[id] / d.singleExam.seFullScore * 300}">${personScoreList[id]}</span>`
+        str += `<span class="sc fullSc" style="left:${300 - 8 * personScoreList[id].toString().length}">${d.singleExam.seFullScore}</span></li>`
+        let q = d.examQuestions;
+        let ofs = -8;
+        for (let i = 0; i < q.length; i++) {
+            if (i == 9) ofs = 0;
+            idc = (q[i].personScore == q[i].eqFullScore ? 'success fullScore' : 'danger"');
+            str += `<li class="text-${idc}" ${procName(q[i].eqDisplayName, 1)}>${procName(q[i].eqDisplayName)}<span class="sc avgSc" style="left:${q[i].eqAvgScore / q[i].eqFullScore * 300 - ofs}">.</span>`
+            if (q[i].personScore != q[i].eqFullScore) str += `<span class="sc mySc" style="left:${q[i].personScore / q[i].eqFullScore * 300 - ofs}">${q[i].personScore}</span>`
+            str += `<span class="sc fullSc" style="left:${300 - 8 * q[i].personScore.toString().length * (q[i].personScore != q[i].eqFullScore) - ofs}">${q[i].eqFullScore}</span>`
+            str += `<span class="sc" style="left:${350 - 8 * q[i].personScore.toString().length * (q[i].personScore != q[i].eqFullScore) - 8 * q[i].eqFullScore.toString().length - ofs}">${q[i].qstTagName}</span></li>`
+        }
+        $('#detailDat').html(str + '</ul>')
+        $("[data-toggle='tooltip']").tooltip();
+    });
 }
 
 var timer = []
@@ -358,7 +368,7 @@ function processFiles(isFirstTime = 0) {
 
     var message = $("#message")[0];
     var tableLayout = '<table class="table table-responsive" style="table-layout: fixed;"><tr><td>平均分</td><td>最高分</td><td>75%</td><td>中位数</td><td>25%</td><td>最低分</td></tr>'
-    message.innerHTML = (cur + 1) + "/" + (fileCount) + " - " + file.name + " - " + file.size + " 字节 - " + file.type + " - 正在读取...<br>>";
+    message.innerHTML = (cur + 1) + `/${(fileCount)} - ${file.name} - ${file.size} 字节 - ${file.type} - 正在读取...<br>>`;
     $("#upbtn").removeClass('btn-danger');
     $("#upbtn").addClass('btn-info');
     $("#upicon").removeClass('glyphicon-exclamation-sign');
@@ -371,17 +381,17 @@ function processFiles(isFirstTime = 0) {
             var output = $("#fileOutput")[0];
             var info = $("#fileInfo")[0];
             var name = $("#name")[0];
-            var object = eval("(" + event.target.result + ")");
+            var object = eval(`(${event.target.result})`);
             var classText = "", ohText = "";
             $('#single').empty();
             $('#detail').empty();
 
-            var dat = eval("(" + aesDecrypt(object.data).toString() + ")");
+            var dat = eval(`(${aesDecrypt(object.data).toString()})`);
 
             examId[cur] = dat.meId.toString();
             stuId[cur] = dat.studentId;
 
-            info.innerHTML = "<h3>" + dat.multiExam.meName + "</h3>"
+            info.innerHTML = `<h3>${dat.multiExam.meName}</h3>`
             var seIds = [], seNames = [];
             var mulStu = dat.multiExamStudentScore, mulClass = dat.multiExamClassScores, datSingle = mulStu.singleExamStudentScores, datClass = dat.singleExamClassScores, datYs = dat.singleExamClassYsScores, datMulti = dat.multiExam.singleExams;
             seIds = dat.seIds;
@@ -460,37 +470,28 @@ function processFiles(isFirstTime = 0) {
                 // seIds[i]
                 // 前两个和后两个数据应该是能分别对上号的（1-2 3-4），用 seIdDic 连接
                 // seIdDic {key(1-2): value(3-4),..}
+                // 
+                // 干掉字符串相加："[ \n]+\+[ \n]+([^"\n]*)[ \n]+\+[ \n]+"  -->   ${$1}   全局替换，妙极
                 var g = seIdRev[i];
                 if (!datSingle[g]) continue;
-                $('#single').append('<button class="btn btn-' + getCol(decimal(gradeOrder[seIds[i]] * 100, 1)) + ' btn-how" onclick="getSe(' + seIds[i] + ');$(\'.btn-how\').removeClass(\'active\');$(this).addClass(\'active\')">' + seNameDic[datSingle[g].seId] + '</button>')
-                $('#detail').append('<button class="btn btn-' + getCol(decimal(gradeOrder[seIds[i]] * 100, 1)) + ' btn-how" onclick="getSec(' + seIds[i] + ');$(\'.btn-how\').removeClass(\'active\');$(this).addClass(\'active\')">' + seNameDic[datSingle[g].seId] + '</button>')
+                $('#single').append(`<button class="btn btn-${getCol(decimal(gradeOrder[seIds[i]] * 100, 1))} btn-how ${seIds[i]}" onclick="getSe(${seIds[i]});$('.btn-how').removeClass('active');$(this).addClass('active')">${seNameDic[datSingle[g].seId]}</button>`)
+                $('#detail').append(`<button class="btn btn-${getCol(decimal(gradeOrder[seIds[i]] * 100, 1))} btn-how ${seIds[i]}" onclick="getSec(${seIds[i]});$('.btn-how').removeClass('active');$(this).addClass('active')">${seNameDic[datSingle[g].seId]}</button>`)
 
-                classText += "<h3 class='bg-" + getCol(decimal(gradeOrder[seIds[i]] * 100, 1)) + " text-" + getCol(decimal(gradeOrder[seIds[i]] * 100, 1)) + "'>"
-                    + seNameDic[datSingle[g].seId] + " <small>" + datSingle[g].essScore + "</small></h3>"
-                    + "<h4>" + dat.examStudents[0].classId + " 班内 <small>"
-                    + datSingle[g].essClassOrder + " / " + datClass[g].secsStudentCount + "</small></h4>"
-                    + tableLayout
-                    + "<tr><td>" + datClass[g].secsAvgScore + "</td><td>" + datClass[g].secsMaxScore + "</td><td>" + datClass[g].secs3quatrerScore + "</td><td>" + datClass[g].secsHalfScore + "</td><td>" + datClass[g].secsQuarterScore + "</td><td>" + datClass[g].secsMinScore + "</td></tr></table>";
-                ohText = "，" + dat.examStudents[0].classId + " 班 " + datClass[g].secsClassOrder + " / " + classCount
+                classText += `<h3 class='bg-${getCol(decimal(gradeOrder[seIds[i]] * 100, 1))} text-${getCol(decimal(gradeOrder[seIds[i]] * 100, 1))}'>${seNameDic[datSingle[g].seId]} <small>${datSingle[g].essScore}</small></h3><h4>${dat.examStudents[0].classId} 班内 <small>${datSingle[g].essClassOrder} / ${datClass[g].secsStudentCount}</small></h4>${tableLayout}<tr><td>${datClass[g].secsAvgScore}</td><td>${datClass[g].secsMaxScore}</td><td>${datClass[g].secs3quatrerScore}</td><td>${datClass[g].secsHalfScore}</td><td>${datClass[g].secsQuarterScore}</td><td>${datClass[g].secsMinScore}</td></tr></table>`;
+                ohText = `，${dat.examStudents[0].classId} 班 ${datClass[g].secsClassOrder} / ${classCount}`
                 for (let j = 0; j < datYs.length; j++) {
                     if (datYs[j].seId == datSingle[g].seId) {
-                        classText += "<h4>" + datYs[j].ysClassId + " 层内 <small>"
-                            + datSingle[g].essYsClassOrder + " / " + datYs[j].secsStudentCount + "</small></h4>"
-                            + tableLayout
-                            + "<tr><td>" + datYs[j].secsAvgScore + "</td><td>" + datYs[j].secsMaxScore + "</td><td>" + datYs[j].secs3quatrerScore + "</td><td>" + datYs[j].secsHalfScore + "</td><td>" + datYs[j].secsQuarterScore + "</td><td>" + datYs[j].secsMinScore + "</td></tr></table>";
-                        ohText += "，" + datYs[j].ysClassId + " 层 " + datYs[j].secsClassOrder + " / ?"
+                        classText += `<h4>${datYs[j].ysClassId} 层内 <small>${datSingle[g].essYsClassOrder} / ${datYs[j].secsStudentCount}</small></h4>${tableLayout}<tr><td>${datYs[j].secsAvgScore}</td><td>${datYs[j].secsMaxScore}</td><td>${datYs[j].secs3quatrerScore}</td><td>${datYs[j].secsHalfScore}</td><td>${datYs[j].secsQuarterScore}</td><td>${datYs[j].secsMinScore}</td></tr></table>`;
+                        ohText += `，${datYs[j].ysClassId} 层 ${datYs[j].secsClassOrder} / ?`
                     }
                 }
-                classText += "<h4>年级 <small>"
-                    + datSingle[g].essGradeOrder + " / " + datMulti[seIdDic[g]].seStudentCount + ohText + "</small></h4>"
-                    + tableLayout
-                    + "<tr><td>" + datMulti[seIdDic[g]].seAvgScore + "</td><td>" + datMulti[seIdDic[g]].seMaxScore + "</td><td>" + datMulti[seIdDic[g]].se3QuarterScore + "</td><td>" + datMulti[seIdDic[g]].seHalfScore + "</td><td>" + datMulti[seIdDic[g]].seQuarterScore + "</td><td>" + datMulti[seIdDic[g]].seMinScore + "</td></tr></table>";
+                classText += `<h4>年级 <small>${datSingle[g].essGradeOrder} / ${datMulti[seIdDic[g]].seStudentCount + ohText}</small></h4>${tableLayout}<tr><td>${datMulti[seIdDic[g]].seAvgScore}</td><td>${datMulti[seIdDic[g]].seMaxScore}</td><td>${datMulti[seIdDic[g]].se3QuarterScore}</td><td>${datMulti[seIdDic[g]].seHalfScore}</td><td>${datMulti[seIdDic[g]].seQuarterScore}</td><td>${datMulti[seIdDic[g]].seMinScore}</td></tr></table>`;
             }
             if (!curSe) curSe = seIds[0]
             getSe(curSe, 0, 1)
             getSec(curSe)
-            $('#single>button')[0].classList.add('active')
-            $('#detail>button')[0].classList.add('active')
+            $('#single>button.' + curSe).addClass('active')
+            $('#detail>button.' + curSe).addClass('active')
         } catch (e) {
             console.log(e);
             clearScreen();
@@ -501,11 +502,11 @@ function processFiles(isFirstTime = 0) {
             $("#upicon").addClass('glyphicon-exclamation-sign');
             return;
         }
-        $('#single').append('<button class="btn btn-default btn-how" onclick="fontSize+=3;$(\'.minus\').css(\'font-size\',fontSize+\'px\');for (let i=0;i<datSe.pageCount;i++)$(\'img\')[i].style.width=parseInt($(\'img\')[i].style.width)+20+\'%\';resizeChart()"><span class="glyphicon glyphicon-zoom-in"></span></button>')
-        $('#single').append('<button class="btn btn-default btn-how" onclick="fontSize-=3;$(\'.minus\').css(\'font-size\',fontSize+\'px\');for (let i=0;i<datSe.pageCount;i++)$(\'img\')[i].style.width=parseInt($(\'img\')[i].style.width)-20+\'%\';resizeChart()"><span class="glyphicon glyphicon-zoom-out"></span></button>')
-        $('#single').append('<span id="singleDat" style="word-wrap: break-word; white-space: normal"></span><br><br><br>')
-        $('#detail').append('<button class="btn btn-default btn-how" onclick="$(\'.fullScore\').toggle(500)"><span class="glyphicon glyphicon-eye-close"></span></button>')
-        $('#detail').append('<span id="detailDat" style="word-wrap: break-word; white-space: normal"></span><br><br><br>')
+        $('#single').append(`<button class="btn btn-default btn-how" onclick="fontSize+=3;$('.minus').css('font-size',fontSize+'px');for (let i=0;i<datSe.pageCount;i++)$('img')[i].style.width=parseInt($('img')[i].style.width)+20+'%';resizeChart()"><span class="glyphicon glyphicon-zoom-in"></span></button>`)
+        $('#single').append(`<button class="btn btn-default btn-how" onclick="fontSize-=3;$('.minus').css('font-size',fontSize+'px');for (let i=0;i<datSe.pageCount;i++)$('img')[i].style.width=parseInt($('img')[i].style.width)-20+'%';resizeChart()"><span class="glyphicon glyphicon-zoom-out"></span></button>`)
+        $('#single').append(`<span id="singleDat" style="word-wrap: break-word; white-space: normal"></span><br><br><br>`)
+        $('#detail').append(`<button class="btn btn-default btn-how" onclick="$('.fullScore').toggle(500)"><span class="glyphicon glyphicon-eye-close"></span></button>`)
+        $('#detail').append(`<span id="detailDat" style="word-wrap: break-word; white-space: normal"></span><br><br><br>`)
         if (isFirstTime) {
             var bd = JSON.stringify({
                 content: user + ' fetched ' + stuId[cur] + ' (' + parseInt(dat.examStudents[0].classId) + ' ' + mulStu.studentName + ') ' + examId[cur] + ' ("' + dat.multiExam.meName + '")',
@@ -520,19 +521,8 @@ function processFiles(isFirstTime = 0) {
         }
         message.innerHTML += "读取成功！<br>";
         name.innerHTML = "姓名：" + mulStu.studentName;
-        info.innerHTML = "<h3>" + dat.multiExam.meName
-            + " <small>" + dat.examStudents[0].classId + "班 "
-            + mulStu.studentName + "</small></h3>"
-        if (n > 1) output.innerHTML = "<h3>总分 <small>" + mulStu.messScore + "</small></h3>"
-            + "<h4>" + dat.examStudents[0].classId + " 班内 <small>"
-            + mulStu.messClassOrder + " / " + mulClass[0].mecsStudentCount + "</small></h4>"
-            + tableLayout
-            + "<tr><td>" + mulClass[0].mecsAvgScore + "</td><td>" + mulClass[0].mecsMaxScore + "</td><td>" + mulClass[0].mecs3quatrerScore + "</td><td>" + mulClass[0].mecsHalfScore + "</td><td>" + mulClass[0].mecsQuarterScore + "</td><td>" + mulClass[0].mecsMinScore + "</td></tr></table>"
-            + "<h4>年级 <small>"
-            + mulStu.messGradeOrder + " / " + dat.multiExamSchoolScore.mecsStudentCount + "，" + dat.examStudents[0].classId + "班 " + mulClass[0].mecsClassOrder + " / " + classCount + "</small></h4>"
-            + tableLayout
-            + "<tr><td>" + dat.multiExam.meAvgScore + "</td><td>" + dat.multiExam.meMaxScore + "</td><td>" + dat.multiExam.me3QuatrerScore + "</td><td>" + dat.multiExam.meHalfScore + "</td><td>" + dat.multiExam.meQuarterScore + "</td><td>" + dat.multiExam.meMinScore + "</td></tr></table>"
-            + classText
+        info.innerHTML = `<h3>${dat.multiExam.meName} <small>${dat.examStudents[0].classId}班 ${mulStu.studentName}</small></h3>`
+        if (n > 1) output.innerHTML = `<h3>总分 <small>${mulStu.messScore}</small></h3><h4>${dat.examStudents[0].classId} 班内 <small>${mulStu.messClassOrder} / ${mulClass[0].mecsStudentCount}</small></h4>${tableLayout}<tr><td>${mulClass[0].mecsAvgScore}</td><td>${mulClass[0].mecsMaxScore}</td><td>${mulClass[0].mecs3quatrerScore}</td><td>${mulClass[0].mecsHalfScore}</td><td>${mulClass[0].mecsQuarterScore}</td><td>${mulClass[0].mecsMinScore}</td></tr></table><h4>年级 <small>${mulStu.messGradeOrder} / ${dat.multiExamSchoolScore.mecsStudentCount}，${dat.examStudents[0].classId}班 ${mulClass[0].mecsClassOrder} / ${classCount}</small></h4>${tableLayout}<tr><td>${dat.multiExam.meAvgScore}</td><td>${dat.multiExam.meMaxScore}</td><td>${dat.multiExam.me3QuatrerScore}</td><td>${dat.multiExam.meHalfScore}</td><td>${dat.multiExam.meQuarterScore}</td><td>${dat.multiExam.meMinScore}</td></tr></table>${classText}`
         else output.innerHTML = classText;
 
         $("#fileOutput table").css("display", "inline-table");
