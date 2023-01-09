@@ -260,7 +260,9 @@ function procName(str, o = 0) {
     if (str[0] == '第') return str.slice(1, str.length - 1) + ':';
     else return str.split('-')[0] + '.';
 }
-function getSec(id) {
+function getSec(id, force, force2) {
+    if (!force && !$('.nav-tabs>li')[3].classList[0]) return
+    if (!force2 && id == curSe) return
     curSe = id
     if (!stuId[cur]) stuId[cur] = prompt('数字校园号？')
     if (!examId[cur]) examId[cur] = prompt('考试编号？（心意答点击考试标题后，切换考试的列表里可见）')
@@ -381,12 +383,12 @@ function processFiles(isFirstTime = 0) {
             var output = $("#fileOutput")[0];
             var info = $("#fileInfo")[0];
             var name = $("#name")[0];
-            var object = eval(`(${event.target.result})`);
+            var object = JSON.parse(event.target.result);
             var classText = "", ohText = "";
             $('#single').empty();
             $('#detail').empty();
 
-            var dat = eval(`(${aesDecrypt(object.data).toString()})`);
+            var dat = JSON.parse(aesDecrypt(object.data).toString());
 
             examId[cur] = dat.meId.toString();
             stuId[cur] = dat.studentId;
@@ -489,7 +491,7 @@ function processFiles(isFirstTime = 0) {
             }
             if (!curSe) curSe = seIds[0]
             getSe(curSe, 0, 1)
-            getSec(curSe)
+            getSec(curSe, 0, 1)
             $('#single>button.' + curSe).addClass('active')
             $('#detail>button.' + curSe).addClass('active')
         } catch (e) {
