@@ -1,0 +1,177 @@
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>实验中学成绩整理</title>
+    <script type="text/javascript" src="/js/jquery.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+    <script type="text/javascript" src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+    <script async src="/js/echarts-4.7.0.min.js"></script>
+    <link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
+&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <script>
+        var wid = 0, skip = 0
+        var col = {
+            '向量': '#337ab7',
+            '隐': '#b5b5b5'
+        }
+        function getCol(str, pam) {
+            str = str.split(' ')[0]
+            return col[str] ? col[str] : (pam ? '#6f9f3f' : '#3f3f3f')
+        }
+        function unique(arr) {
+            let hash = [];
+            for (let i = 0; i < arr.length; i++) {
+                if (hash.indexOf(arr[i]) === -1) {
+                    hash.push(arr[i]);
+                }
+            }
+            return hash;
+        }
+        function myUnique(arr) {
+            let res = [];
+            for (let i = 0; i < arr.length; i++) {
+                if (!arr[i]) continue;
+                res.push({
+                    source: arr[i].source, target: arr[i].target,
+                    value: wid ? 1 : arr.filter(function (e) {
+                        return e.source == arr[i].source && e.target == arr[i].target
+                    }).length
+                })
+                for (let j = i + 1; j < arr.length; j++) {
+                    if (!arr[j]) continue;
+                    if (arr[j].source == arr[i].source && arr[j].target == arr[i].target) delete arr[j]
+                }
+            }
+            return res;
+        }
+        function resizeChart() {
+            cc.resize()
+        }
+        function get() {
+            if ($('#filter').val()) o = 800
+            else o = 3000
+            if (wid) o /= 1.75
+            $("#sanky").css('height', o + 'px')
+            cc = echarts.init($("#sanky")[0]);
+            fetch('/a.log', {
+                method: 'GET',
+            }).then(res => {
+                return res.text()
+            }).then(e => {
+                var f = '[' + e.replace(/^((?!fetched).)*$\n/gm, '')
+                    .replace(/^.*(: \d).*$\n/gm, '')
+                    .replace(/^.*(: :).*$\n/gm, '')
+                    .replace(/undefined/g, '隐')
+                    .replace(/^.*GMT: ([^\w ,]+)[0-9, a-z\(]+([^\w)]+).*/gm, '{"source": "$1","target": "$2 ", "value": 1},')
+                f = JSON.parse(f.slice(0, f.length - 2) + ']')
+                f = myUnique(f)
+                var p = [], data = []
+
+                for (var i = 0; i < f.length; i++) {
+                    if (skip && f[i].source == f[i].target.split(' ')[0]) continue;
+                    if ($('#filter').val() && f[i].source != $('#filter').val()) continue;
+                    p.push(f[i].source)
+                    p.push(f[i].target)
+                }
+                p = unique(p)
+
+                var ppp = [];
+                for (let i = 0; i < p.length; i++) {
+                    ppp.push({
+                        name: p[i],
+                        itemStyle: { color: getCol(p[i]) }
+                    })
+                }
+
+                for (var i = 0; i < f.length; i++) {
+                    if (skip && f[i].source == f[i].target.split(' ')[0]) continue;
+                    if ($('#filter').val() && f[i].source != $('#filter').val()) continue;
+                    var color = new echarts.graphic.LinearGradient(0, 0, 1, 0, [{
+                        offset: 0.5,
+                        color: getCol(f[i].source, f[i].source == f[i].target.split(' ')[0])
+                    }, {
+                        offset: 1,
+                        color: getCol(f[i].target, f[i].source == f[i].target.split(' ')[0])
+                    }]
+                    )
+                    data.push(
+                        {
+                            source: f[i].source,
+                            target: f[i].target,
+                            value: f[i].value,
+                            lineStyle: {
+                                color: color
+                            }
+                        }
+                    )
+                }
+
+                var op = {
+                    textStyle: {
+                        fontFamily: 'Noto Serif SC'
+                    },
+                    title: {
+                        text: '人物关系图',
+                        textStyle: {
+                            fontSize: 14,
+                            fontStyle: 'normal',
+                            fontWeight: 'bold',
+                        },
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            saveAsImage: {
+                                show: true
+                            },
+                        },
+                        padding: 25,
+                        orient: 'vertical'
+                    },
+                    series: [
+                        {
+                            type: 'sankey',
+                            data: ppp,
+                            links: data,
+                            focusNodeAdjacency: 'allEdges',
+                            itemStyle: {
+                                borderWidth: 1,
+                                color: '#1b6199',
+                                borderColor: '#fff'
+                            },
+                            lineStyle: {
+                                curveness: 0.5,
+                                opacity: 0.4
+                            }
+                        }
+                    ],
+                }
+
+                cc.setOption(op);
+                cc.resize();
+                window.onresize = resizeChart
+            })
+        }
+    </script>
+</head>
+
+<body>
+    <div class="input-group">
+        <div class="input-group-btn">
+            <button class="btn btn-success" onclick="get()">get</button>
+        </div>
+        <input class="form-control" id="filter" placeholder="筛选">
+        <div class="input-group-btn">
+            <button data-toggle="button" class="btn btn-default" onclick="skip=!skip;get()">忽略自环</button>
+            <button class="btn btn-default" data-toggle="button" onclick="wid=!wid;get()">固定宽度</button>
+        </div>
+        <span class="input-group-addon">
+            提示：保持鼠标不动，可以随意滑动滚轮而不改变焦点
+        </span>
+    </div>
+    <div id="sanky" class="chart" style="height:3000px"></div>
+</body>
