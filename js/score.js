@@ -531,9 +531,6 @@ function processFiles(isFirstTime = 0) {
         $("#fileOutput table").css("margin-bottom", "0px");
 
         $('.chart').show();
-        if (fileCount <= 1) $('#comp').hide();
-        else $('#comp').show(), cc.resize();
-
         cc = echarts.init($("#comp")[0]);
         sc1 = echarts.init($("#score1")[0]);
         sc2 = echarts.init($("#score2")[0]);
@@ -541,6 +538,9 @@ function processFiles(isFirstTime = 0) {
         oc2 = echarts.init($("#order2")[0]);
         oc3 = echarts.init($("#order3")[0]);
         oc4 = echarts.init($("#order4")[0]);
+        
+        if (fileCount <= 1) $('#comp').hide();
+        else $('#comp').show(), cc.resize();
 
         var seNameDicP = [], scorePP = [], scoreSe = {}, avgPP = [], rateFullP = [], scoreQ = [], avgQ = [];
         var seNameDicP2 = [], classOrderPP = [], gradeOrderPP = [], classOrderQ = [], gradeOrderQ = [];

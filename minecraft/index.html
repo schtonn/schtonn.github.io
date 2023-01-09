@@ -11,7 +11,6 @@
 &family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         img {
-            max-width: 100%;
             position: relative;
         }
 
@@ -94,7 +93,7 @@
                 else str+= `<h2>&nbsp;</h2>`
                 if (img[i].split(',')[2]) str += `${img[i].split(',')[2]}`
                 else str+='&nbsp;'
-                $('.images').append(`<div class="col-md-4 col-lg-3">${str}<img src="img/${img[i].split(',')[0]}" onclick="fun(this)"></div>`)
+                $('.images').append(`<div class="col-md-4 col-lg-3">${str}<img class="img-responsive" src="img/${img[i].split(',')[0]}" onclick="fun(this)"></div>`)
             }
             $('.images').append('<div class="pad"></div>')
         })
