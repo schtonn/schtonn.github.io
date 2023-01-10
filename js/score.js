@@ -50,38 +50,13 @@ function getFiles(e) {
 
 //原理：string<->cipherparams.ciphertext
 const key = CryptoJS.enc.Utf8.parse("abcdefgabcdefg12");
-function aesDecrypt(encrypted) {
-    var cipherParams = CryptoJS.lib.CipherParams.create({ ciphertext: CryptoJS.enc.Hex.parse(encrypted) })
+function aesDecrypt(e) {
+    var cipherParams = CryptoJS.lib.CipherParams.create({ ciphertext: CryptoJS.enc.Hex.parse(e) })
     var decrypted = CryptoJS.AES.decrypt(cipherParams, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 });
     return decrypted.toString(CryptoJS.enc.Utf8);
 }
-function aesEncrypt(encrypted) {
-    return CryptoJS.AES.encrypt(encrypted, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 }).ciphertext.toString();
-}
-
-function stringToByte(str) {
-    var bytes = new Array();
-    var len, c;
-    len = str.length;
-    for (let i = 0; i < len; i++) {
-        c = str.charCodeAt(i);
-        if (c >= 0x010000 && c <= 0x10FFFF) {
-            bytes.push(((c >> 18) & 0x07) | 0xF0);
-            bytes.push(((c >> 12) & 0x3F) | 0x80);
-            bytes.push(((c >> 6) & 0x3F) | 0x80);
-            bytes.push((c & 0x3F) | 0x80);
-        } else if (c >= 0x000800 && c <= 0x00FFFF) {
-            bytes.push(((c >> 12) & 0x0F) | 0xE0);
-            bytes.push(((c >> 6) & 0x3F) | 0x80);
-            bytes.push((c & 0x3F) | 0x80);
-        } else if (c >= 0x000080 && c <= 0x0007FF) {
-            bytes.push(((c >> 6) & 0x1F) | 0xC0);
-            bytes.push((c & 0x3F) | 0x80);
-        } else {
-            bytes.push(c & 0xFF);
-        }
-    }
-    return bytes;
+function aesEncrypt(e) {
+    return CryptoJS.AES.encrypt(e, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 }).ciphertext.toString();
 }
 
 function fetchDo(id) {
@@ -99,10 +74,10 @@ function fetchDo(id) {
         })
     }).then(res => {
         return res.text()
-    }).then(resj => {
-        files[fileCount] = new Blob([resj], {
+    }).then(e => {
+        files[fileCount] = new Blob([e], {
             type: 'text/plain'
-        });;
+        });
         cur = fileCount;
         fileCount++;
         $("#controls").removeClass("disabled");
@@ -133,11 +108,11 @@ function getExams(id) {
     }).then(res => {
         return res.json()
     }).then(e => {
-        let s = JSON.parse(aesDecrypt(e.data))
+        let dat = JSON.parse(aesDecrypt(e.data))
         let str = ''
-        for (let i = 0; i < s.length; i++) {
-            str += s[i].examName.slice(s[i].examName.length - 4, s[i].examName.length - 2) + ' - ' + s[i].meId + (i == s.length - 1 ? '' : ', ');
-            addExam(s[i].studentReportInfos)
+        for (let i = 0; i < dat.length; i++) {
+            str += dat[i].examName.slice(dat[i].examName.length - 4, dat[i].examName.length - 2) + ' - ' + dat[i].meId + (i == dat.length - 1 ? '' : ', ');
+            addExam(dat[i].studentReportInfos)
         }
         $('#Id').attr('placeholder', str)
     })
@@ -152,8 +127,8 @@ function check() {
         }
     }).then(res => {
         return res.json()
-    }).then(resj => {
-        var queryData = resj.data.filter(function (e) {
+    }).then(e => {
+        var queryData = e.data.filter(function (e) {
             return e.no == a
         });
         var o = queryData[0].organization
@@ -187,30 +162,29 @@ function fetchMe(id) {
 
 var datSe
 
-function imageLoaded(p) {
-    var imgObj = $('img')[p]
-    var por = imgObj.width / imgObj.naturalWidth;
-    if (por == 1) por = ($('.tab-content')[0].clientWidth - 12) / imgObj.naturalWidth;
-    $('.cover' + p).empty()
+function imageLoaded(id) {
+    var imgObj = $('img')[id]
+    var ratio = imgObj.width / imgObj.naturalWidth;
+    if (ratio == 1) ratio = ($('.tab-content')[0].clientWidth - 12) / imgObj.naturalWidth;
+    $('.cover' + id).empty()
     for (var i = 0; i < datSe.displayIndexDetails.length; i++) {
         var di = datSe.displayIndexDetails[i]
-        var s = di.eqAnswerIpxywh
-        var sp = s.split('#')
-        for (let j = 0; j < sp.length; j++) {
-            var spp = sp[j].split(',')
-            if (spp.length == 6) {
-                if (parseInt(spp[1]) - 1 == p) {
-                    var opt = $('<span class="minus" style="transform:translate(' + (spp[2] * por).toFixed(6) + 'px,' + (spp[3] * por).toFixed(6) + 'px)">'
-                        + ((di.eqScore == di.eqFullScore) ? (di.eqFullScore.toString()) : ((di.eqScore == 0) ? ((di.eqScore - di.eqFullScore).toString()) : (di.eqScore.toString() + '/' + di.eqFullScore.toString()))) + '</span>').appendTo('.cover' + p)
+        var f = di.eqAnswerIpxywh.split('#')
+        for (let j = 0; j < f.length; j++) {
+            var g = f[j].split(',')
+            if (g.length == 6) {
+                if (parseInt(g[1]) - 1 == id) {
+                    var opt = $('<span class="minus" style="transform:translate(' + (g[2] * ratio).toFixed(6) + 'px,' + (g[3] * ratio).toFixed(6) + 'px)">'
+                        + ((di.eqScore == di.eqFullScore) ? (di.eqFullScore.toString()) : ((di.eqScore == 0) ? ((di.eqScore - di.eqFullScore).toString()) : (di.eqScore.toString() + '/' + di.eqFullScore.toString()))) + '</span>').appendTo('.cover' + id)
                     if (di.eqScore == di.eqFullScore) opt.addClass('full')
                     else wriggle(opt)
                 }
             } else {
-                if (p == 0) {
-                    var opt = $('<span class="sp" style="transform:translate(' + (spp[1] * por).toFixed(6) + 'px,' + (spp[2] * por).toFixed(6) + 'px);width:' + (spp[3] * por).toFixed(6) + 'px;height:' + (spp[4] * por).toFixed(6) + 'px"></span>').appendTo('.cover' + p)
+                if (id == 0) {
+                    var opt = $('<span class="sp" style="transform:translate(' + (g[1] * ratio).toFixed(6) + 'px,' + (g[2] * ratio).toFixed(6) + 'px);width:' + (g[3] * ratio).toFixed(6) + 'px;height:' + (g[4] * ratio).toFixed(6) + 'px"></span>').appendTo('.cover' + id)
                     if (j == 0 && di.eqFullScore != di.eqScore)
-                        wriggle($('<span class="minus" style="transform:translate(' + (spp[1] * por - 20).toFixed(6) + 'px,' + (spp[2] * por - 5).toFixed(6) + 'px)">'
-                            + (di.eqScore - di.eqFullScore).toString() + '</span>').appendTo('.cover' + p))
+                        wriggle($('<span class="minus" style="transform:translate(' + (g[1] * ratio - 20).toFixed(6) + 'px,' + (g[2] * ratio - 5).toFixed(6) + 'px)">'
+                            + (di.eqScore - di.eqFullScore).toString() + '</span>').appendTo('.cover' + id))
                     if (di.eqCorrectAnswer.match("ABCD"[j])) opt.addClass('cor')
                     else if (di.eqAnswer.match("ABCD"[j])) opt.addClass('err')
                 }
@@ -238,16 +212,15 @@ function getSe(id, force, force2) {
         body: bd
     }).then(res => {
         return res.json()
-    }).then(resj => {
+    }).then(e => {
         $('#singleDat').empty()
-        var f = JSON.parse(aesDecrypt(resj.data))
-        console.log(f)
-        for (let i = 1; i <= f.pageCount; i++) {
-            $('#singleDat').append('<br><span class="cover' + (i - 1) + '"></span><img src="http://36.112.23.77' + f.examUrl + 'page_' + i + '.jpg" onload="imageLoaded(' + (i - 1) + ')">')
+        var dat = JSON.parse(aesDecrypt(e.data))
+        for (let i = 1; i <= dat.pageCount; i++) {
+            $('#singleDat').append('<br><span class="cover' + (i - 1) + '"></span><img src="http://36.112.23.77' + dat.examUrl + 'page_' + i + '.jpg" onload="imageLoaded(' + (i - 1) + ')">')
             $('img')[i - 1].style.width = '100%'
         }
-        if (!f.pageCount) $('#singleDat').append('<p>...</p>')
-        datSe = f;
+        if (!dat.pageCount) $('#singleDat').append('<p>...</p>')
+        datSe = dat;
     });
 }
 
@@ -277,12 +250,12 @@ function getSec(id, force, force2) {
     }).then(res => {
         return res.json()
     }).then(resj => {
-        let d = JSON.parse(aesDecrypt(resj.data))
+        let dat = JSON.parse(aesDecrypt(resj.data))
         let str = '<ul class="list-unstyled">'
-        str += `<li class="text-warning">**. <span class="sc avgSc" style="left:${d.singleExam.seAvgScore / d.singleExam.seFullScore * 300}px" data-toggle="tooltip" data-placement="bottom" title="${d.singleExam.seAvgScore}">.</span>`
-        str += `<span class="sc mySc" style="left:${personScoreList[id] / d.singleExam.seFullScore * 300}px">${personScoreList[id]}</span>`
-        str += `<span class="sc fullSc" style="left:${300 - 8 * personScoreList[id].toString().length}px">${d.singleExam.seFullScore}</span></li>`
-        let q = d.examQuestions;
+        str += `<li class="text-warning">**. <span class="sc avgSc" style="left:${dat.singleExam.seAvgScore / dat.singleExam.seFullScore * 300}px" data-toggle="tooltip" data-placement="bottom" title="${dat.singleExam.seAvgScore}">.</span>`
+        str += `<span class="sc mySc" style="left:${personScoreList[id] / dat.singleExam.seFullScore * 300}px">${personScoreList[id]}</span>`
+        str += `<span class="sc fullSc" style="left:${300 - 8 * personScoreList[id].toString().length}px">${dat.singleExam.seFullScore}</span></li>`
+        let q = dat.examQuestions;
         for (let i = 0; i < q.length; i++) {
             idc = (q[i].personScore == q[i].eqFullScore ? 'success fullScore' : 'danger"');
             let pid = procName(q[i].eqDisplayName), ofs = pid.toString().length * 8 - 24
