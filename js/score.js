@@ -279,14 +279,14 @@ function getSec(id, force, force2) {
     }).then(resj => {
         let d = JSON.parse(aesDecrypt(resj.data))
         let str = '<ul class="list-unstyled">'
-        str += `<li class="text-warning">**. <span class="sc avgSc" style="left:${d.singleExam.seAvgScore / d.singleExam.seFullScore * 300}">.</span>`
-        str += `<span class="sc mySc" style="left:${personScoreList[id] / d.singleExam.seFullScore * 300}">${personScoreList[id]}</span>`
-        str += `<span class="sc fullSc" style="left:${300 - 8 * personScoreList[id].toString().length}">${d.singleExam.seFullScore}</span></li>`
+        str += `<li class="text-warning">**. <span class="sc avgSc" style="left:${d.singleExam.seAvgScore / d.singleExam.seFullScore * 300}px" data-toggle="tooltip" data-placement="bottom" title="${d.singleExam.seAvgScore}">.</span>`
+        str += `<span class="sc mySc" style="left:${personScoreList[id] / d.singleExam.seFullScore * 300}px">${personScoreList[id]}</span>`
+        str += `<span class="sc fullSc" style="left:${300 - 8 * personScoreList[id].toString().length}px">${d.singleExam.seFullScore}</span></li>`
         let q = d.examQuestions;
         for (let i = 0; i < q.length; i++) {
             idc = (q[i].personScore == q[i].eqFullScore ? 'success fullScore' : 'danger"');
             let pid = procName(q[i].eqDisplayName), ofs = pid.toString().length * 8 - 24
-            str += `<li class="text-${idc}" ${procName(q[i].eqDisplayName, 1)}>${pid}<span class="sc avgSc" style="left:${q[i].eqAvgScore / q[i].eqFullScore * 300 - ofs}px">.</span>`
+            str += `<li class="text-${idc}" ${procName(q[i].eqDisplayName, 1)}>${pid}<span class="sc avgSc" style="left:${q[i].eqAvgScore / q[i].eqFullScore * 300 - ofs}px" data-toggle="tooltip" data-placement="bottom" title="${q[i].eqAvgScore}">.</span>`
             if (q[i].personScore != q[i].eqFullScore) str += `<span class="sc mySc" style="left:${q[i].personScore / q[i].eqFullScore * 300 - ofs}px">${q[i].personScore}</span>`
             str += `<span class="sc fullSc" style="left:${300 - 8 * q[i].personScore.toString().length * (q[i].personScore != q[i].eqFullScore) - ofs}px">${q[i].eqFullScore}</span>`
             str += `<span class="sc" style="left:${350 - 8 * q[i].personScore.toString().length * (q[i].personScore != q[i].eqFullScore) - 8 * q[i].eqFullScore.toString().length - ofs}px">${q[i].qstTagName}</span></li>`
