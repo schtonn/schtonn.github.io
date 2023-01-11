@@ -228,10 +228,10 @@ var personScoreList = []
 function procName(str, o = 0) {
     if (o) {
         if (str[0] == '第') return '';
-        else return `data-toggle="tooltip" data-placement="left" title="${str.match('-') ? str.slice(str.split('-')[0].length + 1) : ''}"`
+        else return `data-toggle="tooltip" data-placement="left" title="${str.match(/[-_]/g) ? str.slice(str.split(/[-_]/g)[0].length + 1) : ''}"`
     }
     if (str[0] == '第') return str.slice(1, str.length - 1) + ':';
-    else return str.split('-')[0] + '.';
+    else return str.split(/[-_]/g)[0] + '.';
 }
 function getSec(id, force, force2) {
     if (!force && !$('.nav-tabs>li')[3].classList[0]) return
