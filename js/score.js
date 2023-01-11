@@ -564,6 +564,8 @@ function processFiles(isFirstTime = 0) {
             ysClassOrderPP.push(ysClassOrderP[i]);
             ysClassOrderQ.push(decimal(ysClassOrder[i] * 100, 1));
         }
+        if (!ysClassOrderPP.length) $("#order3").hide()
+        if (!ysClassOrderPP.length) $("#order4").hide()
         gScore[cur] = scoreSe
         gName[cur] = mulStu.studentName
         var opBase = {
