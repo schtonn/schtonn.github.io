@@ -510,7 +510,7 @@ function processFiles(isFirstTime = 0) {
         oc2 = echarts.init($("#order2")[0]);
         oc3 = echarts.init($("#order3")[0]);
         oc4 = echarts.init($("#order4")[0]);
-        
+
         if (fileCount <= 1) $('#comp').hide();
         else $('#comp').show(), cc.resize();
 
@@ -564,8 +564,7 @@ function processFiles(isFirstTime = 0) {
             ysClassOrderPP.push(ysClassOrderP[i]);
             ysClassOrderQ.push(decimal(ysClassOrder[i] * 100, 1));
         }
-        if (!ysClassOrderPP.length) $("#order3").hide()
-        if (!ysClassOrderPP.length) $("#order4").hide()
+        if (!ysClassOrderPP.length) $("#order3").hide(), $("#order4").hide()
         gScore[cur] = scoreSe
         gName[cur] = mulStu.studentName
         var opBase = {
