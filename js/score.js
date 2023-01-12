@@ -419,8 +419,8 @@ function processFiles(isFirstTime = 0) {
                 rateFull[dId] = datMulti[seIdDic[i]].seFullScore;
                 classOrderP[dId] = datSingle[i].essClassOrder;
                 gradeOrderP[dId] = datSingle[i].essGradeOrder;
-                classOrder[dId] = decimal(1 - datSingle[i].essClassOrder / datClass[i].secsStudentCount, 3);
-                gradeOrder[dId] = decimal(1 - datSingle[i].essGradeOrder / datMulti[seIdDic[i]].seStudentCount, 3);
+                classOrder[dId] = decimal(1 - (datSingle[i].essClassOrder - 1) / datClass[i].secsStudentCount, 3);
+                gradeOrder[dId] = decimal(1 - (datSingle[i].essGradeOrder - 1) / datMulti[seIdDic[i]].seStudentCount, 3);
             }
             classOrder["0"] = decimal(1 - mulStu.messClassOrder / mulClass[0].mecsStudentCount, 3);
             gradeOrder["0"] = decimal(1 - mulStu.messGradeOrder / dat.multiExamSchoolScore.mecsStudentCount, 3);
@@ -431,7 +431,7 @@ function processFiles(isFirstTime = 0) {
                     if (!datSingle[j]) continue;
 
                     if (datYs[i].seId == datSingle[j].seId) {
-                        ysClassOrder[datYs[i].seId + "Ys"] = decimal(1 - datSingle[j].essYsClassOrder / datYs[i].secsStudentCount, 3);
+                        ysClassOrder[datYs[i].seId + "Ys"] = decimal(1 - (datSingle[j].essYsClassOrder - 1) / datYs[i].secsStudentCount, 3);
                         ysClassOrderP[datYs[i].seId + "Ys"] = datSingle[j].essYsClassOrder;
                     }
                 }
@@ -564,7 +564,7 @@ function processFiles(isFirstTime = 0) {
             ysClassOrderPP.push(ysClassOrderP[i]);
             ysClassOrderQ.push(decimal(ysClassOrder[i] * 100, 1));
         }
-        if (!ysClassOrderPP.length) $("#order3").hide(), $("#order4").hide()
+        if (!ysClassOrderPP.length) $("#order3").hide(), $("#order4").hide()// ^_^
         gScore[cur] = scoreSe
         gName[cur] = mulStu.studentName
         var opBase = {
