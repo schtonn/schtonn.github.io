@@ -158,20 +158,16 @@
     <a class="btn btn-info" href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp;返回</a>
     <div class="page-header">
         <h1>网站日志
-            <button class="btn btn-default noshadow" onclick="$('.add').toggle();$(this).children().toggleClass('glyphicon-arrow-down')"><span
-                    class="glyphicon glyphicon-plus"></span></button>
+            <button class="btn btn-default noshadow" onclick="$('.add').toggle();$(this).children().toggleClass('glyphicon-arrow-down')"><span class="glyphicon glyphicon-plus"></span></button>
         </h1>
     </div>
     <div class="add" style="display: none;">
         <h3 id='new'>d</h3>
         <div class="input-group">
             <input id="smallInput" type="text" class="form-control" autocomplete="off" placeholder="title">
-            <textarea id="chatInput" type="text" class="form-control" autocomplete="off" style="resize:vertical"
-                placeholder="content"></textarea>
+            <textarea id="chatInput" type="text" class="form-control" autocomplete="off" style="resize:vertical" placeholder="content"></textarea>
             <span class="input-group-btn">
-                <button type="button" class="btn btn-default noshadow"
-                    onclick="upload($('#chatInput').val(),$('#smallInput').val())" id="chatBtn"><span
-                        class="uploadIndicator glyphicon glyphicon-cloud-upload"></span></button>
+                <button type="button" class="btn btn-default noshadow" onclick="upload($('#chatInput').val(),$('#smallInput').val())" id="chatBtn"><span class="uploadIndicator glyphicon glyphicon-cloud-upload"></span></button>
             </span>
         </div>
         <hr>

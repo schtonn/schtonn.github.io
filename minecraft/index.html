@@ -17,7 +17,8 @@
         .pad {
             padding-bottom: 500px;
         }
-        h2{
+
+        h2 {
             margin-top: 30px;
             margin-bottom: -3px;
         }
@@ -92,9 +93,9 @@
             for (let i = 0; i < img.length; i++) {
                 let str = ''
                 if (img[i].split(',')[1]) str += `<h2>${img[i].split(',')[1]}</h2>`
-                else str+= `<h2>&nbsp;</h2>`
+                else str += `<h2>&nbsp;</h2>`
                 if (img[i].split(',')[2]) str += `${img[i].split(',')[2]}`
-                else str+='&nbsp;'
+                else str += '&nbsp;'
                 $('.images').append(`<div class="col-md-4 col-lg-3">${str}<img class="img-responsive" src="img/${img[i].split(',')[0]}" onclick="fun(this)"></div>`)
             }
             $('.images').append('<div class="pad"></div>')
