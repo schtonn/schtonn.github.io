@@ -349,6 +349,38 @@ function getRegex() {
     }
     return ret.replace(/%/g, 'e+')
 }
+
+function doQuery(bd, isId = '') {
+    fetch('/chem/query/' + nameq + isId, {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json',
+        },
+        body: bd
+    }).then(res => {
+        return res.text()
+    }).then(e => {
+        if (e[0] == '!') {
+            $('.frame')[1].innerHTML = '<pre class="text-danger bg-danger">' + e + '</pre>';
+        } else {
+            e = JSON.parse(e)
+            $('.frame')[1].innerHTML = '<span id="qryInputRender">' + (strict ? renderEquation($('#qryInput').val() + '=' + $('#qryInput2').val()) : renderEquation($('#qryInput').val())) + ' - 匹配到 ' + e.length + ' 个</span><br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>';
+            for (let i = 0; i < e.length; i++) {
+                $('.frame')[1].innerHTML += renderEquation(e[i].content) + '<br><span class="label label-default">' + e[i].id + '</span> ';
+                if (e[i].conditions) $('.frame')[1].innerHTML += '（' + e[i].conditions + '）';
+                $('.frame')[1].innerHTML += e[i].descriptions + '<br>';
+                if (e[i].rel > 0) {
+                    $('.frame')[1].innerHTML += 'rel: <span class="label label-success">' + e[i].rel + '</span><br>';
+                }
+                if (e[i].rel < 0) {
+                    $('.frame')[1].innerHTML += 'rel: <span class="label label-warning">' + (-e[i].rel) + '</span><br>';
+                }
+            }
+            MathJax.typeset()
+        }
+    });
+}
+
 function query() {
     if (modeq == 'query' || modeq == 'add') {
         var cont = getRegex();
@@ -356,32 +388,7 @@ function query() {
         var bd = JSON.stringify({
             content: cont,
         })
-        console.log(bd)
-        fetch('/chem/query/' + nameq, {
-            method: 'POST',
-            headers: {
-                'Content-type': 'application/json',
-            },
-            body: bd
-        }).then(res => {
-            res.text().then(resj => {
-                if (resj[0] == '!') {
-                    $('.frame')[1].innerHTML = '<pre class="text-danger bg-danger">' + resj + '</pre>';
-                } else {
-                    resj = JSON.parse(resj)
-                    $('.frame')[1].innerHTML = '<span id="qryInputRender">' + (strict ? renderEquation($('#qryInput').val() + '=' + $('#qryInput2').val()) : renderEquation($('#qryInput').val())) + ' - 匹配到 ' + resj.length + ' 个</span><br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>';
-                    for (let i = 0; i < resj.length; i++) {
-                        $('.frame')[1].innerHTML += renderEquation(resj[i].content) + '<br><span class="label label-default">' + resj[i].id + '</span>';
-                        if (resj[i].conditions) $('.frame')[1].innerHTML += '（' + resj[i].conditions + '）';
-                        $('.frame')[1].innerHTML += resj[i].descriptions + '<br>';
-                        if (resj[i].rel) {
-                            $('.frame')[1].innerHTML += 'rel: <span class="label label-default">' + resj[i].rel + '</span><br>';
-                        }
-                    }
-                    MathJax.typeset()
-                }
-            });
-        })
+        doQuery(bd)
     }
     if (modeq == 'add') {
         $('#balInput').val($('#qryInput').val() ? $('#qryInput').val() : $('#qryInput').attr('placeholder').split('（')[0])
@@ -410,35 +417,10 @@ function query() {
                     'Content-type': 'application/json',
                 },
                 body: bd
-            }).then(re => {
-                fetch('/chem/query/' + nameq, {
-                    method: 'POST',
-                    headers: {
-                        'Content-type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        content: $('#qryInput').val(),
-                    })
-                }).then(res => {
-                    res.text().then(resj => {
-                        if (resj[0] == '!') {
-                            $('.frame')[1].innerHTML = '<pre class="text-danger bg-danger">' + resj + '</pre>';
-                        } else {
-                            resj = JSON.parse(resj)
-                            $('.frame')[1].innerHTML = '';
-                            for (let i = 0; i < resj.length; i++) {
-                                $('.frame')[1].innerHTML += renderEquation(resj[i].content) + '<br>';
-                                $('.frame')[1].innerHTML += '<span class="label label-default">' + resj[i].id + '</span>';
-                                if (resj[i].conditions) $('.frame')[1].innerHTML += '（' + resj[i].conditions + '）';
-                                $('.frame')[1].innerHTML += resj[i].descriptions + '<br>';
-                                if (resj[i].rel) {
-                                    $('.frame')[1].innerHTML += 'rel: <span class="label label-default">' + resj[i].rel + '</span><br>';
-                                }
-                            }
-                            MathJax.typeset()
-                        }
-                    });
-                })
+            }).then(() => {
+                doQuery(JSON.stringify({
+                    content: $('#qryInput').val()
+                }))
             })
         })
     }
@@ -446,9 +428,7 @@ function query() {
         $('#balInput').val($('#qryInput').val() ? $('#qryInput').val() : $('#qryInput').attr('placeholder').split('（')[0])
         setBal();
         balance().then(e => {
-            if (e[0] == '!') {
-                return;
-            }
+            if (e[0] == '!') return
             input();
             if (!$('#addDescription').val()) {
                 alert('无描述')
@@ -464,15 +444,14 @@ function query() {
                 descriptions: $('#addDescription').val(),
             })
             console.log(bd)
-            fetch('/chem/upd/' + nameq, {
+            return fetch('/chem/upd/' + nameq, {
                 method: 'POST',
                 headers: {
                     'Content-type': 'application/json',
                 },
                 body: bd
             })
-            inputId();
-        })
+        }).then(inputId)
     }
 }
 
@@ -493,35 +472,7 @@ function inputId() {
         return;
     }
     console.log(bd)
-    fetch('/chem/query/' + nameq + 'id', {
-        method: 'POST',
-        headers: {
-            'Content-type': 'application/json',
-        },
-        body: bd
-    }).then(res => {
-        res.text().then(resj => {
-            if (resj[0] == '!') {
-                $('.frame')[1].innerHTML = '<pre class="text-danger bg-danger">' + resj + '</pre>';
-            } else {
-                resj = JSON.parse(resj)[0]
-                if (resj) {
-                    $('.frame')[1].innerHTML = '';
-                    $('.frame')[1].innerHTML += renderEquation(resj.content) + '<br>';
-                    $('.frame')[1].innerHTML += '<span class="label label-default">' + resj.id + '</span>';
-                    if (resj.conditions) $('.frame')[1].innerHTML += '（' + resj.conditions + '）';
-                    $('.frame')[1].innerHTML += resj.descriptions + '<br>';
-                    if (resj.rel) {
-                        $('.frame')[1].innerHTML += 'rel: <span class="label label-default">' + resj.rel + '</span><br>';
-                    }
-                    $('#qryInput').val(resj.content)
-                    $('#addCondition').val(resj.conditions)
-                    $('#addDescription').val(resj.descriptions)
-                    MathJax.typeset()
-                } else $('.frame')[1].innerHTML = '';
-            }
-        });
-    })
+    doQuery(bd, 'id')
 }
 
 function qryToggleMatch() {
