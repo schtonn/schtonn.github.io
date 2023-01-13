@@ -364,7 +364,9 @@ function doQuery(bd, isId = '') {
             $('.frame')[1].innerHTML = '<pre class="text-danger bg-danger">' + e + '</pre>';
         } else {
             e = JSON.parse(e)
-            $('.frame')[1].innerHTML = '<span id="qryInputRender">' + (strict ? renderEquation($('#qryInput').val() + '=' + $('#qryInput2').val()) : renderEquation($('#qryInput').val())) + ' - 匹配到 ' + e.length + ' 个</span><br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>';
+            if (!isId) {
+                $('.frame')[1].innerHTML = '<span id="qryInputRender">' + (strict ? renderEquation($('#qryInput').val() + '=' + $('#qryInput2').val()) : renderEquation($('#qryInput').val())) + ' - 匹配到 ' + e.length + ' 个</span><br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>';
+            } else $('.frame')[1].innerHTML = ''
             for (let i = 0; i < e.length; i++) {
                 $('.frame')[1].innerHTML += renderEquation(e[i].content) + '<br><span class="label label-default">' + e[i].id + '</span> ';
                 if (e[i].conditions) $('.frame')[1].innerHTML += '（' + e[i].conditions + '）';
@@ -374,6 +376,11 @@ function doQuery(bd, isId = '') {
                 }
                 if (e[i].rel < 0) {
                     $('.frame')[1].innerHTML += 'rel: <span class="label label-warning">' + (-e[i].rel) + '</span><br>';
+                }
+                if (isId) {
+                    $('#qryInput').val(e[0].content)
+                    $('#addCondition').val(e[0].conditions)
+                    $('#addDescription').val(e[0].descriptions)
                 }
             }
             MathJax.typeset()
