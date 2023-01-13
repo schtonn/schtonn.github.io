@@ -254,75 +254,54 @@ function balUp() {
 //QUERY-------------------------------
 
 var modeq = 'query', nameq = 'eq', strict = false, matchMode = 'mole'
+function toggl(str, e = 0, f = 0) {
+    $('#qryBtn').text(str)
+    if (e) {
+        $('#qryMatch').hide(), $('.addInput').show(), $('.ok').hide()
+        if (e == 2) $('#addId').show()
+        else $('#addId').hide()
+    }
+    else $('#qryMatch').show(), $('.addInput').hide(), $('.ok').show()
+    if (f) $('.qryInputHidable').show()
+    else $('.qryInputHidable').hide()
+}
 function setQryEq() {
-    $('#qryMatch').show()
-    $('.addInput').hide()
-    $('.ok').show()
+    toggl('查询方程式')
     modeq = 'query', nameq = 'eq', strict = false
-    $('.qryInputHidable').hide()
-    $('#qryBtn').text('查询方程式')
-    $('#qryInput').attr('placeholder', 'O2=H2O'+'（输入化学式查询数据库，支持模糊搜索）')
+    $('#qryInput').attr('placeholder', 'O2=H2O' + '（输入化学式查询数据库，支持模糊搜索）')
     input2();
 }
 function setQryEq2() {
-    $('#qryMatch').show()
-    $('.addInput').hide()
-    $('.ok').show()
+    toggl('查询方程式*', 0, 1)
     modeq = 'query', nameq = 'eq', strict = true
-    $('.qryInputHidable').show()
-    $('#qryBtn').text('查询方程式*')
     $('#qryInput').attr('placeholder', 'H2O')
     input2();
 }
 function setQryMo() {
-    $('#qryMatch').show()
-    $('.addInput').hide()
-    $('.ok').show()
+    toggl('查询分子')
     modeq = 'query', nameq = 'mo'
-    $('.qryInputHidable').hide()
-    $('#qryBtn').text('查询分子')
     input2();
 }
 function setAddEq() {
-    $('#qryMatch').hide()
-    $('.addInput').show()
-    $('#addId').hide()
-    $('.ok').hide()
+    toggl('上传方程式', 1)
     modeq = 'add', nameq = 'eq'
-    $('.qryInputHidable').hide()
-    $('#qryBtn').text('上传方程式')
-    $('#qryInput').attr('placeholder', 'H2+O2=H2O'+'（输入化学式上传至数据库）')
+    $('#qryInput').attr('placeholder', 'H2+O2=H2O' + '（输入化学式上传至数据库）')
 }
 function setAddMo() {
-    $('#qryMatch').hide()
-    $('.addInput').show()
-    $('#addId').hide()
-    $('.ok').hide()
+    toggl('上传分子', 1)
     modeq = 'add', nameq = 'mo'
-    $('.qryInputHidable').hide()
-    $('#qryBtn').text('上传分子')
 }
 function setUpdEq() {
-    $('#qryMatch').hide()
-    $('.addInput').show()
-    $('#addId').show()
-    $('.ok').hide()
+    toggl('修改方程式', 2)
     modeq = 'upd', nameq = 'eq'
-    $('.qryInputHidable').hide()
-    $('#qryBtn').text('修改方程式')
     $('#qryInput').attr('placeholder', '（输入 id 修改已有化学式）')
 }
 function setUpdMo() {
-    $('#qryMatch').hide()
-    $('.addInput').show()
-    $('#addId').show()
-    $('.ok').hide()
+    toggl('修改分子', 2)
     modeq = 'upd', nameq = 'mo'
-    $('.qryInputHidable').hide()
-    $('#qryBtn').text('修改分子')
 }
 function replaceRegex(s) {
-    return s.replace(/([\+\=\.;])+/g, '$1').replace(/([\(\)])/g, '\\\\$1')
+    return s.replace(/([\+\=\.;])+/g, '$1').replace(/([\(\)])/g, '\\\\$1').replace(/(<\d*)e\+/g, '$1%')
 }
 function getRegex() {
     var ret = ''
@@ -368,12 +347,12 @@ function getRegex() {
         }
         ret += '.*'
     }
-    return ret
+    return ret.replace(/%/g, 'e+')
 }
 function query() {
     if (modeq == 'query' || modeq == 'add') {
         var cont = getRegex();
-        $('.ok')[0].innerHTML = cont;
+        $('.ok').text(cont);
         var bd = JSON.stringify({
             content: cont,
         })
@@ -499,7 +478,7 @@ function query() {
 
 function input2() {
     if (modeq == 'query') {
-        $('.ok')[0].innerHTML = getRegex()
+        $('.ok').text(getRegex())
     }
     if ($('#qryInputRender')[0]) $('#qryInputRender')[0].innerHTML = (strict ? renderEquation($('#qryInput').val() + '=' + $('#qryInput2').val()) : renderEquation($('#qryInput').val()))
     MathJax.typeset()
