@@ -556,8 +556,24 @@ function processFiles(isFirstTime = 0) {
             seNameDicP2.push(seNameDic[g].substr(0, 2));
             classOrderPP.push(classOrderP[g]);
             gradeOrderPP.push(gradeOrderP[g]);
-            classOrderQ.push(decimal(classOrder[g] * 100, 1));
-            gradeOrderQ.push(decimal(gradeOrder[g] * 100, 1));
+            if (classOrder[g] >= 0.99) classOrderQ.push({
+                value: decimal(classOrder[g] * 100, 1), itemStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [
+                        { offset: 0, color: '#f0ad4e' },
+                        { offset: 0.7, color: '#5bc0de' }
+                    ])
+                }
+            });
+            else classOrderQ.push(decimal(classOrder[g] * 100, 1));
+            if (gradeOrder[g] >= 0.99) gradeOrderQ.push({
+                value: decimal(gradeOrder[g] * 100, 1), itemStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [
+                        { offset: 0, color: '#d9534f' },
+                        { offset: 0.7, color: '#337ab7' }
+                    ])
+                }
+            });
+            else gradeOrderQ.push(decimal(gradeOrder[g] * 100, 1));
         }
         for (let i in ysClassOrderP) {
             seNameDicP3.push(seNameDic[i]);
