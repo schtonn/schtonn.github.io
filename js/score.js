@@ -65,7 +65,7 @@ function fetchDo(id) {
         // console.log(bd)
         bd = aesEncrypt(bd)
         // console.log(bd)
-        return fetch('http://36.112.23.77/analysis/api/student/exam/getStudentReportMEVO', {
+        return fetch('/analysis/api/student/exam/getStudentReportMEVO', {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',
@@ -99,7 +99,7 @@ function getExams(id) {
     var bd = '{"schoolId":19707,"studentId":"' + id + '"}';
     // console.log(bd)
     bd = aesEncrypt(bd)
-    return fetch('http://36.112.23.77/analysis/api/student/exam/getUserMultiExamByStudentIdAndSchoolId', {
+    return fetch('/analysis/api/student/exam/getUserMultiExamByStudentIdAndSchoolId', {
         method: 'POST',
         headers: {
             'Content-type': 'application/json',
@@ -131,7 +131,7 @@ function check() {
         var queryData = e.data.filter(function (e) {
             return e.no == a
         });
-        var o = queryData[0].organization
+        var o = queryData[0].o
 
         if (o.slice(o.length - 3) == '11班') {
             user = queryData[0].name
@@ -207,7 +207,7 @@ function getSe(id, force, force2) {
 
     bd = '{"schoolId":19707,"meId":' + examId[cur] + ',"seId":' + id + ',"studentId":"' + stuId[cur] + '"}';
     bd = aesEncrypt(bd)
-    fetch('http://36.112.23.77/analysis/api/student/exam/getStuExamDetailInfo', {
+    fetch('/analysis/api/student/exam/getStuExamDetailInfo', {
         method: 'POST',
         headers: {
             'Content-type': 'application/json',
@@ -219,7 +219,7 @@ function getSe(id, force, force2) {
         $('#singleDat').empty()
         var dat = JSON.parse(aesDecrypt(e.data))
         for (let i = 1; i <= dat.pageCount; i++) {
-            $('#singleDat').append('<br><span class="cover' + (i - 1) + '"></span><img src="http://36.112.23.77' + dat.examUrl + 'page_' + i + '.jpg" onload="imageLoaded(' + (i - 1) + ')">')
+            $('#singleDat').append('<br><span class="cover' + (i - 1) + '"></span><img src="' + dat.examUrl + 'page_' + i + '.jpg" onload="imageLoaded(' + (i - 1) + ')">')
             $('img')[i - 1].style.width = '100%'
         }
         if (!dat.pageCount) $('#singleDat').append('<p>...</p>')
@@ -244,7 +244,7 @@ function getSec(id, force, force2) {
     if (!examId[cur]) examId[cur] = prompt('考试编号？（心意答点击考试标题后，切换考试的列表里可见）')
     var bd = '{"schoolId":19707,"seId":' + id + ',"studentId":"' + stuId[cur] + '"}';
     bd = aesEncrypt(bd)
-    fetch('http://36.112.23.77/analysis/api/student/exam/getStudentReportSEVO', {
+    fetch('/analysis/api/student/exam/getStudentReportSEVO', {
         method: 'POST',
         headers: {
             'Content-type': 'application/json',
