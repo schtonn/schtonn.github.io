@@ -1,4 +1,4 @@
-var knownExams = ''
+var knownExams = '', checked = 0
 
 // for (let i = 3000; i < 3400; i++)knownExams += i.toString() + ','
 // knownExams = knownExams.slice(0, knownExams.length - 1)
@@ -136,13 +136,16 @@ function check() {
         if (o.slice(o.length - 3) == '11班') {
             user = queryData[0].name
             getExams(queryData[0].no)
+            checked = 1
             $('.fetch').toggle(1000)
         }
         else alert('no')
     });
 }
 
-function fetchMe(id) {
+function fetchMe() {
+    if (!checked) return
+    let id = $('#Input').val()
     if (!parseInt(id)) {
         fetch('/js/e.json', {
             method: 'GET',
