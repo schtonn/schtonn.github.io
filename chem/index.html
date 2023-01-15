@@ -65,10 +65,27 @@
             display: inline-block;
             transform: translateY(-2px);
         }
+
+        .MathJax {
+            color: midnightblue;
+        }
+
+        .result {
+            color: slategrey;
+            border-bottom: 1px solid;
+            border-image: linear-gradient(to right, transparent, rgba(143, 65, 233, 0.5), #578aef, transparent) 1;
+        }
+
+        .result:hover {
+            background-color: rgba(159, 186, 200, 0.1);
+        }
+
+        .glyphicon-share-alt {
+            transform: rotateX(180deg);
+        }
     </style>
     <script id="MathJax-script" src="https://cdn.bootcss.com/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
-
-    <script src="/js/chem.min.js"></script>
+    <script src="/js/chem.js"></script>
 
 </head>
 
@@ -76,14 +93,16 @@
     <div class="row">
         <div class="col-lg-2 col-md-2 col-xs-12">
             <a class="btn btn-info" href="/"><i class="glyphicon glyphicon-home" aria-hidden="true"></i>&nbsp;返回</a>
-
             <hr>
+            <button type="button" class="btn btn-default active" data-toggle="button" onclick="preview=!preview" id="preview" title="性能降低时关闭">实时预览</button>
+            <hr>
+            <p>小提示：<br><code>&lt;e+&gt;</code>、<code>&lt;2e-&gt;</code> 用于标注电荷，<code>.</code> 用于代替水合物等中间的点。输入 ! 快速导入查询结果。</p>
         </div>
         <div class="col-lg-8 col-md-10 col-xs-12">
             <div class="input-group">
-                <span class="input-group-btn">
+                <!-- <span class="input-group-btn">
                     <button type="button" class="btn btn-default" onclick="balUp()" id="balShare" title="导入配平结果"> <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
-                </span>
+                </span> -->
                 <input id="balInput" type="text" class="form-control" oninput="input()" autocomplete="off">
                 <span class="input-group-btn">
                     <button type="button" class="btn btn-default" onclick="balance()" id="balBtn">配平</button>
@@ -108,7 +127,7 @@
             <hr>
             <div class="input-group">
                 <span class="input-group-btn">
-                    <button type="button" class="btn btn-default" onclick="qryUp()" id="qryShare" title="导入配平结果"> <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
+                    <button type="button" class="btn btn-default"> <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
                     <button type="button" class="btn btn-default" data-toggle="button" onclick="qryToggleMatch()" id="qryMatch">匹配分子</button>
                 </span>
                 <input id="qryInput" type="text" class="form-control qryInput" autocomplete="off" oninput="input2()">
@@ -162,8 +181,6 @@
         <p>上下两个面板都可以用文字直接输入化学式，上面那个负责运算，下面那个负责数据库的交互。</p>
         <p>具体怎么操作相信大家都能看懂，用最右边的箭头可以切换功能，然后输入化学式，按下按钮，或者回车也行。至于相对质量，由于不需要多少算力，它是实时更新的。</p>
         <p>我运用了聪明绝顶的正则表达式（也就是那一串火星文），保证了查询方程式时，只要所有分子完全匹配，无论顺序都能查得到。你也可以改为只查包含某种元素的化学式，按左边的按钮就行。</p>
-        <p>左边的箭头按钮考虑的是在上下之间快速复制粘贴方程式，不过这个功能还没完全实现。以及根据描述查询方程式的功能也还没实现。</p>
         <p>我目前只录入了高一上学期讲的一些式子，你要是吃饱了闲着没事干也可以帮我录入。查到的方程式带着的数字就是它的 id，修改的时候用得到。</p>
-        <p>小提示：<code>&lt;e+&gt;</code>、<code>&lt;2e-&gt;</code> 用于标注电荷，<code>.</code> 用于代替水合物等中间的点，假如配平结果有一堆变量说明你的方程有多解。</p>
     </div>
 </body>

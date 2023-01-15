@@ -26,7 +26,7 @@ var weighList2 = {
     Fr: 223, Ra: 226.0, Ac: 227.0, Th: 232.0, Pa: 231.0, U: 238.0, Np: 237.0, Pu: 244, Am: 243, Cm: 247, Bk: 247, Cf: 251, Es: 252, Fm: 257, Md: 258, No: 259, Lr: 260, Rf: 261, Db: 262, Sg: 263, Bh: 262, Hs: 265, Mt: 266, Ds: 269, Rg: 272, Cn: 285, Nh: 284, Fl: 289, Mc: 288, Lv: 293, Ts: 291, Og: 294
 }
 
-var bracket = {}
+var bracket = {}, preview = 1
 
 function getco(str) {
     var n = str.length, ret = 0
@@ -148,7 +148,12 @@ function parseEquation(str) {
     return ans
 }
 
-function renderEquation(str) {
+function getCondition(e) {
+    if (e == '加热') return '\\Delta'
+    return e
+}
+
+function renderEquation(str, condition = '') {
     str = str.replace(/[\[{]/g, "(").replace(/[\]}]/g, ")");
     str = str.replace(/([\+\=\.;])\1+/g, '$1')
     str = str.replace(/[^\dA-Za-z<>\(\)\+\-=\.;]/g, "");
@@ -157,10 +162,33 @@ function renderEquation(str) {
     str = str.replace(/<(\d*)\\text\{e\}([\+\-])>/g, "^{$1$2}");
     str = str.replace(/([\}\)])(\d+)/g, "$1_{$2}");
     str = str.replace(/\./g, "\\cdot");
-    str = "<a href='#'>\\(" + str.replace(/([\+\-=\.;])([^\}])/g, "\\)</a> \\($1\\) <a href='#'>\\($2") + '\\)</a>';
+    if (condition) str = str.replace(/=/g, `\\stackrel{${getCondition(condition)}}{=}`)
+    str = "\\(" + str + "\\)"
+    // str = "<a href='#'>\\(" + str.replace(/([\+\-=\.;])([^\}])/g, "\\)</a> \\($1\\) <a href='#'>\\($2") + '\\)</a>';
     // console.log(str)
     return str
 }
+
+// function renderEquation(str, condition = '') {
+//     str = str.replace(/[\[{]/g, "(").replace(/[\]}]/g, ")");
+//     str = str.replace(/([\+\=\.;])\1+/g, '$1')
+//     console.log(str)
+//     str = str.replace(/([^e]|^)([\+\=\.;])/g, '$1 $2 ')
+//     console.log(str)
+//     str = str.replace(/[^\dA-Za-z<>\(\)\+\-=\.; ]/g, "");
+//     console.log(str)
+//     // console.log('Rendering equation', str)
+//     // str = str.replace(/([A-Za-z]+)/g, "\\text{$1}");
+//     console.log(str)
+//     str = str.replace(/<(\d*)\{e\}([\+\-])>/g, "^{$1$2}");
+//     console.log(str)
+//     str = str.replace(/([\}\)])(\d+)/g, "$1_{$2}");
+//     str = str.replace(/\./g, "\\cdot");
+//     // str = "<a href='#'>\\(" + str.replace(/([\+\-=\.;])([^\}])/g, "\\)</a> \\($1\\) <a href='#'>\\($2") + '\\)</a>';
+//     str = `\\(\\ce{${str}}\\)`
+//     console.log(str)
+//     return str
+// }
 
 //PROCESS-------------------------------
 
@@ -179,6 +207,7 @@ $().ready(function () {
             $("#qryBtn")[0].click();
         }
     });
+    $("#preview").tooltip()
     $(function () { $("[data-toggle='tooltip']").tooltip(); });
 })
 function setBal() {
@@ -214,16 +243,17 @@ function input() {
     inputText = balInput.value
     if (mode == 'bal') {
         $('.frame')[0].innerHTML = renderEquation((inputText == '') ? case1 : inputText) + '<br>'
-            + '<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>' + ((balText != '') ? (renderEquation(balText)) : ('...'));
-        MathJax.typeset()
+        + '<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>' + ((balText != '') ? (renderEquation(balText)) : ('...'));
     } else if (mode == 'weigh') {
         $('.frame')[0].innerHTML = renderEquation((inputText == '') ? case2 : inputText) + '<br>'
-            + weighEquation((inputText == '') ? case2 : inputText);
-        MathJax.typeset()
+        + weighEquation((inputText == '') ? case2 : inputText);
     } else if (mode == 'weigh2') {
         $('.frame')[0].innerHTML = renderEquation((inputText == '') ? case2 : inputText) + '<br>'
-            + weighEquation((inputText == '') ? case2 : inputText, 1);
-        MathJax.typeset()
+        + weighEquation((inputText == '') ? case2 : inputText, 1);
+    }
+    if (preview) MathJax.typeset()
+    if(inputText.match('!')){
+        balUp()
     }
 }
 var running;
@@ -245,6 +275,7 @@ function balance() {
         running = 0;
     })
 }
+
 function balUp() {
     if (mode != 'bal') return;
     $('#balInput').val(balText);
@@ -268,7 +299,7 @@ function toggl(str, e = 0, f = 0) {
 function setQryEq() {
     toggl('查询方程式')
     modeq = 'query', nameq = 'eq', strict = false
-    $('#qryInput').attr('placeholder', 'O2=H2O' + '（输入化学式查询数据库，支持模糊搜索）')
+    $('#qryInput').attr('placeholder', 'O2=H2O' + '（输入化学式查询数据库，也可输入 id）')
     input2();
 }
 function setQryEq2() {
@@ -328,6 +359,7 @@ function getRegex() {
         ret += '.*'
     } else {
         ret = $('#qryInput').val()
+        if (ret && !ret.match(/[^\d]/g)) return ret
         if (!ret) ret = $('#qryInput').attr('placeholder').split('（')[0]
         ret = replaceRegex(ret)
         var scont = ret.split('=')
@@ -350,7 +382,7 @@ function getRegex() {
     return ret.replace(/%/g, 'e+')
 }
 
-function doQuery(bd, isId = '') {
+function doQuery(bd, isId = '', replace = 1) {
     fetch('/chem/query/' + nameq + isId, {
         method: 'POST',
         headers: {
@@ -363,26 +395,32 @@ function doQuery(bd, isId = '') {
         if (e[0] == '!') {
             $('.frame')[1].innerHTML = '<pre class="text-danger bg-danger">' + e + '</pre>';
         } else {
+            let qin = $('#qryInput').val()
             e = JSON.parse(e)
-            if (!isId) {
-                $('.frame')[1].innerHTML = '<span id="qryInputRender">' + (strict ? renderEquation($('#qryInput').val() + '=' + $('#qryInput2').val()) : renderEquation($('#qryInput').val())) + ' - 匹配到 ' + e.length + ' 个</span><br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>';
+            if (!isId || !replace) {
+                $('.frame')[1].innerHTML = '<span id="qryInputRender">' + (strict ? renderEquation(qin + '=' + $('#qryInput2').val()) : renderEquation(qin)) + ' - 匹配到 ' + e.length + ' 个</span><br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>';
             } else $('.frame')[1].innerHTML = ''
+            var str = ''
             for (let i = 0; i < e.length; i++) {
-                $('.frame')[1].innerHTML += renderEquation(e[i].content) + '<br><span class="label label-default">' + e[i].id + '</span> ';
-                if (e[i].conditions) $('.frame')[1].innerHTML += '（' + e[i].conditions + '）';
-                $('.frame')[1].innerHTML += e[i].descriptions + '<br>';
+                str += '<div class="result">' + renderEquation(e[i].content, e[i].conditions) + '<br><span class="label label-default">' + e[i].id + '</span> ';
+                if (e[i].conditions) str += '（' + e[i].conditions + '）';
+                str += e[i].descriptions + '<br>';
                 if (e[i].rel > 0) {
-                    $('.frame')[1].innerHTML += 'rel: <span class="label label-success">' + e[i].rel + '</span><br>';
+                    str += '<span class="glyphicon glyphicon-share-alt"></span> <span class="label label-success">' + e[i].rel + '</span><br>';
                 }
                 if (e[i].rel < 0) {
-                    $('.frame')[1].innerHTML += 'rel: <span class="label label-warning">' + (-e[i].rel) + '</span><br>';
+                    str += '<span class="glyphicon glyphicon-share-alt"></span> <span class="label label-warning">' + (-e[i].rel) + '</span><br>';
                 }
                 if (isId) {
-                    $('#qryInput').val(e[0].content)
+                    if (replace) $('#qryInput').val(e[0].content)
                     $('#addCondition').val(e[0].conditions)
                     $('#addDescription').val(e[0].descriptions)
                 }
+                console.log(qin)
+                if (qin.match('!') || replace == 2) $('#qryInput').val(e[0].content)
+                str += '</div>'
             }
+            $('.frame')[1].innerHTML += str
             MathJax.typeset()
         }
     });
@@ -466,8 +504,14 @@ function input2() {
     if (modeq == 'query') {
         $('.ok').text(getRegex())
     }
+    if ($('#qryInput').val() && $('#qryInput').val().match(/^\d+!?$/g)) {
+        doQuery(JSON.stringify({ content: $('#qryInput').val().split('!')[0] }), 'id', 0)
+    } else if ($('#qryInput').val().match('!')) {
+        $('#qryInput').val($('#qryInput').val().split('!')[0])
+        doQuery(JSON.stringify({ content: getRegex() }), '', 2)
+    }
     if ($('#qryInputRender')[0]) $('#qryInputRender')[0].innerHTML = (strict ? renderEquation($('#qryInput').val() + '=' + $('#qryInput2').val()) : renderEquation($('#qryInput').val()))
-    MathJax.typeset()
+    if (preview) MathJax.typeset()
 }
 
 function inputId() {
@@ -478,7 +522,6 @@ function inputId() {
         $('.frame')[1].innerHTML = '';
         return;
     }
-    console.log(bd)
     doQuery(bd, 'id')
 }
 
