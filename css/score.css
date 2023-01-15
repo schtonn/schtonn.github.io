@@ -1,0 +1,113 @@
+.btn.btn-how {
+    min-height: 35px;
+    margin-right: 1px;
+    margin-left: 1px;
+}
+
+.btn.btn-how.active {
+    margin-right: 3px;
+    margin-left: 3px;
+    min-height: 40px;
+    border-bottom: none;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+body {
+    transition-duration: 300ms;
+}
+
+#controls {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 5px;
+    border: 5px solid rgba(15, 15, 15, 0.1);
+    border-radius: 15px;
+    background-color: rgba(15, 15, 15, 0.1);
+    backdrop-filter: blur(5px);
+    z-index: -1;
+}
+
+#name {
+    background-color: rgba(215, 215, 215, 0.7);
+    border-radius: 5px;
+    padding-right: 3px;
+}
+
+#controls:not(.disabled) {
+    z-index: 1;
+}
+
+.well {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    -webkit-box-shadow: inset 0 3px 3px rgb(0 0 0 / 5%);
+    box-shadow: inset 0 3px 3px rgb(0 0 0 / 5%);
+}
+
+img {
+    transition-duration: 300ms;
+    border: 3px dotted grey;
+    width: 100%;
+}
+
+.minus {
+    transition-duration: 300ms;
+    color: rgb(217, 83, 79);
+    font-weight: 800;
+    font-family: 'Consolas';
+    background-color: rgba(215, 215, 215, 0.7);
+    position: absolute;
+    border-radius: 4px;
+    padding: 2px;
+}
+
+.minus.full {
+    color: rgb(92, 184, 92);
+}
+
+.sp {
+    outline: 1px solid rgba(15, 15, 15, 0.7);
+    background-color: rgba(215, 215, 215, 0.7);
+    position: absolute;
+    border-radius: 1px;
+}
+
+.sp.cor {
+    background-color: rgba(92, 184, 92, 0.7);
+}
+
+.sp.err {
+    background-color: rgba(217, 83, 79, 0.7);
+}
+
+.avgSc {
+    background-color: rgba(199, 217, 79, 0.3);
+    font-family: 'Courier New', Courier;
+}
+
+.fullSc {
+    background-color: rgba(199, 217, 79, 0.3);
+    font-family: 'Courier New', Courier;
+}
+
+.mySc {
+    color: white;
+    background-color: rgba(6, 65, 106, 0.505);
+    font-family: 'Courier New', Courier;
+}
+
+.list-unstyled>li {
+    background-color: rgba(217, 83, 79, 0.2);
+}
+
+.list-unstyled>li.fullScore {
+    background-color: rgba(199, 217, 79, 0.3);
+}
+
+.sc {
+    position: relative;
+}

@@ -14,122 +14,7 @@
 &family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <script type="text/javascript" src="/js/score.js"></script>
-    <style>
-        .btn.btn-how {
-            min-height: 35px;
-            margin-right: 1px;
-            margin-left: 1px;
-        }
-
-        .btn.btn-how.active {
-            margin-right: 3px;
-            margin-left: 3px;
-            min-height: 40px;
-            border-bottom: none;
-            border-bottom-left-radius: 0;
-            border-bottom-right-radius: 0;
-        }
-
-        body {
-            transition-duration: 300ms;
-        }
-
-        #controls {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 5px;
-            border: 5px solid rgba(15, 15, 15, 0.1);
-            border-radius: 15px;
-            background-color: rgba(15, 15, 15, 0.1);
-            backdrop-filter: blur(5px);
-            z-index: -1;
-        }
-
-        #name {
-            background-color: rgba(215, 215, 215, 0.7);
-            border-radius: 5px;
-            padding-right: 3px;
-        }
-
-        #controls:not(.disabled) {
-            z-index: 1;
-        }
-
-        .well {
-            border-top-left-radius: 0;
-            border-top-right-radius: 0;
-            border-bottom-left-radius: 30px;
-            border-bottom-right-radius: 30px;
-            -webkit-box-shadow: inset 0 3px 3px rgb(0 0 0 / 5%);
-            box-shadow: inset 0 3px 3px rgb(0 0 0 / 5%);
-        }
-
-        img {
-            transition-duration: 300ms;
-            border: 3px dotted grey;
-            width: 100%;
-        }
-
-        .minus {
-            transition-duration: 300ms;
-            color: rgb(217, 83, 79);
-            font-weight: 800;
-            font-family: 'Consolas';
-            background-color: rgba(215, 215, 215, 0.7);
-            position: absolute;
-            border-radius: 4px;
-            padding: 2px;
-        }
-
-        .minus.full {
-            color: rgb(92, 184, 92);
-        }
-
-        .sp {
-            outline: 1px solid rgba(15, 15, 15, 0.7);
-            background-color: rgba(215, 215, 215, 0.7);
-            position: absolute;
-            border-radius: 1px;
-        }
-
-        .sp.cor {
-            background-color: rgba(92, 184, 92, 0.7);
-        }
-
-        .sp.err {
-            background-color: rgba(217, 83, 79, 0.7);
-        }
-
-        .avgSc {
-            background-color: rgba(199, 217, 79, 0.3);
-            font-family: 'Courier New', Courier;
-        }
-
-        .fullSc {
-            background-color: rgba(199, 217, 79, 0.3);
-            font-family: 'Courier New', Courier;
-        }
-
-        .mySc {
-            color: white;
-            background-color: rgba(6, 65, 106, 0.505);
-            font-family: 'Courier New', Courier;
-        }
-
-        .list-unstyled>li {
-            background-color: rgba(217, 83, 79, 0.2);
-        }
-
-        .list-unstyled>li.fullScore {
-            background-color: rgba(199, 217, 79, 0.3);
-        }
-
-
-        .sc {
-            position: relative;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/score.css">
 </head>
 
 <body>
@@ -157,7 +42,7 @@
             <p>6. 此时应看到“{data: {,...”等数据，一定在数据第一行右键（或在其最后一行下方空白处右键），随后“<b>复制物体</b>”或“<b>Copy Object</b>”；</p>
             <p>7. 新建文本文档（格式为 txt，不可用 Word 文档），将所复制的内容粘贴并保存，于下方按钮打开。</p>
             <p style="font-size: 12px;font-style: italic;">
-                注：图表整理均在本地进行，你的成绩不会上传到网络（上传与否，已经不重要了）。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;把所有人的成绩信息完整地公布在接口上，心意答我真服了你！
+                注：图表整理均在本地进行，你的成绩不会上传到网络。
             </p>
             <a tabindex="0" class="btn btn-default fetch" href="tutor/">
                 <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>&nbsp;<b>查看示例截图</b>
@@ -174,21 +59,20 @@
         <input id="Id" type="text" class="form-control" autocomplete="off">
     </div>
     <div class="input-group fetch" style="display:none">
-        <span class="input-group-addon">姓名<a href="/js/e.json" onclick="setWeigh2()" data-toggle="tooltip" data-placement="bottom" title="仅限2025届高考部">*</a>或数字校园号</span>
+        <span class="input-group-addon">姓名<a href="/js/e.json" data-toggle="tooltip" data-placement="bottom" title="仅限2025届高考部">*</a>或数字校园号</span>
         <input id="Input" type="text" class="form-control" autocomplete="off" placeholder="20222001 或 小明">
         <span class="input-group-btn">
-            <button type="button" class="btn btn-success" onclick="fetchMe($('#Input').val())" id="fetchBtn"><span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span> FETCH</button>
+            <button type="button" class="btn btn-success" onclick="fetchMe()" id="fetchBtn"><span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span> FETCH</button>
         </span>
     </div>
     <div style="text-align: center;" class="hidable">
         <div class="btn-group">
-            <a id="upbtn" tabindex="0" class="btn btn-info" onclick="document.getElementById('fileInput').click();">
+            <a id="upbtn" tabindex="0" class="btn btn-info" onclick="$('#fileInput')[0].click();">
                 <span id="upicon" class="glyphicon glyphicon-open" aria-hidden="true"></span> <b>打开文件</b><input style="display: none;" id="fileInput" type="file" onchange="getFiles(event)">
             </a>
             <a id="upbtn" tabindex="0" class="btn btn-danger" onclick="check()">
                 <b>?!</b>
             </a>
-            <!-- If you must... -->
         </div>
         <a tabindex="0" class="btn btn-warning toggleHide fetch" onclick="$('.hidable').hide(1000);$('.toggleHide').toggle(1000)">
             <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
@@ -251,25 +135,9 @@
             <div class="tab-pane fade" id="other">
                 <p>Nobody asked</p>
                 <p>原为实验中学 74 桌出品，我仅做搬运修改。</p>
-                <p><a href="how">有关如何破解接口（备忘）</a></p>
                 <p><a href="/js/score.js">压缩前代码</a></p>
                 <p>如恶意使用接口，后果自负、、</p>
                 <br><br><br>
-                <!-- <p>你是否还想看看别人考的怎么样？</p>
-                <p>想看别人考的怎么样，首先你得安装并启用<a href="https://greasyfork.org/zh-CN/scripts/456705-wangshaui-simulator"
-                        target="_blank">这个脚本</a>。</p>
-                <p>假如你安装脚本都费劲，那无论如何你得先装上 Chrome 浏览器，我已经帮你把 Tampermonkey 搞来了，你只需要<a href="tutor/tamper.crx">下载</a>，Chrome
-                    大概率会自动安装，你再<a href="https://greasyfork.org/zh-CN/scripts/456705-wangshaui-simulator"
-                        target="_blank">从这里</a>就能直接安装脚本了。</p>
-                <p>随后进入心意答界面。多刷新几次，你会发现你来到了后台，然后你得进入学情分析页。</p>
-                <p>这时按
-                    <kbd>F12</kbd> 打开 DevTools 界面，从顶栏分页找到 Network，再刷新一次。
-                </p>
-                <p>此时应出现一堆文件的列表，从里面找到以 'app.9739...'
-                    开头的那个文件，右键选择 Block request URL 屏蔽它。</p>
-                <p>不要关闭 DevTools，再次刷新，你就能看到别人考的怎么样了。假如你还想从不同老师的视角看，可以点击顶端的
-                    changeId 按钮，至于老师的 id 是多少，你可以上数字校园邮箱里面翻一翻。</p>
-                <img async src="tutor/5.png"> -->
             </div>
         </div>
     </div>
