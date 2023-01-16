@@ -4,7 +4,9 @@
     ignore=all
 [submodule "game"]
     path=game
+    url=https://github.com/danprince/norman-the-necromancer
     ignore=all
 [submodule "norman"]
     path=fun/norman-the-necromancer
+    url=https://github.com/danprince/norman-the-necromancer
     ignore=all
