@@ -22,7 +22,7 @@
             e = f;
         });
 
-        var wid = 0, skip = 0, only = 0
+        var wid = 0, skip = 0, only = 0, mul = 0
 
         var col = {
             '向量': '#337ab7',
@@ -33,12 +33,12 @@
             return col[str] ? col[str] : (pam ? '#6f9f3f' : '#3f3f3f')
         }
         function is11(str) {
-            if(str[str.length-1]==' ')str=str.split(' ')[0]
-            if(str=='向量')return true
+            if (str[str.length - 1] == ' ') str = str.split(' ')[0]
+            if (str == '向量') return true
             var queryData = e.data.filter(function (e) {
                 return e.name == str
             });
-            if(!queryData[0])return false
+            if (!queryData[0]) return false
             var o = queryData[0].o
 
             return o.slice(o.length - 3) == '11班'
@@ -57,12 +57,16 @@
             for (let i = 0; i < arr.length; i++) {
                 if (!arr[i]) continue;
                 if (only && (!is11(arr[i].source) || !is11(arr[i].target))) continue;
-                res.push({
+                var yee = {
                     source: arr[i].source, target: arr[i].target,
-                    value: wid ? 1 : arr.filter(function (e) {
+                    value: arr.filter(function (e) {
                         return e.source == arr[i].source && e.target == arr[i].target
                     }).length
-                })
+                }
+                if (!mul || yee.value > 1) {
+                    if (wid) yee.value = 1
+                    res.push(yee)
+                }
                 for (let j = i + 1; j < arr.length; j++) {
                     if (!arr[j]) continue;
                     if (arr[j].source == arr[i].source && arr[j].target == arr[i].target) delete arr[j]
@@ -78,9 +82,10 @@
             else o = 3000
             if (wid) o /= 1.75
             if (only) o /= 1.75
+            if (mul) o /= 1.75
             $("#sanky").css('height', o + 'px')
             cc = echarts.init($("#sanky")[0]);
-            fetch('/a.log', {
+            fetch('/score.log', {
                 method: 'GET',
             }).then(res => {
                 return res.text()
@@ -191,14 +196,15 @@
             <button class="btn btn-success" onclick="get()">get</button>
         </div>
         <input class="form-control" id="filter" placeholder="筛选">
-        <div class="input-group-btn">
-            <button data-toggle="button" class="btn btn-default" onclick="skip=!skip;get()">忽略自环</button>
-            <button class="btn btn-default" data-toggle="button" onclick="wid=!wid;get()">固定宽度</button>
-            <button class="btn btn-default" data-toggle="button" onclick="only=!only;get()">只看11班</button>
-        </div>
         <span class="input-group-addon">
             提示：保持鼠标不动，可以随意滑动滚轮而不改变焦点
         </span>
+    </div>
+    <div class="btn-group">
+        <button data-toggle="button" class="btn btn-default" onclick="skip=!skip;get()">忽略自环</button>
+        <button class="btn btn-default" data-toggle="button" onclick="wid=!wid;get()">固定宽度</button>
+        <button class="btn btn-default" data-toggle="button" onclick="mul=!mul;get()">过滤单次</button>
+        <button class="btn btn-default" data-toggle="button" onclick="only=!only;get()">只看11班</button>
     </div>
     <div id="sanky" class="chart" style="height:3000px"></div>
 </body>
