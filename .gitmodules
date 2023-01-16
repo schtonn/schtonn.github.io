@@ -1,3 +1,7 @@
+[submodule "74"]
+    path=74
+    url=https://43.143.233.184/schtonn/74.git
+    ignore=all
 [submodule "game"]
     path=game
     ignore=all
