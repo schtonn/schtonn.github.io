@@ -1,6 +1,3 @@
-[submodule "74"]
-    path=74
-    ignore=all
 [submodule "game"]
     path=game
     ignore=all
