@@ -1,0 +1,9 @@
+[submodule "74"]
+    path=74
+    ignore=all
+[submodule "game"]
+    path=game
+    ignore=all
+[submodule "norman"]
+    path=fun/norman-the-necromancer
+    ignore=all
