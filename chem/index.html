@@ -55,9 +55,10 @@
             transition-duration: 300ms;
         }
 
+        /* 
         a:hover {
             box-shadow: inset 1px 1px 6px rgba(59, 86, 100, 0.3);
-        }
+        } */
 
         .label {
             padding: .2em .4em .2em;
@@ -83,6 +84,10 @@
         .glyphicon-share-alt {
             transform: rotateX(180deg);
         }
+
+        .btn {
+            height: 34px;
+        }
     </style>
     <script id="MathJax-script" src="https://cdn.bootcss.com/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
     <script src="/js/chem.js"></script>
@@ -99,6 +104,12 @@
             <p>小提示：<br><code>&lt;e+&gt;</code>、<code>&lt;2e-&gt;</code> 用于标注电荷，<code>.</code> 用于代替水合物等中间的点。输入 ! 快速查询并导入结果。</p>
         </div>
         <div class="col-lg-8 col-md-10 col-xs-12">
+            <h2>化学小工具<small>
+                    <a href="#" onclick="setBal()">配平</a>
+                    <a href="#" onclick="setWeigh()">相对质量</a>
+                    <a href="#" onclick="setWeigh2()" data-toggle="tooltip" data-placement="top" title="四位有效数字">相对质量*</a>
+                    <a href="/chemist" data-toggle="tooltip" data-placement="top" title="将打开新页面">配平接口</a>
+                </small></h2>
             <div class="input-group">
                 <!-- <span class="input-group-btn">
                     <button type="button" class="btn btn-default" onclick="balUp()" id="balShare" title="导入配平结果"> <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
@@ -125,6 +136,12 @@
             <div class="well frame">
             </div>
             <hr>
+            <h2>数据库<small>
+                    <a href="#1" onclick="setQryEq()">查询方程式</a>
+                    <a href="#1" onclick="setQryEq2()" data-toggle="tooltip" data-placement="top" title="限制等号左右">查询方程式*</a>
+                    <a href="#5" onclick="setAddEq()">上传方程式</a>
+                    <a href="#1" onclick="setUpdEq()">修改方程式</a>
+                </small></h2>
             <div class="input-group">
                 <span class="input-group-btn">
                     <button type="button" class="btn btn-default"> <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
@@ -173,14 +190,7 @@
             </div>
         </div>
         <div class="col-lg-2 col-md-12 col-xs-12">
-            <button class="btn btn-default" onclick="$('.help').toggle(300);$('.helpicon').toggleClass('glyphicon-arrow-down')"><i class="glyphicon glyphicon-question-sign helpicon"></i></button>
+            <img class="img-responsive" src="2.png">
         </div>
-    </div>
-    <div class="row help" style="display:none;">
-        <p>忽然觉得可能多数人看到这个界面会一脸懵，所以我还是写个说明吧。</p>
-        <p>上下两个面板都可以用文字直接输入化学式，上面那个负责运算，下面那个负责数据库的交互。</p>
-        <p>具体怎么操作相信大家都能看懂，用最右边的箭头可以切换功能，然后输入化学式，按下按钮，或者回车也行。至于相对质量，由于不需要多少算力，它是实时更新的。</p>
-        <p>我运用了聪明绝顶的正则表达式（也就是那一串火星文），保证了查询方程式时，只要所有分子完全匹配，无论顺序都能查得到。你也可以改为只查包含某种元素的化学式，按左边的按钮就行。</p>
-        <p>我目前只录入了高一上学期讲的一些式子，你要是吃饱了闲着没事干也可以帮我录入。查到的方程式带着的数字就是它的 id，修改的时候用得到。</p>
     </div>
 </body>
