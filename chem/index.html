@@ -144,7 +144,7 @@
                 </small></h2>
             <div class="input-group">
                 <span class="input-group-btn">
-                    <button type="button" class="btn btn-default"> <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
+                    <button type="button" class="btn btn-default" style="border-bottom-left-radius: 0;"> <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
                     <button type="button" class="btn btn-default" data-toggle="button" onclick="qryToggleMatch()" id="qryMatch">匹配分子</button>
                 </span>
                 <input id="qryInput" type="text" class="form-control qryInput" autocomplete="off" oninput="input2()">
@@ -152,7 +152,7 @@
                 <input id="qryInput2" type="text" class="form-control qryInput qryInputHidable" style="display:none" autocomplete="off" oninput="input2()">
                 <span class="input-group-btn">
                     <button type="button" class="btn btn-default" onclick="query()" id="qryBtn">查询方程式</button>
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="border-bottom-right-radius: 0;">
                         <span class="caret"></span>
                         <span class="sr-only">切换下拉菜单</span>
                     </button>
@@ -183,7 +183,7 @@
                 </span>
                 <span class="input-group-addon">:)</span>
             </div>
-            <pre class="ok" style="font-family: 'Consolas'"></pre>
+            <pre class="ok" style="font-family: 'Consolas';top: -1px;position: relative;border-top-left-radius: 0;border-top-right-radius: 0;"></pre>
             <hr>
             <div class="well frame">
                 <span id="qryInputRender"></span>
