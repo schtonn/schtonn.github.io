@@ -264,6 +264,13 @@ function balance() {
     $('#balBtn').addClass('disabled')
     $('.frame').addClass('text-muted')
     running = 1;
+    fetch('/alog', {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json',
+        },
+        body: '{"content":"' + ((inputText == '') ? case1 : inputText) + '"}'
+    })
     return fetch('https://43.143.233.184:7989/chem', {
         method: 'POST',
         headers: {
@@ -273,6 +280,7 @@ function balance() {
     }).then(
         res => res.text()
     ).then(e => {
+        if(e=='{}')e='"!Description: Invalid Character."'
         e = e.split('"')[1].replace(/\\n/g, '\n')
         $('.frame')[0].innerHTML = (e.charAt(0) == '!') ? ('<pre class="text-danger bg-danger">' + e.slice(1, e.length) + '</pre>') : (renderEquation((inputText == '') ? case1 : inputText)
             + '<br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>' + renderEquation(e));
