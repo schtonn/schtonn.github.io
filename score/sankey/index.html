@@ -63,7 +63,7 @@
                         return e.source == arr[i].source && e.target == arr[i].target
                     }).length
                 }
-                if (!mul || yee.value > 1) {
+                if (!mul || yee.value > mul) {
                     if (wid) yee.value = 1
                     res.push(yee)
                 }
@@ -74,6 +74,7 @@
             }
             return res;
         }
+        var cc;
         function resizeChart() {
             cc.resize()
         }
@@ -82,9 +83,9 @@
             else o = 3000
             if (wid) o /= 1.75
             if (only) o /= 1.75
-            if (mul) o /= 1.75
+            if (mul) o /= mul*0.5+1.75
             $("#sanky").css('height', o + 'px')
-            cc = echarts.init($("#sanky")[0]);
+            if(!cc)cc = echarts.init($("#sanky")[0]);
             fetch('/score.log', {
                 method: 'GET',
             }).then(res => {
@@ -200,11 +201,15 @@
             提示：保持鼠标不动，可以随意滑动滚轮而不改变焦点
         </span>
     </div>
-    <div class="btn-group">
-        <button data-toggle="button" class="btn btn-default" onclick="skip=!skip;get()">忽略自环</button>
-        <button class="btn btn-default" data-toggle="button" onclick="wid=!wid;get()">固定宽度</button>
-        <button class="btn btn-default" data-toggle="button" onclick="mul=!mul;get()">过滤单次</button>
-        <button class="btn btn-default" data-toggle="button" onclick="only=!only;get()">只看11班</button>
+    <div class="input-group">
+        <div class="input-group-btn">
+            <button data-toggle="button" class="btn btn-default" onclick="skip=!skip;get()">忽略自环</button>
+            <button class="btn btn-default" data-toggle="button" onclick="wid=!wid;get()">固定宽度</button>
+        </div>
+        <input class="form-control" oninput="mul=(this.value)?this.value-1:0;get();console.log(mul)" placeholder="最少次数">
+        <div class="input-group-btn">
+            <button class="btn btn-default" data-toggle="button" onclick="only=!only;get()">只看11班</button>
+        </div>
     </div>
     <div id="sanky" class="chart" style="height:3000px"></div>
 </body>
