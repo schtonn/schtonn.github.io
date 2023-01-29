@@ -17,7 +17,7 @@
         var status, oid, user, pwd
         function getCookie(name) {
             let arr = document.cookie.match(new RegExp("(^| )" + name + "=([^;]*)(;|$)"));
-            if (arr != null) return unescape(arr[2]);
+            if (arr != null) return arr[2];
             return null;
         }
         function delCookie(name, path = 'u') {
@@ -52,19 +52,28 @@
             }
         }
         function delCookies(force) {
-            if (force) delCookie('CASTGC', '/')
-            delCookie('JSESSIONID', '/')
-            delCookie('JSESSIONID', '/sso')
-            delCookie('JSESSIONID', '/sso/')
+            if (force) {
+                delCookie('CASTGC', '/')
+                delCookie('gosh', '/score/')
+                delCookie('gosh', '/sso')
+                delCookie('gowd', '/sso')
+            }
             if (force == 2) {
                 delCookie('JSESSIONID', '/bxn-portal')
                 delCookie('JSESSIONID', '/bxn-library')
                 delCookie('JSESSIONID', '/bxn-core-uic')
             }
+            delCookie('JSESSIONID', '/')
+            delCookie('JSESSIONID', '/sso')
+            delCookie('JSESSIONID', '/sso/')
         }
         function postLogin() {
             if (status != 1) return;
-            $('#changePwd').val($('#loginPwd').val())
+            if (!user) user = getCookie('gosh'), pwd = getCookie('gowd')
+            document.cookie = "gosh=" + user + ";path=/score/";
+            document.cookie = "gosh=" + user + ";path=/sso";
+            document.cookie = "gowd=" + pwd + ";path=/sso";
+            $('#changePwd').val(pwd)
             getCk('null', 'bxn-library/library/jumpExamreport?jumpUrl=http://36.112.23.77/analysis/auto/%23/autoLogin')
             getCk('null', 'bxn-portal/portal/api/proxy?username=true&userId=true&needvalidate=true&t=http%3A%2F%2F202.94.10.118%2Fbxn-library%2Fapi%2Flibrary%2FgetLatestBorrowBook%3Fcategory%3D1&resourceId=103519&cache=nocache&systime=0')
         }
@@ -127,11 +136,11 @@
             $('#' + name).addClass('btn-success')
         }
         function change() {
-            if (status != 1 || $('#loginPwd').val() == $('#changePwd').val()) return
+            if (status != 1 || pwd == $('#changePwd').val()) return
             var fd = new URLSearchParams()
             fd.append('rating', '4')
             fd.append('ratingWord', '极佳')
-            fd.append('oldPassword', $('#loginPwd').val())
+            fd.append('oldPassword', pwd)
             fd.append('newPassword', $('#changePwd').val())
             fd.append('reNewPassword', $('#changePwd').val())
             fetch('https://43.143.233.184:81/bxn-core-uic/uic-public/personal/management/password/save', {
@@ -167,6 +176,11 @@
             box-shadow: none;
             opacity: .65;
         }
+
+        .form-control {
+            font-weight: bold;
+            font-family: 'Courier New', Courier, monospace;
+        }
     </style>
 </head>
 
@@ -185,25 +199,26 @@
     </div>
     <div class="col-md-4 col-sm-6 box">
         <div class="page-header">
-            <h3>账号</h3>
+            <h3><span class="glyphicon glyphicon-user"></span> 账号
+                <div id="cookie" class="btn-group" style="display: none;">
+                    <button id="bxn-portal" class="btn btn-default btn-xs" onclick="getCk('bxn-portal','bxn-portal/portal/osforstudent/index')">bxn-portal</button>
+                    <button id="bxn-core-uic" class="btn btn-default btn-xs" onclick="getCk('bxn-core-uic','bxn-core-uic/uic/index')">bxn-core-uic</button>
+                    <button id="bxn-library" class="btn btn-default btn-xs" onclick="getCk('bxn-library','bxn-library/library/jumpExamreport?jumpUrl=')">bxn-library</button>
+                </div>
+            </h3>
         </div>
         <button class="btn btn-default e" onclick="$('#change').toggle(200)">修改密码</button>
         <button class="btn btn-default e" onclick="$('#cookie').toggle(200);getCookies()">cookie</button>
-        <div id="cookie" class="btn-group" style="display: none;">
-            <button id="bxn-portal" class="btn btn-default btn-xs" onclick="getCk('bxn-portal','bxn-portal/portal/osforstudent/index')">bxn-portal</button>
-            <button id="bxn-core-uic" class="btn btn-default btn-xs" onclick="getCk('bxn-core-uic','bxn-core-uic/uic/index')">bxn-core-uic</button>
-            <button id="bxn-library" class="btn btn-default btn-xs" onclick="getCk('bxn-library','bxn-library/library/jumpExamreport?jumpUrl=')">bxn-library</button>
-        </div>
         <div id="login">
             <br>
             <div class="input-group">
                 <span class="input-group-addon">账号</span>
-                <input id="loginId" type="id" class="form-control" style="font-weight: bold; font-family: 'Courier New', Courier, monospace;" placeholder="20222222" value="20222446">
+                <input id="loginId" type="id" class="form-control" placeholder="20222222" value="20222446">
             </div>
             <br>
             <div class="input-group">
                 <span class="input-group-addon">密码</span>
-                <input id="loginPwd" type="password" class="form-control" style="font-weight: bold; font-family: 'Courier New', Courier, monospace;" placeholder="password" value="thisis1APPLE">
+                <input id="loginPwd" type="password" class="form-control" placeholder="password" value="thisis1APPLE">
                 <span class="input-group-btn"><button class="btn btn-default" type="button" onclick="login()">登录</button></span>
             </div>
         </div>
@@ -211,14 +226,14 @@
             <br>
             <div class="input-group">
                 <span class="input-group-addon">新密码</span>
-                <input id="changePwd" type="password" class="form-control" style="font-weight: bold; font-family: 'Courier New', Courier, monospace;" placeholder="password" onmouseenter="this.type='id'" onmouseleave="this.type='password'">
+                <input id="changePwd" type="password" class="form-control" placeholder="password" onmouseenter="this.type='id'" onmouseleave="this.type='password'">
                 <span class="input-group-btn"><button id="changeBtn" class="btn btn-default" type="button" onclick="change()">修改</button></span>
             </div>
         </div>
     </div>
     <div class="col-md-4 col-sm-6 box">
         <div class="page-header">
-            <h3>查分</h3>
+            <h3><span class="glyphicon glyphicon-stats"></span> 成绩</h3>
         </div>
         <div class="btn-group">
             <a id="scoreOld" class="btn btn-default e" target="_blank">原版</a>

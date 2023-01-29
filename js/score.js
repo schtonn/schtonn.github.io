@@ -3,6 +3,12 @@ var knownExams = '', checked = 0
 // for (let i = 3000; i < 3400; i++)knownExams += i.toString() + ','
 // knownExams = knownExams.slice(0, knownExams.length - 1)
 
+function getCookie(name) {
+    let arr = document.cookie.match(new RegExp("(^| )" + name + "=([^;]*)(;|$)"));
+    if (arr != null) return arr[2];
+    return null;
+}
+
 function decimal(x, n) {
     x = Math.round(x * 10 ** n) / 10 ** n;
     return x.toFixed(n);
@@ -116,8 +122,8 @@ function getExams(id) {
     })
 }
 
-function check() {
-    var a = prompt('验证身份\n我的数字校园号是：')
+function check(u = 0) {
+    var a = u || prompt('验证身份\n我的数字校园号是：')
     fetch('/js/e.json', {
         method: 'GET',
         headers: {
@@ -134,8 +140,9 @@ function check() {
             getExams(queryData[0].no)
             checked = 1
             $('.fetch').toggle(1000)
+            if (u) $('#Input').val(u)
         }
-        else alert('no')
+        else (!u) && alert('no')
     });
 }
 
@@ -838,6 +845,7 @@ $().ready(function () {
             $("#fetchBtn")[0].click();
         }
     })
+    if (getCookie('gosh')) check(getCookie('gosh'))
 })
 
 //uglifyjs public/js/score.js -c -m eval,toplevel,reserved=[check,nextFile,prevFile,fetchMe,resizeChart,getSe,imageLoaded,getFiles,fontSize,curSe,datSe] -o public/js/score.min.js
