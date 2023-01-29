@@ -27,28 +27,30 @@
             if (cval != null)
                 document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString() + ((path == 'u') ? '' : ';path=' + path)
         }
-        function get(e) {
+        function getUrl(e) {
             return e.replace('dd.sdsz.com.cn', '43.143.233.184:81').replace('http:', 'https:').replace('.184/', '.184:81/')
         }
-        function setStatus(e) {
+        function setStatus(e, fast) {
             status = e
             if (e == 1) {
                 $('#loginSt').text('登录成功')
                 $('#login').hide(200)
                 $('#loginSt').addClass('label-success')
                 $('#loginSt').removeClass('label-danger')
-                $('.reqLogin').removeClass('disable')
+                $('.reqLogin').show(300)
                 // $('#login').addClass('disable')
             } else if (e == 2) {
                 $('#loginSt').text('登录失败')
                 $('#loginSt').removeClass('label-success')
                 $('#loginSt').addClass('label-danger')
-                $('.reqLogin').addClass('disable')
             } else {
                 $('#login').show()
                 $('#loginSt').text('未登录')
                 $('#loginSt').removeClass('label-success')
                 $('#loginSt').removeClass('label-danger')
+                $('.reqLogin').hide(300 * !fast)
+                $('#avatar').attr('src', '')
+                $('#user').text('-')
             }
         }
         function delCookies(force) {
@@ -67,6 +69,10 @@
             delCookie('JSESSIONID', '/sso')
             delCookie('JSESSIONID', '/sso/')
         }
+        function postRes(){
+            get('null', 'bxn-portal/portal/api/proxy?username=true&userId=true&needvalidate=true&t=http%3A%2F%2F202.94.10.118%2Fbxn-library%2Fapi%2Flibrary%2FgetLatestBorrowBook%3Fcategory%3D1&resourceId=103519&cache=nocache&systime=0')
+            get('null', 'bxn-portal/portal/api/proxy?username=true&userId=true&needvalidate=true&t=http%3A%2F%2F202.94.10.164%3A18030%2Fbxn-office%2Fapi%2Fmsg%2FgetLatestActivities&resourceId=100022&cache=nocache&systime=0')
+        }
         function postLogin() {
             if (status != 1) return;
             if (!user) user = getCookie('gosh'), pwd = getCookie('gowd')
@@ -74,8 +80,7 @@
             document.cookie = "gosh=" + user + ";path=/sso";
             document.cookie = "gowd=" + pwd + ";path=/sso";
             $('#changePwd').val(pwd)
-            getCk('null', 'bxn-library/library/jumpExamreport?jumpUrl=http://36.112.23.77/analysis/auto/%23/autoLogin')
-            getCk('null', 'bxn-portal/portal/api/proxy?username=true&userId=true&needvalidate=true&t=http%3A%2F%2F202.94.10.118%2Fbxn-library%2Fapi%2Flibrary%2FgetLatestBorrowBook%3Fcategory%3D1&resourceId=103519&cache=nocache&systime=0')
+            get('null', 'bxn-library/library/jumpExamreport?jumpUrl=http://36.112.23.77/analysis/auto/%23/autoLogin')
         }
         function login() {
             if (status == 1) return;
@@ -87,7 +92,7 @@
                     "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
                     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
                 },
-                "method": "GET",
+                "method": "getUrl",
                 "mode": "cors",
                 "credentials": 'include'
             }).then(() => {
@@ -106,6 +111,9 @@
                 else setStatus(2)
             }).then(postLogin)
         }
+        function matches(e) {
+            return e.match('n\\?username=') || e.match('requestParams') || e.match('newmessage')
+        }
         function done(e) {
             if (e.match('requestParams')) {
                 e = JSON.parse(e)
@@ -115,22 +123,24 @@
                 $('#avatar').attr('src', 'https://43.143.233.184:81/avatar/tiny/' + oid)
             } else if (e.match('n\\?username')) {
                 $('#scoreOld').attr('href', e)
+            } else if (e.match('newmessage')) {
+
             }
         }
         function next(e) {//异步递归嘿嘿嘿，再多 302 也不怕
-            if (e.length < 3000 && !e.match('n\\?username=') && !e.match('requestParams')) {
+            if (e.length < 3000 && !matches(e)) {
                 console.log(e)
-                return fetch(get(e), {
-                    method: 'GET',
+                return fetch(getUrl(e), {
+                    method: 'getUrl',
                     credentials: 'include'
                 }).then(e => e.text()).then(next)
             }
             else return done(e), new Promise((resolve, reject) => { })
         }
-        function getCk(name, url) {
+        function get(name, url) {
             if (status != 1) return
             fetch('https://43.143.233.184:81/' + url, {
-                method: 'GET',
+                method: 'getUrl',
                 credentials: 'include'
             }).then(e => e.text()).then(next)
             $('#' + name).addClass('btn-success')
@@ -159,12 +169,12 @@
             $('.e').removeClass('e')
             if (getCookie('CASTGC')) {
                 setStatus(1), postLogin()
-            }
+            } else setStatus(0, 1)
             $("[data-toggle='tooltip']").tooltip();
         })
     </script>
     <style>
-        .disable {
+        /* .disable {
             pointer-events: none;
             filter: contrast(90%) blur(2px)
         }
@@ -175,7 +185,7 @@
             -webkit-box-shadow: none;
             box-shadow: none;
             opacity: .65;
-        }
+        } */
 
         .form-control {
             font-weight: bold;
@@ -189,7 +199,7 @@
         <h2>数字校园</h2>
         <span id="loginSt" class="label label-default">未登录</span>
         <span id="user" class="label label-default">-</span>
-        <button class="btn btn-danger btn-xs e" onclick="delCookies(1);location.reload()" onmouseenter="$('#double-off').css('scale','100%')" onmouseleave="$('#double-off').css('scale','0')">
+        <button class="btn btn-danger btn-xs e" onclick="delCookies(1);setStatus(0)" onmouseenter="$('#double-off').css('scale','100%')" onmouseleave="$('#double-off').css('scale','0')">
             <span class="glyphicon glyphicon-log-out"></span>
         </button>
         <button id="double-off" class="btn btn-danger btn-xs e" onclick="delCookies(2);location.reload()" onmouseenter="$('#double-off').css('scale','100%')" onmouseleave="$('#double-off').css('scale','0')" style="scale:0;transition-duration: 1000ms;" data-toggle="tooltip" data-placement="right" title="全部重置">
@@ -201,9 +211,9 @@
         <div class="page-header">
             <h3><span class="glyphicon glyphicon-user"></span> 账号
                 <div id="cookie" class="btn-group" style="display: none;">
-                    <button id="bxn-portal" class="btn btn-default btn-xs" onclick="getCk('bxn-portal','bxn-portal/portal/osforstudent/index')">bxn-portal</button>
-                    <button id="bxn-core-uic" class="btn btn-default btn-xs" onclick="getCk('bxn-core-uic','bxn-core-uic/uic/index')">bxn-core-uic</button>
-                    <button id="bxn-library" class="btn btn-default btn-xs" onclick="getCk('bxn-library','bxn-library/library/jumpExamreport?jumpUrl=')">bxn-library</button>
+                    <button id="bxn-portal" class="btn btn-default btn-xs" onclick="get('bxn-portal','bxn-portal/portal/osforstudent/index')">bxn-portal</button>
+                    <button id="bxn-core-uic" class="btn btn-default btn-xs" onclick="get('bxn-core-uic','bxn-core-uic/uic/index')">bxn-core-uic</button>
+                    <button id="bxn-library" class="btn btn-default btn-xs" onclick="get('bxn-library','bxn-library/library/jumpExamreport?jumpUrl=')">bxn-library</button>
                 </div>
             </h3>
         </div>
