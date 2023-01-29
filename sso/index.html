@@ -51,24 +51,22 @@
                 $('#loginSt').removeClass('label-danger')
             }
         }
-        function delCookies() {
-            delCookie('CASTGC', '/')
+        function delCookies(force) {
+            if (force) delCookie('CASTGC', '/')
             delCookie('JSESSIONID', '/')
             delCookie('JSESSIONID', '/sso')
             delCookie('JSESSIONID', '/sso/')
-            delCookie('JSESSIONID', '/bxn-portal')
+            if (force == 2) {
+                delCookie('JSESSIONID', '/bxn-portal')
+                delCookie('JSESSIONID', '/bxn-library')
+                delCookie('JSESSIONID', '/bxn-core-uic')
+            }
         }
         function postLogin() {
             if (status != 1) return;
             $('#changePwd').val($('#loginPwd').val())
-            fetch('https://43.143.233.184:81/bxn-portal/portal/api/proxy?username=true&userId=true&needvalidate=true&t=http%3A%2F%2F202.94.10.118%2Fbxn-library%2Fapi%2Flibrary%2FgetLatestBorrowBook%3Fcategory%3D1&resourceId=103519&cache=nocache&systime=0', {
-                method: 'GET',
-                credentials: 'include'
-            }).then(e => e.json()).then(e => {
-                $('#user').text(e.requestParams[0].ownerName)
-                oid = e.requestParams[0].ownerId
-                console.log(oid)
-            })
+            getCk('null', 'bxn-library/library/jumpExamreport?jumpUrl=http://36.112.23.77/analysis/auto/%23/autoLogin')
+            getCk('null', 'bxn-portal/portal/api/proxy?username=true&userId=true&needvalidate=true&t=http%3A%2F%2F202.94.10.118%2Fbxn-library%2Fapi%2Flibrary%2FgetLatestBorrowBook%3Fcategory%3D1&resourceId=103519&cache=nocache&systime=0')
         }
         function login() {
             if (status == 1) return;
@@ -99,15 +97,26 @@
                 else setStatus(2)
             }).then(postLogin)
         }
+        function done(e) {
+            if (e.match('requestParams')) {
+                e = JSON.parse(e)
+                $('#user').text(e.requestParams[0].ownerName)
+                oid = e.requestParams[0].ownerId
+                console.log(oid)
+                $('#avatar').attr('src', 'https://43.143.233.184:81/avatar/tiny/' + oid)
+            } else if (e.match('n\\?username')) {
+                $('#scoreOld').attr('href', e)
+            }
+        }
         function next(e) {//异步递归嘿嘿嘿，再多 302 也不怕
-            if (e.length < 5000) {
+            if (e.length < 3000 && !e.match('n\\?username=') && !e.match('requestParams')) {
                 console.log(e)
                 return fetch(get(e), {
                     method: 'GET',
                     credentials: 'include'
                 }).then(e => e.text()).then(next)
             }
-            else return new Promise((resolve, reject) => { })
+            else return done(e), new Promise((resolve, reject) => { })
         }
         function getCk(name, url) {
             if (status != 1) return
@@ -133,10 +142,17 @@
                 method: 'POST',
                 body: fd,
                 credentials: 'include',
-            }).then(e => e.text()).then(e => {
-                console.log(e)
             })
+            $('#changeBtn').addClass('btn-success')
         }
+        $().ready(() => {
+            $('.e').addClass('reqLogin disable')
+            $('.e').removeClass('e')
+            if (getCookie('CASTGC')) {
+                setStatus(1), postLogin()
+            }
+            $("[data-toggle='tooltip']").tooltip();
+        })
     </script>
     <style>
         .disable {
@@ -157,21 +173,29 @@
 <body>
     <div class="page-header">
         <h2>数字校园</h2>
+        <span id="loginSt" class="label label-default">未登录</span>
+        <span id="user" class="label label-default">-</span>
+        <button class="btn btn-danger btn-xs e" onclick="delCookies(1);location.reload()" onmouseenter="$('#double-off').css('scale','100%')" onmouseleave="$('#double-off').css('scale','0')">
+            <span class="glyphicon glyphicon-log-out"></span>
+        </button>
+        <button id="double-off" class="btn btn-danger btn-xs e" onclick="delCookies(2);location.reload()" onmouseenter="$('#double-off').css('scale','100%')" onmouseleave="$('#double-off').css('scale','0')" style="scale:0;transition-duration: 1000ms;" data-toggle="tooltip" data-placement="right" title="全部重置">
+            <span class="glyphicon glyphicon-off"></span>
+        </button>
+        <img id="avatar" style="position:absolute;right:10px;top:10px;">
     </div>
-    <div class="page-header">
-        <h3>账号</h3>
-        <div id="loginSt" class="label label-default">未登录</div>
-        <div id="user" class="label label-default">-</div>
-        <button class="btn btn-default btn-xs reqLogin disable" onclick="$('#change').toggle(200)">修改密码</button>
-        <button class="btn btn-default btn-xs reqLogin disable" onclick="$('#cookie').toggle(200)">获取 cookie</button>
+    <div class="col-md-4 col-sm-6 box">
+        <div class="page-header">
+            <h3>账号</h3>
+        </div>
+        <button class="btn btn-default e" onclick="$('#change').toggle(200)">修改密码</button>
+        <button class="btn btn-default e" onclick="$('#cookie').toggle(200);getCookies()">cookie</button>
         <div id="cookie" class="btn-group" style="display: none;">
             <button id="bxn-portal" class="btn btn-default btn-xs" onclick="getCk('bxn-portal','bxn-portal/portal/osforstudent/index')">bxn-portal</button>
             <button id="bxn-core-uic" class="btn btn-default btn-xs" onclick="getCk('bxn-core-uic','bxn-core-uic/uic/index')">bxn-core-uic</button>
             <button id="bxn-library" class="btn btn-default btn-xs" onclick="getCk('bxn-library','bxn-library/library/jumpExamreport?jumpUrl=')">bxn-library</button>
         </div>
-    </div>
-    <div class="col-md-6">
         <div id="login">
+            <br>
             <div class="input-group">
                 <span class="input-group-addon">账号</span>
                 <input id="loginId" type="id" class="form-control" style="font-weight: bold; font-family: 'Courier New', Courier, monospace;" placeholder="20222222" value="20222446">
@@ -184,16 +208,21 @@
             </div>
         </div>
         <div id="change" style="display: none;">
+            <br>
             <div class="input-group">
                 <span class="input-group-addon">新密码</span>
                 <input id="changePwd" type="password" class="form-control" style="font-weight: bold; font-family: 'Courier New', Courier, monospace;" placeholder="password" onmouseenter="this.type='id'" onmouseleave="this.type='password'">
-                <span class="input-group-btn"><button class="btn btn-default" type="button" onclick="change()">修改</button></span>
+                <span class="input-group-btn"><button id="changeBtn" class="btn btn-default" type="button" onclick="change()">修改</button></span>
             </div>
         </div>
     </div>
-    <div class="page-header">
-        <h3>查分</h3>
-        <a class="btn btn-default btn-xs reqLogin disable" href="">原版</a>
-        <a class="btn btn-default btn-xs reqLogin disable" href="/score">新版</a>
+    <div class="col-md-4 col-sm-6 box">
+        <div class="page-header">
+            <h3>查分</h3>
+        </div>
+        <div class="btn-group">
+            <a id="scoreOld" class="btn btn-default e" target="_blank">原版</a>
+            <a class="btn btn-default e" href="/score" target="_blank">新版</a>
+        </div>
     </div>
 </body>
