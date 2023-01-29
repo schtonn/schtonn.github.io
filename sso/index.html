@@ -92,7 +92,7 @@
                     "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
                     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
                 },
-                "method": "getUrl",
+                "method": "GET",
                 "mode": "cors",
                 "credentials": 'include'
             }).then(() => {
@@ -131,7 +131,7 @@
             if (e.length < 3000 && !matches(e)) {
                 console.log(e)
                 return fetch(getUrl(e), {
-                    method: 'getUrl',
+                    method: 'GET',
                     credentials: 'include'
                 }).then(e => e.text()).then(next)
             }
@@ -140,7 +140,7 @@
         function get(name, url) {
             if (status != 1) return
             fetch('https://43.143.233.184:81/' + url, {
-                method: 'getUrl',
+                method: 'GET',
                 credentials: 'include'
             }).then(e => e.text()).then(next)
             $('#' + name).addClass('btn-success')
