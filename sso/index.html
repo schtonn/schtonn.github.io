@@ -57,30 +57,30 @@
             if (force) {
                 delCookie('CASTGC', '/')
                 delCookie('gosh', '/score/')
-                delCookie('gosh', '/sso')
-                delCookie('gowd', '/sso')
+                delCookie('gosh', '/sso/')
+                delCookie('gowd', '/sso/')
             }
             if (force == 2) {
-                delCookie('JSESSIONID', '/bxn-portal')
-                delCookie('JSESSIONID', '/bxn-library')
-                delCookie('JSESSIONID', '/bxn-core-uic')
+                delCookie('JSESSIONID', '/bxn-portal/')
+                delCookie('JSESSIONID', '/bxn-library/')
+                delCookie('JSESSIONID', '/bxn-core-uic/')
             }
             delCookie('JSESSIONID', '/')
-            delCookie('JSESSIONID', '/sso')
             delCookie('JSESSIONID', '/sso/')
         }
-        function postRes(){
-            get('null', 'bxn-portal/portal/api/proxy?username=true&userId=true&needvalidate=true&t=http%3A%2F%2F202.94.10.118%2Fbxn-library%2Fapi%2Flibrary%2FgetLatestBorrowBook%3Fcategory%3D1&resourceId=103519&cache=nocache&systime=0')
-            get('null', 'bxn-portal/portal/api/proxy?username=true&userId=true&needvalidate=true&t=http%3A%2F%2F202.94.10.164%3A18030%2Fbxn-office%2Fapi%2Fmsg%2FgetLatestActivities&resourceId=100022&cache=nocache&systime=0')
+        function postRes() {
         }
         function postLogin() {
             if (status != 1) return;
             if (!user) user = getCookie('gosh'), pwd = getCookie('gowd')
             document.cookie = "gosh=" + user + ";path=/score/";
-            document.cookie = "gosh=" + user + ";path=/sso";
-            document.cookie = "gowd=" + pwd + ";path=/sso";
+            document.cookie = "gosh=" + user + ";path=/sso/";
+            document.cookie = "gowd=" + pwd + ";path=/sso/";
             $('#changePwd').val(pwd)
-            get('null', 'bxn-library/library/jumpExamreport?jumpUrl=http://36.112.23.77/analysis/auto/%23/autoLogin')
+            // get('bxn-portal/portal/osforstudent/index')
+            get('bxn-library/library/jumpExamreport?jumpUrl=http://36.112.23.77/analysis/auto/%23/autoLogin')
+            get('bxn-portal/portal/api/proxy?username=true&userId=true&needvalidate=true&t=http%3A%2F%2F202.94.10.118%2Fbxn-library%2Fapi%2Flibrary%2FgetLatestBorrowBook%3Fcategory%3D1&resourceId=103519&cache=nocache&systime=0')
+            get('bxn-portal/portal/api/proxy?username=true&userId=true&needvalidate=true&t=http%3A%2F%2F202.94.10.164%3A18030%2Fbxn-office%2Fapi%2Fmsg%2FgetLatestActivities&resourceId=100022&cache=nocache&systime=0')
         }
         function login() {
             if (status == 1) return;
@@ -115,7 +115,10 @@
             return e.match('n\\?username=') || e.match('requestParams') || e.match('newmessage')
         }
         function done(e) {
-            if (e.match('requestParams')) {
+            /* if (e.match('DOCTYPE')) {
+                let res = JSON.parse(e.match(/user_resources.*window\.admin/gs)[0].replace(/(?:user_resources =|window\.admin|([^)]);)/gs, '$1'))
+                console.log(res)
+            } else */ if (e.match('requestParams')) {
                 e = JSON.parse(e)
                 $('#user').text(e.requestParams[0].ownerName)
                 oid = e.requestParams[0].ownerId
@@ -124,7 +127,11 @@
             } else if (e.match('n\\?username')) {
                 $('#scoreOld').attr('href', e)
             } else if (e.match('newmessage')) {
-
+                e = JSON.parse(e)
+                $('#mailList').empty()
+                for (let i = 0; i < e.list.length; i++) {
+                    $('#mailList').append('<li>' + e.list[i].typeZh + ': ' + e.list[i].title + '<span class="pull-right" style="color:rgb(144,144,144);">' + e.list[i].time + '</span></li>')
+                }
             }
         }
         function next(e) {//异步递归嘿嘿嘿，再多 302 也不怕
@@ -137,13 +144,13 @@
             }
             else return done(e), new Promise((resolve, reject) => { })
         }
-        function get(name, url) {
+        function get(url, name) {
             if (status != 1) return
             fetch('https://43.143.233.184:81/' + url, {
                 method: 'GET',
                 credentials: 'include'
             }).then(e => e.text()).then(next)
-            $('#' + name).addClass('btn-success')
+            if (name) $('#' + name).addClass('btn-success')
         }
         function change() {
             if (status != 1 || pwd == $('#changePwd').val()) return
@@ -191,6 +198,14 @@
             font-weight: bold;
             font-family: 'Courier New', Courier, monospace;
         }
+
+        li {
+            border-bottom: 3px solid #eee;
+        }
+
+        li:hover {
+            background-color: #eee;
+        }
     </style>
 </head>
 
@@ -211,24 +226,24 @@
         <div class="page-header">
             <h3><span class="glyphicon glyphicon-user"></span> 账号
                 <div id="cookie" class="btn-group" style="display: none;">
-                    <button id="bxn-portal" class="btn btn-default btn-xs" onclick="get('bxn-portal','bxn-portal/portal/osforstudent/index')">bxn-portal</button>
-                    <button id="bxn-core-uic" class="btn btn-default btn-xs" onclick="get('bxn-core-uic','bxn-core-uic/uic/index')">bxn-core-uic</button>
-                    <button id="bxn-library" class="btn btn-default btn-xs" onclick="get('bxn-library','bxn-library/library/jumpExamreport?jumpUrl=')">bxn-library</button>
+                    <button id="bxn-portal" class="btn btn-default btn-xs" onclick="get('bxn-portal/portal/osforstudent/index','bxn-portal')">bxn-portal</button>
+                    <button id="bxn-core-uic" class="btn btn-default btn-xs" onclick="get('bxn-core-uic/uic/index','bxn-core-uic')">bxn-core-uic</button>
+                    <button id="bxn-library" class="btn btn-default btn-xs" onclick="get('bxn-library/library/jumpExamreport?jumpUrl=','bxn-library')">bxn-library</button>
                 </div>
             </h3>
         </div>
         <button class="btn btn-default e" onclick="$('#change').toggle(200)">修改密码</button>
-        <button class="btn btn-default e" onclick="$('#cookie').toggle(200);getCookies()">cookie</button>
+        <button class="btn btn-default e" onclick="$('#cookie').toggle(200)">cookie</button>
         <div id="login">
             <br>
             <div class="input-group">
                 <span class="input-group-addon">账号</span>
-                <input id="loginId" type="id" class="form-control" placeholder="20222222" value="20222446">
+                <input id="loginId" type="id" class="form-control" placeholder="20222222">
             </div>
             <br>
             <div class="input-group">
                 <span class="input-group-addon">密码</span>
-                <input id="loginPwd" type="password" class="form-control" placeholder="password" value="thisis1APPLE">
+                <input id="loginPwd" type="password" class="form-control" placeholder="password">
                 <span class="input-group-btn"><button class="btn btn-default" type="button" onclick="login()">登录</button></span>
             </div>
         </div>
@@ -249,5 +264,11 @@
             <a id="scoreOld" class="btn btn-default e" target="_blank">原版</a>
             <a class="btn btn-default e" href="/score" target="_blank">新版</a>
         </div>
+    </div>
+    <div class="col-md-4 col-sm-6 box">
+        <div class="page-header">
+            <h3><span class="glyphicon glyphicon-envelope"></span> 通知</h3>
+        </div>
+        <ul id="mailList" class="list-unstyled e"></ul>
     </div>
 </body>
