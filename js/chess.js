@@ -382,8 +382,6 @@ var sendMessage = function (map = game.arr, msg = messages, type = '') {
             'Content-type': 'application/json',
         },
         body: bd
-    }).then(res => {
-        return res.json();
     })
 };
 

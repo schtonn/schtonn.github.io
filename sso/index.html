@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>schtonn</title>
+
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/md5.js"></script>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
+&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <script>
+        var status, oid, user, pwd
+        function getCookie(name) {
+            let arr = document.cookie.match(new RegExp("(^| )" + name + "=([^;]*)(;|$)"));
+            if (arr != null) return unescape(arr[2]);
+            return null;
+        }
+        function delCookie(name, path = 'u') {
+            var exp = new Date();
+            exp.setTime(exp.getTime() - 1);
+            var cval = getCookie(name);
+            if (cval != null)
+                document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString() + ((path == 'u') ? '' : ';path=' + path)
+        }
+        function get(e) {
+            return e.replace('dd.sdsz.com.cn', '43.143.233.184:81').replace('http:', 'https:').replace('.184/', '.184:81/')
+        }
+        function setStatus(e) {
+            status = e
+            if (e == 1) {
+                $('#loginSt').text('登录成功')
+                $('#login').hide(200)
+                $('#loginSt').addClass('label-success')
+                $('#loginSt').removeClass('label-danger')
+                $('.reqLogin').removeClass('disable')
+                // $('#login').addClass('disable')
+            } else if (e == 2) {
+                $('#loginSt').text('登录失败')
+                $('#loginSt').removeClass('label-success')
+                $('#loginSt').addClass('label-danger')
+                $('.reqLogin').addClass('disable')
+            } else {
+                $('#login').show()
+                $('#loginSt').text('未登录')
+                $('#loginSt').removeClass('label-success')
+                $('#loginSt').removeClass('label-danger')
+            }
+        }
+        function delCookies() {
+            delCookie('CASTGC', '/')
+            delCookie('JSESSIONID', '/')
+            delCookie('JSESSIONID', '/sso')
+            delCookie('JSESSIONID', '/sso/')
+            delCookie('JSESSIONID', '/bxn-portal')
+        }
+        function postLogin() {
+            if (status != 1) return;
+            $('#changePwd').val($('#loginPwd').val())
+            fetch('https://43.143.233.184:81/bxn-portal/portal/api/proxy?username=true&userId=true&needvalidate=true&t=http%3A%2F%2F202.94.10.118%2Fbxn-library%2Fapi%2Flibrary%2FgetLatestBorrowBook%3Fcategory%3D1&resourceId=103519&cache=nocache&systime=0', {
+                method: 'GET',
+                credentials: 'include'
+            }).then(e => e.json()).then(e => {
+                $('#user').text(e.requestParams[0].ownerName)
+                oid = e.requestParams[0].ownerId
+                console.log(oid)
+            })
+        }
+        function login() {
+            if (status == 1) return;
+            delCookies()
+            console.log(document.cookie)
+            user = $('#loginId').val(), pwd = $('#loginPwd').val()
+            fetch("https://43.143.233.184:81/sso/login", {
+                "headers": {
+                    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
+                },
+                "method": "GET",
+                "mode": "cors",
+                "credentials": 'include'
+            }).then(() => {
+                return fetch('https://43.143.233.184/andlogin', {
+                    method: 'POST',
+                    headers: { 'Content-type': 'application/json' },
+                    body: JSON.stringify({
+                        user: user,
+                        pwd: pwd,
+                        cook: getCookie('JSESSIONID')
+                    }),
+                    credentials: 'include',
+                })
+            }).then(e => e.text()).then(e => {
+                if (e == 'success') setStatus(1)
+                else setStatus(2)
+            }).then(postLogin)
+        }
+        function next(e) {//异步递归嘿嘿嘿，再多 302 也不怕
+            if (e.length < 5000) {
+                console.log(e)
+                return fetch(get(e), {
+                    method: 'GET',
+                    credentials: 'include'
+                }).then(e => e.text()).then(next)
+            }
+            else return new Promise((resolve, reject) => { })
+        }
+        function getCk(name, url) {
+            if (status != 1) return
+            fetch('https://43.143.233.184:81/' + url, {
+                method: 'GET',
+                credentials: 'include'
+            }).then(e => e.text()).then(next)
+            $('#' + name).addClass('btn-success')
+        }
+        function change() {
+            if (status != 1 || $('#loginPwd').val() == $('#changePwd').val()) return
+            var fd = new URLSearchParams()
+            fd.append('rating', '4')
+            fd.append('ratingWord', '极佳')
+            fd.append('oldPassword', $('#loginPwd').val())
+            fd.append('newPassword', $('#changePwd').val())
+            fd.append('reNewPassword', $('#changePwd').val())
+            fetch('https://43.143.233.184:81/bxn-core-uic/uic-public/personal/management/password/save', {
+                "headers": {
+                    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
+                },
+                method: 'POST',
+                body: fd,
+                credentials: 'include',
+            }).then(e => e.text()).then(e => {
+                console.log(e)
+            })
+        }
+    </script>
+    <style>
+        .disable {
+            pointer-events: none;
+            filter: contrast(90%) blur(2px)
+        }
+
+        .disable>btn {
+            cursor: not-allowed;
+            filter: alpha(opacity=65);
+            -webkit-box-shadow: none;
+            box-shadow: none;
+            opacity: .65;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-header">
+        <h2>数字校园</h2>
+    </div>
+    <div class="page-header">
+        <h3>账号</h3>
+        <div id="loginSt" class="label label-default">未登录</div>
+        <div id="user" class="label label-default">-</div>
+        <button class="btn btn-default btn-xs reqLogin disable" onclick="$('#change').toggle(200)">修改密码</button>
+        <button class="btn btn-default btn-xs reqLogin disable" onclick="$('#cookie').toggle(200)">获取 cookie</button>
+        <div id="cookie" class="btn-group" style="display: none;">
+            <button id="bxn-portal" class="btn btn-default btn-xs" onclick="getCk('bxn-portal','bxn-portal/portal/osforstudent/index')">bxn-portal</button>
+            <button id="bxn-core-uic" class="btn btn-default btn-xs" onclick="getCk('bxn-core-uic','bxn-core-uic/uic/index')">bxn-core-uic</button>
+            <button id="bxn-library" class="btn btn-default btn-xs" onclick="getCk('bxn-library','bxn-library/library/jumpExamreport?jumpUrl=')">bxn-library</button>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div id="login">
+            <div class="input-group">
+                <span class="input-group-addon">账号</span>
+                <input id="loginId" type="id" class="form-control" style="font-weight: bold; font-family: 'Courier New', Courier, monospace;" placeholder="20222222" value="20222446">
+            </div>
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">密码</span>
+                <input id="loginPwd" type="password" class="form-control" style="font-weight: bold; font-family: 'Courier New', Courier, monospace;" placeholder="password" value="thisis1APPLE">
+                <span class="input-group-btn"><button class="btn btn-default" type="button" onclick="login()">登录</button></span>
+            </div>
+        </div>
+        <div id="change" style="display: none;">
+            <div class="input-group">
+                <span class="input-group-addon">新密码</span>
+                <input id="changePwd" type="password" class="form-control" style="font-weight: bold; font-family: 'Courier New', Courier, monospace;" placeholder="password" onmouseenter="this.type='id'" onmouseleave="this.type='password'">
+                <span class="input-group-btn"><button class="btn btn-default" type="button" onclick="change()">修改</button></span>
+            </div>
+        </div>
+    </div>
+    <div class="page-header">
+        <h3>查分</h3>
+        <a class="btn btn-default btn-xs reqLogin disable" href="">原版</a>
+        <a class="btn btn-default btn-xs reqLogin disable" href="/score">新版</a>
+    </div>
+</body>

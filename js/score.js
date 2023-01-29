@@ -105,9 +105,7 @@ function getExams(id) {
             'Content-type': 'application/json',
         },
         body: bd
-    }).then(res => {
-        return res.json()
-    }).then(e => {
+    }).then(res => res.json()).then(e => {
         let dat = JSON.parse(aesDecrypt(e.data))
         let str = ''
         for (let i = 0; i < dat.length; i++) {
@@ -125,9 +123,7 @@ function check() {
         headers: {
             'Content-type': 'application/json',
         }
-    }).then(res => {
-        return res.json()
-    }).then(e => {
+    }).then(res => res.json()).then(e => {
         var queryData = e.data.filter(function (e) {
             return e.no == a
         });
@@ -152,10 +148,8 @@ function fetchMe() {
             headers: {
                 'Content-type': 'application/json',
             }
-        }).then(res => {
-            return res.json()
-        }).then(resj => {
-            var queryData = resj.data.filter(function (e) {
+        }).then(res => res.json()).then(e => {
+            var queryData = e.data.filter(function (e) {
                 return e.name == id
             });
             fetchDo(queryData[0].no)
@@ -213,9 +207,7 @@ function getSe(id, force, force2) {
             'Content-type': 'application/json',
         },
         body: bd
-    }).then(res => {
-        return res.json()
-    }).then(e => {
+    }).then(res => res.json()).then(e => {
         $('#singleDat').empty()
         var dat = JSON.parse(aesDecrypt(e.data))
         for (let i = 1; i <= dat.pageCount; i++) {
@@ -250,10 +242,8 @@ function getSec(id, force, force2) {
             'Content-type': 'application/json',
         },
         body: bd
-    }).then(res => {
-        return res.json()
-    }).then(resj => {
-        let dat = JSON.parse(aesDecrypt(resj.data))
+    }).then(res => res.json()).then(e => {
+        let dat = JSON.parse(aesDecrypt(e.data))
         let str = '<ul class="list-unstyled">'
         str += `<li class="text-warning">**. <span class="sc avgSc" style="left:${dat.singleExam.seAvgScore / dat.singleExam.seFullScore * 300}px" data-toggle="tooltip" data-placement="bottom" title="${dat.singleExam.seAvgScore}">.</span>`
         str += `<span class="sc mySc" style="left:${personScoreList[id] / dat.singleExam.seFullScore * 300}px">${personScoreList[id]}</span>`
