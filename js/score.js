@@ -848,4 +848,4 @@ $().ready(function () {
     if (getCookie('gosh')) check(getCookie('gosh'))
 })
 
-//uglifyjs public/js/score.js -c -m eval,toplevel,reserved=[check,nextFile,prevFile,fetchMe,resizeChart,getSe,imageLoaded,getFiles,fontSize,curSe,datSe] -o public/js/score.min.js
+//uglifyjs public/js/score.js -c -m eval,toplevel,reserved=[check,nextFile,prevFile,fetchMe,resizeChart,getSe,getSec,imageLoaded,getFiles,fontSize,curSe,datSe] -o public/js/score.min.js
