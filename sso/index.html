@@ -2,7 +2,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>schtonn</title>
+    <title>数字校园</title>
 
     <script type="text/javascript" src="/js/jquery.min.js"></script>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -35,7 +35,7 @@
             status = e
             if (e == 1) {
                 $('#loginSt').text('登录成功')
-                $('#login').hide(200)
+                $('.login').hide(200)
                 $('#loginSt').addClass('label-success')
                 $('#loginSt').removeClass('label-danger')
                 $('.reqLogin').show(300)
@@ -44,7 +44,7 @@
                 $('#loginSt').removeClass('label-success')
                 $('#loginSt').addClass('label-danger')
             } else {
-                $('#login').show()
+                $('.login').show()
                 $('#loginSt').text('未登录')
                 $('#loginSt').removeClass('label-success')
                 $('#loginSt').removeClass('label-danger')
@@ -102,12 +102,11 @@
         function login() {
             if (status == 1) return;
             delCookies()
-            console.log(document.cookie)
             user = $('#loginId').val(), pwd = $('#loginPwd').val()
             fetch(root + "sso/login", {
                 "headers": {
                     "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-                    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
+                    // "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
                 },
                 "method": "GET",
                 "mode": "cors",
@@ -156,7 +155,7 @@
             fetch(root + 'bxn-core-uic/uic-public/personal/management/password/save', {
                 "headers": {
                     "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-                    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
+                    // "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
                 },
                 method: 'POST',
                 body: fd,
@@ -200,6 +199,9 @@
         <button id="double-off" class="btn btn-danger btn-xs e" onclick="delCookies(2);location.reload()" onmouseenter="$('#double-off').css('scale','100%')" onmouseleave="$('#double-off').css('scale','0')" style="scale:0;transition-duration: 1000ms;" data-toggle="tooltip" data-placement="right" title="全部重置">
             <span class="glyphicon glyphicon-off"></span>
         </button>
+        <button id="double-off" class="btn btn-danger btn-xs login" onclick="delCookies(2);location.reload()" data-toggle="tooltip" data-placement="right" title="全部重置">
+            <span class="glyphicon glyphicon-off"></span>
+        </button>
         <img id="avatar" style="position:absolute;right:10px;top:10px;">
     </div>
     <div class="col-md-4 col-sm-6 box">
@@ -214,7 +216,7 @@
         </div>
         <button class="btn btn-default e" onclick="$('#change').toggle(200)">修改密码</button>
         <button class="btn btn-default e" onclick="$('#cookie').toggle(200)">cookie</button>
-        <div id="login">
+        <div class="login">
             <br>
             <div class="input-group">
                 <span class="input-group-addon">账号</span>
