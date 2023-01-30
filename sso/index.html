@@ -38,7 +38,6 @@
                 $('#loginSt').addClass('label-success')
                 $('#loginSt').removeClass('label-danger')
                 $('.reqLogin').show(300)
-                // $('#login').addClass('disable')
             } else if (e == 2) {
                 $('#loginSt').text('登录失败')
                 $('#loginSt').removeClass('label-success')
@@ -77,10 +76,27 @@
             document.cookie = "gosh=" + user + ";path=/sso/";
             document.cookie = "gowd=" + pwd + ";path=/sso/";
             $('#changePwd').val(pwd)
-            // get('bxn-portal/portal/osforstudent/index')
-            get('bxn-library/library/jumpExamreport?jumpUrl=http://36.112.23.77/analysis/auto/%23/autoLogin')
-            get('bxn-portal/portal/api/proxy?username=true&userId=true&needvalidate=true&t=http%3A%2F%2F202.94.10.118%2Fbxn-library%2Fapi%2Flibrary%2FgetLatestBorrowBook%3Fcategory%3D1&resourceId=103519&cache=nocache&systime=0')
-            get('bxn-portal/portal/api/proxy?username=true&userId=true&needvalidate=true&t=http%3A%2F%2F202.94.10.164%3A18030%2Fbxn-office%2Fapi%2Fmsg%2FgetLatestActivities&resourceId=100022&cache=nocache&systime=0')
+            // get('bxn-portal/portal/osforstudent/index', 0, e => {
+            //     let res = JSON.parse(e.match(/user_resources.*window\.admin/gs)[0].replace(/(?:user_resources =|window\.admin|([^)]);)/gs, '$1'))
+            //     console.log(res)
+            // })
+            get('bxn-library/library/jumpExamreport?jumpUrl=http://36.112.23.77/analysis/auto/%23/autoLogin', 0, e => {
+                $('#scoreOld').attr('href', e)
+            })
+            get('bxn-portal/portal/api/proxy?username=true&userId=true&needvalidate=true&t=http%3A%2F%2F202.94.10.118%2Fbxn-library%2Fapi%2Flibrary%2FgetLatestBorrowBook%3Fcategory%3D1&resourceId=103519&cache=nocache&systime=0', 0, e => {
+                e = JSON.parse(e)
+                $('#user').text(e.requestParams[0].ownerName)
+                oid = e.requestParams[0].ownerId
+                console.log(oid)
+                $('#avatar').attr('src', 'https://43.143.233.184:81/avatar/tiny/' + oid)
+            })
+            get('bxn-portal/portal/api/proxy?username=true&userId=true&needvalidate=true&t=http%3A%2F%2F202.94.10.164%3A18030%2Fbxn-office%2Fapi%2Fmsg%2FgetLatestActivities&resourceId=100022&cache=nocache&systime=0', 0, e => {
+                e = JSON.parse(e)
+                $('#mailList').empty()
+                for (let i = 0; i < e.list.length; i++) {
+                    $('#mailList').append('<li>' + e.list[i].typeZh + ': ' + e.list[i].title + '<span class="pull-right" style="color:rgb(144,144,144);">' + e.list[i].time + '</span></li>')
+                }
+            })
         }
         function login() {
             if (status == 1) return;
@@ -112,44 +128,20 @@
             }).then(postLogin)
         }
         function matches(e) {
-            return e.match('n\\?username=') || e.match('requestParams') || e.match('newmessage')
+            return e.match('[/n]\\?username=') || e.match('requestParams') || e.match('\"newmessage\"')
         }
-        function done(e) {
-            /* if (e.match('DOCTYPE')) {
-                let res = JSON.parse(e.match(/user_resources.*window\.admin/gs)[0].replace(/(?:user_resources =|window\.admin|([^)]);)/gs, '$1'))
-                console.log(res)
-            } else */ if (e.match('requestParams')) {
-                e = JSON.parse(e)
-                $('#user').text(e.requestParams[0].ownerName)
-                oid = e.requestParams[0].ownerId
-                console.log(oid)
-                $('#avatar').attr('src', 'https://43.143.233.184:81/avatar/tiny/' + oid)
-            } else if (e.match('n\\?username')) {
-                $('#scoreOld').attr('href', e)
-            } else if (e.match('newmessage')) {
-                e = JSON.parse(e)
-                $('#mailList').empty()
-                for (let i = 0; i < e.list.length; i++) {
-                    $('#mailList').append('<li>' + e.list[i].typeZh + ': ' + e.list[i].title + '<span class="pull-right" style="color:rgb(144,144,144);">' + e.list[i].time + '</span></li>')
-                }
-            }
-        }
-        function next(e) {//异步递归嘿嘿嘿，再多 302 也不怕
+        async function next(e, call) {//异步递归嘿嘿嘿，再多 302 也不怕；再加上回调函数，真是妙
             if (e.length < 3000 && !matches(e)) {
-                console.log(e)
                 return fetch(getUrl(e), {
                     method: 'GET',
                     credentials: 'include'
-                }).then(e => e.text()).then(next)
+                }).then(e => e.text()).then(res => { next(res, call) })
             }
-            else return done(e), new Promise((resolve, reject) => { })
+            else return call(e), new Promise((resolve, reject) => { })
         }
-        function get(url, name) {
+        function get(url, name, call = () => { }) {
             if (status != 1) return
-            fetch('https://43.143.233.184:81/' + url, {
-                method: 'GET',
-                credentials: 'include'
-            }).then(e => e.text()).then(next)
+            next('https://43.143.233.184:81/' + url, call)
             if (name) $('#' + name).addClass('btn-success')
         }
         function change() {
@@ -172,7 +164,7 @@
             $('#changeBtn').addClass('btn-success')
         }
         $().ready(() => {
-            $('.e').addClass('reqLogin disable')
+            $('.e').addClass('reqLogin')
             $('.e').removeClass('e')
             if (getCookie('CASTGC')) {
                 setStatus(1), postLogin()
@@ -181,19 +173,6 @@
         })
     </script>
     <style>
-        /* .disable {
-            pointer-events: none;
-            filter: contrast(90%) blur(2px)
-        }
-
-        .disable>btn {
-            cursor: not-allowed;
-            filter: alpha(opacity=65);
-            -webkit-box-shadow: none;
-            box-shadow: none;
-            opacity: .65;
-        } */
-
         .form-control {
             font-weight: bold;
             font-family: 'Courier New', Courier, monospace;
