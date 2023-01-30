@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="/css/style.css">
     <script>
         var status, oid, user, pwd
+        const rot = '43.143.233.184:81', root = 'https://43.143.233.184:81/'
         function getCookie(name) {
             let arr = document.cookie.match(new RegExp("(^| )" + name + "=([^;]*)(;|$)"));
             if (arr != null) return arr[2];
@@ -28,7 +29,7 @@
                 document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString() + ((path == 'u') ? '' : ';path=' + path)
         }
         function getUrl(e) {
-            return e.replace('dd.sdsz.com.cn', '43.143.233.184:81').replace('http:', 'https:').replace('.184/', '.184:81/')
+            return e.replace('dd.sdsz.com.cn', rot).replace('http:', 'https:').replace(rot.split(':')[0] + '/', rot + '/')
         }
         function setStatus(e, fast) {
             status = e
@@ -88,7 +89,7 @@
                 $('#user').text(e.requestParams[0].ownerName)
                 oid = e.requestParams[0].ownerId
                 console.log(oid)
-                $('#avatar').attr('src', 'https://43.143.233.184:81/avatar/tiny/' + oid)
+                $('#avatar').attr('src', root + 'avatar/tiny/' + oid)
             })
             get('bxn-portal/portal/api/proxy?username=true&userId=true&needvalidate=true&t=http%3A%2F%2F202.94.10.164%3A18030%2Fbxn-office%2Fapi%2Fmsg%2FgetLatestActivities&resourceId=100022&cache=nocache&systime=0', 0, e => {
                 e = JSON.parse(e)
@@ -103,7 +104,7 @@
             delCookies()
             console.log(document.cookie)
             user = $('#loginId').val(), pwd = $('#loginPwd').val()
-            fetch("https://43.143.233.184:81/sso/login", {
+            fetch(root + "sso/login", {
                 "headers": {
                     "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
                     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
@@ -141,7 +142,7 @@
         }
         function get(url, name, call = () => { }) {
             if (status != 1) return
-            next('https://43.143.233.184:81/' + url, call)
+            next(root + url, call)
             if (name) $('#' + name).addClass('btn-success')
         }
         function change() {
@@ -152,7 +153,7 @@
             fd.append('oldPassword', pwd)
             fd.append('newPassword', $('#changePwd').val())
             fd.append('reNewPassword', $('#changePwd').val())
-            fetch('https://43.143.233.184:81/bxn-core-uic/uic-public/personal/management/password/save', {
+            fetch(root + 'bxn-core-uic/uic-public/personal/management/password/save', {
                 "headers": {
                     "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
                     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
