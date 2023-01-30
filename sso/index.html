@@ -29,7 +29,7 @@
                 document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString() + ((path == 'u') ? '' : ';path=' + path)
         }
         function getUrl(e) {
-            return e.replace('dd.sdsz.com.cn', rot).replace('http:', 'https:').replace(rot.split(':')[0] + '/', rot + '/')
+            return e.replace('dd.sdsz.com.cn', rot).replace(/^http:/, 'https:').replace(rot.split(':')[0] + '/', rot + '/')
         }
         function setStatus(e, fast) {
             status = e
@@ -193,11 +193,16 @@
             height: 3px;
             margin-top: 10px;
             border-bottom: 1px solid;
-            border-image: linear-gradient(to right, transparent, #1984d1, #10c482, transparent) 1;
+            border-image: linear-gradient(to right, transparent, #6aaad8, #75ddb6, transparent) 1;
         }
-
+        
         .box:hover::before {
             border-bottom: 3px solid;
+            border-image: linear-gradient(to right, transparent, #6aaad8, #75ddb6, transparent) 1;
+        }
+
+        .box:hover {
+            background-image: linear-gradient(#f8ffef, transparent);
         }
 
         .page-header.nohr {
@@ -232,6 +237,15 @@
     </div>
     <div class="col-md-4 col-sm-6 box">
         <div class="page-header">
+            <h3><span class="glyphicon glyphicon-stats"></span> 成绩</h3>
+        </div>
+        <div class="btn-group">
+            <a id="scoreOld" class="btn btn-default e" target="_blank">原版</a>
+            <a class="btn btn-default e" href="/score" target="_blank">新版</a>
+        </div>
+    </div>
+    <div class="col-md-4 col-sm-6 box">
+        <div class="page-header">
             <h3><span class="glyphicon glyphicon-user"></span> 账号
                 <div id="cookie" class="btn-group" style="display: none;">
                     <button id="bxn-portal" class="btn btn-default btn-xs" onclick="get('bxn-portal/portal/osforstudent/index','bxn-portal')">bxn-portal</button>
@@ -262,15 +276,6 @@
                 <input id="changePwd" type="password" class="form-control" placeholder="password" onmouseenter="this.type='id'" onmouseleave="this.type='password'">
                 <span class="input-group-btn"><button id="changeBtn" class="btn btn-default" type="button" onclick="change()">修改</button></span>
             </div>
-        </div>
-    </div>
-    <div class="col-md-4 col-sm-6 box">
-        <div class="page-header">
-            <h3><span class="glyphicon glyphicon-stats"></span> 成绩</h3>
-        </div>
-        <div class="btn-group">
-            <a id="scoreOld" class="btn btn-default e" target="_blank">原版</a>
-            <a class="btn btn-default e" href="/score" target="_blank">新版</a>
         </div>
     </div>
     <div class="col-md-4 col-sm-6 box">
