@@ -73,23 +73,38 @@
             delCookie('JSESSIONID', '/sso/')
         }
         var ggg
-        function getMail(i, id, uid) {
+        function getMail(from, i, id, uid) {
             console.log(i, id, uid)
             $('.mil-' + i).toggleClass('active')
             if ($('.mail-' + i).text() == '') {
-                get(`bxn-office/mails/user/showMailDetail?source=&mailItemId=${id}&userMailItemId=${uid}`, e => {
+                get(`${['bxn-office/mails/user/showMailDetail?source=&mailItemId', 'bxn-office/messages/sys/sysMsgDetail?unwrap=true&sysMsgId'][from]}=${id}&${['userMailItemId', 'ownerId'][from]}=${uid}${['', '&_=0'][from]}`, e => {
                     f = ''
-                    if (e.match('"下载"')) {
-                        f = e.replace(/.*?ico.*?(bxn-office\/a.*?)title.*?file-info">(.*?)<.*?/gs, '<a href="https://43.143.233.184:81/$1>$2</a>,\n').split('/span')[0].replace(/,/g, '<br>')
-                        console.log(f)
+                    if (from == 0) {
+                        if (e.match('"下载"')) {
+                            f = e.replace(/.*?ico.*?(bxn-office\/a.*?)title.*?file-info">(.*?)<.*?/gs, '<a href="https://43.143.233.184:81/$1>~$2</a>,\n').split('/span')[0].replace(/,/g, '<br>').replace(/~/g, '<span class="glyphicon glyphicon-link"></span>')
+                        }
+                        e = e.replace(/^.*"bbcode-content">(.*?)<\/div>.*/gs, '$1').replace(/([\t\n\r  ]|&nbsp;|<br>|<p><br\/><\/p>)+/g, '<br>').replace(/<br>style/g, ' style').replace(/<br>$/gs, '')
+                    } else if (from == 1) {
+                        e = e.replace(/.*容:<\/label>(.*?)<\/p>.*/gs, '$1').replace(/([\t\n\r  ]|&nbsp;|<br>|<p><br\/><\/p>)+/g, '<br>').replace(/<br>style/g, ' style').replace(/<br>$/gs, '')
                     }
-                    e = e.replace(/^.*"bbcode-content">(.*?)<\/div>.*/gs, '$1').replace(/([\t\n\r  ]|&nbsp;|<br>|<p><br\/><\/p>)+/g, '<br>').replace(/<br>style/g, ' style').replace(/<br>$/gs, '')
                     $('.mail-' + i).html(f + e)
                     $('.mail-' + i).toggle(300)
                 })
             } else {
                 $('.mail-' + i).toggle(300)
             }
+        }
+        var mails = []
+        function insertMail(e) {
+            $('#mailList').empty()
+            e = e.concat(mails)
+            console.log(e)
+            e = e.sort(function (a, b) { return new Date(b.time) - new Date(a.time) });
+            mails = e
+            for (let i = 0; i < e.length; i++) {
+                $('#mailList').append(`<li class="mail mil-${i}"><span style="width:100%;display:inline-block;cursor:pointer" onclick="getMail(${e[i].from},${i},'${e[i].id}',${e[i].uid})"><b>${e[i].title}</b><span class="pull-right" style="color:#999;">${e[i].name} ${e[i].time.split(' ')[0]} <span class="full-time" style="color:#bbb;">${e[i].time.split(' ')[1]}</span></span></span><span class="mail-text mail-${i}"></span></span></li>`)
+            }
+            $('.mail-text,.full-time').hide()
         }
         function postLogin() {
             console.log("POSTLOGIN")
@@ -110,22 +125,26 @@
                 e = JSON.parse(e)
                 $('#user').text(e.requestParams[0].ownerName)
                 oid = e.requestParams[0].ownerId
-                console.log(oid)
                 $('#avatar').attr('src', root + 'avatar/tiny/' + oid)
             })
-            $('#mailList').empty()
             get('bxn-office/mails/user/index', e => {
-                e = e.replace(/\n^(?!.*(sender|mailDetail|mailItemId)).*$/gm, '').replace(/[\r\n ]+/g, '')
-                e = e.replace(/<(a|td|span)[^<]*>([^<]*)<\/\1>/g, ',$2')
-                e = e.replace(/<(a|td|span)[^<]*>([^<]*)<\/\1>/g, ',$2')
-                e = e.replace(/<tr[^"]*"([^"]*)"[^"]*"([^"]*)"><td[^>]*>/g, '\n,$1,$2').replace(/(.sender{\n|\t.*)/gm, '')
-                e = e.replace(/^,(.*),(.*),(.*),(.*),(.*),(.{10,10})(.{8,8})$/gm, '{"id":"$1","uid":"$2","name":"$3","title":"$5","time":"$6 $7"},').replace(/\n/g, '')
+                // 这代码谁写的？真是太烂了，我一行就把他五行干掉了（是刚才的我写的）
+                // e = e.replace(/\n^(?!.*(sender|mailDetail|mailItemId)).*$/gm, '').replace(/[\r\n ]+/g, '')
+                // e = e.replace(/<(a|td|span)[^<]*>([^<]*)<\/\1>/g, ',$2')
+                // e = e.replace(/<(a|td|span)[^<]*>([^<]*)<\/\1>/g, ',$2')
+                // e = e.replace(/<tr[^"]*"([^"]*)"[^"]*"([^"]*)"><td[^>]*>/g, '\n,$1,$2').replace(/(.sender{\n|\t.*)/gm, '')
+                // e = e.replace(/^,(.*),(.*),(.*),(.*),(.*),(.{10,10})(.{8,8})$/gm, '{"id":"$1","uid":"$2","name":"$3","title":"$5","time":"$6 $7"},').replace(/\n/g, '') 
+                e = e.replace(/.*?mailItemId=(.*?) .*?MailItemId=(.*?)>.*?sender">(.*?) ?<.*?tail">(.*?)<.*?tail">(.*?)</gs, '{"from":0,"id":$1,"uid":$2,"name":"$3","title":"$4","time":"$5"},').split('/td')[0]
                 e = '[' + e.slice(0, e.length - 1) + ']'
                 e = JSON.parse(e)
-                for (let i = 0; i < e.length; i++) {
-                    $('#mailList').append(`<li class="mail mil-${i}"><span style="width:100%;display:inline-block;cursor:pointer" onclick="getMail(${i},'${e[i].id}',${e[i].uid})"><b>${e[i].title}</b><span class="pull-right" style="color:#999;">${e[i].name} ${e[i].time.split(' ')[0]} <span class="full-time" style="color:#bbb;">${e[i].time.split(' ')[1]}</span></span></span><span class="mail-text mail-${i}"></span></span></li>`)
-                }
-                $('.mail-text,.full-time').hide()
+                insertMail(e)
+            })
+            get('bxn-office/messages/sys/sysInfoList', e => {
+                e = e.replace(/.*?a-id="(.*?)".*?erId="(.*?)".*?d-td t.*?>\n?[\t\n\r]+(.*?)\n?[\t\n\r]+<\/td>.*?>(.*?)</gs, '{"from":1,"id":"$1","uid":"$2","name":"<i>消息</i>","title":"$3","time":"$4"},').split('/td')[0]
+                console.log(e)
+                e = '[' + e.slice(0, e.length - 1) + ']'
+                e = JSON.parse(e)
+                insertMail(e)
             })
         }
         function login() {
@@ -231,6 +250,10 @@
             background-color: #eee;
         }
 
+        .box {
+            transition-duration: 300ms;
+        }
+
         .box::before {
             content: '';
             display: block;
@@ -247,7 +270,7 @@
         }
 
         .box:hover {
-            background-image: linear-gradient(#f8ffef, transparent);
+            background-image: linear-gradient(#faffef, transparent);
         }
 
         .page-header.nohr {
@@ -256,6 +279,11 @@
         }
 
         .lim {
+            max-height: 210px;
+            overflow: auto;
+        }
+
+        .lim:hover {
             max-height: 500px;
             overflow: auto;
         }
@@ -277,8 +305,14 @@
             background-color: #bbb;
         }
 
+        .mail {
+            transition-duration: 300ms;
+        }
+
         .mail.active {
             background-image: linear-gradient(to right, #fffaf0, #f4f2ef);
+            border-left: 3px solid #ccc;
+            padding-left: 5px;
         }
     </style>
 </head>
@@ -357,11 +391,16 @@
     </div>
     <div class="col-md-4 col-sm-6 box boxMail lim">
         <div class="page-header">
-            <h3><span class="glyphicon glyphicon-envelope"></span> 通知 <button class="btn btn-default btn-xs reqLogin" onclick="$('.boxMail').toggleClass('col-sm-6').toggleClass('col-md-4').toggleClass('col-sm-12').toggleClass('lim');$('.full-time').toggle()">
+            <h3><span class="glyphicon glyphicon-envelope"></span> 通知
+                <button class="btn btn-default btn-xs reqLogin" onclick="$('.mail-text').hide(300);$('.mail').removeClass('active')">全部收起</button>
+                <button class="btn btn-default btn-xs reqLogin" onclick="$('.boxMail').toggleClass('col-sm-6').toggleClass('col-md-4').toggleClass('col-sm-12').toggleClass('lim');$('.full-time').toggle()">
                     <span class="glyphicon glyphicon-fullscreen"></span>
-                </button></h3>
+                </button>
+            </h3>
         </div>
-        <ul id="mailList" class="list-unstyled e"></ul>
+        <ul id="mailList" class="list-unstyled e">
+            <il>获取中...</il>
+        </ul>
     </div>
     <div style="position:fixed;bottom:10px;left:10px;color:#ccc">
         北师大实验中学
