@@ -72,6 +72,26 @@
             delCookie('JSESSIONID', '/')
             delCookie('JSESSIONID', '/sso/')
         }
+        var ggg
+        function getMail(i, id, uid) {
+            console.log(i, id, uid)
+            $('.mil-' + i).toggleClass('active')
+            if ($('.mail-' + i).text() == '') {
+                get(`bxn-office/mails/user/showMailDetail?source=&mailItemId=${id}&userMailItemId=${uid}`, e => {
+                    f=''
+                    if (e.match('"下载"')) {
+                        f = e.replace(/.*?ico.*?(bxn-office\/a.*?)title.*?file-info">(.*?)<.*?/gs, '<a href="https://43.143.233.184:81/$1>$2</a>,\n').split(/\/span.*/gs)[0].replace(/,/g,'<br>')
+                        console.log(f)
+                    }
+                    e = e.replace(/^.*"bbcode-content">(([^<]*(<p>|<\/p>|<br\/>)?)+).*/gs, '$1').replace(/([\t\n\r  ]|&nbsp;|<br>)+/g, '<br>')
+                        console.log(ggg=e)
+                    $('.mail-' + i).html( f+e)
+                    $('.mail-' + i).toggle(300)
+                })
+            } else {
+                $('.mail-' + i).toggle(300)
+            }
+        }
         function postLogin() {
             console.log("POSTLOGIN")
             if (status != 1) return;
@@ -94,12 +114,19 @@
                 console.log(oid)
                 $('#avatar').attr('src', root + 'avatar/tiny/' + oid)
             })
-            get('bxn-portal/portal/api/proxy?username=true&userId=true&needvalidate=true&t=http%3A%2F%2F202.94.10.164%3A18030%2Fbxn-office%2Fapi%2Fmsg%2FgetLatestActivities&resourceId=100022&cache=nocache&systime=0', e => {
+            $('#mailList').empty()
+            get('bxn-office/mails/user/index', e => {
+                e = e.replace(/\n^(?!.*(sender|mailDetail|mailItemId)).*$/gm, '').replace(/[\r\n ]+/g, '')
+                e = e.replace(/<(a|td|span)[^<]*>([^<]*)<\/\1>/g, ',$2')
+                e = e.replace(/<(a|td|span)[^<]*>([^<]*)<\/\1>/g, ',$2')
+                e = e.replace(/<tr[^"]*"([^"]*)"[^"]*"([^"]*)"><td[^>]*>/g, '\n,$1,$2').replace(/(.sender{\n|\t.*)/gm, '')
+                e = e.replace(/^,(.*),(.*),(.*),(.*),(.*),(.{10,10})(.{8,8})$/gm, '{"id":"$1","uid":"$2","name":"$3","title":"$5","time":"$6 $7"},').replace(/\n/g, '')
+                e = '[' + e.slice(0, e.length - 1) + ']'
                 e = JSON.parse(e)
-                $('#mailList').empty()
-                for (let i = 0; i < e.list.length; i++) {
-                    $('#mailList').append('<li>' + e.list[i].typeZh + ': ' + e.list[i].title + '<span class="pull-right" style="color:rgb(144,144,144);">' + e.list[i].time + '</span></li>')
+                for (let i = 0; i < e.length; i++) {
+                    $('#mailList').append(`<li class="mail mil-${i}"><span style="width:100%;display:inline-block;cursor:pointer" onclick="getMail(${i},'${e[i].id}',${e[i].uid})">${e[i].title}<span class="pull-right" style="color:#999;">${e[i].name} ${e[i].time.split(' ')[0]} <span class="full-time" style="color:#bbb;">${e[i].time.split(' ')[1]}</span></span></span><span class="mail-text mail-${i}"></span></span></li>`)
                 }
+                $('.mail-text,.full-time').hide()
             })
         }
         function login() {
@@ -228,6 +255,32 @@
             margin-bottom: 0;
             border-bottom: none;
         }
+
+        .lim {
+            max-height: 500px;
+            overflow: auto;
+        }
+
+        .boxMail::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .boxMail::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
+
+        .boxMail::-webkit-scrollbar-thumb {
+            background-color: transparent;
+            border-radius: 2px;
+        }
+
+        .boxMail:hover::-webkit-scrollbar-thumb {
+            background-color: #bbb;
+        }
+
+        .mail.active {
+            background-image: linear-gradient(to right, #fffaf0, #f4f2ef);
+        }
     </style>
 </head>
 
@@ -271,6 +324,7 @@
                     <button id="bxn-portal" class="btn btn-default btn-xs" onclick="get('bxn-portal/portal/osforstudent/index')">bxn-portal</button>
                     <button id="bxn-core-uic" class="btn btn-default btn-xs" onclick="get('bxn-core-uic/uic/index')">bxn-core-uic</button>
                     <button id="bxn-library" class="btn btn-default btn-xs" onclick="get('bxn-library/library/jumpExamreport?jumpUrl=')">bxn-library</button>
+                    <button id="bxn-office" class="btn btn-default btn-xs" onclick="get('bxn-office/mail/index')">bxn-office</button>
                 </div>
             </h3>
         </div>
@@ -302,13 +356,15 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4 col-sm-6 box">
+    <div class="col-md-4 col-sm-6 box boxMail lim">
         <div class="page-header">
-            <h3><span class="glyphicon glyphicon-envelope"></span> 通知</h3>
+            <h3><span class="glyphicon glyphicon-envelope"></span> 通知 <button class="btn btn-default btn-xs reqLogin" onclick="$('.boxMail').toggleClass('col-sm-6').toggleClass('col-md-4').toggleClass('col-sm-12').toggleClass('lim');$('.full-time').toggle()">
+                    <span class="glyphicon glyphicon-fullscreen"></span>
+                </button></h3>
         </div>
         <ul id="mailList" class="list-unstyled e"></ul>
     </div>
-    <div style="position:absolute;bottom:10px;left:10px;color:#ccc">
+    <div style="position:fixed;bottom:10px;left:10px;color:#ccc">
         北师大实验中学
     </div>
 </body>
