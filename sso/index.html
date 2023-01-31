@@ -9,9 +9,9 @@
     <script type="text/javascript" src="/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/js/md5.js"></script>
 
-    <link rel="preconnect" href="https://fonts.loli.net">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
+    <link href="https://fonts.googleapis.com/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
 &family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <script>
@@ -233,17 +233,18 @@
 
 <body>
     <div class="page-header nohr">
-        <h2>数字校园
+        <h2><img src="RC.png" width="32px" style="position:relative;top:-4px">
+            数字校园
             <button class="btn btn-default btn-xs">
                 <span class="glyphicon glyphicon-question-sign"></span>
             </button>
         </h2>
         <span id="loginSt" class="label label-default">未登录</span>
         <span id="user" class="label label-default">-</span>
-        <button class="btn btn-danger btn-xs e" onclick="postLogin()">
+        <button class="btn btn-danger btn-xs e" onclick="postLogin()" title="刷新数据">
             <span class="glyphicon glyphicon-refresh"></span>
         </button>
-        <button class="btn btn-danger btn-xs e" onclick="delCookies(1);setStatus(0)" onmouseenter="$('#double-off').css('scale','100%')" onmouseleave="$('#double-off').css('scale','0')">
+        <button class="btn btn-danger btn-xs e" onclick="delCookies(1);setStatus(0)" onmouseenter="$('#double-off').css('scale','100%')" onmouseleave="$('#double-off').css('scale','0')" title="退出登录">
             <span class="glyphicon glyphicon-log-out"></span>
         </button>
         <button id="double-off" class="btn btn-danger btn-xs e" onclick="delCookies(2);location.reload()" onmouseenter="$('#double-off').css('scale','100%')" onmouseleave="$('#double-off').css('scale','0')" style="scale:0;transition-duration: 1000ms;" data-toggle="tooltip" data-placement="right" title="全部重置">
@@ -285,7 +286,11 @@
             <div class="input-group">
                 <span class="input-group-addon">密码</span>
                 <input id="loginPwd" type="password" class="form-control" placeholder="password">
-                <span class="input-group-btn"><button class="btn btn-default" type="button" onclick="login().then(postLogin)">登录</button></span>
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" onclick="login().then(postLogin)">
+                        <span class="glyphicon glyphicon-log-out"></span> 登录
+                    </button>
+                </span>
             </div>
         </div>
         <div id="change" style="display: none;">

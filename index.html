@@ -18,8 +18,9 @@
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
 
     <link rel="canonical" href="https://43.143.233.184/">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.loli.net/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
 &family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <style>
@@ -75,7 +76,11 @@
             text-shadow: seagreen -1px -2px 3px, grey 1px 2px 3px, whitesmoke -1px 2px 3px;
         }
 
-        #log:hover {
+        .tool {
+            vertical-align: bottom;
+        }
+
+        .tool:hover {
             text-shadow: floralwhite -1px -2px 3px, grey 1px 2px 3px, black -1px 2px 2px;
         }
 
@@ -200,6 +205,9 @@
                     <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>&nbsp;Blog</a>&nbsp;
                 <a id="about" class="btn btn-primary btn-lg" href="/about">
                     <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span>&nbsp;关于</a>
+                    <a class="btn btn-info tool" href="/log/"><span class="glyphicon glyphicon-list" aria-hidden="true"></span>&nbsp;日志</a>
+                    <a class="btn btn-info tool" href="https://43.143.233.184:2"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>&nbsp;邮箱</a>
+                    <a class="btn btn-info tool" href="https://43.143.233.184:3"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>&nbsp;Git</a>
             </p>
         </div>
 
@@ -219,6 +227,7 @@
             <hr>
             <h3>> 小工具</h3>
             <div>
+                <a class="btn btn-danger" id="score" href="/sso/"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;&nbsp;数字校园</a>
                 <a class="btn btn-danger" id="score" href="/score/"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span>&nbsp;&nbsp;成绩整理</a>
                 <a class="btn btn-warning" id="chem" href="/chem/"><span class="glyphicon glyphicon-fire" aria-hidden="true"></span>&nbsp;化学</a>
                 <div class="btn-group">
@@ -229,9 +238,6 @@
                         <li><a href="/crypty-2/">Hardcoded AES</a></li>
                     </ul>
                 </div>
-                <a class="btn btn-info" id="log" href="/log/"><span class="glyphicon glyphicon-list" aria-hidden="true"></span>&nbsp;日志</a>
-                <a class="btn btn-info" id="mail" href="https://43.143.233.184:2"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>&nbsp;邮箱</a>
-                <a class="btn btn-info" id="Gogs" href="https://43.143.233.184:3"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>&nbsp;Git</a>
             </div>
         </div>
 
