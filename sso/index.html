@@ -46,6 +46,7 @@
                 $('#loginSt').removeClass('label-success')
                 $('#loginSt').addClass('label-danger')
             } else {
+                mails = []
                 $('.login').show(200)
                 $('#loginSt').text('未登录')
                 $('#loginSt').removeClass('label-success')
@@ -87,7 +88,7 @@
                     } else if (from == 1) {
                         e = e.replace(/.*容:<\/label>(.*?)<\/p>.*/gs, '$1')
                     } else if (from == 2) {
-                        if (e.replace(/.*?file-list">[ \t\n\r]*(.*?)[ \t\n\r]*<.*$/gs, '$1')) {
+                        if (e.match('"下载"')) {
                             f = e.replace(/.*件：.*?<a.*?(<a.*?href=")(.*?) .*?fo">[ \t\n\r]*(.*?)[ \t\n\r]*<.*/gs, '$1https://43.143.233.184:81$2><span class="glyphicon glyphicon-link"></span> $3</a>')
                         }
                         e = e.replace(/.*?通..容：.*?tent">(.*?)<\/td.*/gs, '$1')
@@ -122,10 +123,6 @@
             document.cookie = "gosh=" + user + ";path=/sso/";
             document.cookie = "gowd=" + pwd + ";path=/sso/";
             $('#changePwd').val(pwd)
-            // get('bxn-portal/portal/osforstudent/index', 0, e => {
-            //     let res = JSON.parse(e.match(/user_resources.*window\.admin/gs)[0].replace(/(?:user_resources =|window\.admin|([^)]);)/gs, '$1'))
-            //     console.log(res)
-            // })
             get('bxn-library/library/jumpExamreport?jumpUrl=http://36.112.23.77/analysis/auto/%23/autoLogin', e => {
                 $('#scoreOld').attr('href', e)
             })
@@ -312,14 +309,24 @@
             background-color: #bbb;
         }
 
-        .mail {
+        .mail,
+        .mail b {
             transition-duration: 300ms;
+        }
+
+        .mail b {
+            font-weight: 400;
         }
 
         .mail.active {
             background-image: linear-gradient(to right, #fffaf0, #f4f2ef);
             border-left: 3px solid #ccc;
             padding-left: 5px;
+        }
+
+        .mail.active b {
+            font-weight: 700;
+            font-size: 16px;
         }
     </style>
 </head>
