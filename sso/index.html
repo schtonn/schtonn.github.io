@@ -2,7 +2,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>数字校园</title>
+    <title>北师大实验中学数字校园</title>
 
     <script type="text/javascript" src="/js/jquery.min.js"></script>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -81,17 +81,18 @@
                     f = ''
                     if (from == 0) {
                         if (e.match('"下载"')) {
-                            f = e.replace(/.*?ico.*?(bxn-office\/a.*?)title.*?file-info">(.*?)<.*?/gs, '<a href="https://43.143.233.184:81/$1>~$2</a>,\n').split('/span')[0].replace(/,/g, '<br>').replace(/~/g, '<span class="glyphicon glyphicon-link"></span>')
+                            f = e.replace(/.*?ico.*?(bxn-office\/a.*?)title.*?file-info">(.*?)<.*?/gs, '<a href="https://43.143.233.184:81/$1>~ $2</a>,\n').split('/span')[0].replace(/,/g, '<br>').replace(/~/g, '<span class="glyphicon glyphicon-link"></span>')
                         }
-                        e = e.replace(/^.*"bbcode-content">(.*?)<\/div>.*/gs, '$1').replace(/([\t\n\r  ]|&nbsp;|<br>|<p><br\/><\/p>)+/g, '<br>').replace(/<br>style/g, ' style').replace(/<br>$/gs, '')
+                        e = e.replace(/^.*"bbcode-content">(.*?)<\/div>.*/gs, '$1')
                     } else if (from == 1) {
-                        e = e.replace(/.*容:<\/label>(.*?)<\/p>.*/gs, '$1').replace(/([\t\n\r  ]|&nbsp;|<br>|<p><br\/><\/p>)+/g, '<br>').replace(/<br>style/g, ' style').replace(/<br>$/gs, '')
+                        e = e.replace(/.*容:<\/label>(.*?)<\/p>.*/gs, '$1')
                     } else if (from == 2) {
-                        if (e.match('件：')) {
-                            f = e.replace(/.*件：.*?<a.*?(<a.*?href=")(.*?) .*?fo">[ \t\n\r]*(.*?)[ \t\n\r]*<.*/gs, '$1https://43.143.233.184:81$2><span class="glyphicon glyphicon-link"></span>$3</a>')
+                        if (e.replace(/.*?file-list">[ \t\n\r]*(.*?)[ \t\n\r]*<.*$/gs, '$1')) {
+                            f = e.replace(/.*件：.*?<a.*?(<a.*?href=")(.*?) .*?fo">[ \t\n\r]*(.*?)[ \t\n\r]*<.*/gs, '$1https://43.143.233.184:81$2><span class="glyphicon glyphicon-link"></span> $3</a>')
                         }
-                        e = e.replace(/.*?通..容：.*?tent">(.*?)<\/t.*/gs, '$1').replace(/([\t\n\r  ]|&nbsp;|<br>|<p><br\/><\/p>)+/g, '<br>').replace(/<br>style/g, ' style').replace(/<br>$/gs, '')
+                        e = e.replace(/.*?通..容：.*?tent">(.*?)<\/td.*/gs, '$1')
                     }
+                    e = e.replace(/\[right\](.*?)\[\/right\]/gs, '<div class="pull-right">$1</div><br>').replace(/([\t\n\r  ]|&nbsp;|<br>|<p><br\/><\/p>)+/g, '<br>').replace(/<br>(style|class)/g, ' $1').replace(/<br>$/gs, '')
                     $('.mail-' + i).html(f + e)
                     $('.mail-' + i).toggle(300)
                 })
@@ -150,7 +151,6 @@
             })
             get('bxn-office/notices/user/received', e => {
                 e = e.replace(/.*?ta-id="(.*?)".*?d-td.*?d-td .*?on"> ?(.*?)<.*?ta-id.*?>(.*?)<(?:.*?d-td){4,4}">[\t\n\r ]*(.*?)[\t\n\r ]*</gs, '{"from":2,"id":"$1","title":"$2","name":"<i>通知</i> - $3","time":"$4"},').split('/td')[0]
-                console.log(e)
                 insertMail(e)
             })
         }
