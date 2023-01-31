@@ -78,14 +78,13 @@
             $('.mil-' + i).toggleClass('active')
             if ($('.mail-' + i).text() == '') {
                 get(`bxn-office/mails/user/showMailDetail?source=&mailItemId=${id}&userMailItemId=${uid}`, e => {
-                    f=''
+                    f = ''
                     if (e.match('"下载"')) {
-                        f = e.replace(/.*?ico.*?(bxn-office\/a.*?)title.*?file-info">(.*?)<.*?/gs, '<a href="https://43.143.233.184:81/$1>$2</a>,\n').split(/\/span.*/gs)[0].replace(/,/g,'<br>')
+                        f = e.replace(/.*?ico.*?(bxn-office\/a.*?)title.*?file-info">(.*?)<.*?/gs, '<a href="https://43.143.233.184:81/$1>$2</a>,\n').split('/span')[0].replace(/,/g, '<br>')
                         console.log(f)
                     }
-                    e = e.replace(/^.*"bbcode-content">(([^<]*(<p>|<\/p>|<br\/>)?)+).*/gs, '$1').replace(/([\t\n\r  ]|&nbsp;|<br>)+/g, '<br>')
-                        console.log(ggg=e)
-                    $('.mail-' + i).html( f+e)
+                    e = e.replace(/^.*"bbcode-content">(.*?)<\/div>.*/gs, '$1').replace(/([\t\n\r  ]|&nbsp;|<br>|<p><br\/><\/p>)+/g, '<br>').replace(/<br>style/g, ' style').replace(/<br>$/gs, '')
+                    $('.mail-' + i).html(f + e)
                     $('.mail-' + i).toggle(300)
                 })
             } else {
@@ -124,7 +123,7 @@
                 e = '[' + e.slice(0, e.length - 1) + ']'
                 e = JSON.parse(e)
                 for (let i = 0; i < e.length; i++) {
-                    $('#mailList').append(`<li class="mail mil-${i}"><span style="width:100%;display:inline-block;cursor:pointer" onclick="getMail(${i},'${e[i].id}',${e[i].uid})">${e[i].title}<span class="pull-right" style="color:#999;">${e[i].name} ${e[i].time.split(' ')[0]} <span class="full-time" style="color:#bbb;">${e[i].time.split(' ')[1]}</span></span></span><span class="mail-text mail-${i}"></span></span></li>`)
+                    $('#mailList').append(`<li class="mail mil-${i}"><span style="width:100%;display:inline-block;cursor:pointer" onclick="getMail(${i},'${e[i].id}',${e[i].uid})"><b>${e[i].title}</b><span class="pull-right" style="color:#999;">${e[i].name} ${e[i].time.split(' ')[0]} <span class="full-time" style="color:#bbb;">${e[i].time.split(' ')[1]}</span></span></span><span class="mail-text mail-${i}"></span></span></li>`)
                 }
                 $('.mail-text,.full-time').hide()
             })
