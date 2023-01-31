@@ -77,7 +77,7 @@
             console.log(i, id, uid)
             $('.mil-' + i).toggleClass('active')
             if ($('.mail-' + i).text() == '') {
-                get(`${['bxn-office/mails/user/showMailDetail?source=&mailItemId', 'bxn-office/messages/sys/sysMsgDetail?unwrap=true&sysMsgId'][from]}=${id}&${['userMailItemId', 'ownerId'][from]}=${uid}${['', '&_=0'][from]}`, e => {
+                get(`${['bxn-office/mails/user/showMailDetail?source=&mailItemId', 'bxn-office/messages/sys/sysMsgDetail?unwrap=true&sysMsgId', 'bxn-office/notices/user/getNoticeDetail?unwrap=true&noticeId'][from]}=${id}${['&userMailItemId=', '&ownerId=', ''][from]}${uid || ''}${['', '&_=0', '&_=0'][from]}`, e => {
                     f = ''
                     if (from == 0) {
                         if (e.match('"下载"')) {
@@ -86,6 +86,11 @@
                         e = e.replace(/^.*"bbcode-content">(.*?)<\/div>.*/gs, '$1').replace(/([\t\n\r  ]|&nbsp;|<br>|<p><br\/><\/p>)+/g, '<br>').replace(/<br>style/g, ' style').replace(/<br>$/gs, '')
                     } else if (from == 1) {
                         e = e.replace(/.*容:<\/label>(.*?)<\/p>.*/gs, '$1').replace(/([\t\n\r  ]|&nbsp;|<br>|<p><br\/><\/p>)+/g, '<br>').replace(/<br>style/g, ' style').replace(/<br>$/gs, '')
+                    } else if (from == 2) {
+                        if (e.match('件：')) {
+                            f = e.replace(/.*件：.*?<a.*?(<a.*?href=")(.*?) .*?fo">[ \t\n\r]*(.*?)[ \t\n\r]*<.*/gs, '$1https://43.143.233.184:81$2><span class="glyphicon glyphicon-link"></span>$3</a>')
+                        }
+                        e = e.replace(/.*?通..容：.*?tent">(.*?)<\/t.*/gs, '$1').replace(/([\t\n\r  ]|&nbsp;|<br>|<p><br\/><\/p>)+/g, '<br>').replace(/<br>style/g, ' style').replace(/<br>$/gs, '')
                     }
                     $('.mail-' + i).html(f + e)
                     $('.mail-' + i).toggle(300)
@@ -96,6 +101,8 @@
         }
         var mails = []
         function insertMail(e) {
+            e = '[' + e.slice(0, e.length - 1) + ']'
+            e = JSON.parse(e)
             $('#mailList').empty()
             e = e.concat(mails)
             console.log(e)
@@ -135,15 +142,15 @@
                 // e = e.replace(/<tr[^"]*"([^"]*)"[^"]*"([^"]*)"><td[^>]*>/g, '\n,$1,$2').replace(/(.sender{\n|\t.*)/gm, '')
                 // e = e.replace(/^,(.*),(.*),(.*),(.*),(.*),(.{10,10})(.{8,8})$/gm, '{"id":"$1","uid":"$2","name":"$3","title":"$5","time":"$6 $7"},').replace(/\n/g, '') 
                 e = e.replace(/.*?mailItemId=(.*?) .*?MailItemId=(.*?)>.*?sender">(.*?) ?<.*?tail">(.*?)<.*?tail">(.*?)</gs, '{"from":0,"id":$1,"uid":$2,"name":"$3","title":"$4","time":"$5"},').split('/td')[0]
-                e = '[' + e.slice(0, e.length - 1) + ']'
-                e = JSON.parse(e)
                 insertMail(e)
             })
             get('bxn-office/messages/sys/sysInfoList', e => {
-                e = e.replace(/.*?a-id="(.*?)".*?erId="(.*?)".*?d-td t.*?>\n?[\t\n\r]+(.*?)\n?[\t\n\r]+<\/td>.*?>(.*?)</gs, '{"from":1,"id":"$1","uid":"$2","name":"<i>消息</i>","title":"$3","time":"$4"},').split('/td')[0]
+                e = e.replace(/.*?a-id="(.*?)".*?erId="(.*?)".*?d-td t.*?>\n?[\t\n\r]*(.*?)\n?[\t\n\r]*<\/td>.*?>(.*?)</gs, '{"from":1,"id":"$1","uid":"$2","name":"<i>消息</i>","title":"$3","time":"$4"},').split('/td')[0]
+                insertMail(e)
+            })
+            get('bxn-office/notices/user/received', e => {
+                e = e.replace(/.*?ta-id="(.*?)".*?d-td.*?d-td .*?on"> ?(.*?)<.*?ta-id.*?>(.*?)<(?:.*?d-td){4,4}">[\t\n\r ]*(.*?)[\t\n\r ]*</gs, '{"from":2,"id":"$1","title":"$2","name":"<i>通知</i> - $3","time":"$4"},').split('/td')[0]
                 console.log(e)
-                e = '[' + e.slice(0, e.length - 1) + ']'
-                e = JSON.parse(e)
                 insertMail(e)
             })
         }
@@ -174,7 +181,7 @@
             }).then(e => e.text()).then(e => { setStatus((e != 'success') + 1), Promise.resolve() })
         }
         function matches(e) {
-            return e.match('(DOCTYPE|[/n]\\?username=|requestParams|\"newmessage\")')
+            return e.match('(<tr>|DOCTYPE|[/n]\\?username=|requestParams|\"newmessage\")')
         }
         async function next(e, call) {//异步递归嘿嘿嘿，再多 302 也不怕；再加上回调函数，真是妙
             if (e.length < 3000 && !matches(e)) {
