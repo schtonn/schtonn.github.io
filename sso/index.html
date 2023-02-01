@@ -46,7 +46,6 @@
                 $('#loginSt').removeClass('label-success')
                 $('#loginSt').addClass('label-danger')
             } else {
-                mails = []
                 $('.login').show(200)
                 $('#loginSt').text('未登录')
                 $('#loginSt').removeClass('label-success')
@@ -81,8 +80,9 @@
                 get(`${['bxn-office/mails/user/showMailDetail?source=&mailItemId', 'bxn-office/messages/sys/sysMsgDetail?unwrap=true&sysMsgId', 'bxn-office/notices/user/getNoticeDetail?unwrap=true&noticeId'][from]}=${id}${['&userMailItemId=', '&ownerId=', ''][from]}${uid || ''}${['', '&_=0', '&_=0'][from]}`, e => {
                     f = ''
                     if (from == 0) {
+                        f = `<a onclick="$(this).hasClass('confirm')?removeMail('${uid}'):$(this).addClass('confirm').html('<span class=\\'glyphicon glyphicon-trash\\'></span> 确认？')"><span class="glyphicon glyphicon-trash"></span> 删除邮件</a>`
                         if (e.match('"下载"')) {
-                            f = e.replace(/.*?ico.*?(bxn-office\/a.*?)title.*?file-info">(.*?)<.*?/gs, '<a href="https://43.143.233.184:81/$1>~ $2</a>,\n').split('/span')[0].replace(/,/g, '<br>').replace(/~/g, '<span class="glyphicon glyphicon-link"></span>')
+                            f += '<br>' + e.replace(/.*?ico.*?(bxn-office\/a.*?)title.*?file-info">(.*?)<.*?/gs, '<a href="https://43.143.233.184:81/$1>~ $2</a>,\n').split('/span')[0].replace(/,/g, '<br>').replace(/~/g, '<span class="glyphicon glyphicon-link"></span>')
                         }
                         e = e.replace(/^.*"bbcode-content">(.*?)<\/div>.*/gs, '$1')
                     } else if (from == 1) {
@@ -101,31 +101,33 @@
                 $('.mail-' + i).toggle(300)
             }
         }
+        function getTime(time) {
+            let a = new Date(), b = new Date(time)
+            a.setHours(0)
+            b.setHours(0)
+            let diff = Math.ceil(a.getTime() / 86400000) - Math.ceil(b.getTime() / 86400000)
+            if (diff < 1) return '今天'
+            if (diff < 2) return '昨天'
+            if (diff < 3) return '前天'
+            if (diff < 7) return diff + '天前'
+            return time.split(' ')[0]
+        }
         var mails = []
         function insertMail(e) {
             e = '[' + e.slice(0, e.length - 1) + ']'
             e = JSON.parse(e)
             $('#mailList').empty()
-            e = e.concat(mails)
-            console.log(e)
-            e = e.sort(function (a, b) { return new Date(b.time) - new Date(a.time) });
+            e = e.concat(mails).sort(function (a, b) { return new Date(b.time) - new Date(a.time) });
             mails = e
             for (let i = 0; i < e.length; i++) {
-                $('#mailList').append(`<li class="mail mil-${i}"><span style="width:100%;display:inline-block;cursor:pointer" onclick="getMail(${e[i].from},${i},'${e[i].id}',${e[i].uid})"><b>${e[i].title}</b><span class="pull-right" style="color:#999;">${e[i].name} ${e[i].time.split(' ')[0]} <span class="full-time" style="color:#bbb;">${e[i].time.split(' ')[1]}</span></span></span><span class="mail-text mail-${i}"></span></span></li>`)
+                $('#mailList').append(`<li class="mail mil-${i}"><span class="full" onclick="getMail(${e[i].from},${i},'${e[i].id}',${e[i].uid})"><b>${e[i].title}</b><span class="pull-right" style="color:#999;">${e[i].name} ${getTime(e[i].time)} <span class="full-time" style="color:#bbb;">${e[i].time.split(' ')[1]}</span></span></span><span class="mail-text mail-${i}"></span></span></li>`)
             }
             $('.mail-text,.full-time').hide()
         }
-        function postLogin() {
-            console.log("POSTLOGIN")
-            if (status != 1) return;
-            if (!user) user = getCookie('gosh'), pwd = getCookie('gowd')
-            document.cookie = "gosh=" + user + ";path=/score/";
-            document.cookie = "gosh=" + user + ";path=/sso/";
-            document.cookie = "gowd=" + pwd + ";path=/sso/";
-            $('#changePwd').val(pwd)
-            get('bxn-library/library/jumpExamreport?jumpUrl=http://36.112.23.77/analysis/auto/%23/autoLogin', e => {
-                $('#scoreOld').attr('href', e)
-            })
+        function refreshMail() {
+            mails = []
+            $('#mailList').empty()
+            $('#mailList').append('<il>获取中...</il>')
             get('bxn-portal/portal/api/proxy?username=true&userId=true&needvalidate=true&t=http%3A%2F%2F202.94.10.118%2Fbxn-library%2Fapi%2Flibrary%2FgetLatestBorrowBook%3Fcategory%3D1&resourceId=103519&cache=nocache&systime=0', e => {
                 e = JSON.parse(e)
                 $('#user').text(e.requestParams[0].ownerName)
@@ -150,6 +152,19 @@
                 e = e.replace(/.*?ta-id="(.*?)".*?d-td.*?d-td .*?on"> ?(.*?)<.*?ta-id.*?>(.*?)<(?:.*?d-td){4,4}">[\t\n\r ]*(.*?)[\t\n\r ]*</gs, '{"from":2,"id":"$1","title":"$2","name":"<i>通知</i> - $3","time":"$4"},').split('/td')[0]
                 insertMail(e)
             })
+        }
+        function postLogin() {
+            console.log("POSTLOGIN")
+            if (status != 1) return;
+            if (!user) user = getCookie('gosh'), pwd = getCookie('gowd')
+            document.cookie = "gosh=" + user + ";path=/score/";
+            document.cookie = "gosh=" + user + ";path=/sso/";
+            document.cookie = "gowd=" + pwd + ";path=/sso/";
+            $('#changePwd').val(pwd)
+            get('bxn-library/library/jumpExamreport?jumpUrl=http://36.112.23.77/analysis/auto/%23/autoLogin', e => {
+                $('#scoreOld').attr('href', e)
+            })
+            refreshMail()
         }
         function login() {
             console.log("LOGIN!!")
@@ -178,14 +193,17 @@
             }).then(e => e.text()).then(e => { setStatus((e != 'success') + 1), Promise.resolve() })
         }
         function matches(e) {
-            return e.match('(<tr>|DOCTYPE|[/n]\\?username=|requestParams|\"newmessage\")')
+            return e.match(/(^\[\]$|param":"|<tr>|DOCTYPE|in\?username=|requestParams|\"newmessage\")/s)
         }
-        async function next(e, call) {//异步递归嘿嘿嘿，再多 302 也不怕；再加上回调函数，真是妙
+        async function next(e, call, ac) {//异步递归嘿嘿嘿，再多 302 也不怕；再加上回调函数，真是妙
             if (e.length < 3000 && !matches(e)) {
                 return fetch(getUrl(e), {
                     method: 'GET',
-                    credentials: 'include'
-                }).then(e => e.text()).then(res => { next(res, call) })
+                    credentials: 'include',
+                    headers: {
+                        Accept: ac
+                    }
+                }).then(e => e.text()).then(res => { next(res, call, ac) })
             }
             else return call(e), new Promise((resolve, reject) => { })
         }
@@ -200,10 +218,10 @@
                 call(e)
             }
         }
-        function get(url, call = () => { }) {
+        function get(url, call = () => { }, ac = '*/*') {
             console.log("GET", url)
             if (status != 1) return
-            next(root + url, e => { pre(e, url, call); })
+            next(root + url, e => { pre(e, url, call); }, ac)
         }
         function change() {
             if (status != 1 || pwd == $('#changePwd').val()) return
@@ -233,25 +251,148 @@
                 login().then(() => { status == 2 ? setStatus(0, 1) : postLogin() })
             } else setStatus(0, 1)
         }
+        scrollToBottom = () => {
+            (function smoothscroll() {
+                const currentScroll = document.documentElement.scrollTop || document.body.scrollTop; // 已经被卷掉的高度
+                const clientHeight = document.documentElement.clientHeight; // 浏览器高度
+                const scrollHeight = document.documentElement.scrollHeight; // 总高度
+                if (scrollHeight - 10 > currentScroll + clientHeight) {
+                    window.requestAnimationFrame(smoothscroll);
+                    window.scrollTo(0, currentScroll + (scrollHeight - currentScroll - clientHeight) / 2);
+                }
+            })();
+        };
+        function getPar(ls, e) {
+            // console.log(ggg = ls, e)
+            if (e === undefined) return ''
+            if (e.parentId == 'null') return `{id:'${e.param}',name:'${e.label}',rule:'${e.nextRuleId}'}`
+            return getPar(ls, ls.filter(u => u.param == e.parentId)[0]) + `,{id:'${e.param}',name:'${e.label}',rule:'${e.nextRuleId}'}`
+        }
+        var target = [], base
+        function delRec(e) {
+            target = target.filter(u => u != e)
+        }
+        function addRec(e, c, l) {
+            console.log(e, c, l)
+            if (target.filter(u => u == e).length) return
+            $('#recSel').append(`<li onclick="delRec('${e}');$(this).remove()" style="cursor:pointer"><span style="font-size:10px">${e} ${c}</span> ${l}</li>`)
+            target.push(e)
+        }
+        function getRec(re) {
+            get(`bxn-office/participant-select/rule-id/${re.rule}/param/${re.id}?unwrap=true&_=0`, e => {
+                e = JSON.parse(e)
+                if (e.length == 0) { $('.s-' + re.id + '>a').hide(); return }
+                $('#recList>li').hide()
+                for (let i = 0; i < e.length; i++) {
+                    let par = getPar(e, e[i])
+                    let full = ''
+                    if (e.filter(u => u.parentId == e[i].param).length) full = `setRec([${par}],1)`
+                    else full = `setRec([${par}])`
+                    if (e[i].nextRuleId === null) full = `addRec('${e[i].param}','${e[i].code}','${e[i].label}')`
+                    $('#recList').append(`<li class="${e[i].parentId} s-${e[i].param} ${e[i].nextRuleId === null ? 'endRec' : ''}">${e.filter(u => u.parentId == e[i].param).length ? `${e[i].param.match('1-') ? `<a onclick="setRec([${par}])" style="position: absolute;transform: translateX(-25px);"><span class="glyphicon glyphicon-pencil"></span></a> ` : '<span style="position: absolute;transform: translateX(-15px);">></span>'}<span class="full" onclick="${full}">${e[i].label}` : `<span class="full" onclick="${full}">${e[i].label}`}<span class="pull-right" style="color:#999">${e[i].code ? e[i].code + ' - ' : ''}${e[i].param}</span></span></li>`)
+                    // $('#recList').append(`<li class="${e[i].parentId} s-${e[i].param}">${e.filter(u => u.parentId == e[i].param).length ? `${e[i].param.match('1-') ? `<a onclick="setRec([${par}])" style="position: absolute;transform: translateX(-25px);"><span class="glyphicon glyphicon-pencil"></span></a> ` : '<span style="position: absolute;transform: translateX(-15px);">></span>'}<span class="full" onclick="setRec([${par}],1)">${e[i].label}` : `<span class="full" onclick="setRec([${par}])">${e[i].nextRuleId === null ? `<a onclick="addRec('${e[i].param}','${e[i].code}','${e[i].label}')"> <span class="glyphicon glyphicon-plus"></span></a> ` : ''}${e[i].label}`}<span class="pull-right" style="color:#999">${e[i].param}</span></span></li>`)
+                }
+                if (re.rule == 'getOrganizationsAndTagsByUserCategoryRule') {
+                    $('#recList>li').hide()
+                    $('li.1-401,li.4-403,li.3-403,li.2-404').show()
+                }
+            }, 'application/json, text/javascript, */*')
+        }
+        var getBase = [, { id: '1', rid: '1-401', rule: 'getOrganizationsAndTagsByUserCategoryRule', name: '学校(部门)', rname: '老师' }, , { id: '3', rid: '3-403', rule: 'getOrganizationsAndTagsByUserCategoryRule', rname: '家长', name: '学校(班级)' }, { id: '4', rid: '4-403', rule: 'getOrganizationsAndTagsByUserCategoryRule', rname: '学生', name: '学校(班级)' }]
+        function setRec(e, ex = 0) {
+            if (e.length == 0) {
+                $('#recList').html(oof)
+                $('#recNav').empty()
+            }
+            if (!e[0]) return
+            $('#recNav').empty()
+            $('#recNav').append(`<li onclick="setRec([])"><span style="font-size:10px">${getBase[base].id}</span> ${getBase[base].rname}</li>`)
+            let str = ''
+            for (let i = 0; i < e.length; i++) {
+                str += `${i ? ',' : ''}{id:'${e[i].rid || e[i].id}',name:'${e[i].name}',rule:'${e[i].rule}'}`
+                $('#recNav').append(`<li onclick="setRec([${str}],1)"><span style="font-size:10px">${e[i].rid || e[i].id}</span> ${e[i].name}</li>`)
+            }
+            let f = e[e.length - 1]
+            if (ex) {
+                console.log(f, ggg = $('li.' + f.id).show())
+                $('#recList>li').hide()
+                $('#recList>li.' + f.id).show()
+                ggg.show()
+            } else {
+                getRec(f)
+            }
+        }
+        function toggleWrite() {
+            $('.boxWrite').is(':visible') ? ($('.box').show(300), $('.boxWrite').hide(300)) : (setTimeout(scrollToBottom, 200), $('.box').hide(300), $('.boxWrite').show(300));
+        }
+        function sendMail() {
+            var fd = new URLSearchParams()
+            str = ''
+            for (let i = 0; i < target.length; i++) {
+                str += ',' + target[i]
+            }
+            console.log(str.slice(1))
+            fd.append('filelist', '[]')
+            fd.append('mailItemId', '')
+            fd.append('forwardMailItemId', '')
+            fd.append('replyMailItemId', '')
+            fd.append('targetIds', str.slice(1))
+            fd.append('subject', $('#writeSub').val())
+            fd.append('files', '')
+            fd.append('content', $('#writeCt').val())
+            fetch(root + 'bxn-office/mails/user/sendMail?unwrap=true', {
+                "headers": {
+                    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                },
+                method: 'POST',
+                body: fd,
+                credentials: 'include',
+            }).then(e => { $('#writeBtn>span').removeClass('glyphicon-send').removeClass('glyphicon-exclamation-sign').addClass(e.status == 200 ? 'glyphicon-ok' : 'glyphicon-exclamation-sign'); refreshMail() })
+        }
+        function removeMail(e) {
+            console.log(e)
+            var fd = new URLSearchParams()
+            fd.append('checkmail', e)
+            fetch(root + 'bxn-office/mails/user/removeMail?unwrap=true', {
+                "headers": {
+                    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                },
+                method: 'POST',
+                body: fd,
+                credentials: 'include',
+            }).then(refreshMail)
+        }
         $().ready(() => {
             $('.e').addClass('reqLogin')
             $('.e').removeClass('e')
             tryLogin()
             $("[data-toggle='tooltip']").tooltip();
+            $('.recL').hide(300)
+            $('#recList').html(oof)
         })
+        oof = `<li onclick="base=1;setRec([getBase[base]])">老师</li><li onclick="base=4;setRec([getBase[base]])">学生</li><li onclick="base=3;setRec([getBase[base]])">家长</li>`
     </script>
     <style>
-        .form-control {
+        .in {
             font-weight: bold;
             font-family: 'Courier New', Courier, monospace;
         }
 
         li {
             border-bottom: 3px solid #eee;
+            word-wrap: break-word;
         }
 
         li:hover {
             background-color: #eee;
+        }
+
+        :is(#recList, #recNav)>li {
+            cursor: pointer;
+        }
+
+        li.endRec {
+            color: #1a5e93
         }
 
         .box {
@@ -328,6 +469,17 @@
             font-weight: 700;
             font-size: 16px;
         }
+
+        span.full {
+            width: 100%;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .breadcrumb {
+            padding: 0;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 
@@ -381,12 +533,12 @@
             <br>
             <div class="input-group">
                 <span class="input-group-addon">账号</span>
-                <input id="loginId" type="id" class="form-control" placeholder="20222222">
+                <input id="loginId" type="id" class="in form-control" placeholder="20222222">
             </div>
             <br>
             <div class="input-group">
                 <span class="input-group-addon">密码</span>
-                <input id="loginPwd" type="password" class="form-control" placeholder="password">
+                <input id="loginPwd" type="password" class="in form-control" placeholder="password">
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="button" onclick="login().then(postLogin)">
                         <span class="glyphicon glyphicon-log-out"></span> 登录
@@ -398,23 +550,52 @@
             <br>
             <div class="input-group">
                 <span class="input-group-addon">新密码</span>
-                <input id="changePwd" type="password" class="form-control" placeholder="password" onmouseenter="this.type='id'" onmouseleave="this.type='password'">
+                <input id="changePwd" type="password" class="in form-control" placeholder="password" onmouseenter="this.type='id'" onmouseleave="this.type='password'">
                 <span class="input-group-btn"><button id="changeBtn" class="btn btn-default" type="button" onclick="change()">修改</button></span>
             </div>
         </div>
     </div>
     <div class="col-md-4 col-sm-6 box boxMail lim">
         <div class="page-header">
-            <h3><span class="glyphicon glyphicon-envelope"></span> 通知
-                <button class="btn btn-default btn-xs reqLogin" onclick="$('.mail-text').hide(300);$('.mail').removeClass('active')">全部收起</button>
-                <button class="btn btn-default btn-xs reqLogin" onclick="$('.boxMail').toggleClass('col-sm-6').toggleClass('col-md-4').toggleClass('col-sm-12').toggleClass('lim');$('.full-time').toggle()">
+            <h3><span class="glyphicon glyphicon-envelope"></span> 消息
+                <button class="btn btn-default btn-xs e" onclick="toggleWrite();">写信</button>
+                <button class="btn btn-default btn-xs e" onclick="$('.mail-text').hide(300);$('.mail').removeClass('active')">全部收起</button>
+                <button class="btn btn-default btn-xs e pull-right" onclick="$('.boxMail').toggleClass('col-sm-6').toggleClass('col-md-4').toggleClass('col-sm-12').toggleClass('lim');$('.full-time').toggle()">
                     <span class="glyphicon glyphicon-fullscreen"></span>
                 </button>
             </h3>
         </div>
-        <ul id="mailList" class="list-unstyled e">
-            <il>获取中...</il>
-        </ul>
+        <ul id="mailList" class="list-unstyled e"></ul>
+    </div>
+    <div class="col-sm-12 box boxWrite" style="display: none;">
+        <div class="page-header">
+            <h3><span class="glyphicon glyphicon-pencil"></span> 写信
+                <button class="btn btn-default btn-xs e" onclick="toggleWrite();">关闭</button>
+            </h3>
+        </div>
+        <div class="rec">
+            收件人：
+            <ul id="recSel" class="breadcrumb list-unstyled e" style="display: inline-block;"></ul>
+            <button class="btn btn-default btn-xs e" onclick="$('.recL').toggle(300,()=>$('#recList').html(oof));$('#recNav').empty();$(this).children().toggleClass('glyphicon-chevron-down')"><span class="glyphicon glyphicon-plus"></span></button>
+            <div>
+
+                <ul id="recNav" class="recL breadcrumb list-unstyled e"></ul>
+                <ul id="recList" class="recL list-unstyled e"></ul>
+            </div>
+        </div>
+        <br>
+        <form class="bs-example bs-example-form" role="form">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <!-- <span class="input-group-addon"></span> -->
+                    <input id="writeSub" class="form-control" placeholder="标题">
+                    <span class="input-group-btn">
+                        <button id="writeBtn" type="button" class="btn btn-default" onclick="sendMail()" id="chatBtn" style="height: 34px;"><span class="glyphicon glyphicon-send"></span> 发送</button>
+                    </span>
+                </div>
+                <textarea id="writeCt" type="text" class="form-control" autocomplete="off" style="resize:vertical;top:-1px;position: relative;" placeholder="内容"></textarea>
+            </div>
+        </form>
     </div>
     <div style="position:fixed;bottom:10px;left:10px;color:#ccc">
         北师大实验中学
