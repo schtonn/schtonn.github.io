@@ -7,7 +7,6 @@
     <script type="text/javascript" src="/js/jquery.min.js"></script>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <script type="text/javascript" src="/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/js/md5.js"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -93,7 +92,7 @@
                         }
                         e = e.replace(/.*?通..容：.*?tent">(.*?)<\/td.*/gs, '$1')
                     }
-                    e = e.replace(/\[right\](.*?)\[\/right\]/gs, '<div class="pull-right">$1</div><br>').replace(/([\t\n\r  ]|&nbsp;|<br>|<p><br\/><\/p>)+/g, '<br>').replace(/<br>(style|class)/g, ' $1').replace(/<br>$/gs, '')
+                    e = e.replace(/\[right\](.*?)\[\/right\]/gs, '<div class="pull-right">$1</div><br>').replace(/( *([\t\n\r ]|&nbsp;|<br>|<p><br\/><\/p>) *)+/g, '<br>').replace(/<br>(style|class)/g, ' $1').replace(/<br>$/gs, '')
                     $('.mail-' + i).html(f + e)
                     $('.mail-' + i).toggle(300)
                 })
@@ -119,9 +118,11 @@
             $('#mailList').empty()
             e = e.concat(mails).sort(function (a, b) { return new Date(b.time) - new Date(a.time) });
             mails = e
+            str = ''
             for (let i = 0; i < e.length; i++) {
-                $('#mailList').append(`<li class="mail mil-${i}"><span class="full" onclick="getMail(${e[i].from},${i},'${e[i].id}',${e[i].uid})"><b>${e[i].title}</b><span class="pull-right" style="color:#999;">${e[i].name} ${getTime(e[i].time)} <span class="full-time" style="color:#bbb;">${e[i].time.split(' ')[1]}</span></span></span><span class="mail-text mail-${i}"></span></span></li>`)
+                str += `<li class="mail mil-${i}"><span class="full" onclick="getMail(${e[i].from},${i},'${e[i].id}',${e[i].uid})"><b>${e[i].title}</b><span class="pull-right" style="color:#999;">${e[i].name} ${getTime(e[i].time)} <span class="full-time" style="color:#bbb;">${e[i].time.split(' ')[1]}</span></span></span><span class="mail-text mail-${i}"></span></span></li>`
             }
+            $('#mailList').append(str)
             $('.mail-text,.full-time').hide()
         }
         function refreshMail() {
@@ -195,7 +196,7 @@
         function matches(e) {
             return e.match(/(^\[\]$|param":"|<tr>|DOCTYPE|in\?username=|requestParams|\"newmessage\")/s)
         }
-        async function next(e, call, ac) {//异步递归嘿嘿嘿，再多 302 也不怕；再加上回调函数，真是妙
+        async function next(e, call, ac) { // 异步递归嘿嘿嘿，再多 302 也不怕；再加上回调函数，真是妙
             if (e.length < 3000 && !matches(e)) {
                 return fetch(getUrl(e), {
                     method: 'GET',
@@ -262,11 +263,16 @@
                 }
             })();
         };
-        function getPar(ls, e) {
-            // console.log(ggg = ls, e)
+        var mp = new Map(), ans = new Map()
+        function getPar(e) {
             if (e === undefined) return ''
-            if (e.parentId == 'null') return `{id:'${e.param}',name:'${e.label}',rule:'${e.nextRuleId}'}`
-            return getPar(ls, ls.filter(u => u.param == e.parentId)[0]) + `,{id:'${e.param}',name:'${e.label}',rule:'${e.nextRuleId}'}`
+            let g = ans.get(e)
+            if (!g) {
+                if (e.parentId == 'null') g = `{id:'${e.param}',name:'${e.label}',rule:'${e.nextRuleId}'}`
+                else g = getPar(mp.get(e.parentId)) + `,{id:'${e.param}',name:'${e.label}',rule:'${e.nextRuleId}'}`
+                ans.set(e, g)
+            }
+            return g
         }
         var target = [], base
         function delRec(e) {
@@ -283,15 +289,19 @@
                 e = JSON.parse(e)
                 if (e.length == 0) { $('.s-' + re.id + '>a').hide(); return }
                 $('#recList>li').hide()
+                let str = ''
                 for (let i = 0; i < e.length; i++) {
-                    let par = getPar(e, e[i])
+                    mp.set(e[i].param, e[i])
+                }
+                for (let i = 0; i < e.length; i++) {
+                    let par = getPar(e[i])
                     let full = ''
                     if (e.filter(u => u.parentId == e[i].param).length) full = `setRec([${par}],1)`
                     else full = `setRec([${par}])`
                     if (e[i].nextRuleId === null) full = `addRec('${e[i].param}','${e[i].code}','${e[i].label}')`
-                    $('#recList').append(`<li class="${e[i].parentId} s-${e[i].param} ${e[i].nextRuleId === null ? 'endRec' : ''}">${e.filter(u => u.parentId == e[i].param).length ? `${e[i].param.match('1-') ? `<a onclick="setRec([${par}])" style="position: absolute;transform: translateX(-25px);"><span class="glyphicon glyphicon-pencil"></span></a> ` : '<span style="position: absolute;transform: translateX(-15px);">></span>'}<span class="full" onclick="${full}">${e[i].label}` : `<span class="full" onclick="${full}">${e[i].label}`}<span class="pull-right" style="color:#999">${e[i].code ? e[i].code + ' - ' : ''}${e[i].param}</span></span></li>`)
-                    // $('#recList').append(`<li class="${e[i].parentId} s-${e[i].param}">${e.filter(u => u.parentId == e[i].param).length ? `${e[i].param.match('1-') ? `<a onclick="setRec([${par}])" style="position: absolute;transform: translateX(-25px);"><span class="glyphicon glyphicon-pencil"></span></a> ` : '<span style="position: absolute;transform: translateX(-15px);">></span>'}<span class="full" onclick="setRec([${par}],1)">${e[i].label}` : `<span class="full" onclick="setRec([${par}])">${e[i].nextRuleId === null ? `<a onclick="addRec('${e[i].param}','${e[i].code}','${e[i].label}')"> <span class="glyphicon glyphicon-plus"></span></a> ` : ''}${e[i].label}`}<span class="pull-right" style="color:#999">${e[i].param}</span></span></li>`)
+                    str += `<li class="${e[i].parentId} s-${e[i].param} ${e[i].nextRuleId === null ? 'endRec' : ''}">${e.filter(u => u.parentId == e[i].param).length ? `${e[i].param.match('1-') ? `<a onclick="setRec([${par}])" style="position: absolute;transform: translateX(-25px);"><span class="glyphicon glyphicon-pencil"></span></a> ` : '<span style="position: absolute;transform: translateX(-15px);">></span>'}<span class="full" onclick="${full}">${e[i].label}` : `<span class="full" onclick="${full}">${e[i].label}`}<span class="pull-right" style="color:#999">${e[i].code ? e[i].code + ' - ' : ''}${e[i].param}</span></span></li>`
                 }
+                $('#recList').append(str)
                 if (re.rule == 'getOrganizationsAndTagsByUserCategoryRule') {
                     $('#recList>li').hide()
                     $('li.1-401,li.4-403,li.3-403,li.2-404').show()
