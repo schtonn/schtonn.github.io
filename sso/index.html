@@ -14,7 +14,7 @@
 &family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <script>
-        var status, oid, user, pwd, paused = []
+        var status = 0, oid, user, pwd, paused = []
         const rot = '43.143.233.184:81', root = 'https://43.143.233.184:81/'
         function getCookie(name) {
             let arr = document.cookie.match(new RegExp("(^| )" + name + "=([^;]*)(;|$)"));
@@ -29,12 +29,13 @@
                 document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString() + ((path == 'u') ? '' : ';path=' + path)
         }
         function getUrl(e) {
-            return e.replace('dd.sdsz.com.cn', rot).replace(/^http:/, 'https:').replace(rot.split(':')[0] + '/', rot + '/').replace('service=http%3A%2F%2F'+root,'service=http%3A%2F%2Fdd.sdsz.com.cn')
+            return e.replace('dd.sdsz.com.cn', rot).replace(/^http:/, 'https:').replace(rot.split(':')[0] + '/', rot + '/').replace('service=http%3A%2F%2F' + root, 'service=http%3A%2F%2Fdd.sdsz.com.cn')
         }
         function setStatus(e, fast) {
             console.log('STATUS', e)
             status = e
             if (e == 1) {
+                paused = []
                 $('#loginSt').text('登录成功')
                 $('.login').hide(200)
                 $('#loginSt').addClass('label-success')
@@ -148,7 +149,7 @@
             })
         }
         function postLogin() {
-            console.log("POSTLOGIN")
+            debug('LOGIN DONE.','initiate fetching.')
             if (status != 1) return;
             if (!user) user = getCookie('gosh'), pwd = getCookie('gowd')
             document.cookie = "gosh=" + user + ";path=/score/";
@@ -171,8 +172,11 @@
             })
             refreshMail()
         }
+        function debug(e, str = '') {
+            $('.debugList').append(`<li class="auto-warp"><b>${e}</b> ${str} <span class="pull-right" style="color:#999">${status}</span></li>`)
+        }
         function login() {
-            console.log("LOGIN!!")
+            debug('LOGIN.')
             if (status == 1) return;
             delCookies()
             user = $('#loginId').val(), pwd = $('#loginPwd').val()
@@ -198,7 +202,7 @@
             }).then(e => e.text()).then(e => { setStatus((e != 'success') + 1), Promise.resolve() })
         }
         function matches(e) {
-            return e.match(/(^\[\]$|param":"|<tr>|DOCTYPE|in\?username=|requestParams|\"newmessage\")/s)
+            return e.match(/(^\[\]$|param":"|<tr>|DOCTYPE|in\?username=|requestParams|\"newmessage\"|Sorry, Page Not Found|北师大实验中学--登录)/s)
         }
         async function next(e, call, ac, login) {
             if (e.length < 3000 && !matches(e) && (!e.match('\/login\\?') || login)) {
@@ -213,17 +217,21 @@
             else return call(e), new Promise((resolve, reject) => { })
         }// 异步递归嘿嘿嘿，再多 302 也不怕；再加上回调函数，真是妙
         function pre(e, url, call) {
-            if (e.match('casfailed')) delCookie('CASTGC', '/')
+            if (e.match('北师大实验中学--登录')) {
+                debug('OUTDATED CAS! NEED RELOGIN')
+                delCookie('CASTGC', '/')
+                tryLogin()
+            }
             if (e.length < 3000 && e.match('\/login\\?')) {
-                let f = paused.filter(e => e.name == url.split('/')[0])
-                console.log("ERR", url)
+                var name = url.split('/')[0], f = paused.filter(e => e.name == name)
+                debug('FAILED', url)
                 if (url.match('\/login\\?')) return
                 if (f.length) f[0].arr.push(url), f[0].carr.push(call)
                 else {
-                    paused.push({ name: url.split('/')[0], arr: [url], carr: [call] })
-                    console.log('ERR -->')
-                    get(e.split('cn/')[1], () => {
-                        let f = paused.filter(e => e.name == url.split('/')[0])[0]
+                    paused.push({ name: name, arr: [url], carr: [call] })
+                    debug('RETRY...')
+                    get(name + '/casfailed.jsp', () => {
+                        let f = paused.filter(e => e.name == name)[0]
                         for (let i = 0; i < f.arr.length; i++)get(f.arr[i], f.carr[i])
                         paused.splice(paused.indexOf(f), 1)
                     }, '*/*', 1)
@@ -235,6 +243,7 @@
         }
         function get(url, call = () => { }, ac = '*/*', login = 0) {
             console.log("GET", url)
+            debug('GET', url)
             if (status != 1) return
             next(root + url, e => { pre(e, url, call); }, ac, login)
         }
@@ -258,19 +267,19 @@
             $('#changeBtn').addClass('btn-success')
         }
         let trying = 0
-        function tryLogin(force) {
-            console.log("TRY")
-            if (trying) return
-            console.log("GO")
-            if (!force && getCookie('CASTGC')) {
+        function tryLogin() {
+            if (trying) return debug('TRY LOGIN', 'already in progress.')
+            if (getCookie('CASTGC')) {
+                debug('TRY LOGIN?', 'using CAS.')
                 setStatus(1), postLogin()
             } else if (getCookie('gosh') != 'null' && getCookie('gowd') != 'null') {
+                debug('TRY LOGIN?', 'using stored cookie.')
                 setStatus(0)
                 trying = 1
                 $('#loginId').val(getCookie('gosh'))
                 $('#loginPwd').val(getCookie('gowd'))
                 login().then(() => { status == 2 ? setStatus(0, 1) : (trying = 0, postLogin()); })
-            } else setStatus(0, 1)
+            } else debug('TRY LOGIN?', 'no available method.'), setStatus(0, 1)
         }
         scrollToBottom = () => {
             (function smoothscroll() {
@@ -508,6 +517,18 @@
             padding: 0;
             margin-bottom: 5px;
         }
+
+        .auto-warp {
+            word-wrap: break-word;
+            word-break: break-all;
+            overflow: hidden;
+            transition-duration: 500ms;
+            max-height: 22.4px;
+        }
+
+        .auto-warp:hover {
+            max-height: 100px;
+        }
     </style>
 </head>
 
@@ -551,7 +572,7 @@
     <div class="col-md-4 col-sm-6 box">
         <div class="page-header">
             <h3><span class="glyphicon glyphicon-user"></span> 账号
-                <ul id="cookie" class="btn-group breadcrumb" style="display: none;font-size:10px;top:5px">
+                <ul class="btn-group breadcrumb debug" style="display: none;font-size:10px;top:5px">
                     <li id="bxn-portal" onclick="get('bxn-portal/portal/osforstudent/index')">bxn-portal</li>
                     <li id="bxn-core-uic" onclick="get('bxn-core-uic/uic/index')">bxn-core-uic</li>
                     <li id="bxn-library" onclick="get('bxn-library/library/jumpExamreport?jumpUrl=')">bxn-library</li>
@@ -560,7 +581,7 @@
             </h3>
         </div>
         <button class="btn btn-default e" onclick="$('#change').toggle(200)">修改密码</button>
-        <button class="btn btn-default e" onclick="$('#cookie').toggle(200)">cookie</button>
+        <button class="btn btn-default e" onclick="$('.debug').toggle(200)">debug</button>
         <div class="login">
             <br>
             <div class="input-group">
@@ -577,6 +598,10 @@
                     </button>
                 </span>
             </div>
+        </div>
+        <div class="debug" style="display: none;">
+            <button class="btn btn-default btn-xs" onclick="$('.debugList').empty()"><span class="glyphicon glyphicon-trash"></span> 清除</button>
+            <ul class="debugList list-unstyled" style="font-family: 'Courier New', Courier, monospace;"></ul>
         </div>
         <div id="change" style="display: none;">
             <br>
