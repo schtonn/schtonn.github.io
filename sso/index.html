@@ -14,7 +14,7 @@
 &family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <script>
-        var status, oid, user, pwd
+        var status, oid, user, pwd, paused = []
         const rot = '43.143.233.184:81', root = 'https://43.143.233.184:81/'
         function getCookie(name) {
             let arr = document.cookie.match(new RegExp("(^| )" + name + "=([^;]*)(;|$)"));
@@ -29,7 +29,7 @@
                 document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString() + ((path == 'u') ? '' : ';path=' + path)
         }
         function getUrl(e) {
-            return e.replace('dd.sdsz.com.cn', rot).replace(/^http:/, 'https:').replace(rot.split(':')[0] + '/', rot + '/')
+            return e.replace('dd.sdsz.com.cn', rot).replace(/^http:/, 'https:').replace(rot.split(':')[0] + '/', rot + '/').replace('service=http%3A%2F%2F'+root,'service=http%3A%2F%2Fdd.sdsz.com.cn')
         }
         function setStatus(e, fast) {
             console.log('STATUS', e)
@@ -54,7 +54,7 @@
                 $('#user').text('-')
             }
         }
-        function delCookies(force) {
+        function delCookies(force = 0) {
             if (force) {
                 delCookie('CASTGC', '/')
                 delCookie('gosh', '/score/')
@@ -73,7 +73,6 @@
         }
         var ggg
         function getMail(from, i, id, uid) {
-            console.log(i, id, uid)
             $('.mil-' + i).toggleClass('active')
             if ($('.mail-' + i).text() == '') {
                 get(`${['bxn-office/mails/user/showMailDetail?source=&mailItemId', 'bxn-office/messages/sys/sysMsgDetail?unwrap=true&sysMsgId', 'bxn-office/notices/user/getNoticeDetail?unwrap=true&noticeId'][from]}=${id}${['&userMailItemId=', '&ownerId=', ''][from]}${uid || ''}${['', '&_=0', '&_=0'][from]}`, e => {
@@ -129,12 +128,6 @@
             mails = []
             $('#mailList').empty()
             $('#mailList').append('<il>获取中...</il>')
-            get('bxn-portal/portal/api/proxy?username=true&userId=true&needvalidate=true&t=http%3A%2F%2F202.94.10.118%2Fbxn-library%2Fapi%2Flibrary%2FgetLatestBorrowBook%3Fcategory%3D1&resourceId=103519&cache=nocache&systime=0', e => {
-                e = JSON.parse(e)
-                $('#user').text(e.requestParams[0].ownerName)
-                oid = e.requestParams[0].ownerId
-                $('#avatar').attr('src', root + 'avatar/tiny/' + oid)
-            })
             get('bxn-office/mails/user/index', e => {
                 // 这代码谁写的？真是太烂了，我一行就把他五行干掉了（是刚才的我写的）
                 // e = e.replace(/\n^(?!.*(sender|mailDetail|mailItemId)).*$/gm, '').replace(/[\r\n ]+/g, '')
@@ -164,6 +157,17 @@
             $('#changePwd').val(pwd)
             get('bxn-library/library/jumpExamreport?jumpUrl=http://36.112.23.77/analysis/auto/%23/autoLogin', e => {
                 $('#scoreOld').attr('href', e)
+            })
+            get('bxn-portal/portal/osforstudent/index', e => {
+                let f = e.match(/'https:\/\/service.*?'/gs)[0].split("'")[1]
+                $('.service').attr('href', f)
+                $('.serviceLearn').attr('href', f + encodeURIComponent('/fe-pc/b/fe_leco_student/portal/?system_partition_gId=3'))
+            })
+            get('bxn-portal/portal/api/proxy?username=true&userId=true&needvalidate=true&t=http%3A%2F%2F202.94.10.118%2Fbxn-library%2Fapi%2Flibrary%2FgetLatestBorrowBook%3Fcategory%3D1&resourceId=103519&cache=nocache&systime=0', e => {
+                e = JSON.parse(e)
+                $('#user').text(e.requestParams[0].ownerName)
+                oid = e.requestParams[0].ownerId
+                $('#avatar').attr('src', root + 'avatar/tiny/' + oid)
             })
             refreshMail()
         }
@@ -196,33 +200,43 @@
         function matches(e) {
             return e.match(/(^\[\]$|param":"|<tr>|DOCTYPE|in\?username=|requestParams|\"newmessage\")/s)
         }
-        async function next(e, call, ac) { // 异步递归嘿嘿嘿，再多 302 也不怕；再加上回调函数，真是妙
-            if (e.length < 3000 && !matches(e)) {
+        async function next(e, call, ac, login) {
+            if (e.length < 3000 && !matches(e) && (!e.match('\/login\\?') || login)) {
                 return fetch(getUrl(e), {
                     method: 'GET',
                     credentials: 'include',
                     headers: {
                         Accept: ac
                     }
-                }).then(e => e.text()).then(res => { next(res, call, ac) })
+                }).then(e => e.text()).then(res => { next(res, call, ac, login) })
             }
             else return call(e), new Promise((resolve, reject) => { })
-        }
+        }// 异步递归嘿嘿嘿，再多 302 也不怕；再加上回调函数，真是妙
         function pre(e, url, call) {
-            if (e.match('北师大实验中学--登录')) {
-                console.log("ERR", e, url)
-                delCookies(3)
-                setStatus(0)
-                tryLogin()
+            if (e.match('casfailed')) delCookie('CASTGC', '/')
+            if (e.length < 3000 && e.match('\/login\\?')) {
+                let f = paused.filter(e => e.name == url.split('/')[0])
+                console.log("ERR", url)
+                if (url.match('\/login\\?')) return
+                if (f.length) f[0].arr.push(url), f[0].carr.push(call)
+                else {
+                    paused.push({ name: url.split('/')[0], arr: [url], carr: [call] })
+                    console.log('ERR -->')
+                    get(e.split('cn/')[1], () => {
+                        let f = paused.filter(e => e.name == url.split('/')[0])[0]
+                        for (let i = 0; i < f.arr.length; i++)get(f.arr[i], f.carr[i])
+                        paused.splice(paused.indexOf(f), 1)
+                    }, '*/*', 1)
+                }
             } else {
-                $('#bxn' + url.split('bxn')[1].split('/')[0]).addClass('btn-success')
-                call(e)
+                $('#bxn' + url.split('bxn')[1].split(/(\/|%2F)/)[0]).addClass('bg-success').addClass('text-success')
+                if (status == 1) call(e)
             }
         }
-        function get(url, call = () => { }, ac = '*/*') {
+        function get(url, call = () => { }, ac = '*/*', login = 0) {
             console.log("GET", url)
             if (status != 1) return
-            next(root + url, e => { pre(e, url, call); }, ac)
+            next(root + url, e => { pre(e, url, call); }, ac, login)
         }
         function change() {
             if (status != 1 || pwd == $('#changePwd').val()) return
@@ -243,13 +257,19 @@
             })
             $('#changeBtn').addClass('btn-success')
         }
-        function tryLogin() {
-            if (getCookie('CASTGC')) {
+        let trying = 0
+        function tryLogin(force) {
+            console.log("TRY")
+            if (trying) return
+            console.log("GO")
+            if (!force && getCookie('CASTGC')) {
                 setStatus(1), postLogin()
-            } else if (getCookie('gosh') && getCookie('gosh') != 'null') {
+            } else if (getCookie('gosh') != 'null' && getCookie('gowd') != 'null') {
+                setStatus(0)
+                trying = 1
                 $('#loginId').val(getCookie('gosh'))
                 $('#loginPwd').val(getCookie('gowd'))
-                login().then(() => { status == 2 ? setStatus(0, 1) : postLogin() })
+                login().then(() => { status == 2 ? setStatus(0, 1) : (trying = 0, postLogin()); })
             } else setStatus(0, 1)
         }
         scrollToBottom = () => {
@@ -279,7 +299,6 @@
             target = target.filter(u => u != e)
         }
         function addRec(e, c, l) {
-            console.log(e, c, l)
             if (target.filter(u => u == e).length) return
             $('#recSel').append(`<li onclick="delRec('${e}');$(this).remove()" style="cursor:pointer"><span style="font-size:10px">${e} ${c}</span> ${l}</li>`)
             target.push(e)
@@ -324,7 +343,6 @@
             }
             let f = e[e.length - 1]
             if (ex) {
-                console.log(f, ggg = $('li.' + f.id).show())
                 $('#recList>li').hide()
                 $('#recList>li.' + f.id).show()
                 ggg.show()
@@ -341,7 +359,6 @@
             for (let i = 0; i < target.length; i++) {
                 str += ',' + target[i]
             }
-            console.log(str.slice(1))
             fd.append('filelist', '[]')
             fd.append('mailItemId', '')
             fd.append('forwardMailItemId', '')
@@ -360,7 +377,6 @@
             }).then(e => { $('#writeBtn>span').removeClass('glyphicon-send').removeClass('glyphicon-exclamation-sign').addClass(e.status == 200 ? 'glyphicon-ok' : 'glyphicon-exclamation-sign'); refreshMail() })
         }
         function removeMail(e) {
-            console.log(e)
             var fd = new URLSearchParams()
             fd.append('checkmail', e)
             fetch(root + 'bxn-office/mails/user/removeMail?unwrap=true', {
@@ -379,6 +395,7 @@
             $("[data-toggle='tooltip']").tooltip();
             $('.recL').hide(300)
             $('#recList').html(oof)
+            $('.banner').text('庆祝数字校园建站 ' + Math.ceil((new Date().getTime() - 1675136714191) / 86400000) + ' 天')
         })
         oof = `<li onclick="base=1;setRec([getBase[base]])">老师</li><li onclick="base=4;setRec([getBase[base]])">学生</li><li onclick="base=3;setRec([getBase[base]])">家长</li>`
     </script>
@@ -407,6 +424,7 @@
 
         .box {
             transition-duration: 300ms;
+            min-height: 210px;
         }
 
         .box::before {
@@ -519,22 +537,26 @@
     </div>
     <div class="col-md-4 col-sm-6 box">
         <div class="page-header">
-            <h3><span class="glyphicon glyphicon-stats"></span> 成绩</h3>
+            <h3><span class="glyphicon glyphicon-link"></span> 链接</h3>
         </div>
-        <div class="btn-group">
-            <a id="scoreOld" class="btn btn-default e" target="_blank">原版</a>
-            <a class="btn btn-default e" href="/score" target="_blank">新版</a>
+        <div class="btn-group" style="margin-bottom: 10px;">
+            <a id="scoreOld" class="btn btn-default e" target="_blank">心意答</a>
+            <a class="btn btn-default e" href="/score" target="_blank"><span class="glyphicon glyphicon-stats"></span> 成绩整理</a>
+        </div>
+        <div class="btn-group" style="margin-bottom: 10px;">
+            <a class="btn btn-default e service" target="_blank"><span class="glyphicon glyphicon-tasks"></span> 中台</a>
+            <a class="btn btn-default e serviceLearn" target="_blank"><span class="glyphicon glyphicon-book"></span> 学习平台</a>
         </div>
     </div>
     <div class="col-md-4 col-sm-6 box">
         <div class="page-header">
             <h3><span class="glyphicon glyphicon-user"></span> 账号
-                <div id="cookie" class="btn-group" style="display: none;">
-                    <button id="bxn-portal" class="btn btn-default btn-xs" onclick="get('bxn-portal/portal/osforstudent/index')">bxn-portal</button>
-                    <button id="bxn-core-uic" class="btn btn-default btn-xs" onclick="get('bxn-core-uic/uic/index')">bxn-core-uic</button>
-                    <button id="bxn-library" class="btn btn-default btn-xs" onclick="get('bxn-library/library/jumpExamreport?jumpUrl=')">bxn-library</button>
-                    <button id="bxn-office" class="btn btn-default btn-xs" onclick="get('bxn-office/mail/index')">bxn-office</button>
-                </div>
+                <ul id="cookie" class="btn-group breadcrumb" style="display: none;font-size:10px;top:5px">
+                    <li id="bxn-portal" onclick="get('bxn-portal/portal/osforstudent/index')">bxn-portal</li>
+                    <li id="bxn-core-uic" onclick="get('bxn-core-uic/uic/index')">bxn-core-uic</li>
+                    <li id="bxn-library" onclick="get('bxn-library/library/jumpExamreport?jumpUrl=')">bxn-library</li>
+                    <li id="bxn-office" onclick="get('bxn-office/mail/index')">bxn-office</li>
+                </ul>
             </h3>
         </div>
         <button class="btn btn-default e" onclick="$('#change').toggle(200)">修改密码</button>
@@ -609,5 +631,8 @@
     </div>
     <div style="position:fixed;bottom:10px;left:10px;color:#ccc">
         北师大实验中学
+    </div>
+    <div style="position:fixed;bottom:10px;right:10px;color:#ccc" class="banner">
+        庆祝数字校园建站
     </div>
 </body>
