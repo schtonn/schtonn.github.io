@@ -149,7 +149,7 @@
             })
         }
         function postLogin() {
-            debug('LOGIN DONE.','initiate fetching.')
+            debug('LOGIN DONE.', 'initiate fetching.')
             if (status != 1) return;
             if (!user) user = getCookie('gosh'), pwd = getCookie('gowd')
             document.cookie = "gosh=" + user + ";path=/score/";
@@ -229,7 +229,7 @@
                 if (f.length) f[0].arr.push(url), f[0].carr.push(call)
                 else {
                     paused.push({ name: name, arr: [url], carr: [call] })
-                    debug('RETRY...')
+                    debug('GET COOKIE...')
                     get(name + '/casfailed.jsp', () => {
                         let f = paused.filter(e => e.name == name)[0]
                         for (let i = 0; i < f.arr.length; i++)get(f.arr[i], f.carr[i])
@@ -268,18 +268,18 @@
         }
         let trying = 0
         function tryLogin() {
-            if (trying) return debug('TRY LOGIN', 'already in progress.')
+            if (trying) return debug('LOGIN', 'already in progress.')
             if (getCookie('CASTGC')) {
-                debug('TRY LOGIN?', 'using CAS.')
+                debug('LOGIN', 'using CAS.')
                 setStatus(1), postLogin()
             } else if (getCookie('gosh') != 'null' && getCookie('gowd') != 'null') {
-                debug('TRY LOGIN?', 'using stored cookie.')
+                debug('LOGIN', 'using stored cookie.')
                 setStatus(0)
                 trying = 1
                 $('#loginId').val(getCookie('gosh'))
                 $('#loginPwd').val(getCookie('gowd'))
                 login().then(() => { status == 2 ? setStatus(0, 1) : (trying = 0, postLogin()); })
-            } else debug('TRY LOGIN?', 'no available method.'), setStatus(0, 1)
+            } else debug('LOGIN', 'no available method.'), setStatus(0, 1)
         }
         scrollToBottom = () => {
             (function smoothscroll() {
@@ -409,7 +409,7 @@
         oof = `<li onclick="base=1;setRec([getBase[base]])">老师</li><li onclick="base=4;setRec([getBase[base]])">学生</li><li onclick="base=3;setRec([getBase[base]])">家长</li>`
     </script>
     <style>
-        .in {
+        .pass {
             font-weight: bold;
             font-family: 'Courier New', Courier, monospace;
         }
@@ -536,8 +536,9 @@
     <div class="page-header nohr">
         <h2><img src="RC.png" width="32px" style="position:relative;top:-4px">
             数字校园
+            <small id="detail" style="display:none">.</small>
             <button class="btn btn-default btn-xs">
-                <span class="glyphicon glyphicon-question-sign"></span>
+                <span class="glyphicon glyphicon-question-sign" onclick="$('#detail').toggle(300)"></span>
             </button>
         </h2>
         <span id="loginSt" class="label label-default">未登录</span>
@@ -580,18 +581,18 @@
                 </ul>
             </h3>
         </div>
-        <button class="btn btn-default e" onclick="$('#change').toggle(200)">修改密码</button>
+        <button class="btn btn-default e" onclick="$('#change').toggle(200)"><span class="glyphicon glyphicon-edit"></span> 修改密码</button>
         <button class="btn btn-default e" onclick="$('.debug').toggle(200)">debug</button>
         <div class="login">
             <br>
             <div class="input-group">
                 <span class="input-group-addon">账号</span>
-                <input id="loginId" type="id" class="in form-control" placeholder="20222222">
+                <input id="loginId" type="id" class="pass form-control" placeholder="20222222">
             </div>
             <br>
             <div class="input-group">
                 <span class="input-group-addon">密码</span>
-                <input id="loginPwd" type="password" class="in form-control" placeholder="password">
+                <input id="loginPwd" type="password" class="pass form-control" placeholder="password">
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="button" onclick="login().then(postLogin)">
                         <span class="glyphicon glyphicon-log-out"></span> 登录
@@ -607,7 +608,7 @@
             <br>
             <div class="input-group">
                 <span class="input-group-addon">新密码</span>
-                <input id="changePwd" type="password" class="in form-control" placeholder="password" onmouseenter="this.type='id'" onmouseleave="this.type='password'">
+                <input id="changePwd" type="password" class="pass form-control" placeholder="password" onmouseenter="this.type='id'" onmouseleave="this.type='password'">
                 <span class="input-group-btn"><button id="changeBtn" class="btn btn-default" type="button" onclick="change()">修改</button></span>
             </div>
         </div>
@@ -617,7 +618,7 @@
             <h3><span class="glyphicon glyphicon-envelope"></span> 消息
                 <button class="btn btn-default btn-xs e" onclick="toggleWrite();">写信</button>
                 <button class="btn btn-default btn-xs e" onclick="$('.mail-text').hide(300);$('.mail').removeClass('active')">全部收起</button>
-                <button class="btn btn-default btn-xs e pull-right" onclick="$('.boxMail').toggleClass('col-sm-6').toggleClass('col-md-4').toggleClass('col-sm-12').toggleClass('lim');$('.full-time').toggle()">
+                <button class="btn btn-default btn-xs e pull-right" onclick="$('.boxMail').toggleClass('col-sm-6').toggleClass('col-md-4').toggleClass('col-sm-12').toggleClass('lim');$('.full-time').toggle();$(this).children().toggleClass('glyphicon-remove').toggleClass('glyphicon-fullscreen')">
                     <span class="glyphicon glyphicon-fullscreen"></span>
                 </button>
             </h3>
