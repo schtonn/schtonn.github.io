@@ -72,7 +72,6 @@
             delCookie('JSESSIONID', '/')
             delCookie('JSESSIONID', '/sso/')
         }
-        var ggg
         function getMail(from, i, id, uid) {
             $('.mil-' + i).toggleClass('active')
             if ($('.mail-' + i).text() == '') {
@@ -272,7 +271,7 @@
             if (getCookie('CASTGC')) {
                 debug('LOGIN', 'using CAS.')
                 setStatus(1), postLogin()
-            } else if (getCookie('gosh') != 'null' && getCookie('gowd') != 'null') {
+            } else if (getCookie('gosh') && getCookie('gosh') != 'null' && getCookie('gowd') != 'null') {
                 debug('LOGIN', 'using stored cookie.')
                 setStatus(0)
                 trying = 1
@@ -354,7 +353,6 @@
             if (ex) {
                 $('#recList>li').hide()
                 $('#recList>li.' + f.id).show()
-                ggg.show()
             } else {
                 getRec(f)
             }
