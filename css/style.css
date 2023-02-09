@@ -66,7 +66,7 @@ h4 {
 .btn:focus {
     outline: 0;
 }
-
+/* 
 .btn-info:is(:not(:hover):focus, :active:focus, :active:hover:focus) {
     outline: 5px dashed rgba(95, 177, 221, 0.5);
 }
@@ -105,7 +105,7 @@ h4 {
 
 .btn-danger:is(:hover, :focus:hover) {
     outline: 10px double rgba(234, 71, 71, 0.5);
-}
+} */
 
 .btn {
     transition-duration: 100ms;

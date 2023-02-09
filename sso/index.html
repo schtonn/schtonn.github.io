@@ -10,8 +10,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
-&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="css2.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <script>
         var status = 0, oid, user, pwd, paused = []
@@ -151,9 +150,9 @@
             debug('LOGIN DONE.', 'initiate fetching.')
             if (status != 1) return;
             if (!user) user = getCookie('gosh'), pwd = getCookie('gowd')
-            document.cookie = "gosh=" + user + ";path=/score/";
-            document.cookie = "gosh=" + user + ";path=/sso/";
-            document.cookie = "gowd=" + pwd + ";path=/sso/";
+            document.cookie = "gosh=" + user + ";path=/score/;expires=Fri, 05 Feb 2077 12:34:56 GMT";
+            document.cookie = "gosh=" + user + ";path=/sso/;expires=Fri, 05 Feb 2077 12:34:56 GMT";
+            document.cookie = "gowd=" + pwd + ";path=/sso/;expires=Fri, 05 Feb 2077 12:34:56 GMT";
             $('#changePwd').val(pwd)
             get('bxn-library/library/jumpExamreport?jumpUrl=http://36.112.23.77/analysis/auto/%23/autoLogin', e => {
                 $('#scoreOld').attr('href', e)
@@ -634,7 +633,6 @@
             <ul id="recSel" class="breadcrumb list-unstyled e" style="display: inline-block;"></ul>
             <button class="btn btn-default btn-xs e" onclick="$('.recL').toggle(300,()=>$('#recList').html(oof));$('#recNav').empty();$(this).children().toggleClass('glyphicon-chevron-down')"><span class="glyphicon glyphicon-plus"></span></button>
             <div>
-
                 <ul id="recNav" class="recL breadcrumb list-unstyled e"></ul>
                 <ul id="recList" class="recL list-unstyled e"></ul>
             </div>
