@@ -1,0 +1,223 @@
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>数字签名</title>
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700
+&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script id="MathJax-script" src="https://cdn.bootcss.com/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
+
+    <script>
+        const cpt = crypto.subtle
+        function ab2str(buf) {
+            return String.fromCharCode.apply(null, new Uint8Array(buf));
+        }
+        function str2ab(str) {
+            var buf = new ArrayBuffer(str.length);
+            var bufView = new Uint8Array(buf);
+            for (var i = 0, strLen = str.length; i < strLen; i++) {
+                bufView[i] = str.charCodeAt(i);
+            }
+            return buf;
+        }
+        async function exportCryptoKey(key, target, text, mt = 'pkcs8') {
+            const exported = await cpt.exportKey(mt, key)
+            const pem = `${text}：<button class="btn btn-default btn-xs" onclick="$('${target}>span').text($('${target}>textarea').val());$(this).siblings().toggle()">编辑</button><br><span class="oof">${btoa(ab2str(exported))}</span><textarea class="form-control oof" style="display:none">${btoa(ab2str(exported))}</textarea>`;
+
+            $(target).html(pem);
+        }
+
+        var keyPair, param = {
+            name: 'ECDSA',
+            namedCurve: 'P-256',
+            hash: 'SHA-256'
+        };
+
+        function gen() {
+            cpt.generateKey(param,
+                true,
+                ['sign', 'verify']
+            ).then(e => {
+                keyPair = e;
+                exportCryptoKey(keyPair.privateKey, '.pri', '私钥');
+                exportCryptoKey(keyPair.publicKey, '.pub', '公钥', 'spki');
+            });
+        }
+
+        async function getPri() {
+            try {
+                g = await cpt.importKey(
+                    'pkcs8',
+                    str2ab(atob($('.pri>textarea').val())),
+                    param,
+                    true,
+                    ['sign']
+                )
+            } catch {
+                $('.pri').html('私钥：格式错误！')
+            }
+            exportCryptoKey(g, '.pri', '私钥');
+            return g
+        }
+        async function getPub() {
+            try {
+                g = await cpt.importKey(
+                    'spki',
+                    str2ab(atob($('.pub>textarea').val())),
+                    param,
+                    true,
+                    ['verify']
+                )
+            } catch {
+                $('.pub').html('公钥：格式错误！')
+            }
+            exportCryptoKey(g, '.pub', '公钥', 'spki');
+            return g
+        }
+
+        function hash() {
+            cpt.digest('SHA-256', str2ab($('.data').val())).then(e => {
+                $('.hash').text(btoa(ab2str(e)))
+            })
+        }
+
+        async function sign() {
+            hash()
+            cpt.sign(param,
+                await getPri(),
+                str2ab($('.data').val())
+            ).then(e => {
+                $('.sign').val(btoa(ab2str(e)))
+            })
+        }
+
+        async function veri() {
+            hash()
+            cpt.verify(param,
+                await getPub(),
+                str2ab(atob($('.sign').val())),
+                str2ab(($('.data').val()))
+            ).then(e => {
+                if (e) {
+                    $('.veri>span').addClass('glyphicon-ok-sign').removeClass('glyphicon-remove-sign').removeClass('glyphicon-question-sign')
+                    $('.veri').addClass('btn-success').removeClass('btn-danger')
+                } else {
+                    $('.veri>span').removeClass('glyphicon-ok-sign').addClass('glyphicon-remove-sign').removeClass('glyphicon-question-sign')
+                    $('.veri').removeClass('btn-success').addClass('btn-danger')
+                }
+                setTimeout(() => {
+                    $('.veri>span').removeClass('glyphicon-ok-sign').removeClass('glyphicon-remove-sign').addClass('glyphicon-question-sign')
+                    $('.veri').removeClass('btn-success').removeClass('btn-danger')
+                }, 1000)
+            })
+        }
+        $(gen)
+    </script>
+    <style>
+        .oof {
+            resize: none;
+            font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+            font-size: 12px
+        }
+
+        div {
+            transition-duration: 200ms;
+        }
+
+        .dim,
+        .dim>textarea,
+        .dim>button {
+            color: #ccc;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class="page-header">
+        <h2>数字签名 <small>ECDSA</small>
+            <button class="btn btn-default" onclick="$('.info').toggle(()=>$('.info-img').toggle(500))">介绍</button>
+        </h2>
+    </div>
+    <div class="pull-right info-img" style="text-align: center;display:none;">
+        <img src="point-addition.png" class="img-responsive"><br>
+        <span style="font-size:12px;color:grey;">\(P+Q=-R\)</span>
+    </div>
+    <div style="font-size:14px;display:none;" class="info">
+        <p>背景：Alice 想要发布带数字签名的消息（文件、游戏、应用程序等等）。只有 Alice 能产生合法的数字签名，但所有人都应能验证数字签名是否合法。</p>
+        <p>Alice 打算使用 ECDSA 算法，首先需要一个定义在椭圆曲线上的群。</p>
+        <hr>
+        <p>椭圆曲线是这样的点集：\(\left\{(x,y)\in\mathbb{R}^2\ |\ y^2=x^3+ax+b,4a^3+27b^2\ne0\right\}\cup\left\{0\right\}\)。其中 0 是无限远处的点。</p>
+        <p>我们需要的群定义如下：</p>
+        <ul>
+            <li>群的元素是椭圆曲线上的所有点；</li>
+            <li>单位元是位于无限远处的点；</li>
+            <li>一个点的逆元是它关于 x 轴的对称点；</li>
+            <li>关于点的加法，共线的三个点加和等于 0 点。即对于共线的 \(P,Q,R,\ P+Q+R=0,\ P+Q=-R\)；</li>
+            <li>对于 \(P,Q\) 中有零点的情况，则运用单位元的定义，对于 \(P,Q\) 重合或连线是切线的情况，使用切点的对称点。</li>
+        </ul>
+        <hr>
+        <p>当然在计算机上不能用几何方法计算这个加法，还需要代数方法。</p>
+        <p>首先需要知道直线的斜率 \(m\)。若 \(P,Q\) 不同且非 0，可得 \(m=\dfrac{y_P-y_Q}{x_P-x_Q}\)。若 \(P=Q\)，则需要切线斜率 \(m=\dfrac{3x_P^2+a}{2y_P}\)。</p>
+        <p>通过解三次方程，得出 \(R:(m^2-x_P-x_Q,y_P+m(x_R-x_P))\)。</p>
+        <p>有了计算机可以简单计算的加法后，接下来定义数乘：\(nP=\underbrace{P+P+\cdots+P}_{n\ \text{times}}\)。</p>
+        <p>加入快速幂思想，我们就知道给定 \(n,P\) 计算 \(Q=nP\) 是容易的。但如果要从 \(P,Q\) 计算 \(n\) 呢？</p>
+        <hr>
+        <p>这里就要说到密码学里不得不提的“离散对数”问题。这说的是在模素数的非负整数域上，计算对数是困难的。</p>
+        <p>我们也要制造类似的困难，那么就要把定义域也变为离散的（\(p\) 是素数）：\(\left\{(x,y)\in\left(\mathbb{F}_p\right)^2\ |\ y^2\equiv x^3+ax+b\pmod{p},4a^3+27b^2\not\equiv 0\pmod{p}\right\}\cup\left\{0\right\}\)</p>
+        <p>为了保留加法的定义，我们将直线改为 \(ax+by+c\equiv 0\pmod{p}\)，视觉上表现为从定义域的上方穿透到下方，循环往复的直线。</p>
+        <p>那么刚才的公式依然可用，只是需要将除法改为乘法逆元，如 \(m=(y_P-y_Q)(x_P-x_Q)^{-1}\bmod{p}\)，以此类推。</p>
+        <p>由此，给定 \(n,P\) 计算 \(Q=nP\) 依然是容易的。但目前认为，椭圆曲线上的“离散对数”，即从 \(P,Q\) 计算 \(n\)，是比 RSA 所用的分解素数问题更为困难的。</p>
+        <hr>
+        <p>不过，这一困难还需要子群的阶足够大以作为担保。</p>
+        <p>可以证明，以任意 \(P\) 作为生成元，所生成的（即 \(P\) 的所有倍数）一定是个循环子群。</p>
+        <p>根据拉格朗日引理，这个循环子群的阶 \(P\) 一定是整个群的阶 \(N\) 的因数。所以，我们只需要先计算 \(N\)，对于它从小到大的每个因数 \(n\)，计算 \(nP\)，直到 \(nP=0\) 时得到的就是这个子群的阶。</p>
+        <p>但我们不会一个一个试出最好、最大的阶，而是直接选取子群的阶，再由此确定生成元。这一方便还要归功于拉格朗日引理。</p>
+        <p>首先还是计算 \(N\)，找到一个它的质因数 \(n\)。我们知道对于任意点 \(P\) 都满足 \(NP=0\)，也就是 \(n(\dfrac{N}{n}P)=0\)，根据拉格朗日引理可知 \(\dfrac{N}{n}\) 也是个整数，这实际上就是说点 \(G=\dfrac{N}{n}P\) 能生成一个阶为 \(n\) 的子群。</p>
+        <hr>
+        <p>如此这般，我们从 \(1\dots n-1\) 中随机选取一个数 \(d\) 作为私钥，将 \(H=dG\) 作为公钥，就得到了椭圆曲线加密算法。</p>
+        <p>好了，现在我们有了这一极好的算法，可以用它来做数字签名了：</p>
+        <ol>
+            <li>首先，确定一个阶为 \(n\) 的生成元 \(G\)；</li>
+            <li>计算消息的哈希值，并把它的二进制位数截取到与 \(n\) 的位数相同，记为 \(h\)；</li>
+            <li>在 \(1\dots n-1\) 中随机选取一个数 \(k\)，计算 \(P=kG\)，若 \(x_P=0\) 则重新选取 \(k\)；</li>
+            <li>取出私钥 \(d_A\) ，计算 \(s=k^{-1}(h+x_Pd_A)\bmod n\)，若 \(s=0\) 则重新选取 \(k\)；</li>
+            <li>此时的 \((x_P,s)\) 就是数字签名了。</li>
+        </ol>
+        <p>其他人要验证签名是否合法时：</p>
+        <ol>
+            <li>计算 \(u_1=s^{-1}h\bmod{n}\)</li>
+            <li>计算 \(u_2=s^{-1}x_P\bmod{n}\)</li>
+            <li>取出公钥 \(H_A\)，计算点 \(P'=u_1G+u_2H_A\)，若 \(x_P\equiv x_{P'}\bmod n\)，则签名合法。</li>
+        </ol>
+        <p>证明：\(u_1G+u_2H_A=(u_1+u_2d_A)G=(s^{-1}h+s^{-1}x_Pd_A)=s^{-1}(h+x_Pd_A)G=kG\)。</p>
+        <hr>
+        <p>你可以在下方生成自己的数字签名。这样封装起来，这个算法似乎又变得非常简单了。世界上更多算法又何尝不是这样呢，看似简单，其实背后有着数论、群论，几何、代数等等多领域的结合。只有深入到其原理，才能看清这些算法的复杂之处。</p>
+        <hr>
+    </div>
+    <button class="btn btn-default" onclick="gen()" onmouseenter="$('.dat,.sig,.has').addClass('dim')" onmouseleave="$('.dat,.sig,.has').removeClass('dim')">生成密钥对 <span class="glyphicon glyphicon-refresh"></span></button>
+    <button class="btn btn-default" onclick="sign()" onmouseenter="$('.pub,.sig,.has').addClass('dim')" onmouseleave="$('.pub,.sig,.has').removeClass('dim')">签名 <span class="glyphicon glyphicon-pencil"></span></button>
+    <button class="btn btn-default veri" onclick="veri()" onmouseenter="$('.pri,.has').addClass('dim')" onmouseleave="$('.pri,.has').removeClass('dim')">验证 <span class="glyphicon glyphicon-question-sign"></span></button>
+    <div style="word-wrap: break-word;">
+        <div class="pri"><b>私钥</b>：</div>
+        <div class="pub"><b>公钥</b>：</div>
+        <div class="dat">数据：<textarea class="form-control data" style="resize:vertical" placeholder="输入任意数据..."></textarea></div>
+        <div class="has">哈希：<br><span class="hash oof"></span></div>
+        <div class="sig">签名：<textarea class="form-control sign oof"></textarea></div>
+    </div>
+    <div class="page-header">
+        <h2>密钥交换 <small>ECDH</small>
+            <button class="btn btn-default" onclick="$('.infh').toggle(500)">介绍</button>
+        </h2>
+    </div>
+    <div style="font-size:14px;display:none;" class="infh">
+        <p>关于椭圆曲线加密算法，需先阅读 ECDSA 的介绍。</p>
+        
+    </div>
+</body>
