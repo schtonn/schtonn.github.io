@@ -238,7 +238,7 @@
         let trying = 0
         function tryLogin() {
             if (trying) return debug('LOGIN', 'already in progress.')
-            if (getCookie('moe')[0] == '!') {
+            if (getCookie('moe') && getCookie('moe')[0] == '!') {
                 debug('LOGIN', 'admin!')
                 setStatus(1), postLogin()
             } else if (getCookie('CASTGC')) {
@@ -427,10 +427,12 @@
                 <input id="loginPwd" type="password" class="pass form-control" placeholder="password">
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="button" onclick="login().then(postLogin)">
-                        <span class="glyphicon glyphicon-log-out"></span> 登录
+                        <span class="glyphicon glyphicon-log-in"></span> 登录
                     </button>
                 </span>
             </div>
+            <br>
+            <button class="btn btn-default"><span class="glyphicon glyphicon-user"></span> 游客</button><small>（可能不计入投票结果）</small>
         </div>
         <div class="debug" style="display: none;">
             <button class="btn btn-default btn-xs" onclick="$('.debugList').empty()"><span class="glyphicon glyphicon-trash"></span> 清除</button>
