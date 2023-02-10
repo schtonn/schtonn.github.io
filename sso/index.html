@@ -202,6 +202,7 @@
         function matches(e) {
             return e.match(/(^\[\]$|param":"|<tr>|DOCTYPE|in\?username=|requestParams|\"newmessage\"|Sorry, Page Not Found|北师大实验中学--登录)/s)
         }
+        // 异步递归嘿嘿嘿，再多 302 也不怕；再加上回调函数，真是妙
         async function next(e, call, ac, login) {
             if (e.length < 3000 && !matches(e) && (!e.match('\/login\\?') || login)) {
                 return fetch(getUrl(e), {
@@ -213,7 +214,7 @@
                 }).then(e => e.text()).then(res => { next(res, call, ac, login) })
             }
             else return call(e), new Promise((resolve, reject) => { })
-        }// 异步递归嘿嘿嘿，再多 302 也不怕；再加上回调函数，真是妙
+        }
         function pre(e, url, call) {
             if (e.match('北师大实验中学--登录')) {
                 debug('OUTDATED CAS! NEED RELOGIN')
