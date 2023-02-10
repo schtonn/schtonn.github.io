@@ -10,7 +10,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="css2.css" rel="stylesheet">
+    <link href="/css/css2.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <script>
         var status = 0, oid, user, pwd, paused = []
@@ -69,6 +69,7 @@
                 delCookie('JSESSIONID', '/bxn-core-uic/')
             }
             delCookie('JSESSIONID', '/')
+            delCookie('SSOID', '/')
             delCookie('JSESSIONID', '/sso/')
         }
         function getMail(from, i, id, uid) {
@@ -535,8 +536,8 @@
         <h2><img src="RC.png" width="32px" style="position:relative;top:-4px">
             数字校园
             <small id="detail" style="display:none">.</small>
-            <button class="btn btn-default btn-xs">
-                <span class="glyphicon glyphicon-question-sign" onclick="$('#detail').toggle(300)"></span>
+            <button class="btn btn-default btn-xs" onclick="$('#detail').toggle(300)">
+                <span class="glyphicon glyphicon-question-sign"></span>
             </button>
         </h2>
         <span id="loginSt" class="label label-default">未登录</span>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>moe</title>
+
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="/css/css2.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <script>
+        var status = 0, oid, user, pwd, paused = []
+        const rot = '43.143.233.184:81', root = 'https://43.143.233.184:81/'
+        function getCookie(name) {
+            let arr = document.cookie.match(new RegExp("(^| )" + name + "=([^;]*)(;|$)"));
+            if (arr != null) return arr[2];
+            return null;
+        }
+        function delCookie(name, path = 'u') {
+            var exp = new Date();
+            exp.setTime(exp.getTime() - 1);
+            var cval = getCookie(name);
+            if (cval != null)
+                document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString() + ((path == 'u') ? '' : ';path=' + path)
+        }
+        function getUrl(e) {
+            return e.replace('dd.sdsz.com.cn', rot).replace(/^http:/, 'https:').replace(rot.split(':')[0] + '/', rot + '/').replace('service=http%3A%2F%2F' + root, 'service=http%3A%2F%2Fdd.sdsz.com.cn')
+        }
+        function setStatus(e, fast) {
+            console.log('STATUS', e)
+            status = e
+            if (e == 1) {
+                paused = []
+                $('#loginSt').text('登录成功')
+                $('.login').hide(200)
+                $('#loginSt').addClass('label-success')
+                $('#loginSt').removeClass('label-danger')
+                $('.reqLogin').show(300)
+            } else if (e == 2) {
+                $('#loginSt').text('登录失败')
+                $('#loginSt').removeClass('label-success')
+                $('#loginSt').addClass('label-danger')
+            } else {
+                $('.login').show(200)
+                $('#loginSt').text('未登录')
+                $('#loginSt').removeClass('label-success')
+                $('#loginSt').removeClass('label-danger')
+                $('.reqLogin').hide(300 * !fast)
+                $('#user').text('-')
+            }
+        }
+        function delCookies(force = 0) {
+            if (force) {
+                delCookie('CASTGC', '/')
+                delCookie('moe', '/')
+                delCookie('gosh', '/score/')
+                if (force <= 2) {
+                    delCookie('gosh', '/sso/')
+                    delCookie('gowd', '/sso/')
+                }
+            }
+            if (force >= 2) {
+                delCookie('JSESSIONID', '/bxn-portal/')
+                delCookie('JSESSIONID', '/bxn-library/')
+                delCookie('JSESSIONID', '/bxn-core-uic/')
+            }
+            delCookie('JSESSIONID', '/')
+            delCookie('SSOID', '/')
+            delCookie('JSESSIONID', '/sso/')
+        }
+        function gget(url, call) {
+            fetch(url, {
+                "headers": {
+                    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                },
+                "method": "GET",
+                "credentials": 'include'
+            }).then(e => e.text()).then(call)
+        }
+        function getStatus(ds, dt) {
+            let s = new Date(ds), t = new Date(dt), e = new Date();
+            console.log(s, t, e)
+            if (e < s) return '未开始'
+            if (e < t) return '进行中'
+            else return '已结束'
+        }
+        function adminStuff() {
+            // $('.box-contest').append('<input type="date" id="start" min="2022-01-01">')
+        }
+        function contestSubmit() {
+            fetch('contest/touch', {
+                headers: { 'Content-type': 'application/json' },
+                method: "POST",
+                credentials: 'include',
+                body: JSON.stringify({
+                    no: $('#tNo').val(),
+                    title: $('#tTitle').val(),
+                    description: $('#tDescription').val(),
+                    dates: new Date($('#tStart')[0].valueAsNumber).toUTCString(),
+                    datet: new Date($('#tEnd')[0].valueAsNumber).toUTCString()
+                }),
+            }).then(e => e.json()).then(e => {
+                if (e.no) alert('您无权进行此操作')
+                else {
+                    $('.tSend').addClass('glyphicon-success')
+                    setTimeout(() => $('.tSend').removeClass('glyphicon-success'), 1000)
+                    debug('TOUCH', 'affected ' + e.affectedRows + ' rows')
+                }
+            })
+        }
+        function postLogin() {
+            debug('LOGIN DONE.', 'initiate fetching.')
+            if (status != 1) return;
+            if (!user) user = getCookie('gosh'), pwd = getCookie('gowd')
+            document.cookie = "gosh=" + user + ";path=/score/;expires=Fri, 05 Feb 2077 12:34:56 GMT";
+            document.cookie = "gosh=" + user + ";path=/sso/;expires=Fri, 05 Feb 2077 12:34:56 GMT";
+            document.cookie = "gowd=" + pwd + ";path=/sso/;expires=Fri, 05 Feb 2077 12:34:56 GMT";
+            if (getCookie('moe')[0] == '!') $('#user').text('admin')
+            else get('bxn-portal/portal/api/proxy?username=true&userId=true&needvalidate=true&t=http%3A%2F%2F202.94.10.118%2Fbxn-library%2Fapi%2Flibrary%2FgetLatestBorrowBook%3Fcategory%3D1&resourceId=103519&cache=nocache&systime=0', e => {
+                e = JSON.parse(e)
+                $('#user').text(e.requestParams[0].ownerName)
+                oid = e.requestParams[0].ownerId
+            })
+            gget('contest', e => {
+                e = JSON.parse(e)
+                $('#contest').empty()
+                for (let i = 0; i < e.length; i++) {
+                    $('#contest').append(`\
+<li id="contest-${e[i].id}">\
+    <span onclick="$(this).toggleClass('active').siblings('div').toggle(300)" class="title">第 ${e[i].no} 届${e[i].title}\
+        <span class="pull-right" style="color:#999">${e[i].id} - ${getStatus(e[i].dates, e[i].datet)}</span>\
+    </span>
+    <div style="display:none">${e[i].description}</div>\
+</li>`)
+                }
+            })
+            if (getCookie('moe')[0] == '!') adminStuff()
+        }
+        function debug(e, str = '') {
+            $('.debugList').append(`<li class="auto-warp"><b>${e}</b> ${str} <span class="pull-right" style="color:#999">${status}</span></li>`)
+        }
+        function login() {
+            debug('LOGIN.')
+            if (status == 1) return;
+            delCookies()
+            user = $('#loginId').val(), pwd = $('#loginPwd').val()
+            return fetch(root + "sso/login", {
+                headers: {
+                    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                    // "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
+                },
+                method: "GET",
+                mode: "cors",
+                credentials: 'include'
+            }).then(() => {
+                return fetch('https://43.143.233.184/moelogin', {
+                    method: 'POST',
+                    headers: { 'Content-type': 'application/json' },
+                    body: JSON.stringify({
+                        user: user,
+                        pwd: pwd,
+                        cook: getCookie('JSESSIONID')
+                    }),
+                    credentials: 'include',
+                })
+            }).then(e => e.text()).then(e => { setStatus((e != 'success') + 1), Promise.resolve() })
+        }
+        function matches(e) {
+            return e.match(/(^\[\]$|param":"|<tr>|DOCTYPE|in\?username=|requestParams|\"newmessage\"|Sorry, Page Not Found|北师大实验中学--登录)/s)
+        }
+        // 异步递归嘿嘿嘿，再多 302 也不怕；再加上回调函数，真是妙
+        async function next(e, call, ac, login) {
+            if (e.length < 3000 && !matches(e) && (!e.match('\/login\\?') || login)) {
+                return fetch(getUrl(e), {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        Accept: ac
+                    }
+                }).then(e => e.text()).then(res => { next(res, call, ac, login) })
+            }
+            else return call(e), new Promise((resolve, reject) => { })
+        }
+        function pre(e, url, call) {
+            if (e.match('北师大实验中学--登录')) {
+                debug('OUTDATED CAS! NEED RELOGIN')
+                delCookie('CASTGC', '/')
+                tryLogin()
+            }
+            if (e.length < 3000 && e.match('\/login\\?')) {
+                var name = url.split('/')[0], f = paused.filter(e => e.name == name)
+                debug('FAILED', url)
+                if (url.match('\/login\\?')) return
+                if (f.length) f[0].arr.push(url), f[0].carr.push(call)
+                else {
+                    paused.push({ name: name, arr: [url], carr: [call] })
+                    debug('GET COOKIE...')
+                    get(name + '/casfailed.jsp', () => {
+                        let f = paused.filter(e => e.name == name)[0]
+                        for (let i = 0; i < f.arr.length; i++)get(f.arr[i], f.carr[i])
+                        paused.splice(paused.indexOf(f), 1)
+                    }, '*/*', 1)
+                }
+            } else {
+                $('#bxn' + url.split('bxn')[1].split(/(\/|%2F)/)[0]).addClass('bg-success').addClass('text-success')
+                if (status == 1) call(e)
+            }
+        }
+        function get(url, call = () => { }, ac = '*/*', login = 0) {
+            if (getCookie('moe')[0] == '!') return
+            console.log("GET", url)
+            debug('GET', url)
+            if (status != 1) return
+            next(root + url, e => { pre(e, url, call); }, ac, login)
+        }
+        let trying = 0
+        function tryLogin() {
+            if (trying) return debug('LOGIN', 'already in progress.')
+            if (getCookie('moe')[0] == '!') {
+                debug('LOGIN', 'admin!')
+                setStatus(1), postLogin()
+            } else if (getCookie('CASTGC')) {
+                debug('LOGIN', 'using CAS.')
+                setStatus(1), postLogin()
+            } else if (getCookie('gosh') && getCookie('gosh') != 'null' && getCookie('gowd') != 'null') {
+                debug('LOGIN', 'using stored cookie.')
+                setStatus(0)
+                trying = 1
+                $('#loginId').val(getCookie('gosh'))
+                $('#loginPwd').val(getCookie('gowd'))
+                login().then(() => { status == 2 ? setStatus(0, 1) : (trying = 0, postLogin()); })
+            } else debug('LOGIN', 'no available method.'), setStatus(0, 1)
+        }
+        $().ready(() => {
+            $('.e').addClass('reqLogin')
+            $('.e').removeClass('e')
+            tryLogin()
+            $("[data-toggle='tooltip']").tooltip();
+            $('.banner').text('庆祝 moe 建站 ' + Math.ceil((new Date().getTime() - 1676000714191) / 86400000) + ' 天')
+        })
+    </script>
+    <style>
+        .pass {
+            font-weight: bold;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        li {
+            border-bottom: 3px solid #eee;
+            word-wrap: break-word;
+        }
+
+        li>.title {
+            transition-duration: 300ms;
+            display: inline-block;
+            width: 100%;
+            cursor: pointer;
+            font-size: 18px
+        }
+
+        li>.active.title {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        li>.active+div {
+            background-image: linear-gradient(to right, #fffaf0, #f4f2ef);
+            border-left: 3px solid #ccc;
+            padding-left: 5px;
+        }
+
+        li:hover {
+            background-color: #eee;
+        }
+
+        .box {
+            transition-duration: 300ms;
+            min-height: 210px;
+        }
+
+        .box::before {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 3px;
+            margin-top: 10px;
+            border-bottom: 1px solid;
+            border-image: linear-gradient(to right, transparent, #6aaad8, #75ddb6, transparent) 1;
+        }
+
+        .box:hover::before {
+            border-bottom: 3px solid;
+            border-image: linear-gradient(to right, transparent, #6aaad8, #75ddb6, transparent) 1;
+        }
+
+        .box:hover {
+            background-image: linear-gradient(#faffef, transparent);
+        }
+
+        .page-header.nohr {
+            margin-bottom: 0;
+            border-bottom: none;
+        }
+
+        span.full {
+            width: 100%;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .breadcrumb {
+            padding: 0;
+            margin-bottom: 5px;
+        }
+
+        .auto-warp {
+            word-wrap: break-word;
+            word-break: break-all;
+            overflow: hidden;
+            transition-duration: 500ms;
+            max-height: 22.4px;
+        }
+
+        .auto-warp:hover {
+            max-height: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-header nohr">
+        <h2>
+            <!-- <img src="RC.png" width="32px" style="position:relative;top:-4px"> -->
+            实萌
+        </h2>
+        <span id="loginSt" class="label label-default">未登录</span>
+        <span id="user" class="label label-default">-</span>
+        <button class="btn btn-danger btn-xs e" onclick="postLogin()" title="刷新数据">
+            <span class="glyphicon glyphicon-refresh"></span>
+        </button>
+        <button class="btn btn-danger btn-xs e" onclick="delCookies(1);setStatus(0)" onmouseenter="$('#double-off').css('scale','100%')" onmouseleave="$('#double-off').css('scale','0')" title="退出登录">
+            <span class="glyphicon glyphicon-log-out"></span>
+        </button>
+        <button id="double-off" class="btn btn-danger btn-xs e" onclick="delCookies(2);location.reload()" onmouseenter="$('#double-off').css('scale','100%')" onmouseleave="$('#double-off').css('scale','0')" style="scale:0;transition-duration: 1000ms;" data-toggle="tooltip" data-placement="right" title="全部重置">
+            <span class="glyphicon glyphicon-off"></span>
+        </button>
+        <button class="btn btn-danger btn-xs login" onclick="delCookies(2);location.reload()" data-toggle="tooltip" data-placement="right" title="全部重置">
+            <span class="glyphicon glyphicon-off"></span>
+        </button>
+    </div>
+
+    <div class="col-sm-12 e box box-contest">
+        <div class="page-header">
+            <h3><span class="glyphicon glyphicon-user"></span> 比赛列表
+            </h3>
+        </div>
+        <ul id="contest" class="list-unstyled"></ul>
+        <button class="btn btn-default" onclick="$('.contestNew').toggle(300)">新建比赛 <span class="glyphicon glyphicon-plus"></span></button>
+        <div class="contestNew">
+            <div class="col-md-4">
+                标题
+                <div class="input-group">
+                    <div class="input-group-addon">第</div>
+                    <input id="tNo" class="form-control" placeholder="0">
+                    <div class="input-group-addon">届</div>
+                    <input id="tTitle" class="form-control" placeholder="测试赛">
+                </div>
+            </div>
+            <div class="col-md-4">
+                开始时间
+                <input class="form-control" type="date" id="tStart" min="2022-01-01" value="2023-02-10">
+            </div>
+            <div class="col-md-4">
+                结束时间
+                <input class="form-control" type="date" id="tEnd" min="2022-01-01" value="2023-02-10">
+            </div>
+            <div class="col-sm-12" style="margin-top: 10px;">
+                <textarea id="tDescription" class="form-control" placeholder="介绍" style="resize: vertical"></textarea>
+                <button class="btn btn-default" onclick="contestSubmit()" style="margin-top: 10px;">提交 <span class="glyphicon glyphicon-send tSend"></span></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 col-sm-6 box">
+        <div class="page-header">
+            <h3><span class="glyphicon glyphicon-user"></span> 账号
+                <ul class="btn-group breadcrumb debug" style="display: none;font-size:10px;top:5px">
+                    <li id="bxn-portal" onclick="get('bxn-portal/portal/osforstudent/index')">bxn-portal</li>
+                    <li id="bxn-core-uic" onclick="get('bxn-core-uic/uic/index')">bxn-core-uic</li>
+                    <li id="bxn-library" onclick="get('bxn-library/library/jumpExamreport?jumpUrl=')">bxn-library</li>
+                    <li id="bxn-office" onclick="get('bxn-office/mail/index')">bxn-office</li>
+                </ul>
+            </h3>
+        </div>
+        <button class="btn btn-default e" onclick="$('.debug').toggle(200)">debug</button>
+        <div class="login">
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">账号</span>
+                <input id="loginId" type="id" class="pass form-control" placeholder="20222222">
+            </div>
+            <br>
+            <div class="input-group">
+                <span class="input-group-addon">密码</span>
+                <input id="loginPwd" type="password" class="pass form-control" placeholder="password">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" onclick="login().then(postLogin)">
+                        <span class="glyphicon glyphicon-log-out"></span> 登录
+                    </button>
+                </span>
+            </div>
+        </div>
+        <div class="debug" style="display: none;">
+            <button class="btn btn-default btn-xs" onclick="$('.debugList').empty()"><span class="glyphicon glyphicon-trash"></span> 清除</button>
+            <ul class="debugList list-unstyled" style="font-family: 'Courier New', Courier, monospace;"></ul>
+        </div>
+    </div>
+    <div style="position:fixed;bottom:10px;left:10px;color:#ccc">
+        北师大实验中学
+    </div>
+    <div style="position:fixed;bottom:10px;right:10px;color:#ccc" class="banner"></div>
+</body>
