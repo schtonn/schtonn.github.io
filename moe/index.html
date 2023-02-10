@@ -89,9 +89,10 @@
             else return '已结束'
         }
         function adminStuff() {
+            $('.admin').show()
             // $('.box-contest').append('<input type="date" id="start" min="2022-01-01">')
         }
-        function contestSubmit() {
+        function contestTouch() {
             fetch('contest/touch', {
                 headers: { 'Content-type': 'application/json' },
                 method: "POST",
@@ -106,9 +107,26 @@
             }).then(e => e.json()).then(e => {
                 if (e.no) alert('您无权进行此操作')
                 else {
-                    $('.tSend').addClass('glyphicon-success')
-                    setTimeout(() => $('.tSend').removeClass('glyphicon-success'), 1000)
-                    debug('TOUCH', 'affected ' + e.affectedRows + ' rows')
+                    $('.contestNew').toggle(300)
+                    debug('TOUCH', 'affected ' + e.affectedRows + ' rows.')
+                    postLogin();
+                }
+            })
+        }
+        function contestRm(id, name) {
+            console.log(name)
+            if (prompt('确认删除？输入“' + name + '”以确认。') != name) return
+            fetch('contest/rm', {
+                headers: { 'Content-type': 'application/json' },
+                method: "POST",
+                credentials: 'include',
+                body: `{"id":"${id}"}`
+            }).then(e => e.json()).then(e => {
+                console.log(e)
+                if (e.no) alert('您无权进行此操作')
+                else {
+                    debug('RM', 'affected ' + e.affectedRows + ' rows.')
+                    postLogin();
                 }
             })
         }
@@ -129,16 +147,16 @@
                 e = JSON.parse(e)
                 $('#contest').empty()
                 for (let i = 0; i < e.length; i++) {
-                    $('#contest').append(`\
+                    $('#contest').prepend(`\
 <li id="contest-${e[i].id}">\
     <span onclick="$(this).toggleClass('active').siblings('div').toggle(300)" class="title">第 ${e[i].no} 届${e[i].title}\
-        <span class="pull-right" style="color:#999">${e[i].id} - ${getStatus(e[i].dates, e[i].datet)}</span>\
+        <span class="pull-right" style="color:#999"><span class="admin" style="display:none"><a href="javascript:contestRm(${e[i].id},'第${e[i].no}届${e[i].title}')">删除</a> ${e[i].id} - </span>${getStatus(e[i].dates, e[i].datet)}</span>\
     </span>
     <div style="display:none">${e[i].description}</div>\
 </li>`)
                 }
+                if (getCookie('moe')[0] == '!') adminStuff()
             })
-            if (getCookie('moe')[0] == '!') adminStuff()
         }
         function debug(e, str = '') {
             $('.debugList').append(`<li class="auto-warp"><b>${e}</b> ${str} <span class="pull-right" style="color:#999">${status}</span></li>`)
@@ -355,19 +373,19 @@
 
     <div class="col-sm-12 e box box-contest">
         <div class="page-header">
-            <h3><span class="glyphicon glyphicon-user"></span> 比赛列表
+            <h3><span class="glyphicon glyphicon-fire"></span> 比赛列表
             </h3>
         </div>
         <ul id="contest" class="list-unstyled"></ul>
         <button class="btn btn-default" onclick="$('.contestNew').toggle(300)">新建比赛 <span class="glyphicon glyphicon-plus"></span></button>
-        <div class="contestNew">
+        <div class="contestNew" style="display:none">
             <div class="col-md-4">
                 标题
                 <div class="input-group">
                     <div class="input-group-addon">第</div>
-                    <input id="tNo" class="form-control" placeholder="0">
+                    <input id="tNo" class="form-control" placeholder="0" autocomplete="off">
                     <div class="input-group-addon">届</div>
-                    <input id="tTitle" class="form-control" placeholder="测试赛">
+                    <input id="tTitle" class="form-control" placeholder="测试赛" autocomplete="off">
                 </div>
             </div>
             <div class="col-md-4">
@@ -380,7 +398,7 @@
             </div>
             <div class="col-sm-12" style="margin-top: 10px;">
                 <textarea id="tDescription" class="form-control" placeholder="介绍" style="resize: vertical"></textarea>
-                <button class="btn btn-default" onclick="contestSubmit()" style="margin-top: 10px;">提交 <span class="glyphicon glyphicon-send tSend"></span></button>
+                <button class="btn btn-default" onclick="contestTouch()" style="margin-top: 10px;">提交 <span class="glyphicon glyphicon-send tSend"></span></button>
             </div>
         </div>
     </div>
