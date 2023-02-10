@@ -89,12 +89,14 @@
             }).then(res => {
                 return res.text()
             }).then(e => {
-                var f = '[' + e.replace(/^((?!fetched).)*$\n/gm, '')
+                var f = '[' + e.replace(/\d+\.\d+\.\d+\.\d+, /g,'')
+                .replace(/^((?!fetched).)*$\n/gm, '')
                     .replace(/^.*(: \d).*$\n/gm, '')
                     .replace(/^.*(: :).*$\n/gm, '')
                     .replace(/undefined/g, '隐')
                     .replace(/^.*GMT: ([^\w ,]+)[0-9, a-z\(]+([^\w)]+).*/gm, '{"source": "$1","target": "$2 ", "value": 1},')
                 f = JSON.parse(f.slice(0, f.length - 2) + ']')
+                console.log(f)
                 f = myUnique(f)
                 var p = [], data = []
 
@@ -105,7 +107,6 @@
                     if (!only || is11(f[i].target)) p.push(f[i].target)
                 }
                 p = unique(p)
-                console.log(p)
                 var ppp = [];
                 for (let i = 0; i < p.length; i++) {
                     ppp.push({
@@ -204,7 +205,7 @@
             <button data-toggle="button" class="btn btn-default" onclick="skip=!skip;get()">忽略自环</button>
             <button class="btn btn-default" data-toggle="button" onclick="wid=!wid;get()">固定宽度</button>
         </div>
-        <input class="form-control" oninput="mul=(this.value)?this.value-1:0;get();console.log(mul)" placeholder="最少次数">
+        <input class="form-control" oninput="mul=(this.value)?this.value-1:0;get();" placeholder="最少次数">
         <div class="input-group-btn">
             <button class="btn btn-default" data-toggle="button" onclick="only=!only;get()">只看11班</button>
         </div>
