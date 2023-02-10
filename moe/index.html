@@ -44,6 +44,12 @@
                 $('#loginSt').text('登录失败')
                 $('#loginSt').removeClass('label-success')
                 $('#loginSt').addClass('label-danger')
+            } else if (e == 3) {
+                delCookie('moe', '/')
+                document.cookie = 'moe=guest;path=/';
+                $('#loginSt').text('游客')
+                $('.login').hide(200)
+                $('.reqLogin').show(300)
             } else {
                 $('.login').show(200)
                 $('#loginSt').text('未登录')
@@ -90,7 +96,6 @@
         }
         function adminStuff() {
             $('.admin').show()
-            // $('.box-contest').append('<input type="date" id="start" min="2022-01-01">')
         }
         function contestTouch() {
             fetch('contest/touch', {
@@ -132,17 +137,19 @@
         }
         function postLogin() {
             debug('LOGIN DONE.', 'initiate fetching.')
-            if (status != 1) return;
-            if (!user) user = getCookie('gosh'), pwd = getCookie('gowd')
-            document.cookie = "gosh=" + user + ";path=/score/;expires=Fri, 05 Feb 2077 12:34:56 GMT";
-            document.cookie = "gosh=" + user + ";path=/sso/;expires=Fri, 05 Feb 2077 12:34:56 GMT";
-            document.cookie = "gowd=" + pwd + ";path=/sso/;expires=Fri, 05 Feb 2077 12:34:56 GMT";
-            if (getCookie('moe')[0] == '!') $('#user').text('admin')
-            else get('bxn-portal/portal/api/proxy?username=true&userId=true&needvalidate=true&t=http%3A%2F%2F202.94.10.118%2Fbxn-library%2Fapi%2Flibrary%2FgetLatestBorrowBook%3Fcategory%3D1&resourceId=103519&cache=nocache&systime=0', e => {
-                e = JSON.parse(e)
-                $('#user').text(e.requestParams[0].ownerName)
-                oid = e.requestParams[0].ownerId
-            })
+            if (status != 1 && status != 3) return;
+            if (status == 1) {
+                if (!user) user = getCookie('gosh'), pwd = getCookie('gowd')
+                document.cookie = "gosh=" + user + ";path=/score/;expires=Fri, 05 Feb 2077 12:34:56 GMT";
+                document.cookie = "gosh=" + user + ";path=/sso/;expires=Fri, 05 Feb 2077 12:34:56 GMT";
+                document.cookie = "gowd=" + pwd + ";path=/sso/;expires=Fri, 05 Feb 2077 12:34:56 GMT";
+                if (getCookie('moe')[0] == '!') $('#user').text('admin')
+                else get('bxn-portal/portal/api/proxy?username=true&userId=true&needvalidate=true&t=http%3A%2F%2F202.94.10.118%2Fbxn-library%2Fapi%2Flibrary%2FgetLatestBorrowBook%3Fcategory%3D1&resourceId=103519&cache=nocache&systime=0', e => {
+                    e = JSON.parse(e)
+                    $('#user').text(e.requestParams[0].ownerName)
+                    oid = e.requestParams[0].ownerId
+                })
+            }
             gget('contest', e => {
                 e = JSON.parse(e)
                 $('#contest').empty()
@@ -150,12 +157,13 @@
                     $('#contest').prepend(`\
 <li id="contest-${e[i].id}">\
     <span onclick="$(this).toggleClass('active').siblings('div').toggle(300)" class="title">第 ${e[i].no} 届${e[i].title}\
-        <span class="pull-right" style="color:#999"><span class="admin" style="display:none"><a href="javascript:contestRm(${e[i].id},'第${e[i].no}届${e[i].title}')">删除</a> ${e[i].id} - </span>${getStatus(e[i].dates, e[i].datet)}</span>\
+        <span class="pull-right" style="color:#999"><span class="admin"><a href="javascript:contestRm(${e[i].id},'第${e[i].no}届${e[i].title}')">删除</a> ${e[i].id} - </span>${getStatus(e[i].dates, e[i].datet)}</span>\
     </span>
-    <div style="display:none">${e[i].description}</div>\
+    <div class="content" style="display:none;white-space: pre-wrap;">${e[i].description}</div>\
 </li>`)
                 }
-                if (getCookie('moe')[0] == '!') adminStuff()
+                if (status == 1 && getCookie('moe')[0] == '!') adminStuff()
+                else $('.admin').hide()
             })
         }
         function debug(e, str = '') {
@@ -377,7 +385,7 @@
             </h3>
         </div>
         <ul id="contest" class="list-unstyled"></ul>
-        <button class="btn btn-default" onclick="$('.contestNew').toggle(300)">新建比赛 <span class="glyphicon glyphicon-plus"></span></button>
+        <button class="btn btn-default admin" onclick="$('.contestNew').toggle(300)">新建比赛 <span class="glyphicon glyphicon-plus"></span></button>
         <div class="contestNew" style="display:none">
             <div class="col-md-4">
                 标题
@@ -397,7 +405,7 @@
                 <input class="form-control" type="date" id="tEnd" min="2022-01-01" value="2023-02-10">
             </div>
             <div class="col-sm-12" style="margin-top: 10px;">
-                <textarea id="tDescription" class="form-control" placeholder="介绍" style="resize: vertical"></textarea>
+                <textarea id="tDescription" class="form-control" placeholder="介绍（请勿使用英文引号和分号）" style="resize: vertical"></textarea>
                 <button class="btn btn-default" onclick="contestTouch()" style="margin-top: 10px;">提交 <span class="glyphicon glyphicon-send tSend"></span></button>
             </div>
         </div>
@@ -416,6 +424,7 @@
         </div>
         <button class="btn btn-default e" onclick="$('.debug').toggle(200)">debug</button>
         <div class="login">
+            （登录数字校园）
             <br>
             <div class="input-group">
                 <span class="input-group-addon">账号</span>
@@ -432,7 +441,7 @@
                 </span>
             </div>
             <br>
-            <button class="btn btn-default"><span class="glyphicon glyphicon-user"></span> 游客</button><small>（可能不计入投票结果）</small>
+            <button class="btn btn-default" onclick="setStatus(3);postLogin()"><span class="glyphicon glyphicon-user"></span> 游客</button><small>（可能不计入投票结果）</small>
         </div>
         <div class="debug" style="display: none;">
             <button class="btn btn-default btn-xs" onclick="$('.debugList').empty()"><span class="glyphicon glyphicon-trash"></span> 清除</button>
