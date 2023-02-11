@@ -13,7 +13,7 @@
     <link href="/css/css2.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <script>
-        var status = 0, oid, user, pwd, paused = [], isadmin
+        var status = 0, oid, user, pwd, paused = [], isadmin, sel = [], selected = []
         const rot = '43.143.233.184:81', root = 'https://43.143.233.184:81/'
         function getDate(date) {
             return new Date(date).toLocaleDateString()
@@ -110,7 +110,8 @@
                 title: $('#tTitle').val(),
                 description: $('#tDescription').val(),
                 dates: new Date($('#tStart')[0].valueAsNumber).toUTCString(),
-                datet: new Date($('#tEnd')[0].valueAsNumber).toUTCString()
+                datet: new Date($('#tEnd')[0].valueAsNumber).toUTCString(),
+                sel: $('#tSel').val()
             }), e => {
                 e = JSON.parse(e)
                 if (e.no) alert('您无权进行此操作')
@@ -159,38 +160,59 @@
                 }
             })
         }
+        function select(tId, id) {
+            selected[tId][id] = !selected[tId][id]
+            console.log(selected)
+            let count = 0
+            if (selected[tId][id]) $('#contestant-' + id).addClass('active'), count++
+            else $('#contestant-' + id).removeClass('active')
+            for (let i = selected[tId].length - 1; i >= 0; i--) {
+                if (i == id) continue;
+                if (selected[tId][i]) {
+                    if (count >= sel[tId]) selected[tId][i] = false, $('#contestant-' + i).removeClass('active')
+                    else $('#contestant-' + i).addClass('active'), count++
+                }
+                else if (selected[tId][i] === false) $('#contestant-' + i).removeClass('active')
+            }
+            // if ($('#contestant-' + id).hasClass('active')) {
+            //     $('#contestant-' + id).removeClass('active')
+            // } else {
+            //     $('#contestant-' + id).addClass('active')
+            // }
+        }
         function getContest(id, force = 0, call = () => { }) {
             debug('GET', 'Contest' + id)
             if ($('#content-' + id).text() && !force) return call()
             $('#content-' + id).empty()
             gpost('contestant', `{"contest":"${id}"}`, e => {
                 e = JSON.parse(e)
-                if (!e.length) $('#content-' + id).text('...')
-                else $('#content-' + id).html('<b style="font-size:16px">选手列表</b>：<br>')
+                if (!e.length) $('#content-' + id).text('无选手')
+                else $('#content-' + id).html(`<b style="font-size:16px">选手列表</b>（${e.length}选${sel[id]}）：<br>`)
                 for (let i = 0; i < e.length; i++) {
                     $('#content-' + id).append(`\
-                    <span id="contestant-${e[i].id}" class="contestant">\
-                        <span>${e[i].name}</span>${isadmin ? ` <a href="javascript:contestantRm(${e[i].id},'${e[i].name}',${id})">删除</a>` : ''} \
-                        <img class="img-responsive center-block" src="${e[i].img.split('.png')[0] + '_thumb.png'}">\
-                        <div style="white-space:pre-wrap">${e[i].description}</div>\
-                        </span>`)
+<span id="contestant-${e[i].id}" class="contestant" onclick="select(${id},${e[i].id})">\
+    <span>${e[i].name}</span>${isadmin ? ` <a href="javascript:contestantRm(${e[i].id},'${e[i].name}',${id})">删除</a>` : ''} \
+    <img class="img-responsive center-block" src="${e[i].img.split('.png')[0] + '_thumb.png'}">\
+    <div style="white-space:pre-wrap">${e[i].description}</div>\
+</span>`)
+                    selected[id][e[i].id] = false
                 }
-                if (isadmin) $('#content-' + id).append(`
-<div>
-    <button class="btn btn-default admin" onclick="$('.c${id}New').toggle(300)">添加选手 <span class="glyphicon glyphicon-plus"></span></button>
-    <div class="row c${id}New" style="display:none">
-        <div class="col-md-6">名称
-            <input id="c${id}Name" class="form-control" placeholder="伅" autocomplete="off">
-        </div>
-        <div class="col-md-6">图片链接
-            <input class="form-control" id="c${id}Img" placeholder="https://**/*.png" autocomplete="off">
-        </div>
-        <div class="col-sm-12" style="margin-top: 10px;">
-            <textarea id="c${id}Description" class="form-control" placeholder="介绍（请勿使用英文引号和分号）" style="resize: vertical"></textarea>
-            <button class="btn btn-default" onclick="contestantTouch(${id})" style="margin-top: 10px;">提交 <span class="glyphicon glyphicon-send tSend"></span></button>
-        </div>
+                $('#content-' + id).append(`<br><button class="btn btn-default" onclick="vote(${id})">投票 <span class="glyphicon glyphicon-thumbs-up"></span></button>`)
+                if (isadmin) $('#content-' + id).append(`\
+ <button class="btn btn-default admin" onclick="$('.c${id}New').toggle(300)">添加选手 <span class="glyphicon glyphicon-plus"></span></button>
+<div class="row c${id}New" style="display:none">
+    <div class="col-md-6">名称
+        <input id="c${id}Name" class="form-control" placeholder="伅" autocomplete="off">
     </div>
-</div>`)
+    <div class="col-md-6">图片链接
+        <input class="form-control" id="c${id}Img" placeholder="https://**/*.png" autocomplete="off">
+    </div>
+    <div class="col-sm-12" style="margin-top: 10px;">
+        <textarea id="c${id}Description" class="form-control" placeholder="介绍（请勿使用英文引号和分号）" style="resize: vertical"></textarea>
+        <button class="btn btn-default" onclick="contestantTouch(${id})" style="margin-top: 10px;">提交 <span class="glyphicon glyphicon-send tSend"></span></button>
+    </div>
+</div>
+`)
                 call()
             })
         }
@@ -214,6 +236,8 @@
                 e = JSON.parse(e)
                 $('#contest').empty()
                 for (let i = 0; i < e.length; i++) {
+                    sel[e[i].id] = e[i].sel
+                    selected[e[i].id] = []
                     $('#contest').prepend(`\
 <li id="contest-${e[i].id}">\
     <span onclick="getContest(${e[i].id},0,()=>{$(this).toggleClass('active').siblings('div').toggle(300)})" class="title">第 ${e[i].no} 届${e[i].title}\
@@ -425,11 +449,20 @@
             margin-bottom: 5px;
             text-align: center;
             transition-duration: 100ms;
+            cursor: pointer;
         }
 
         .contestant:hover {
             background-color: #ddd;
             border-bottom-left-radius: 15px;
+        }
+
+        .contestant.active {
+            background-image: linear-gradient(to right, #eee, #ccc);
+            border-top-left-radius: 25px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            scale: 1.1;
         }
 
         .grey {
@@ -481,13 +514,17 @@
                     <input id="tTitle" class="form-control" placeholder="测试赛" autocomplete="off">
                 </div>
             </div>
-            <div class="col-md-4">
-                开始时间
+            <div class="col-md-3 col-sm-6">
+                开始时间（以零点计算）
                 <input class="form-control" type="date" id="tStart" min="2022-01-01" value="2023-02-10">
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3 col-sm-6">
                 结束时间
                 <input class="form-control" type="date" id="tEnd" min="2022-01-01" value="2023-02-10">
+            </div>
+            <div class="col-md-2">
+                多选个数
+                <input id="tSel" class="form-control" placeholder="2" autocomplete="off">
             </div>
             <div class="col-sm-12" style="margin-top: 10px;">
                 <textarea id="tDescription" class="form-control" placeholder="介绍（请勿使用英文引号和分号）" style="resize: vertical"></textarea>
