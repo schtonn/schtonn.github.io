@@ -80,11 +80,16 @@
         }
         function gget(url, call) {
             fetch(url, {
-                "headers": {
-                    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-                },
                 "method": "GET",
                 "credentials": 'include'
+            }).then(e => e.text()).then(call)
+        }
+        function gpost(url, bd, call) {
+            fetch(url, {
+                headers: { 'Content-type': 'application/json' },
+                method: "POST",
+                credentials: 'include',
+                body: bd
             }).then(e => e.text()).then(call)
         }
         function getStatus(ds, dt) {
@@ -98,18 +103,15 @@
             $('.admin').show()
         }
         function contestTouch() {
-            fetch('contest/touch', {
-                headers: { 'Content-type': 'application/json' },
-                method: "POST",
-                credentials: 'include',
-                body: JSON.stringify({
-                    no: $('#tNo').val(),
-                    title: $('#tTitle').val(),
-                    description: $('#tDescription').val(),
-                    dates: new Date($('#tStart')[0].valueAsNumber).toUTCString(),
-                    datet: new Date($('#tEnd')[0].valueAsNumber).toUTCString()
-                }),
-            }).then(e => e.json()).then(e => {
+            gpost('contest/touch', JSON.stringify({
+                no: $('#tNo').val(),
+                title: $('#tTitle').val(),
+                description: $('#tDescription').val(),
+                dates: new Date($('#tStart')[0].valueAsNumber).toUTCString(),
+                datet: new Date($('#tEnd')[0].valueAsNumber).toUTCString()
+            }), e => {
+                console.log(e)
+                e = JSON.parse(e)
                 if (e.no) alert('您无权进行此操作')
                 else {
                     $('.contestNew').toggle(300)
@@ -121,19 +123,23 @@
         function contestRm(id, name) {
             console.log(name)
             if (prompt('确认删除？输入“' + name + '”以确认。') != name) return
-            fetch('contest/rm', {
-                headers: { 'Content-type': 'application/json' },
-                method: "POST",
-                credentials: 'include',
-                body: `{"id":"${id}"}`
-            }).then(e => e.json()).then(e => {
+            gpost('contest/rm', `{"id":"${id}"}`, e => {
                 console.log(e)
+                e = JSON.parse(e)
                 if (e.no) alert('您无权进行此操作')
                 else {
                     debug('RM', 'affected ' + e.affectedRows + ' rows.')
                     postLogin();
                 }
             })
+        }
+        function getContest(id, force = 0) {
+            if ($('#content-' + id).val() && !force) return
+            $('#content-' + id).empty()
+            gpost('contestant', `{"contest":"${id}"}`, e => {
+                console.log(e)
+            })
+            $('#content-' + id).append('hi')
         }
         function postLogin() {
             debug('LOGIN DONE.', 'initiate fetching.')
@@ -156,10 +162,10 @@
                 for (let i = 0; i < e.length; i++) {
                     $('#contest').prepend(`\
 <li id="contest-${e[i].id}">\
-    <span onclick="$(this).toggleClass('active').siblings('div').toggle(300)" class="title">第 ${e[i].no} 届${e[i].title}\
+    <span onclick="getContest(${e[i].id});$(this).toggleClass('active').siblings('div').toggle(300)" class="title">第 ${e[i].no} 届${e[i].title}\
         <span class="pull-right" style="color:#999"><span class="admin"><a href="javascript:contestRm(${e[i].id},'第${e[i].no}届${e[i].title}')">删除</a> ${e[i].id} - </span>${getStatus(e[i].dates, e[i].datet)}</span>\
     </span>
-    <div class="content" style="display:none;white-space: pre-wrap;">${e[i].description}</div>\
+    <div style="display:none;white-space:pre-wrap">${e[i].description}</div><div id="content-${e[i].id}" style="display:none"></div>\
 </li>`)
                 }
                 if (status == 1 && getCookie('moe')[0] == '!') adminStuff()
@@ -293,7 +299,7 @@
             font-weight: bold;
         }
 
-        li>.active+div {
+        li>.active~div {
             background-image: linear-gradient(to right, #fffaf0, #f4f2ef);
             border-left: 3px solid #ccc;
             padding-left: 5px;

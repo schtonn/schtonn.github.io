@@ -247,6 +247,16 @@
             if (status != 1) return
             next(root + url, e => { pre(e, url, call); }, ac, login)
         }
+        function post(url, bd, call = () => { }) {
+            fetch(root + url, {
+                "headers": {
+                    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                },
+                method: 'POST',
+                body: bd,
+                credentials: 'include'
+            }).then(call)
+        }
         function change() {
             if (status != 1 || pwd == $('#changePwd').val()) return
             var fd = new URLSearchParams()
@@ -255,16 +265,7 @@
             fd.append('oldPassword', pwd)
             fd.append('newPassword', $('#changePwd').val())
             fd.append('reNewPassword', $('#changePwd').val())
-            fetch(root + 'bxn-core-uic/uic-public/personal/management/password/save', {
-                "headers": {
-                    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-                    // "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
-                },
-                method: 'POST',
-                body: fd,
-                credentials: 'include',
-            })
-            $('#changeBtn').addClass('btn-success')
+            post('bxn-core-uic/uic-public/personal/management/password/save', fd, () => $('#changeBtn').addClass('btn-success'))
         }
         let trying = 0
         function tryLogin() {
@@ -375,26 +376,14 @@
             fd.append('subject', $('#writeSub').val())
             fd.append('files', '')
             fd.append('content', $('#writeCt').val())
-            fetch(root + 'bxn-office/mails/user/sendMail?unwrap=true', {
-                "headers": {
-                    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-                },
-                method: 'POST',
-                body: fd,
-                credentials: 'include',
-            }).then(e => { $('#writeBtn>span').removeClass('glyphicon-send').removeClass('glyphicon-exclamation-sign').addClass(e.status == 200 ? 'glyphicon-ok' : 'glyphicon-exclamation-sign'); refreshMail() })
+            post('bxn-office/mails/user/sendMail?unwrap=true', fd, e => {
+                $('#writeBtn>span').removeClass('glyphicon-send').removeClass('glyphicon-exclamation-sign').addClass(e.status == 200 ? 'glyphicon-ok' : 'glyphicon-exclamation-sign'); refreshMail()
+            })
         }
         function removeMail(e) {
             var fd = new URLSearchParams()
             fd.append('checkmail', e)
-            fetch(root + 'bxn-office/mails/user/removeMail?unwrap=true', {
-                "headers": {
-                    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-                },
-                method: 'POST',
-                body: fd,
-                credentials: 'include',
-            }).then(refreshMail)
+            post('bxn-office/mails/user/removeMail?unwrap=true', fd, refreshMail)
         }
         $().ready(() => {
             $('.e').addClass('reqLogin')
