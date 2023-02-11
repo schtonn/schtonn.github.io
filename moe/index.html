@@ -13,8 +13,11 @@
     <link href="/css/css2.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <script>
-        var status = 0, oid, user, pwd, paused = []
+        var status = 0, oid, user, pwd, paused = [], isadmin
         const rot = '43.143.233.184:81', root = 'https://43.143.233.184:81/'
+        function getDate(date) {
+            return new Date(date).toLocaleDateString()
+        }
         function getCookie(name) {
             let arr = document.cookie.match(new RegExp("(^| )" + name + "=([^;]*)(;|$)"));
             if (arr != null) return arr[2];
@@ -33,6 +36,7 @@
         function setStatus(e, fast) {
             console.log('STATUS', e)
             status = e
+            $('body').removeClass('grey')
             if (e == 1) {
                 paused = []
                 $('#loginSt').text('登录成功')
@@ -51,12 +55,14 @@
                 $('.login').hide(200)
                 $('.reqLogin').show(300)
             } else {
+                isadmin = 0
                 $('.login').show(200)
                 $('#loginSt').text('未登录')
                 $('#loginSt').removeClass('label-success')
                 $('#loginSt').removeClass('label-danger')
                 $('.reqLogin').hide(300 * !fast)
                 $('#user').text('-')
+                $('body').addClass('grey')
             }
         }
         function delCookies(force = 0) {
@@ -94,13 +100,9 @@
         }
         function getStatus(ds, dt) {
             let s = new Date(ds), t = new Date(dt), e = new Date();
-            console.log(s, t, e)
             if (e < s) return '未开始'
             if (e < t) return '进行中'
             else return '已结束'
-        }
-        function adminStuff() {
-            $('.admin').show()
         }
         function contestTouch() {
             gpost('contest/touch', JSON.stringify({
@@ -110,46 +112,98 @@
                 dates: new Date($('#tStart')[0].valueAsNumber).toUTCString(),
                 datet: new Date($('#tEnd')[0].valueAsNumber).toUTCString()
             }), e => {
-                console.log(e)
                 e = JSON.parse(e)
                 if (e.no) alert('您无权进行此操作')
                 else {
-                    $('.contestNew').toggle(300)
-                    debug('TOUCH', 'affected ' + e.affectedRows + ' rows.')
+                    $('.tNew').toggle(300)
+                    debug('TOUCH', 'contest, affected ' + e.affectedRows + ' rows.')
                     postLogin();
                 }
             })
         }
         function contestRm(id, name) {
-            console.log(name)
             if (prompt('确认删除？输入“' + name + '”以确认。') != name) return
             gpost('contest/rm', `{"id":"${id}"}`, e => {
-                console.log(e)
                 e = JSON.parse(e)
                 if (e.no) alert('您无权进行此操作')
                 else {
-                    debug('RM', 'affected ' + e.affectedRows + ' rows.')
+                    debug('RM', 'contest, affected ' + e.affectedRows + ' rows.')
                     postLogin();
                 }
             })
         }
-        function getContest(id, force = 0) {
-            if ($('#content-' + id).val() && !force) return
+        function contestantTouch(id) {
+            gpost('contestant/touch', JSON.stringify({
+                name: $(`#c${id}Name`).val(),
+                description: $(`#c${id}Description`).val(),
+                img: $(`#c${id}Img`).val(),
+                contest: id.toString()
+            }), e => {
+                e = JSON.parse(e)
+                if (e.no) alert('您无权进行此操作')
+                else {
+                    $(`.c${id}New`).toggle(300)
+                    debug('TOUCH', 'contestant, affected ' + e.affectedRows + ' rows.')
+                    getContest(id, 1);
+                }
+            })
+        }
+        function contestantRm(id, name, tId) {
+            if (prompt('确认删除？输入“' + name + '”以确认。') != name) return
+            gpost('contestant/rm', `{"id":"${id}"}`, e => {
+                e = JSON.parse(e)
+                if (e.no) alert('您无权进行此操作')
+                else {
+                    debug('RM', 'contestant, affected ' + e.affectedRows + ' rows.')
+                    getContest(tId, 1);
+                }
+            })
+        }
+        function getContest(id, force = 0, call = () => { }) {
+            debug('GET', 'Contest' + id)
+            if ($('#content-' + id).text() && !force) return call()
             $('#content-' + id).empty()
             gpost('contestant', `{"contest":"${id}"}`, e => {
-                console.log(e)
+                e = JSON.parse(e)
+                if (!e.length) $('#content-' + id).text('...')
+                else $('#content-' + id).html('<b style="font-size:16px">选手列表</b>：<br>')
+                for (let i = 0; i < e.length; i++) {
+                    $('#content-' + id).append(`\
+                    <span id="contestant-${e[i].id}" class="contestant">\
+                        <span>${e[i].name}</span>${isadmin ? ` <a href="javascript:contestantRm(${e[i].id},'${e[i].name}',${id})">删除</a>` : ''} \
+                        <img class="img-responsive center-block" src="${e[i].img.split('.png')[0] + '_thumb.png'}">\
+                        <div style="white-space:pre-wrap">${e[i].description}</div>\
+                        </span>`)
+                }
+                if (isadmin) $('#content-' + id).append(`
+<div>
+    <button class="btn btn-default admin" onclick="$('.c${id}New').toggle(300)">添加选手 <span class="glyphicon glyphicon-plus"></span></button>
+    <div class="row c${id}New" style="display:none">
+        <div class="col-md-6">名称
+            <input id="c${id}Name" class="form-control" placeholder="伅" autocomplete="off">
+        </div>
+        <div class="col-md-6">图片链接
+            <input class="form-control" id="c${id}Img" placeholder="https://**/*.png" autocomplete="off">
+        </div>
+        <div class="col-sm-12" style="margin-top: 10px;">
+            <textarea id="c${id}Description" class="form-control" placeholder="介绍（请勿使用英文引号和分号）" style="resize: vertical"></textarea>
+            <button class="btn btn-default" onclick="contestantTouch(${id})" style="margin-top: 10px;">提交 <span class="glyphicon glyphicon-send tSend"></span></button>
+        </div>
+    </div>
+</div>`)
+                call()
             })
-            $('#content-' + id).append('hi')
         }
         function postLogin() {
             debug('LOGIN DONE.', 'initiate fetching.')
             if (status != 1 && status != 3) return;
+            if (getCookie('moe') && getCookie('moe')[0] == '!') isadmin = 1
             if (status == 1) {
                 if (!user) user = getCookie('gosh'), pwd = getCookie('gowd')
                 document.cookie = "gosh=" + user + ";path=/score/;expires=Fri, 05 Feb 2077 12:34:56 GMT";
                 document.cookie = "gosh=" + user + ";path=/sso/;expires=Fri, 05 Feb 2077 12:34:56 GMT";
                 document.cookie = "gowd=" + pwd + ";path=/sso/;expires=Fri, 05 Feb 2077 12:34:56 GMT";
-                if (getCookie('moe')[0] == '!') $('#user').text('admin')
+                if (isadmin) $('#user').text('admin')
                 else get('bxn-portal/portal/api/proxy?username=true&userId=true&needvalidate=true&t=http%3A%2F%2F202.94.10.118%2Fbxn-library%2Fapi%2Flibrary%2FgetLatestBorrowBook%3Fcategory%3D1&resourceId=103519&cache=nocache&systime=0', e => {
                     e = JSON.parse(e)
                     $('#user').text(e.requestParams[0].ownerName)
@@ -162,13 +216,14 @@
                 for (let i = 0; i < e.length; i++) {
                     $('#contest').prepend(`\
 <li id="contest-${e[i].id}">\
-    <span onclick="getContest(${e[i].id});$(this).toggleClass('active').siblings('div').toggle(300)" class="title">第 ${e[i].no} 届${e[i].title}\
+    <span onclick="getContest(${e[i].id},0,()=>{$(this).toggleClass('active').siblings('div').toggle(300)})" class="title">第 ${e[i].no} 届${e[i].title}\
         <span class="pull-right" style="color:#999"><span class="admin"><a href="javascript:contestRm(${e[i].id},'第${e[i].no}届${e[i].title}')">删除</a> ${e[i].id} - </span>${getStatus(e[i].dates, e[i].datet)}</span>\
     </span>
-    <div style="display:none;white-space:pre-wrap">${e[i].description}</div><div id="content-${e[i].id}" style="display:none"></div>\
+    
+    <div style="display:none;white-space:pre-wrap"><span class="pull-right" style="color:#999">${getDate(e[i].dates)} - ${getDate(e[i].datet)}</span>${e[i].description}</div><div id="content-${e[i].id}" style="display:none"></div>\
 </li>`)
                 }
-                if (status == 1 && getCookie('moe')[0] == '!') adminStuff()
+                if (status == 1 && isadmin) $('.admin').show()
                 else $('.admin').hide()
             })
         }
@@ -243,7 +298,7 @@
             }
         }
         function get(url, call = () => { }, ac = '*/*', login = 0) {
-            if (getCookie('moe')[0] == '!') return
+            if (isadmin) return
             console.log("GET", url)
             debug('GET', url)
             if (status != 1) return
@@ -252,6 +307,7 @@
         let trying = 0
         function tryLogin() {
             if (trying) return debug('LOGIN', 'already in progress.')
+            isadmin = 0
             if (getCookie('moe') && getCookie('moe')[0] == '!') {
                 debug('LOGIN', 'admin!')
                 setStatus(1), postLogin()
@@ -329,7 +385,7 @@
             border-image: linear-gradient(to right, transparent, #6aaad8, #75ddb6, transparent) 1;
         }
 
-        .box:hover {
+        body:not(.grey) .box:hover {
             background-image: linear-gradient(#faffef, transparent);
         }
 
@@ -360,10 +416,33 @@
         .auto-warp:hover {
             max-height: 100px;
         }
+
+        .contestant {
+            display: inline-block;
+            width: 30%;
+            vertical-align: top;
+            border-bottom: 3px solid #ddd;
+            margin-bottom: 5px;
+            text-align: center;
+            transition-duration: 100ms;
+        }
+
+        .contestant:hover {
+            background-color: #ddd;
+            border-bottom-left-radius: 15px;
+        }
+
+        .grey {
+            background-color: #e3e3e3;
+        }
+
+        body {
+            transition-duration: 300ms;
+        }
     </style>
 </head>
 
-<body>
+<body class="grey">
     <div class="page-header nohr">
         <h2>
             <!-- <img src="RC.png" width="32px" style="position:relative;top:-4px"> -->
@@ -391,8 +470,8 @@
             </h3>
         </div>
         <ul id="contest" class="list-unstyled"></ul>
-        <button class="btn btn-default admin" onclick="$('.contestNew').toggle(300)">新建比赛 <span class="glyphicon glyphicon-plus"></span></button>
-        <div class="contestNew" style="display:none">
+        <button class="btn btn-default admin" onclick="$('.tNew').toggle(300)">新建比赛 <span class="glyphicon glyphicon-plus"></span></button>
+        <div class="tNew" style="display:none">
             <div class="col-md-4">
                 标题
                 <div class="input-group">
