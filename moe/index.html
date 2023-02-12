@@ -162,7 +162,6 @@
         }
         function select(tId, id) {
             selected[tId][id] = !selected[tId][id]
-            console.log(selected)
             let count = 0
             if (selected[tId][id]) $('#contestant-' + id).addClass('active'), count++
             else $('#contestant-' + id).removeClass('active')
@@ -174,11 +173,37 @@
                 }
                 else if (selected[tId][i] === false) $('#contestant-' + i).removeClass('active')
             }
-            // if ($('#contestant-' + id).hasClass('active')) {
-            //     $('#contestant-' + id).removeClass('active')
-            // } else {
-            //     $('#contestant-' + id).addClass('active')
-            // }
+        }
+        function getVote(id) {
+            debug('GET', 'Vote' + id)
+            gpost('vote/count', `{"contest":"${id}"}`, e => {
+                e = JSON.parse(e)
+                for (let i = 0; i < e.length; i++) {
+                    for (let j = 0; j < e[i].count; j++) {
+                        setTimeout(() => {
+                            $('#vote-' + e[i].t).text(parseInt($('#vote-' + e[i].t).text()) + 1)
+                            let g = parseInt($('#vote-' + e[i].t).text())
+                            $('#contestant-' + e[i].t).css('background-image', `linear-gradient(to right,rgba(155,155,155,0.5) ${g}%,rgba(235,235,235,0.5) ${g}%)`)
+                        }, j * Math.max(1, 150 - 2 * j))
+                    }
+                }
+            })
+        }
+        function vote(id) {
+            let to = []
+            for (let i = 0; i < selected[id].length; i++) {
+                if (selected[id][i]) {
+                    to.push(i)
+                }
+            }
+            gpost('vote', JSON.stringify({
+                contest: id.toString(),
+                to: to
+            }), e => {
+                $('#content-' + id + '>.btn').removeClass('btn-danger')
+                if (e == 'success') getContest(id, 1);
+                else $('#content-' + id + '>.btn').addClass('btn-danger')
+            })
         }
         function getContest(id, force = 0, call = () => { }) {
             debug('GET', 'Contest' + id)
@@ -191,7 +216,7 @@
                 for (let i = 0; i < e.length; i++) {
                     $('#content-' + id).append(`\
 <span id="contestant-${e[i].id}" class="contestant" onclick="select(${id},${e[i].id})">\
-    <span>${e[i].name}</span>${isadmin ? ` <a href="javascript:contestantRm(${e[i].id},'${e[i].name}',${id})">删除</a>` : ''} \
+    <b style="font-size:18px">${e[i].name}</b><br><span id="vote-${e[i].id}">0</span>票 ${isadmin ? ` <a href="javascript:contestantRm(${e[i].id},'${e[i].name}',${id})">删除</a>` : ''} \
     <img class="img-responsive center-block" src="${e[i].img.split('.png')[0] + '_thumb.png'}">\
     <div style="white-space:pre-wrap">${e[i].description}</div>\
 </span>`)
@@ -213,6 +238,8 @@
     </div>
 </div>
 `)
+                $('#content-' + id).append(`<br><br>`)
+                getVote(id)
                 call()
             })
         }
@@ -445,24 +472,37 @@
             display: inline-block;
             width: 30%;
             vertical-align: top;
-            border-bottom: 3px solid #ddd;
+            border-left: 3px solid #ddd;
             margin-bottom: 5px;
+            margin-left: 5px;
             text-align: center;
             transition-duration: 100ms;
             cursor: pointer;
         }
 
+        .contestant>img {
+            transition-duration: 100ms;
+        }
+
         .contestant:hover {
             background-color: #ddd;
-            border-bottom-left-radius: 15px;
+        }
+
+        .contestant.active>b {
+            display: inline-block;
+            width: 100%;
+            background-image: linear-gradient(to right, transparent, #e5e9be, #a8d2bd, transparent);
+        }
+
+        .contestant.active>img {
+            scale: 1.1;
+            border-radius: 5px;
+            margin-top: 10px;
+            margin-bottom: 10px;
         }
 
         .contestant.active {
-            background-image: linear-gradient(to right, #eee, #ccc);
-            border-top-left-radius: 25px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            scale: 1.1;
+            transform: skew(2deg, 3deg);
         }
 
         .grey {
