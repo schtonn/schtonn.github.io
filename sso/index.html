@@ -524,8 +524,7 @@
     <div class="page-header nohr">
         <h2><img src="RC.png" width="32px" style="position:relative;top:-4px">
             数字校园
-            <small id="detail" style="display:none">.</small>
-            <button class="btn btn-default btn-xs" onclick="$('#detail').toggle(300)">
+            <button class="btn btn-default btn-xs" onclick="$('#detail').toggle(500)">
                 <span class="glyphicon glyphicon-question-sign"></span>
             </button>
         </h2>
@@ -544,6 +543,14 @@
             <span class="glyphicon glyphicon-off"></span>
         </button>
         <img id="avatar" style="position:absolute;right:10px;top:10px;">
+    </div>
+    <div id="detail" class="col-sm-12" style="display: none;">
+        <div class="page-header">
+            <h3><span class="glyphicon glyphicon-info-sign"></span> 说明
+                <button class="btn btn-default btn-xs e" onclick="$('#detail').toggle(500);">关闭</button>
+            </h3>
+        </div>
+        数字校园苦于冗余功能，加载缓慢且对服务器压力大（仅首页就数百个请求），在此简化页面，仅保留必要功能，便于使用。
     </div>
     <div class="col-md-4 col-sm-6 box">
         <div class="page-header">
