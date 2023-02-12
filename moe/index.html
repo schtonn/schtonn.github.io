@@ -13,7 +13,7 @@
     <link href="/css/css2.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <script>
-        var status = 0, oid, user, pwd, paused = [], isadmin, sel = [], selected = []
+        var status = 0, oid, user, pwd, paused = [], isadmin, sel = [], selected = [], tStatus = []
         const rot = '43.143.233.184:81', root = 'https://43.143.233.184:81/'
         function getDate(date) {
             return new Date(date).toLocaleDateString()
@@ -98,11 +98,11 @@
                 body: bd
             }).then(e => e.text()).then(call)
         }
-        function getStatus(ds, dt) {
+        function getStatus(id, ds, dt) {
             let s = new Date(ds), t = new Date(dt), e = new Date();
-            if (e < s) return '未开始'
-            if (e < t) return '进行中'
-            else return '已结束'
+            if (e < s) return tStatus[id] = '未开始'
+            if (e < t) return tStatus[id] = '进行中'
+            else return tStatus[id] = '已结束'
         }
         function contestTouch() {
             gpost('contest/touch', JSON.stringify({
@@ -173,18 +173,21 @@
                 }
                 else if (selected[tId][i] === false) $('#contestant-' + i).removeClass('active')
             }
+            if (count) $('#content-' + tId + '>.voteBtn').removeClass('disabled')
+            else $('#content-' + tId + '>.voteBtn').addClass('disabled')
         }
         function getVote(id) {
-            debug('GET', 'Vote' + id)
+            debug('GET', 'Vote #' + id)
             gpost('vote/count', `{"contest":"${id}"}`, e => {
                 e = JSON.parse(e)
                 for (let i = 0; i < e.length; i++) {
+                    e[i].count -= parseInt($('#vote-' + e[i].t).text())
                     for (let j = 0; j < e[i].count; j++) {
                         setTimeout(() => {
                             $('#vote-' + e[i].t).text(parseInt($('#vote-' + e[i].t).text()) + 1)
-                            let g = parseInt($('#vote-' + e[i].t).text())
+                            let g = parseInt($('#vote-' + e[i].t).text()) / 2
                             $('#contestant-' + e[i].t).css('background-image', `linear-gradient(to right,rgba(155,155,155,0.5) ${g}%,rgba(235,235,235,0.5) ${g}%)`)
-                        }, j * Math.max(1, 150 - 2 * j))
+                        }, j * Math.max(5, 50 - 0.5 * j))
                     }
                 }
             })
@@ -196,33 +199,40 @@
                     to.push(i)
                 }
             }
+            if (!to.length) return alert('请先选择')
             gpost('vote', JSON.stringify({
                 contest: id.toString(),
                 to: to
             }), e => {
-                $('#content-' + id + '>.btn').removeClass('btn-danger')
-                if (e == 'success') getContest(id, 1);
-                else $('#content-' + id + '>.btn').addClass('btn-danger')
+                $('#content-' + id + '>.voteBtn').removeClass('btn-danger')
+                if (e == 'success') getVote(id), $('#content-' + id + '>.voteBtn').addClass('btn-success');
+                else {
+                    if (e == 'guest') alert('游客不得投票！')
+                    if (e == 'already') alert('已经投过票了！'), $('#content-' + id + '>.voteBtn').addClass('disabled')
+                    else $('#content-' + id + '>.voteBtn').addClass('btn-danger')
+                }
             })
         }
         function getContest(id, force = 0, call = () => { }) {
-            debug('GET', 'Contest' + id)
+            debug('GET', 'Contest #' + id)
             if ($('#content-' + id).text() && !force) return call()
             $('#content-' + id).empty()
             gpost('contestant', `{"contest":"${id}"}`, e => {
                 e = JSON.parse(e)
                 if (!e.length) $('#content-' + id).text('无选手')
-                else $('#content-' + id).html(`<b style="font-size:16px">选手列表</b>（${e.length}选${sel[id]}）：<br>`)
+                else $('#content-' + id).html(`<b style="font-size:16px">选手列表</b>（${e.length}选${sel[id]}）：`)
+                if (tStatus[id] == '进行中') $('#content-' + id).append(`<button class="btn btn-default btn-xs" onclick="getVote(${id});">刷新票数</button>`)
+                $('#content-' + id).append(`<br>`)
                 for (let i = 0; i < e.length; i++) {
                     $('#content-' + id).append(`\
-<span id="contestant-${e[i].id}" class="contestant" onclick="select(${id},${e[i].id})">\
+<span id="contestant-${e[i].id}" class="contestant s${Math.ceil(Math.random() * 3)}" onclick="select(${id},${e[i].id})">\
     <b style="font-size:18px">${e[i].name}</b><br><span id="vote-${e[i].id}">0</span>票 ${isadmin ? ` <a href="javascript:contestantRm(${e[i].id},'${e[i].name}',${id})">删除</a>` : ''} \
     <img class="img-responsive center-block" src="${e[i].img.split('.png')[0] + '_thumb.png'}">\
     <div style="white-space:pre-wrap">${e[i].description}</div>\
 </span>`)
                     selected[id][e[i].id] = false
                 }
-                $('#content-' + id).append(`<br><button class="btn btn-default" onclick="vote(${id})">投票 <span class="glyphicon glyphicon-thumbs-up"></span></button>`)
+                if (tStatus[id] == '进行中' && getCookie('moe') != 'guest') $('#content-' + id).append(`<br><button class="btn btn-default disabled voteBtn" onclick="vote(${id})">投票 <span class="glyphicon glyphicon-thumbs-up"></span></button>`)
                 if (isadmin) $('#content-' + id).append(`\
  <button class="btn btn-default admin" onclick="$('.c${id}New').toggle(300)">添加选手 <span class="glyphicon glyphicon-plus"></span></button>
 <div class="row c${id}New" style="display:none">
@@ -268,7 +278,7 @@
                     $('#contest').prepend(`\
 <li id="contest-${e[i].id}">\
     <span onclick="getContest(${e[i].id},0,()=>{$(this).toggleClass('active').siblings('div').toggle(300)})" class="title">第 ${e[i].no} 届${e[i].title}\
-        <span class="pull-right" style="color:#999"><span class="admin"><a href="javascript:contestRm(${e[i].id},'第${e[i].no}届${e[i].title}')">删除</a> ${e[i].id} - </span>${getStatus(e[i].dates, e[i].datet)}</span>\
+        <span class="pull-right" style="color:#999"><span class="admin"><a href="javascript:contestRm(${e[i].id},'第${e[i].no}届${e[i].title}')">删除</a> ${e[i].id} - </span>${getStatus(e[i].id, e[i].dates, e[i].datet)}</span>\
     </span>
     
     <div style="display:none;white-space:pre-wrap"><span class="pull-right" style="color:#999">${getDate(e[i].dates)} - ${getDate(e[i].datet)}</span>${e[i].description}</div><div id="content-${e[i].id}" style="display:none"></div>\
@@ -501,8 +511,16 @@
             margin-bottom: 10px;
         }
 
-        .contestant.active {
+        .contestant.active.s1 {
             transform: skew(2deg, 3deg);
+        }
+
+        .contestant.active.s2 {
+            transform: skew(-2deg, -3deg);
+        }
+
+        .contestant.active.s3 {
+            transform: skew(4deg, -3deg);
         }
 
         .grey {
@@ -603,7 +621,7 @@
                 </span>
             </div>
             <br>
-            <button class="btn btn-default" onclick="setStatus(3);postLogin()"><span class="glyphicon glyphicon-user"></span> 游客</button><small>（可能不计入投票结果）</small>
+            <button class="btn btn-default" onclick="setStatus(3);postLogin()"><span class="glyphicon glyphicon-user"></span> 游客</button><small>（可查看票数，不得投票）</small>
         </div>
         <div class="debug" style="display: none;">
             <button class="btn btn-default btn-xs" onclick="$('.debugList').empty()"><span class="glyphicon glyphicon-trash"></span> 清除</button>
