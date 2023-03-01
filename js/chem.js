@@ -154,18 +154,20 @@ function getCondition(e) {
 }
 
 function renderEquation(str, condition = '') {
-    str = str.replace(/[\[{]/g, "(").replace(/[\]}]/g, ")");
-    str = str.replace(/([\+\=\.;])\1+/g, '$1')
-    str = str.replace(/[^\dA-Za-z<>\(\)\+\-=\.;]/g, "");
-    // console.log('Rendering equation', str)
-    str = str.replace(/([A-Za-z]+)/g, "\\text{$1}");
-    str = str.replace(/<(\d*)\\text\{e\}([\+\-])>/g, "^{$1$2}");
-    str = str.replace(/([\}\)])(\d+)/g, "$1_{$2}");
-    str = str.replace(/\./g, "\\cdot");
+    if (!preview) return str;
+    str = str
+        .replace(/[\[{]/g, "(")
+        .replace(/[\]}]/g, ")")
+        .replace(/([\+\=\.;])\1+/g, '$1')
+        .replace(/[^\dA-Za-z<>\(\)\+\-=\.;~]/g, "")
+        .replace(/([A-Za-z]+)/g, "\\text{$1}")
+        .replace(/<(\d*)\\text\{e\}([\+\-])>/g, "^{$1$2}")
+        .replace(/([\}\)])(\d+)/g, "$1_{$2}")
+        .replace(/\./g, "\\cdot")
+        .replace(/~/g, '\\times')
+    console.log(str)
     if (condition) str = str.replace(/=/g, `\\stackrel{${getCondition(condition)}}{=}`)
     str = "\\(" + str + "\\)"
-    // str = "<a href='#'>\\(" + str.replace(/([\+\-=\.;])([^\}])/g, "\\)</a> \\($1\\) <a href='#'>\\($2") + '\\)</a>';
-    // console.log(str)
     return str
 }
 
@@ -196,14 +198,14 @@ var mode = 'bal', balInput, balText = '', inputText, case1 = 'CrI3+Cl2+KOH=K2CrO
 $().ready(function () {
     balInput = $("#balInput")[0]
     setBal();
-    setQryEq();
+    setQry();
     $("#balInput").keydown(function (e) {
         if (e.keyCode == 13 && mode == 'bal') {
             $("#balBtn")[0].click();
         }
     });
     $("#qryInput").keydown(function (e) {
-        if (e.keyCode == 13 && mode == 'bal') {
+        if (e.keyCode == 13) {
             $("#qryBtn")[0].click();
         }
     });
@@ -214,7 +216,6 @@ function setBal() {
     $('#precise').hide()
     $('.frame')[0].innerHTML = renderEquation(balText);
     $('#balBtn').html('配平 <span class="glyphicon glyphicon-transfer"></span>')
-    $('#balShare').removeClass('disabled')
     $('#balInput').attr('placeholder', case1 + '（输入化学式以配平）')
     $('#balBtn').attr('href', '/chem?' + case1)
     $('#balBtn').removeClass('disabled')
@@ -225,7 +226,6 @@ function setBal() {
 function setWeigh() {
     $('#precise').show()
     $('#balBtn').text('相对质量')
-    $('#balShare').addClass('disabled')
     $('#balInput').attr('placeholder', case2 + '（输入化学式以计算相对质量）')
     $('#balBtn').attr('href', '')
     $('#balBtn').addClass('disabled')
@@ -308,90 +308,94 @@ function toggl(str, e = 0, f = 0) {
     if (f) $('.qryInputHidable').show()
     else $('.qryInputHidable').hide()
 }
-function setQryEq() {
-    toggl('查询方程式 <span class="glyphicon glyphicon-search"></span>')
-    modeq = 'query', nameq = 'eq', strict = false
-    $('#strict').removeClass('btn-info').removeClass('active')
-    $('#qryMatch').removeClass('btn-info').removeClass('active')
-    $('#qryInput').attr('placeholder', 'O2=H2O' + '（输入化学式查询数据库，也可输入 id）')
-    input2();
-}
-function setQryMo() {
-    toggl('查询分子')
-    modeq = 'query', nameq = 'mo'
-    input2();
-}
-function setAddEq() {
-    toggl('上传方程式 <span class="glyphicon glyphicon-plus"></span>', 1)
-    modeq = 'add', nameq = 'eq'
-    $('#qryInput').attr('placeholder', 'H2+O2=H2O' + '（输入化学式上传至数据库）')
-}
-function setAddMo() {
-    toggl('上传分子', 1)
-    modeq = 'add', nameq = 'mo'
-}
-function setUpdEq() {
-    toggl('修改方程式 <span class="glyphicon glyphicon-pencil"></span>', 2)
-    modeq = 'upd', nameq = 'eq'
-    $('#qryInput').attr('placeholder', '（修改已有化学式）')
-}
-function setUpdMo() {
-    toggl('修改分子', 2)
-    modeq = 'upd', nameq = 'mo'
+function setQry() {
+    if (nameq == 'eq') {
+        $('.frame').removeClass('active')
+        $('.frame')[0].classList.add('active')
+        $('.frame')[1].classList.add('active')
+        $('.qry-group>label').removeClass('active')
+        $('.qry-group>label')[0].classList.add('active')
+        if (modeq == 'query') {
+            toggl('查询 <span class="glyphicon glyphicon-search"></span>')
+            strict = false
+            $('#strict').removeClass('btn-info').removeClass('active')
+            $('#qryMatch').removeClass('btn-info').removeClass('active')
+            $('#qryMatch').html('<span class="glyphicon glyphicon-cog"></span> 匹配分子')
+            matchMode = 'mole'
+            $('#qryInput').attr('placeholder', 'O2=H2O' + '（输入化学式查询数据库，也可输入 id）')
+            input2();
+        }
+        else if (modeq == 'add') {
+            toggl('上传 <span class="glyphicon glyphicon-plus"></span>', 1)
+            $('#qryInput').attr('placeholder', 'H2+O2=H2O' + '（输入化学式上传至数据库）')
+        } else {
+            toggl('修改 <span class="glyphicon glyphicon-pencil"></span>', 2)
+            $('#qryInput').attr('placeholder', '（修改已有化学式）')
+        }
+    } else if (nameq == 'mo') {
+        $('.qry-group>label').removeClass('active')
+        $('.qry-group>label')[1].classList.add('active')
+        $('.frame').removeClass('active')
+        $('.frame')[0].classList.add('active')
+        $('.frame')[2].classList.add('active')
+    }
+    input2()
 }
 function replaceRegex(s) {
     return s.replace(/([\+\=\.;])+/g, '$1').replace(/([\(\)])/g, '\\\\$1').replace(/(<\d*)e\+/g, '$1%')
 }
 function getRegex() {
     var ret = ''
-    if (strict) {
-        var acont = $('#qryInput').val(), bcont = $('#qryInput2').val();
-        if (!acont && !bcont) acont = $('#qryInput').attr('placeholder').split('（')[0]
-        acont = replaceRegex(acont)
-        bcont = replaceRegex(bcont)
-        ret = '^'
-        if (acont) {
-            var as = acont.split('+')
+    if (nameq == 'eq') {
+        if (strict) {
+            var acont = $('#qryInput').val(), bcont = $('#qryInput2').val();
+            if (!acont && !bcont) acont = $('#qryInput').attr('placeholder').split('（')[0]
+            acont = replaceRegex(acont)
+            bcont = replaceRegex(bcont)
+            ret = '^'
+            if (acont) {
+                var as = acont.split('+')
+                for (let i = 0; i < as.length; i++) {
+                    if (matchMode == 'mole') ret += '(?=([^=]*\\+|)[0-9]?' + as[i] + '([+=]|$))'
+                    else ret += '(?=[^=]*' + as[i] + '([^a-z]|$))'
+                }
+            }
+            if (bcont) {
+                var bs = bcont.split('+');
+                for (let i = 0; i < bs.length; i++) {
+                    if (matchMode == 'mole') ret += '(?=.*=(.*\\+|)[0-9]?' + bs[i] + '([+=]|$))'
+                    else ret += '(?=.*=.*' + bs[i] + '([^a-z]|$))'
+                }
+            }
+            ret += '.*'
+        } else {
+            ret = $('#qryInput').val()
+            if (ret && !ret.match(/[^\d]/g)) return ret
+            if (!ret) ret = $('#qryInput').attr('placeholder').split('（')[0]
+            ret = replaceRegex(ret)
+            var scont = ret.split('=')
+            if (scont.length > 2) return;
+            var as = scont[0].split('+');
+            ret = matchMode == 'mole' ? '^' : ''
             for (let i = 0; i < as.length; i++) {
-                if (matchMode == 'mole') ret += '(?=([^=]*\\+|)[0-9]?' + as[i] + '([+=]|$))'
-                else ret += '(?=[^=]*' + as[i] + '([^a-z]|$))'
+                if (matchMode == 'mole') ret += "(?=(.*[+=]|)[0-9]?" + as[i] + "([+=]|$))"
+                else ret += '(?=.*' + as[i] + '([^a-z]|$))'
             }
-        }
-        if (bcont) {
-            var bs = bcont.split('+');
-            for (let i = 0; i < bs.length; i++) {
-                if (matchMode == 'mole') ret += '(?=.*=(.*\\+|)[0-9]?' + bs[i] + '([+=]|$))'
-                else ret += '(?=.*=.*' + bs[i] + '([^a-z]|$))'
+            if (scont.length > 1) {
+                var bs = scont[1].split('+')
+                for (let i = 0; i < bs.length; i++) {
+                    if (matchMode == 'mole') ret += "(?=(.*[+=]|)[0-9]?" + bs[i] + "([+=]|$))"
+                    else ret += '(?=.*' + bs[i] + '([^a-z]|$))'
+                }
             }
+            ret += '.*'
         }
-        ret += '.*'
-    } else {
-        ret = $('#qryInput').val()
-        if (ret && !ret.match(/[^\d]/g)) return ret
-        if (!ret) ret = $('#qryInput').attr('placeholder').split('（')[0]
-        ret = replaceRegex(ret)
-        var scont = ret.split('=')
-        if (scont.length > 2) return;
-        var as = scont[0].split('+');
-        ret = matchMode == 'mole' ? '^' : ''
-        for (let i = 0; i < as.length; i++) {
-            if (matchMode == 'mole') ret += "(?=(.*[+=]|)[0-9]?" + as[i] + "([+=]|$))"
-            else ret += '(?=.*' + as[i] + '([^a-z]|$))'
-        }
-        if (scont.length > 1) {
-            var bs = scont[1].split('+')
-            for (let i = 0; i < bs.length; i++) {
-                if (matchMode == 'mole') ret += "(?=(.*[+=]|)[0-9]?" + bs[i] + "([+=]|$))"
-                else ret += '(?=.*' + bs[i] + '([^a-z]|$))'
-            }
-        }
-        ret += '.*'
-    }
-    return ret.replace(/%/g, 'e+')
+        return ret.replace(/%/g, 'e+')
+    } else return $('#qryInput').val()
 }
 
 function doQuery(bd, isId = '', replace = 1) {
-    fetch('/chem/query/' + nameq + isId, {
+    return fetch('/chem/query/' + nameq + isId, {
         method: 'POST',
         headers: {
             'Content-type': 'application/json',
@@ -400,24 +404,59 @@ function doQuery(bd, isId = '', replace = 1) {
     }).then(res => {
         return res.text()
     }).then(e => {
-        if (e[0] == '!') {
-            $('.frame')[1].innerHTML = '<pre class="text-danger bg-danger">' + e + '</pre>';
-        } else {
+        if (nameq == 'eq') {
+            if (e[0] == '!') {
+                $('.frame')[1].innerHTML = '<pre class="text-danger bg-danger">' + e + '</pre>';
+            } else {
+                let qin = $('#qryInput').val()
+                e = JSON.parse(e)
+                if (!isId || !replace) {
+                    $('.frame')[1].innerHTML = '<span id="qryInputRender">' + (strict ? renderEquation(qin + '=' + $('#qryInput2').val()) : renderEquation(qin)) + ' - 匹配到 ' + e.length + ' 个</span><br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>';
+                } else $('.frame')[1].innerHTML = ''
+                var str = ''
+                for (let i = 0; i < e.length; i++) {
+                    str += '<div class="result">' + renderEquation(e[i].content, e[i].conditions) + '<br><span class="label label-default" onclick="$(\'#qryInput\').val(' + e[i].id + ');input2()">' + e[i].id + '</span> ';
+                    if (e[i].conditions) str += '（' + e[i].conditions + '）';
+                    str += e[i].descriptions + '<br>';
+                    if (e[i].rel > 0) {
+                        str += '<span class="glyphicon glyphicon-share-alt"></span> <span class="label label-success" onclick="$(\'#qryInput\').val(' + e[i].rel + ');input2()">' + e[i].rel + '</span><br>';
+                    }
+                    if (e[i].rel < 0) {
+                        str += '<span class="glyphicon glyphicon-share-alt"></span> <span class="label label-warning" onclick="$(\'#qryInput\').val(' + (-e[i].rel) + ');input2()">' + (-e[i].rel) + '</span><br>';
+                    }
+                    if (isId) {
+                        if (replace) $('#qryInput').val(e[0].content)
+                        $('#addCondition').val(e[0].conditions)
+                        $('#addIdText').val(JSON.parse(bd).content)
+                        $('#addDescription').val(e[0].descriptions)
+                    }
+                    if (qin.match('!') || replace == 2) $('#qryInput').val(e[0].content)
+                    str += '</div>'
+                }
+                $('.frame')[1].innerHTML += str
+                MathJax.typeset()
+                return e.length
+            }
+        } else if (nameq == 'mo') {
             let qin = $('#qryInput').val()
             e = JSON.parse(e)
-            if (!isId || !replace) {
-                $('.frame')[1].innerHTML = '<span id="qryInputRender">' + (strict ? renderEquation(qin + '=' + $('#qryInput2').val()) : renderEquation(qin)) + ' - 匹配到 ' + e.length + ' 个</span><br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>';
-            } else $('.frame')[1].innerHTML = ''
+            $('.frame')[2].innerHTML = '<span id="qryInputRender-mo">' + renderEquation(qin) + ' - 匹配到 ' + e.length + ' 个</span><br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>';
             var str = ''
             for (let i = 0; i < e.length; i++) {
-                str += '<div class="result">' + renderEquation(e[i].content, e[i].conditions) + '<br><span class="label label-default">' + e[i].id + '</span> ';
+                str += '<div class="result">' + renderEquation(e[i].content, e[i].conditions) + '<br><span class="label label-default" onclick="$(\'#qryInput\').val(' + e[i].id + ');input2()">' + e[i].id + '</span> ';
                 if (e[i].conditions) str += '（' + e[i].conditions + '）';
-                str += e[i].descriptions + '<br>';
+                str += e[i].title + '<br>';
+                let ions = JSON.parse(e[i].ions)
+                for (let j = 0; j < ions.length; j++) {
+                    str += `<span class="ion">${renderEquation(ions[j].c + '~' + ions[j].v)}</span>`
+                    if (j < ions.length - 1) str += '/'
+                }
+                str += '<br>'
                 if (e[i].rel > 0) {
-                    str += '<span class="glyphicon glyphicon-share-alt"></span> <span class="label label-success">' + e[i].rel + '</span><br>';
+                    str += '<span class="glyphicon glyphicon-share-alt"></span> <span class="label label-success" onclick="$(\'#qryInput\').val(' + e[i].rel + ');input2()">' + e[i].rel + '</span><br>';
                 }
                 if (e[i].rel < 0) {
-                    str += '<span class="glyphicon glyphicon-share-alt"></span> <span class="label label-warning">' + (-e[i].rel) + '</span><br>';
+                    str += '<span class="glyphicon glyphicon-share-alt"></span> <span class="label label-warning" onclick="$(\'#qryInput\').val(' + (-e[i].rel) + ');input2()">' + (-e[i].rel) + '</span><br>';
                 }
                 if (isId) {
                     if (replace) $('#qryInput').val(e[0].content)
@@ -428,8 +467,9 @@ function doQuery(bd, isId = '', replace = 1) {
                 if (qin.match('!') || replace == 2) $('#qryInput').val(e[0].content)
                 str += '</div>'
             }
-            $('.frame')[1].innerHTML += str
+            $('.frame')[2].innerHTML += str
             MathJax.typeset()
+            return e.length
         }
     });
 }
@@ -441,38 +481,39 @@ function query() {
         var bd = JSON.stringify({
             content: cont,
         })
-        doQuery(bd)
-    }
-    if (modeq == 'add') {
-        $('#balInput').val($('#qryInput').val() ? $('#qryInput').val() : $('#qryInput').attr('placeholder').split('（')[0])
-        setBal();
-        balance().then(e => {
-            if (e[0] == '!') return;
-            input();
-            if (!$('#addDescription').val()) {
-                alert('无描述')
-                return;
+        doQuery(bd).then(res => {
+            if (nameq == 'eq' && modeq == 'add') {
+                $('#balInput').val($('#qryInput').val() ? $('#qryInput').val() : $('#qryInput').attr('placeholder').split('（')[0])
+                setBal();
+                balance().then(e => {
+                    if (e[0] == '!') return;
+                    input();
+                    if (!$('#addDescription').val()) {
+                        alert('无描述')
+                        return;
+                    }
+                    var resp = confirm(e + (res ? '有相似项，' : '') + '确认上传？')
+                    if (!resp) return
+                    $('#qryInput').val(e)
+                    var bd = JSON.stringify({
+                        content: $('#qryInput').val(),
+                        conditions: $('#addCondition').val(),
+                        descriptions: $('#addDescription').val(),
+                    })
+                    console.log(bd)
+                    fetch('/chem/add/' + nameq, {
+                        method: 'POST',
+                        headers: {
+                            'Content-type': 'application/json',
+                        },
+                        body: bd
+                    }).then(() => {
+                        doQuery(JSON.stringify({
+                            content: $('#qryInput').val()
+                        }))
+                    })
+                })
             }
-            var resp = confirm(e + '请确认')
-            if (!resp) return;
-            $('#qryInput').val(e)
-            var bd = JSON.stringify({
-                content: $('#qryInput').val(),
-                conditions: $('#addCondition').val(),
-                descriptions: $('#addDescription').val(),
-            })
-            console.log(bd)
-            fetch('/chem/add/' + nameq, {
-                method: 'POST',
-                headers: {
-                    'Content-type': 'application/json',
-                },
-                body: bd
-            }).then(() => {
-                doQuery(JSON.stringify({
-                    content: $('#qryInput').val()
-                }))
-            })
         })
     }
     if (modeq == 'upd') {
@@ -485,7 +526,7 @@ function query() {
                 alert('无描述')
                 return;
             }
-            var resp = confirm(e + '请确认')
+            var resp = confirm(e + '确认上传？')
             if (!resp) return;
             $('#qryInput').val(e)
             var bd = JSON.stringify({
@@ -504,6 +545,7 @@ function query() {
             })
         }).then(inputId)
     }
+
 }
 
 function input2() {
@@ -516,7 +558,10 @@ function input2() {
         $('#qryInput').val($('#qryInput').val().split('!')[0])
         doQuery(JSON.stringify({ content: getRegex() }), '', 2)
     }
-    if ($('#qryInputRender')[0]) $('#qryInputRender')[0].innerHTML = (strict ? renderEquation($('#qryInput').val() + '=' + $('#qryInput2').val()) : renderEquation($('#qryInput').val()))
+    if (nameq == 'eq') {
+        if ($('#qryInputRender')[0]) $('#qryInputRender').html(strict ? renderEquation($('#qryInput').val() + '=' + $('#qryInput2').val()) : renderEquation($('#qryInput').val()))
+    }
+    else if ($('#qryInputRender-mo')[0]) $('#qryInputRender-mo').html(renderEquation($('#qryInput').val()))
     if (preview) MathJax.typeset()
 }
 
