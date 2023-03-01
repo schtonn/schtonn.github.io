@@ -311,8 +311,8 @@ function toggl(str, e = 0, f = 0) {
 function setQryEq() {
     toggl('查询方程式 <span class="glyphicon glyphicon-search"></span>')
     modeq = 'query', nameq = 'eq', strict = false
-    $('#strict').removeClass('btn-primary').removeClass('active')
-    $('#qryMatch').removeClass('btn-primary').removeClass('active')
+    $('#strict').removeClass('btn-info').removeClass('active')
+    $('#qryMatch').removeClass('btn-info').removeClass('active')
     $('#qryInput').attr('placeholder', 'O2=H2O' + '（输入化学式查询数据库，也可输入 id）')
     input2();
 }
@@ -333,7 +333,7 @@ function setAddMo() {
 function setUpdEq() {
     toggl('修改方程式 <span class="glyphicon glyphicon-pencil"></span>', 2)
     modeq = 'upd', nameq = 'eq'
-    $('#qryInput').attr('placeholder', '（输入 id 修改已有化学式）')
+    $('#qryInput').attr('placeholder', '（修改已有化学式）')
 }
 function setUpdMo() {
     toggl('修改分子', 2)
@@ -422,6 +422,7 @@ function doQuery(bd, isId = '', replace = 1) {
                 if (isId) {
                     if (replace) $('#qryInput').val(e[0].content)
                     $('#addCondition').val(e[0].conditions)
+                    $('#addIdText').val(JSON.parse(bd).content)
                     $('#addDescription').val(e[0].descriptions)
                 }
                 if (qin.match('!') || replace == 2) $('#qryInput').val(e[0].content)
@@ -538,15 +539,4 @@ function qryToggleMatch() {
         $('#qryMatch').html('<span class="glyphicon glyphicon-cog"></span> 匹配分子')
         matchMode = 'mole'
     }
-}
-
-function qryUp() {
-    var sp = $('#balInput').val().split('=')
-    if (sp.length > 1) {
-        if (modeq == 'query') {
-            $('#qryInput').val(sp[0])
-            $('#qryInput2').val(sp[1])
-            setQryEq2();
-        } else $('#qryInput').val($('#balInput').val());
-    } else $('#qryInput').val($('#balInput').val());
 }

@@ -84,6 +84,19 @@
         .btn {
             height: 34px;
         }
+
+        .addInput {
+            margin-top: -1px;
+        }
+
+        .addInput:not(:last-child)>:is(span, input) {
+            border-radius: 0;
+        }
+
+        .addInput>:is(span, input, textarea) {
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
     </style>
     <script id="MathJax-script" src="https://cdn.bootcss.com/mathjax/3.2.0/es5/tex-chtml.js"></script>
     <script src="/js/chem.js"></script>
@@ -95,7 +108,7 @@
         <div class="col-lg-2 col-md-2 col-xs-12">
             <a class="btn btn-info" href="/"><i class="glyphicon glyphicon-home" aria-hidden="true"></i>&nbsp;返回</a>
             <hr>
-            <button type="button" class="btn btn-default active" data-toggle="button" onclick="preview=!preview" id="preview" title="性能降低时关闭">实时预览</button>
+            <button type="button" class="btn btn-default btn-warning active" data-toggle="button" onclick="$(this).toggleClass('btn-warning');preview=!preview" id="preview" title="性能降低时关闭"><span class="glyphicon glyphicon-cog"></span> 实时预览</button>
             <hr>
             <p>小提示：<br><code>&lt;e+&gt;</code>、<code>&lt;2e-&gt;</code> 用于标注电荷，<code>.</code> 用于代替水合物等中间的点。输入 ! 快速查询并导入结果。</p>
         </div>
@@ -115,25 +128,9 @@
                 </a>
             </h2>
             <div class="input-group">
-                <!-- <span class="input-group-btn">
-                    <button type="button" class="btn btn-default" onclick="balUp()" id="balShare" title="导入配平结果"> <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
-                </span> -->
                 <input id="balInput" type="text" class="form-control" oninput="input()" autocomplete="off">
                 <span class="input-group-btn">
                     <button type="button" class="btn btn-default" onclick="balance()" id="balBtn">配平</button>
-                    <!-- <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                        <span class="caret"></span>
-                        <span class="sr-only">切换下拉菜单</span>
-                    </button>
-                    <ul class="dropdown-menu" role="menu">
-                        <li class="dropdown-header">功能</li>
-                        <li><a href="#" onclick="setBal()">配平</a></li>
-                        <li><a href="#" onclick="setWeigh()">相对质量</a></li>
-                        <li><a href="#" onclick="setWeigh2()" data-toggle="tooltip" data-placement="left" title="四位有效数字">相对质量*</a></li>
-                        <li class="divider"></li>
-                        <li><a href="/chemist" data-toggle="tooltip" data-placement="left" title="将打开新页面">配平接口</a>
-                        </li>
-                    </ul> -->
                 </span>
             </div>
             <hr>
@@ -156,44 +153,25 @@
                 <button type="button" class="btn btn-default" style="display: none;" data-toggle="button" onclick="$(this).toggleClass('btn-info');qryToggleMatch()" id="qryMatch"><span class="glyphicon glyphicon-cog"></span> 匹配分子</button>
             </h2>
             <div class="input-group">
-                <span class="input-group-btn">
-                    <button type="button" class="btn btn-default" style="border-bottom-left-radius: 0;"> <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
-                </span>
-                <input id="qryInput" type="text" class="form-control qryInput" autocomplete="off" oninput="input2()">
+                <input style="border-bottom-left-radius: 0;" id="qryInput" type="text" class="form-control qryInput" autocomplete="off" oninput="input2()">
                 <span class="input-group-addon qryInputHidable" style="display:none">=</span>
                 <input id="qryInput2" type="text" class="form-control qryInput qryInputHidable" style="display:none" autocomplete="off" oninput="input2()">
                 <span class="input-group-btn">
-                    <button type="button" class="btn btn-default" onclick="query()" id="qryBtn">查询方程式</button>
-                    <!-- <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="border-bottom-right-radius: 0;">
-                        <span class="caret"></span>
-                        <span class="sr-only">切换下拉菜单</span>
-                    </button>
-                    <ul class="dropdown-menu" role="menu">
-                        <li class="dropdown-header">功能</li>
-                        <li><a href="#1" onclick="setQryEq()">查询方程式</a></li>
-                        <li><a href="#1" onclick="setQryEq2()" data-toggle="tooltip" data-placement="left" title="限制等号左右">查询方程式*</a></li>
-                        <li><a href="#4" onclick="setQryMo()">查询分子</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#5" onclick="setAddEq()">上传方程式</a></li>
-                        <li><a href="#5" onclick="setAddMo()">上传分子</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#1" onclick="setUpdEq()">修改方程式</a></li>
-                        <li><a href="#4" onclick="setUpdMo()">修改分子</a></li>
-                        </li>
-                    </ul> -->
+                    <button style="border-bottom-right-radius: 0;" type="button" class="btn btn-default" onclick="query()" id="qryBtn">查询方程式</button>
                 </span>
             </div>
-            <div class="input-group addInput">
-                <span id="addId"><span class="input-group-addon">id</span>
-                    <input type="text" class="form-control" id="addIdText" oninput="inputId()" autocomplete="off" placeholder="1">
+            <div>
+                <span class="input-group addInput" id="addId"><span class="input-group-addon">id</span>
+                    <input type="text" class="form-control" id="addIdText" oninput="inputId()" autocomplete="off" placeholder="输入 id">
                 </span>
-                <span><span class="input-group-addon">反应条件</span>
+                <span class="input-group addInput">
+                    <span class="input-group-addon">反应条件</span>
                     <input id="addCondition" type="text" class="form-control" autocomplete="off" placeholder="加热;高温;点燃;通电;光照;MnO2">
                 </span>
-                <span><span class="input-group-addon">描述</span>
+                <span class="input-group addInput">
+                    <span class="input-group-addon">描述</span>
                     <textarea id="addDescription" type="text" class="form-control" autocomplete="off" style="resize:vertical"></textarea>
                 </span>
-                <span class="input-group-addon">:)</span>
             </div>
             <pre class="ok" style="font-family: Chalkduster,Consolas;top: -1px;position: relative;border-top-left-radius: 0;border-top-right-radius: 0;"></pre>
             <hr>
