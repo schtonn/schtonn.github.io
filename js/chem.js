@@ -26,7 +26,7 @@ var weighList2 = {
     Fr: 223, Ra: 226.0, Ac: 227.0, Th: 232.0, Pa: 231.0, U: 238.0, Np: 237.0, Pu: 244, Am: 243, Cm: 247, Bk: 247, Cf: 251, Es: 252, Fm: 257, Md: 258, No: 259, Lr: 260, Rf: 261, Db: 262, Sg: 263, Bh: 262, Hs: 265, Mt: 266, Ds: 269, Rg: 272, Cn: 285, Nh: 284, Fl: 289, Mc: 288, Lv: 293, Ts: 291, Og: 294
 }
 
-var bracket = {}, preview = 1
+var bracket = {}, preview = 1, precise = 0
 
 function getco(str) {
     var n = str.length, ret = 0
@@ -211,32 +211,25 @@ $().ready(function () {
     $(function () { $("[data-toggle='tooltip']").tooltip(); });
 })
 function setBal() {
+    $('#precise').hide()
     $('.frame')[0].innerHTML = renderEquation(balText);
-    MathJax.typeset()
-    $('#balBtn').text('配平')
+    $('#balBtn').html('配平 <span class="glyphicon glyphicon-transfer"></span>')
     $('#balShare').removeClass('disabled')
     $('#balInput').attr('placeholder', case1 + '（输入化学式以配平）')
     $('#balBtn').attr('href', '/chem?' + case1)
     $('#balBtn').removeClass('disabled')
     mode = 'bal'
     input()
+    MathJax.typeset()
 }
 function setWeigh() {
+    $('#precise').show()
     $('#balBtn').text('相对质量')
     $('#balShare').addClass('disabled')
     $('#balInput').attr('placeholder', case2 + '（输入化学式以计算相对质量）')
     $('#balBtn').attr('href', '')
     $('#balBtn').addClass('disabled')
     mode = 'weigh'
-    input()
-}
-function setWeigh2() {
-    $('#balBtn').text('相对质量*')
-    $('#balShare').addClass('disabled')
-    $('#balInput').attr('placeholder', case2 + '（输入化学式以计算相对质量）')
-    $('#balBtn').attr('href', '')
-    $('#balBtn').addClass('disabled')
-    mode = 'weigh2'
     input()
 }
 function input() {
@@ -246,10 +239,7 @@ function input() {
             + '<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>' + ((balText != '') ? (renderEquation(balText)) : ('...'));
     } else if (mode == 'weigh') {
         $('.frame')[0].innerHTML = renderEquation((inputText == '') ? case2 : inputText) + '<br>'
-            + weighEquation((inputText == '') ? case2 : inputText);
-    } else if (mode == 'weigh2') {
-        $('.frame')[0].innerHTML = renderEquation((inputText == '') ? case2 : inputText) + '<br>'
-            + weighEquation((inputText == '') ? case2 : inputText, 1);
+            + weighEquation((inputText == '') ? case2 : inputText, precise);
     }
     if (preview) MathJax.typeset()
     if (inputText.match('!')) {
@@ -280,13 +270,13 @@ function balance() {
     }).then(
         res => res.text()
     ).then(e => {
-        if(e=='{}')e='"!Description: Invalid Character."'
+        if (e == '{}') e = '"!Description: Invalid Character."'
         e = e.split('"')[1].replace(/\\n/g, '\n')
         $('.frame')[0].innerHTML = (e.charAt(0) == '!') ? ('<pre class="text-danger bg-danger">' + e.slice(1, e.length) + '</pre>') : (renderEquation((inputText == '') ? case1 : inputText)
             + '<br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>' + renderEquation(e));
         if (e.charAt(0) != '!') balText = e
         MathJax.typeset()
-        $('#balBtn').text('配平')
+        $('#balBtn').html('配平 <span class="glyphicon glyphicon-transfer"></span>')
         $('#balBtn').removeClass('disabled')
         $('.frame').removeClass('text-muted')
         running = 0;
@@ -304,26 +294,26 @@ function balUp() {
 
 var modeq = 'query', nameq = 'eq', strict = false, matchMode = 'mole'
 function toggl(str, e = 0, f = 0) {
-    $('#qryBtn').text(str)
+    $('#qryBtn').html(str)
     if (e) {
+        $('#strict').hide()
         $('#qryMatch').hide(), $('.addInput').show(), $('.ok').hide()
         if (e == 2) $('#addId').show()
         else $('#addId').hide()
     }
-    else $('#qryMatch').show(), $('.addInput').hide(), $('.ok').show()
+    else {
+        $('#strict').show()
+        $('#qryMatch').show(), $('.addInput').hide(), $('.ok').show()
+    }
     if (f) $('.qryInputHidable').show()
     else $('.qryInputHidable').hide()
 }
 function setQryEq() {
-    toggl('查询方程式')
+    toggl('查询方程式 <span class="glyphicon glyphicon-search"></span>')
     modeq = 'query', nameq = 'eq', strict = false
+    $('#strict').removeClass('btn-primary').removeClass('active')
+    $('#qryMatch').removeClass('btn-primary').removeClass('active')
     $('#qryInput').attr('placeholder', 'O2=H2O' + '（输入化学式查询数据库，也可输入 id）')
-    input2();
-}
-function setQryEq2() {
-    toggl('查询方程式*', 0, 1)
-    modeq = 'query', nameq = 'eq', strict = true
-    $('#qryInput').attr('placeholder', 'H2O')
     input2();
 }
 function setQryMo() {
@@ -332,7 +322,7 @@ function setQryMo() {
     input2();
 }
 function setAddEq() {
-    toggl('上传方程式', 1)
+    toggl('上传方程式 <span class="glyphicon glyphicon-plus"></span>', 1)
     modeq = 'add', nameq = 'eq'
     $('#qryInput').attr('placeholder', 'H2+O2=H2O' + '（输入化学式上传至数据库）')
 }
@@ -341,7 +331,7 @@ function setAddMo() {
     modeq = 'add', nameq = 'mo'
 }
 function setUpdEq() {
-    toggl('修改方程式', 2)
+    toggl('修改方程式 <span class="glyphicon glyphicon-pencil"></span>', 2)
     modeq = 'upd', nameq = 'eq'
     $('#qryInput').attr('placeholder', '（输入 id 修改已有化学式）')
 }
@@ -542,10 +532,10 @@ function inputId() {
 
 function qryToggleMatch() {
     if (matchMode == 'mole') {
-        $('#qryMatch')[0].innerHTML = '匹配元素'
+        $('#qryMatch').html('<span class="glyphicon glyphicon-cog"></span> 匹配元素')
         matchMode = 'elem'
     } else {
-        $('#qryMatch')[0].innerHTML = '匹配分子'
+        $('#qryMatch').html('<span class="glyphicon glyphicon-cog"></span> 匹配分子')
         matchMode = 'mole'
     }
 }
