@@ -430,18 +430,17 @@ function doQuery(bd, isId = '', replace = 1, insAfter = -1) {
             if (e[0] == '!') {
                 $('.frame')[1].innerHTML = '<pre class="text-danger bg-danger">' + e + '</pre>';
             } else if (insAfter != -1) {
-                console.log($('.res-' + insAfter).children().length)
                 e = JSON.parse(e)
-                var str = ''
-                str += '<div class="result" style="margin-left: 50px;margin-top: -20px;">' + renderEquation(e[0].content, e[0].conditions) + '<br>';
-                if (e[0].conditions) str += '（' + e[0].conditions + '）';
-                str += e[0].descriptions + '<br>';
                 if (isId) {
                     if (replace) $('#qryInput').val(e[0].content)
                     $('#addCondition').val(e[0].conditions)
                     $('#addIdText').val(JSON.parse(bd).content)
                     $('#addDescription').val(e[0].descriptions)
                 }
+                var str = ''
+                str += '<div class="result" style="margin-left: 50px;margin-top: -20px;">' + renderEquation(e[0].content, e[0].conditions) + '<br>';
+                if (e[0].conditions) str += '（' + e[0].conditions + '）';
+                str += e[0].descriptions + '<br>';
                 str += '</div>'
                 $('.res-' + insAfter).append(str)
                 MathJax.typeset()
@@ -478,11 +477,13 @@ function doQuery(bd, isId = '', replace = 1, insAfter = -1) {
         } else if (nameq == 'mo') {
             let qin = $('#qryInput').val()
             e = JSON.parse(e)
-            if (!isId) $('.frame')[2].innerHTML = '<span id="qryInputRender-mo">' + renderEquation(qin) + ' - 匹配到 ' + e.length + ' 个</span><br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>';
-            else $('.frame')[2].innerHTML = ''
+            if (insAfter == -1) {
+                if (!isId) $('.frame')[2].innerHTML = '<span id="qryInputRender-mo">' + renderEquation(qin) + ' - 匹配到 ' + e.length + ' 个</span><br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>';
+                else $('.frame')[2].innerHTML = ''
+            }
             var str = ''
             for (let i = 0; i < e.length; i++) {
-                str += '<div class="result">' + renderEquation(e[i].content) + '<br><span class="label label-default" onclick="$(\'#qryInput\').val(' + e[i].id + ');input2()">' + e[i].id + '</span> ';
+                str += `<div class="result">${renderEquation(e[i].content)}<br><span class="label label-default" onclick="doQuery(JSON.stringify({content:'${e[i].id}'}),'id',2,-2)">${e[i].id}</span> `;
                 str += e[i].title + ' ' + e[i].descriptions + '<br>';
                 let ions = JSON.parse(e[i].ions)
                 for (let j = 0; j < ions.length; j++) {
@@ -514,17 +515,19 @@ function doQuery(bd, isId = '', replace = 1, insAfter = -1) {
                 if (qin.match('!') || replace == 2) $('#qryInput').val(e[0].content)
                 str += '</div>'
             }
-            $('.frame')[2].innerHTML += str
+            if (insAfter == -1) $('.frame')[2].innerHTML += str
             MathJax.typeset()
             return e.length
         } else if (nameq == 'io') {
             let qin = $('#qryInput').val()
             e = JSON.parse(e)
-            if (!isId) $('.frame')[3].innerHTML = '<span id="qryInputRender-io">' + renderEquation(qin) + ' - 匹配到 ' + e.length + ' 个</span><br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>';
-            else $('.frame')[3].innerHTML = ''
+            if (insAfter == -1) {
+                if (!isId) $('.frame')[3].innerHTML = '<span id="qryInputRender-io">' + renderEquation(qin) + ' - 匹配到 ' + e.length + ' 个</span><br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>';
+                else $('.frame')[3].innerHTML = ''
+            }
             var str = ''
             for (let i = 0; i < e.length; i++) {
-                str += `<div class="result"><span class="count-ion-${e[i].id}"></span>${renderEquation(e[i].content)}<br><span class="label label-ion" onclick="addIon(${e[i].id},'${e[i].content}')">${e[i].id}</span> `;
+                str += `<div class="result">${renderEquation(e[i].content)}<br><span class="label label-default" onclick="doQuery(JSON.stringify({content:'${e[i].id}'}),'id',2,-2)">${e[i].id}</span> `;
                 str += e[i].title + '<br>';
                 if (isId) {
                     if (replace) $('#qryInput').val(e[0].content)
@@ -535,7 +538,7 @@ function doQuery(bd, isId = '', replace = 1, insAfter = -1) {
                 if (qin.match('!') || replace == 2) $('#qryInput').val(e[0].content)
                 str += '</div>'
             }
-            $('.frame')[3].innerHTML += str
+            if (insAfter == -1) $('.frame')[3].innerHTML += str
             MathJax.typeset()
             return e.length
         }
