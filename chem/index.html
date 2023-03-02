@@ -63,6 +63,17 @@
             display: inline-block;
             transform: translateY(-2px);
             cursor: pointer;
+            transition-duration: 100ms;
+        }
+
+        .label:hover {
+            box-shadow: 1px 2px 4px 1px rgba(0, 0, 0, 0.15);
+            transform: translateY(-3px);
+        }
+
+        .label.label-sub:not(:hover) {
+            font-size: 10px;
+            opacity: 0.5;
         }
 
         .MathJax {
@@ -87,15 +98,15 @@
             height: 34px;
         }
 
-        .addInput {
+        .add {
             margin-top: -1px;
         }
 
-        .addInput:not(:last-child)>:is(span, input) {
+        .add:not(:last-child)>:is(span, input) {
             border-radius: 0;
         }
 
-        .addInput>:is(span, input, textarea) {
+        .add>:is(span, input, textarea) {
             border-top-left-radius: 0;
             border-top-right-radius: 0;
         }
@@ -130,7 +141,7 @@
         .frame:not(.active) {
             max-height: 60px;
             min-height: 60px;
-            box-shadow: inset 0 -5px 5px rgba(0, 0, 0, .1);
+            box-shadow: 0 -10px 10px -5px rgba(0, 0, 0, 0.15) inset;
             width: 80%;
             cursor: pointer;
         }
@@ -138,7 +149,7 @@
         .frame:not(.active):hover {
             max-height: 160px;
             width: 100%;
-            box-shadow: inset 0 -5px 5px rgba(0, 0, 0, .1);
+            box-shadow: 0 -10px 10px -5px rgba(0, 0, 0, 0.05) inset;
         }
 
         .has:has(.active) {
@@ -213,8 +224,9 @@
                     <label class="btn btn-default" onclick="nameq='io';setQry()"><input type="radio">离子</label>
                     <label class="btn btn-default" onclick="nameq='el';setQry()"><input type="radio">元素</label>
                 </div>
-                <button type="button" class="btn btn-default" style="display: none;" data-toggle="button" onclick="$(this).toggleClass('btn-info');strict=!strict;toggl('查询方程式 <span class=\'glyphicon glyphicon-search\'></span>', 0, strict);input()" id="strict"><span class="glyphicon glyphicon-cog"></span> 限制等号左右</button>
-                <button type="button" class="btn btn-default" style="display: none;" data-toggle="button" onclick="$(this).toggleClass('btn-info');qryToggleMatch()" id="qryMatch"><span class="glyphicon glyphicon-cog"></span> 匹配分子</button>
+                <button type="button" class="btn btn-default op op-query-eq" style="display: none;" data-toggle="button" onclick="$(this).toggleClass('btn-info');strict=!strict;toggl('查询方程式 <span class=\'glyphicon glyphicon-search\'></span>', strict);input()" id="strict"><span class="glyphicon glyphicon-cog"></span> 限制等号左右</button>
+                <button type="button" class="btn btn-default op op-query-eq" style="display: none;" data-toggle="button" onclick="$(this).toggleClass('btn-info');qryToggleMatch()" id="qryMatch"><span class="glyphicon glyphicon-cog"></span> 匹配分子</button>
+                <button type="button" class="btn btn-default op op-query-mo" style="display: none;" data-toggle="button" onclick="$(this).toggleClass('btn-info');qryToggleMatch()" id="qryIon"><span class="glyphicon glyphicon-cog"></span> 查找离子</button>
             </h2>
             <div class="input-group">
                 <input style="border-bottom-left-radius: 0;" id="qryInput" type="text" class="form-control qryInput" autocomplete="off" oninput="input2()">
@@ -225,19 +237,31 @@
                 </span>
             </div>
             <div>
-                <span class="input-group addInput" id="addId"><span class="input-group-addon">id</span>
+                <span class="input-group add upd-eq upd-mo" id="addId"><span class="input-group-addon">id</span>
                     <input type="text" class="form-control" id="addIdText" oninput="inputId()" autocomplete="off" placeholder="输入 id">
                 </span>
-                <span class="input-group addInput">
+                <span class="input-group add add-eq">
                     <span class="input-group-addon">反应条件</span>
                     <input id="addCondition" type="text" class="form-control" autocomplete="off" placeholder="加热;高温;点燃;通电;光照;MnO2">
                 </span>
-                <span class="input-group addInput">
+                <span class="input-group add add-mo">
+                    <span class="input-group-addon">中文名</span>
+                    <input id="addTitle" type="text" class="form-control" autocomplete="off" placeholder="四氧化三铁">
+                </span>
+                <span class="input-group add add-mo">
+                    <span class="input-group-addon">化合价</span>
+                    <input id="addCondition" type="text" class="form-control" autocomplete="off" placeholder="">
+                </span>
+                <span class="input-group add add-mo">
+                    <span class="input-group-addon">离子</span>
+                    <input id="addCondition" type="text" class="form-control" autocomplete="off" placeholder="">
+                </span>
+                <span class="input-group add add-eq add-mo">
                     <span class="input-group-addon">描述</span>
                     <textarea id="addDescription" type="text" class="form-control" autocomplete="off" style="resize:vertical"></textarea>
                 </span>
             </div>
-            <pre class="ok" style="font-family: Chalkduster,Consolas;top: -1px;position: relative;border-top-left-radius: 0;border-top-right-radius: 0;"></pre>
+            <pre class="ok op op-query-eq op-query-mo op-query-io op-query-el" style="font-family: Chalkduster,Consolas;top: -1px;position: relative;border-top-left-radius: 0;border-top-right-radius: 0;"></pre>
             <hr>
             <div class="has">
                 <span onclick="nameq='eq';setQry()">化学式</span>
@@ -248,7 +272,19 @@
             <div class="has">
                 <span onclick="nameq='mo';setQry()">分子</span>
                 <div class="well frame">
-                    <span id="qryInputRender-mo"></span>
+                    <span id="qryInputRender-mo">...</span>
+                </div>
+            </div>
+            <div class="has">
+                <span onclick="nameq='io';setQry()">离子</span>
+                <div class="well frame">
+                    <span id="qryInputRender-io">...</span>
+                </div>
+            </div>
+            <div class="has">
+                <span onclick="nameq='el';setQry()">元素</span>
+                <div class="well frame">
+                    <span id="qryInputRender-el">...</span>
                 </div>
             </div>
         </div>

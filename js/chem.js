@@ -297,19 +297,17 @@ function balUp() {
 //QUERY-------------------------------
 
 var modeq = 'query', nameq = 'eq', strict = false, matchMode = 'mole'
-function toggl(str, e = 0, f = 0) {
+function toggl(str, is = 0) {
     $('#qryBtn').html(str)
-    if (e) {
-        $('#strict').hide()
-        $('#qryMatch').hide(), $('.addInput').show(), $('.ok').hide()
-        if (e == 2) $('#addId').show()
+    $('.add').hide()
+    $('.op').hide()
+    $('.op-' + modeq + '-' + nameq).show()
+    if (modeq == 'add' || modeq == 'upd') {
+        $('.add-' + nameq).show()
+        if (modeq == 'upd') $('#addId').show()
         else $('#addId').hide()
     }
-    else {
-        $('#strict').show()
-        $('#qryMatch').show(), $('.addInput').hide(), $('.ok').show()
-    }
-    if (f) $('.qryInputHidable').show()
+    if (is) $('.qryInputHidable').show()
     else $('.qryInputHidable').hide()
 }
 function setQry() {
@@ -320,20 +318,15 @@ function setQry() {
         $('.qry-group>label').removeClass('active')
         $('.qry-group>label')[0].classList.add('active')
         if (modeq == 'query') {
-            toggl('查询 <span class="glyphicon glyphicon-search"></span>')
-            strict = false
-            $('#strict').removeClass('btn-info').removeClass('active')
-            $('#qryMatch').removeClass('btn-info').removeClass('active')
-            $('#qryMatch').html('<span class="glyphicon glyphicon-cog"></span> 匹配分子')
-            matchMode = 'mole'
+            toggl('查询 <span class="glyphicon glyphicon-search"></span>', strict)
             $('#qryInput').attr('placeholder', 'O2=H2O' + '（输入化学式查询数据库，也可输入 id）')
             input2();
         }
         else if (modeq == 'add') {
-            toggl('上传 <span class="glyphicon glyphicon-plus"></span>', 1)
+            toggl('上传 <span class="glyphicon glyphicon-plus"></span>')
             $('#qryInput').attr('placeholder', 'H2+O2=H2O' + '（输入化学式上传至数据库）')
         } else {
-            toggl('修改 <span class="glyphicon glyphicon-pencil"></span>', 2)
+            toggl('修改 <span class="glyphicon glyphicon-pencil"></span>')
             $('#qryInput').attr('placeholder', '（修改已有化学式）')
         }
     } else if (nameq == 'mo') {
@@ -342,6 +335,32 @@ function setQry() {
         $('.frame').removeClass('active')
         $('.frame')[0].classList.add('active')
         $('.frame')[2].classList.add('active')
+        if (modeq == 'query') {
+            toggl('查询 <span class="glyphicon glyphicon-search"></span>')
+            $('#qryMatch').html('<span class="glyphicon glyphicon-cog"></span> 匹配分子')
+            matchMode = 'mole'
+            $('#qryInput').attr('placeholder', 'Fe' + '（输入分子查询数据库，也可输入 id）')
+            input2();
+        }
+        else if (modeq == 'add') {
+            toggl('上传 <span class="glyphicon glyphicon-plus"></span>')
+            $('#qryInput').attr('placeholder', 'Fe3O4' + '（输入分子上传至数据库）')
+        } else {
+            toggl('修改 <span class="glyphicon glyphicon-pencil"></span>')
+            $('#qryInput').attr('placeholder', '（修改已有分子）')
+        }
+    } else if (nameq == 'io') {
+        $('.qry-group>label').removeClass('active')
+        $('.qry-group>label')[2].classList.add('active')
+        $('.frame').removeClass('active')
+        $('.frame')[0].classList.add('active')
+        $('.frame')[3].classList.add('active')
+    } else {
+        $('.qry-group>label').removeClass('active')
+        $('.qry-group>label')[3].classList.add('active')
+        $('.frame').removeClass('active')
+        $('.frame')[0].classList.add('active')
+        $('.frame')[4].classList.add('active')
     }
     input2()
 }
@@ -399,7 +418,7 @@ function getRegex() {
 }
 
 function doQuery(bd, isId = '', replace = 1, insAfter = -1) {
-    console.log(bd, isId)
+    console.log(bd, isId, replace)
     return fetch('/chem/query/' + nameq + isId, {
         method: 'POST',
         headers: {
@@ -436,14 +455,14 @@ function doQuery(bd, isId = '', replace = 1, insAfter = -1) {
                 } else $('.frame')[1].innerHTML = ''
                 var str = ''
                 for (let i = 0; i < e.length; i++) {
-                    str += '<div class="result res-' + i + '">' + renderEquation(e[i].content, e[i].conditions) + '<br><span class="label label-' + (e[i].rel ? (e[i].rel > 0 ? 'warning' : 'success') : 'default') + '" onclick="$(\'#qryInput\').val(' + e[i].id + ');input2()">' + e[i].id + '</span> ';
+                    str += `<div class="result res-${i}">${renderEquation(e[i].content, e[i].conditions)}<br><span class="label label-${e[i].rel ? (e[i].rel > 0 ? 'warning' : 'success') : 'default'}" onclick="doQuery(JSON.stringify({content:'${e[i].id}'}),'id',2,-2)">${e[i].id}</span> `;
                     if (e[i].conditions) str += '（' + e[i].conditions + '）';
                     str += e[i].descriptions + '<br>';
                     if (e[i].rel > 0) {
-                        str += `<span class="glyphicon glyphicon-share-alt"></span> <span class="label label-success" onclick="$(this).siblings('.result').length||doQuery(JSON.stringify({content:'${e[i].rel}'}),'id',0,${i})">${e[i].rel}</span><br>`;
+                        str += `<span class="glyphicon glyphicon-share-alt"></span> <span class="label label-sub label-success" onclick="$(this).siblings('.result').length||doQuery(JSON.stringify({content:'${e[i].rel}'}),'id',2,${i})">${e[i].rel}</span><br>`;
                     }
                     if (e[i].rel < 0) {
-                        str += `<span class="glyphicon glyphicon-share-alt"></span> <span class="label label-warning" onclick="$(this).siblings('.result').length||doQuery(JSON.stringify({content:'${-e[i].rel}'}),'id',0,${i})">${-e[i].rel}</span><br>`;
+                        str += `<span class="glyphicon glyphicon-share-alt"></span> <span class="label label-sub label-warning" onclick="$(this).siblings('.result').length||doQuery(JSON.stringify({content:'${-e[i].rel}'}),'id',2,${i})">${-e[i].rel}</span><br>`;
                     }
                     if (isId) {
                         if (replace) $('#qryInput').val(e[0].content)
