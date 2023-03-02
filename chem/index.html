@@ -188,12 +188,16 @@
             <a class="btn btn-info" href="/"><i class="glyphicon glyphicon-home" aria-hidden="true"></i>&nbsp;返回</a>
             <hr>
             <button type="button" class="btn btn-default btn-warning active" data-toggle="button" onclick="$(this).toggleClass('btn-warning');preview=!preview" id="preview" title="性能降低时关闭"><span class="glyphicon glyphicon-cog"></span> 实时渲染</button>
+            <hr class="tools" style="display: none;">
+            <button class="btn btn-default tools" style="display: none;" onclick="$('.tools').toggle(300);">
+                <span class="glyphicon glyphicon-chevron-right"></span> 小工具
+            </button>
             <hr>
             <p>小提示：<br><code>&lt;e+&gt;</code>、<code>&lt;2e-&gt;</code> 用于标注电荷，<code>.</code> 用于代替水合物等中间的点。输入 ! 快速查询并导入结果。</p>
         </div>
         <div class="col-lg-8 col-md-10 col-xs-12">
-            <h2>化学小工具
-                <div class="btn-group" data-toggle="buttons">
+            <h2><span class="tools">化学小工具</span>
+                <div class="btn-group tools" data-toggle="buttons">
                     <label class="btn btn-default active" onclick="setBal()">
                         <input type="radio"> 配平
                     </label>
@@ -202,20 +206,23 @@
                     </label>
                 </div>
                 <button type="button" class="btn btn-default" style="display: none;" data-toggle="button" onclick="$(this).toggleClass('btn-info');precise=!precise;input()" id="precise"><span class="glyphicon glyphicon-cog"></span> 高精度</button>
-                <a class="btn btn-default" href="/chemist">
+                <a class="btn btn-default tools" href="/chemist">
                     <span class="glyphicon glyphicon-link"></span> 配平接口
                 </a>
+                <button class="btn btn-default btn-xs pull-right tools" onclick="$('.tools').toggle(300);">
+                    <span class="glyphicon glyphicon-chevron-left"></span> 折叠
+                </button>
             </h2>
-            <div class="input-group">
+            <div class="input-group tools">
                 <input id="balInput" type="text" class="form-control" oninput="input()" autocomplete="off">
                 <span class="input-group-btn">
                     <button type="button" class="btn btn-default" onclick="balance()" id="balBtn">配平</button>
                 </span>
             </div>
-            <hr>
-            <div class="well frame">
+            <hr class="tools">
+            <div class="well frame tools">
             </div>
-            <hr>
+            <hr class="tools">
             <h2>数据库
                 <div class="btn-group" data-toggle="buttons">
                     <label class="btn btn-default active" onclick="modeq='query';setQry()"><input type="radio">查询</label>
@@ -228,7 +235,7 @@
                     <label class="btn btn-default" onclick="nameq='io';setQry()"><input type="radio">离子</label>
                     <label class="btn btn-default" onclick="nameq='el';setQry()"><input type="radio">元素</label>
                 </div>
-                <button type="button" class="btn btn-default op op-query-eq" style="display: none;" data-toggle="button" onclick="$(this).toggleClass('btn-info');strict=!strict;toggl('查询方程式 <span class=\'glyphicon glyphicon-search\'></span>', strict);input()" id="strict"><span class="glyphicon glyphicon-cog"></span> 限制等号左右</button>
+                <button type="button" class="btn btn-default op op-query-eq" style="display: none;" data-toggle="button" onclick="$(this).toggleClass('btn-info');strict=!strict;toggl('查询 <span class=\'glyphicon glyphicon-search\'></span>', strict);input()" id="strict"><span class="glyphicon glyphicon-cog"></span> 限制等号左右</button>
                 <button type="button" class="btn btn-default op op-query-eq" style="display: none;" data-toggle="button" onclick="$(this).toggleClass('btn-info');qryToggleMatch()" id="qryMatch"><span class="glyphicon glyphicon-cog"></span> 匹配分子</button>
                 <button type="button" class="btn btn-default op op-query-mo" style="display: none;" data-toggle="button" onclick="$(this).toggleClass('btn-info');qryToggleMatch()" id="qryIon"><span class="glyphicon glyphicon-cog"></span> 查找离子</button>
             </h2>
