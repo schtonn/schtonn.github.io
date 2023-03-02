@@ -170,27 +170,6 @@ function renderEquation(str, condition = '') {
     return str
 }
 
-// function renderEquation(str, condition = '') {
-//     str = str.replace(/[\[{]/g, "(").replace(/[\]}]/g, ")");
-//     str = str.replace(/([\+\=\.;])\1+/g, '$1')
-//     console.log(str)
-//     str = str.replace(/([^e]|^)([\+\=\.;])/g, '$1 $2 ')
-//     console.log(str)
-//     str = str.replace(/[^\dA-Za-z<>\(\)\+\-=\.; ]/g, "");
-//     console.log(str)
-//     // console.log('Rendering equation', str)
-//     // str = str.replace(/([A-Za-z]+)/g, "\\text{$1}");
-//     console.log(str)
-//     str = str.replace(/<(\d*)\{e\}([\+\-])>/g, "^{$1$2}");
-//     console.log(str)
-//     str = str.replace(/([\}\)])(\d+)/g, "$1_{$2}");
-//     str = str.replace(/\./g, "\\cdot");
-//     // str = "<a href='#'>\\(" + str.replace(/([\+\-=\.;])([^\}])/g, "\\)</a> \\($1\\) <a href='#'>\\($2") + '\\)</a>';
-//     str = `\\(\\ce{${str}}\\)`
-//     console.log(str)
-//     return str
-// }
-
 //PROCESS-------------------------------
 
 var mode = 'bal', balInput, balText = '', inputText, case1 = 'CrI3+Cl2+KOH=K2CrO4+KIO4+KCl+H2O', case2 = 'CH3CHO+2Ag(NH3)2OH=CH3COONH4+2Ag+3NH3+H2O'
@@ -345,9 +324,11 @@ function setQry() {
         else if (modeq == 'add') {
             toggl('上传 <span class="glyphicon glyphicon-plus"></span>')
             $('#qryInput').attr('placeholder', 'Fe3O4' + '（输入分子上传至数据库）')
+            $('#addTitle').attr('placeholder', '四氧化三铁')
         } else {
             toggl('修改 <span class="glyphicon glyphicon-pencil"></span>')
             $('#qryInput').attr('placeholder', '（修改已有分子）')
+            $('#addTitle').attr('placeholder', '四氧化三铁')
         }
     } else if (nameq == 'io') {
         $('.qry-group>label').removeClass('active')
@@ -355,6 +336,22 @@ function setQry() {
         $('.frame').removeClass('active')
         $('.frame')[0].classList.add('active')
         $('.frame')[3].classList.add('active')
+        if (modeq == 'query') {
+            toggl('查询 <span class="glyphicon glyphicon-search"></span>')
+            $('#qryMatch').html('<span class="glyphicon glyphicon-cog"></span> 匹配离子')
+            matchMode = 'mole'
+            $('#qryInput').attr('placeholder', 'Fe' + '（输入离子查询数据库，也可输入 id）')
+            input2();
+        }
+        else if (modeq == 'add') {
+            toggl('上传 <span class="glyphicon glyphicon-plus"></span>')
+            $('#qryInput').attr('placeholder', 'Fe<3e+>' + '（输入离子上传至数据库）')
+            $('#addTitle').attr('placeholder', '三价铁')
+        } else {
+            toggl('修改 <span class="glyphicon glyphicon-pencil"></span>')
+            $('#qryInput').attr('placeholder', '（修改已有离子）')
+            $('#addTitle').attr('placeholder', '三价铁')
+        }
     } else {
         $('.qry-group>label').removeClass('active')
         $('.qry-group>label')[3].classList.add('active')
@@ -417,8 +414,9 @@ function getRegex() {
     } else return $('#qryInput').val()
 }
 
+var ggg
+
 function doQuery(bd, isId = '', replace = 1, insAfter = -1) {
-    console.log(bd, isId, replace)
     return fetch('/chem/query/' + nameq + isId, {
         method: 'POST',
         headers: {
@@ -466,7 +464,7 @@ function doQuery(bd, isId = '', replace = 1, insAfter = -1) {
                     }
                     if (isId) {
                         if (replace) $('#qryInput').val(e[0].content)
-                        $('#addCondition').val(e[0].conditions)
+                        $('#addTitle').val(e[0].conditions)
                         $('#addIdText').val(JSON.parse(bd).content)
                         $('#addDescription').val(e[0].descriptions)
                     }
@@ -480,23 +478,38 @@ function doQuery(bd, isId = '', replace = 1, insAfter = -1) {
         } else if (nameq == 'mo') {
             let qin = $('#qryInput').val()
             e = JSON.parse(e)
-            $('.frame')[2].innerHTML = '<span id="qryInputRender-mo">' + renderEquation(qin) + ' - 匹配到 ' + e.length + ' 个</span><br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>';
+            if (!isId) $('.frame')[2].innerHTML = '<span id="qryInputRender-mo">' + renderEquation(qin) + ' - 匹配到 ' + e.length + ' 个</span><br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>';
+            else $('.frame')[2].innerHTML = ''
             var str = ''
             for (let i = 0; i < e.length; i++) {
-                str += '<div class="result">' + renderEquation(e[i].content, e[i].conditions) + '<br><span class="label label-default" onclick="$(\'#qryInput\').val(' + e[i].id + ');input2()">' + e[i].id + '</span> ';
-                if (e[i].conditions) str += '（' + e[i].conditions + '）';
-                str += e[i].title + '<br>';
+                str += '<div class="result">' + renderEquation(e[i].content) + '<br><span class="label label-default" onclick="$(\'#qryInput\').val(' + e[i].id + ');input2()">' + e[i].id + '</span> ';
+                str += e[i].title + ' ' + e[i].descriptions + '<br>';
                 let ions = JSON.parse(e[i].ions)
                 for (let j = 0; j < ions.length; j++) {
                     str += `<span class="ion">${renderEquation(ions[j].c + '~' + ions[j].v)}</span>`
                     if (j < ions.length - 1) str += '/'
                 }
-                str += '<br>'
+                if (ions.length) str += '<br>'
                 if (isId) {
                     if (replace) $('#qryInput').val(e[0].content)
-                    $('#addCondition').val(e[0].conditions)
+                    $('#addTitle').val(e[0].title)
                     $('#addIdText').val(JSON.parse(bd).content)
                     $('#addDescription').val(e[0].descriptions)
+                    e[0].class = JSON.parse(e[0].class)
+                    let c = e[0].class
+                    console.log(ggg = c)
+                    for (let j = 0; j < c.length; j++) {
+                        let t = JSON.stringify(c[j]).split(':')[0].split('"')[1]
+                        let str = ''
+                        c.filter(e => {
+                            if (JSON.stringify(e).split(':')[0].split('"')[1] == t) str += ',' + JSON.stringify(e).split(':')[1].split('}')[0].replace(/"/g, '')
+                        })
+                        curClass[t] = str.slice(1)
+                    }
+                    console.log(curClass, e[0].class, e[0].ions)
+                    ionList = JSON.parse(e[0].ions)
+                    updateIon()
+                    getClass(1)
                 }
                 if (qin.match('!') || replace == 2) $('#qryInput').val(e[0].content)
                 str += '</div>'
@@ -504,8 +517,44 @@ function doQuery(bd, isId = '', replace = 1, insAfter = -1) {
             $('.frame')[2].innerHTML += str
             MathJax.typeset()
             return e.length
+        } else if (nameq == 'io') {
+            let qin = $('#qryInput').val()
+            e = JSON.parse(e)
+            if (!isId) $('.frame')[3].innerHTML = '<span id="qryInputRender-io">' + renderEquation(qin) + ' - 匹配到 ' + e.length + ' 个</span><br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>';
+            else $('.frame')[3].innerHTML = ''
+            var str = ''
+            for (let i = 0; i < e.length; i++) {
+                str += `<div class="result"><span class="count-ion-${e[i].id}"></span>${renderEquation(e[i].content)}<br><span class="label label-ion" onclick="addIon(${e[i].id},'${e[i].content}')">${e[i].id}</span> `;
+                str += e[i].title + '<br>';
+                if (isId) {
+                    if (replace) $('#qryInput').val(e[0].content)
+                    $('#addTitle').val(e[0].title)
+                    $('#addIdText').val(JSON.parse(bd).content)
+                    $('#addDescription').val(e[0].descriptions)
+                }
+                if (qin.match('!') || replace == 2) $('#qryInput').val(e[0].content)
+                str += '</div>'
+            }
+            $('.frame')[3].innerHTML += str
+            MathJax.typeset()
+            return e.length
         }
     });
+}
+
+function queryFetch(bd) {
+    console.log(bd)
+    fetch('/chem/' + modeq + '/' + nameq, {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json',
+        },
+        body: bd
+    }).then(() => {
+        doQuery(JSON.stringify({
+            content: $('#qryInput').val()
+        }))
+    })
 }
 
 function query() {
@@ -516,73 +565,227 @@ function query() {
             content: cont,
         })
         doQuery(bd).then(res => {
-            if (nameq == 'eq' && modeq == 'add') {
-                $('#balInput').val($('#qryInput').val() ? $('#qryInput').val() : $('#qryInput').attr('placeholder').split('（')[0])
-                setBal();
-                balance().then(e => {
-                    if (e[0] == '!') return;
-                    input();
-                    if (!$('#addDescription').val()) {
-                        alert('无描述')
-                        return;
+            if (modeq == 'add') {
+                if (nameq == 'eq') {
+                    $('#balInput').val($('#qryInput').val() ? $('#qryInput').val() : $('#qryInput').attr('placeholder').split('（')[0])
+                    setBal();
+                    balance().then(e => {
+                        if (e[0] == '!') return;
+                        input();
+                        if (!$('#addDescription').val()) {
+                            alert('无描述')
+                            return;
+                        }
+                        var resp = confirm(e + (res ? '有相似项，' : '') + '确认上传？')
+                        if (!resp) return
+                        $('#qryInput').val(e)
+                        var bd = JSON.stringify({
+                            content: $('#qryInput').val(),
+                            conditions: $('#addCondition').val(),
+                            descriptions: $('#addDescription').val(),
+                        })
+                        queryFetch(bd)
+                    })
+                } else if (nameq == 'mo') {
+                    getClass()
+                    let fil = []
+                    for (j in curClass) {
+                        if (curClass[j].match(',')) {
+                            let sp = curClass[j].split(',')
+                            for (k = 0; k < sp.length; k++) {
+                                let g = {};
+                                g[j] = sp[k]
+                                if (sp[k]) fil.push(g)
+                            }
+                        } else {
+                            let g = {};
+                            g[j] = curClass[j]
+                            if (curClass[j]) fil.push(g)
+                        }
                     }
-                    var resp = confirm(e + (res ? '有相似项，' : '') + '确认上传？')
-                    if (!resp) return
-                    $('#qryInput').val(e)
+                    if (!$('#addTitle').val()) return alert('无中文名！')
+                    if (!checkIon() && !confirm('电荷总数不为零，确认继续？')) return
+                    var resp = confirm('确认上传？')
+                    if (!resp) return;
                     var bd = JSON.stringify({
                         content: $('#qryInput').val(),
-                        conditions: $('#addCondition').val(),
+                        title: $('#addTitle').val(),
                         descriptions: $('#addDescription').val(),
+                        class: JSON.stringify(fil),
+                        ions: JSON.stringify(ionList),
                     })
-                    console.log(bd)
-                    fetch('/chem/add/' + nameq, {
-                        method: 'POST',
-                        headers: {
-                            'Content-type': 'application/json',
-                        },
-                        body: bd
-                    }).then(() => {
-                        doQuery(JSON.stringify({
-                            content: $('#qryInput').val()
-                        }))
+                    queryFetch(bd)
+                } else if (nameq == 'io') {
+                    if (!$('#addTitle').val()) return alert('无中文名！')
+                    var resp = confirm('确认上传？')
+                    if (!resp) return;
+                    var bd = JSON.stringify({
+                        content: $('#qryInput').val(),
+                        title: $('#addTitle').val(),
                     })
-                })
+                    queryFetch(bd)
+                }
             }
         })
     }
     if (modeq == 'upd') {
-        $('#balInput').val($('#qryInput').val() ? $('#qryInput').val() : $('#qryInput').attr('placeholder').split('（')[0])
-        setBal();
-        balance().then(e => {
-            if (e[0] == '!') return
-            input();
-            if (!$('#addDescription').val()) {
-                alert('无描述')
-                return;
+        if (nameq == 'eq') {
+            $('#balInput').val($('#qryInput').val() ? $('#qryInput').val() : $('#qryInput').attr('placeholder').split('（')[0])
+            setBal();
+            balance().then(e => {
+                if (e[0] == '!') return
+                input();
+                if (!$('#addDescription').val()) {
+                    alert('无描述')
+                    return;
+                }
+                var resp = confirm(e + '确认上传？')
+                if (!resp) return;
+                $('#qryInput').val(e)
+                var bd = JSON.stringify({
+                    content: $('#qryInput').val(),
+                    id: $('#addIdText').val(),
+                    conditions: $('#addCondition').val(),
+                    descriptions: $('#addDescription').val(),
+                })
+                console.log(bd)
+                return fetch('/chem/upd/' + nameq, {
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application/json',
+                    },
+                    body: bd
+                })
+            }).then(inputId)
+        } else if (nameq == 'mo') {
+            getClass()
+            let fil = []
+            for (j in curClass) {
+                if (curClass[j].match(',')) {
+                    let sp = curClass[j].split(',')
+                    for (k = 0; k < sp.length; k++) {
+                        let g = {};
+                        g[j] = sp[k]
+                        if (sp[k]) fil.push(g)
+                    }
+                } else {
+                    let g = {};
+                    g[j] = curClass[j]
+                    if (curClass[j]) fil.push(g)
+                }
             }
-            var resp = confirm(e + '确认上传？')
+            if (!$('#addTitle').val()) return alert('无中文名！')
+            if (!checkIon() && !confirm('电荷总数不为零，确认继续？')) return
+            var resp = confirm('确认上传？')
             if (!resp) return;
-            $('#qryInput').val(e)
             var bd = JSON.stringify({
                 content: $('#qryInput').val(),
-                id: $('#addIdText').val(),
-                conditions: $('#addCondition').val(),
+                title: $('#addTitle').val(),
                 descriptions: $('#addDescription').val(),
+                class: JSON.stringify(fil),
+                ions: JSON.stringify(ionList),
+                id: $('#addIdText').val()
             })
-            console.log(bd)
-            return fetch('/chem/upd/' + nameq, {
-                method: 'POST',
-                headers: {
-                    'Content-type': 'application/json',
-                },
-                body: bd
+            queryFetch(bd)
+        } else if (nameq == 'io') {
+            if (!$('#addTitle').val()) return alert('无中文名！')
+            var resp = confirm('确认上传？')
+            if (!resp) return;
+            var bd = JSON.stringify({
+                content: $('#qryInput').val(),
+                title: $('#addTitle').val(),
+                id: $('#addIdText').val()
             })
-        }).then(inputId)
+            queryFetch(bd)
+        }
     }
 
 }
 
+var curCount = {}, curClass = {}
+
+function getClass(force = 0) {
+    let e = parseEquation($('#qryInput').val())
+    if (!force) {
+        for (let i in curCount) {
+            curClass[i] = $('#class-' + i).val()
+        }
+    }
+    $('#class').empty()
+    if (e != curCount) {
+        if (JSON.stringify(e) == '{}') $('#pclass').show()
+        else $('#pclass').hide(300)
+        for (let i in e) {
+            $("#class").append(`<span class="input-group-addon">${i}</span><input id="class-${i}" type="text" class="form-control" autocomplete="off" placeholder="">`)
+            $('#class-' + i).val(curClass[i])
+            if (!curCount[i]) {
+                $('#class-' + i).hide()
+                $('#class-' + i).show(300)
+            }
+        }
+    }
+    curCount = e
+}
+
+var ionList = []
+
+function getIons() {
+    $('.frame')[3].classList.add('active')
+    $('.qry-group>label')[2].classList.add('active')
+    getClass()
+    let str = ''
+    for (let i in curCount) {
+        str += '|' + i
+    }
+    bd = JSON.stringify({ content: '^(' + str.slice(1) + ')(<|)' })
+    nameq = 'io'
+    doQuery(bd, '').then(() => {
+        nameq = 'mo'
+        $('#qryInputRender-io').append(' - 点击标签以添加')
+    })
+}
+
+function updateIon() {
+    let str = ''
+    $('.ionList').empty()
+    if (!ionList.length) return $('.ionList').append('...')
+    for (let i = 0; i < ionList.length; i++) {
+        str += `<span class="ion"><span class="label label-ion" onclick="removeIon(${ionList[i].id})">${ionList[i].id}</span> ${renderEquation(ionList[i].v)} x${ionList[i].c}</span>/`
+    }
+    str += ' 点击标签以减少'
+    $('.ionList').append(str)
+    if (preview) MathJax.typeset()
+}
+function addIon(id, v) {
+    console.log(ionList)
+    if (!ionList.filter(e => {
+        if (e.id == id) e.c++, $('.count-ion-' + id).text(e.c + ' ')
+        return e.id == id
+    }).length) {
+        $('.count-ion-' + id).text('1 ')
+        ionList.push({ id: id, v: v, c: 1 })
+    }
+    updateIon()
+}
+function removeIon(id, v) {
+    ionList = ionList.filter(e => {
+        if (e.id == id) e.c--, $('.count-ion-' + id).text(e.c + ' ')
+        return e.c
+    })
+    updateIon()
+}
+function checkIon() {
+    let sum = 0
+    for (let i in curCount) {
+        if (curClass[i].match(',')) return true
+        sum += curCount[i] * curClass[i]
+    }
+    console.log(sum)
+    return sum == 0
+}
+
 function input2() {
+    if ((modeq == 'add' || modeq == 'upd') && nameq == 'mo') getClass()
     if (modeq == 'query') {
         $('.ok').text(getRegex())
     }
@@ -598,15 +801,21 @@ function input2() {
                 $('#qryInputRender').html(renderEquation(strict ? ($('#qryInput').val() + '=' + $('#qryInput2').val()) : ($('#qryInput').val())))
             } else $('#qryInputRender').text((strict ? ($('#qryInput').val() + '=' + $('#qryInput2').val()) : ($('#qryInput').val())))
         }
-    }
-    else {
-        if ($('#qryInputRender-mo')[0]) {
+    } else {
+        if ($('#qryInputRender-' + nameq)[0]) {
             if (preview) {
-                $('#qryInputRender-mo').html(renderEquation($('#qryInput').val()))
-            } else $('#qryInputRender-mo').text($('#qryInput').val())
+                $('#qryInputRender-' + nameq).html(renderEquation($('#qryInput').val()))
+            } else $('#qryInputRender-' + nameq).text($('#qryInput').val())
         }
     }
     if (preview) MathJax.typeset()
+}
+
+function getC(str) {
+    if (str == 'eq') return 1
+    if (str == 'mo') return 2
+    if (str == 'io') return 3
+    if (str == 'el') return 4
 }
 
 function inputId() {
@@ -614,7 +823,7 @@ function inputId() {
         content: $('#addIdText').val(),
     })
     if (!$('#addIdText').val()) {
-        $('.frame')[1].innerHTML = '';
+        $('.frame')[getC(nameq)].innerHTML = '';
         return;
     }
     doQuery(bd, 'id')

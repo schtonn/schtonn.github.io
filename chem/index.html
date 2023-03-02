@@ -22,7 +22,7 @@
             width: 100%;
             overflow-x: auto;
             overflow-y: auto;
-            transition-duration: 300ms;
+            transition-duration: 500ms;
         }
 
         pre {
@@ -172,6 +172,10 @@
             font-weight: bold;
             font-size: 18px;
         }
+
+        .label-ion {
+            background-color: #4f95b3;
+        }
     </style>
     <script id="MathJax-script" src="https://cdn.bootcss.com/mathjax/3.2.0/es5/tex-chtml.js"></script>
     <script src="/js/chem.js"></script>
@@ -233,7 +237,7 @@
                 <span class="input-group-addon qryInputHidable" style="display:none">=</span>
                 <input id="qryInput2" type="text" class="form-control qryInput qryInputHidable" style="display:none" autocomplete="off" oninput="input2()">
                 <span class="input-group-btn">
-                    <button style="border-bottom-right-radius: 0;" type="button" class="btn btn-default" onclick="query()" id="qryBtn">查询方程式</button>
+                    <button style="border-bottom-right-radius: 0;" type="button" class="btn btn-default" onclick="query()" id="qryBtn">查询</button>
                 </span>
             </div>
             <div>
@@ -244,17 +248,20 @@
                     <span class="input-group-addon">反应条件</span>
                     <input id="addCondition" type="text" class="form-control" autocomplete="off" placeholder="加热;高温;点燃;通电;光照;MnO2">
                 </span>
-                <span class="input-group add add-mo">
+                <span class="input-group add add-mo add-io">
                     <span class="input-group-addon">中文名</span>
-                    <input id="addTitle" type="text" class="form-control" autocomplete="off" placeholder="四氧化三铁">
+                    <input id="addTitle" type="text" class="form-control" autocomplete="off">
                 </span>
                 <span class="input-group add add-mo">
                     <span class="input-group-addon">化合价</span>
-                    <input id="addCondition" type="text" class="form-control" autocomplete="off" placeholder="">
+                    <span class="form-control" id="pclass" style="color:#999">...</span>
+                    <span class="input-group" id="class">
+                    </span>
                 </span>
                 <span class="input-group add add-mo">
                     <span class="input-group-addon">离子</span>
-                    <input id="addCondition" type="text" class="form-control" autocomplete="off" placeholder="">
+                    <span class="form-control ionList">...</span>
+                    <span class="input-group-btn"><button class="btn btn-default" onclick="getIons();if($('.ionList').text()=='...')$('.ionList').text('查看下方‘离子’页！');$(this).children('span').addClass('glyphicon-chevron-down')"><span class="glyphicon glyphicon-plus"></span></button></span>
                 </span>
                 <span class="input-group add add-eq add-mo">
                     <span class="input-group-addon">描述</span>
