@@ -154,7 +154,7 @@ function getCondition(e) {
 }
 
 function renderEquation(str, condition = '') {
-    if (!preview) return str;
+    // if (!preview) return str;
     str = str
         .replace(/[\[{]/g, "(")
         .replace(/[\]}]/g, ")")
@@ -165,7 +165,6 @@ function renderEquation(str, condition = '') {
         .replace(/([\}\)])(\d+)/g, "$1_{$2}")
         .replace(/\./g, "\\cdot")
         .replace(/~/g, '\\times')
-    console.log(str)
     if (condition) str = str.replace(/=/g, `\\stackrel{${getCondition(condition)}}{=}`)
     str = "\\(" + str + "\\)"
     return str
@@ -211,6 +210,11 @@ $().ready(function () {
     });
     $("#preview").tooltip()
     $(function () { $("[data-toggle='tooltip']").tooltip(); });
+    $(".has").on('click', e => {
+        if (!$(e.currentTarget).children().hasClass('active')) {
+            $(e.currentTarget).children('span').click()
+        }
+    })
 })
 function setBal() {
     $('#precise').hide()
@@ -394,7 +398,8 @@ function getRegex() {
     } else return $('#qryInput').val()
 }
 
-function doQuery(bd, isId = '', replace = 1) {
+function doQuery(bd, isId = '', replace = 1, insAfter = -1) {
+    console.log(bd, isId)
     return fetch('/chem/query/' + nameq + isId, {
         method: 'POST',
         headers: {
@@ -407,22 +412,38 @@ function doQuery(bd, isId = '', replace = 1) {
         if (nameq == 'eq') {
             if (e[0] == '!') {
                 $('.frame')[1].innerHTML = '<pre class="text-danger bg-danger">' + e + '</pre>';
+            } else if (insAfter != -1) {
+                console.log($('.res-' + insAfter).children().length)
+                e = JSON.parse(e)
+                var str = ''
+                str += '<div class="result" style="margin-left: 50px;margin-top: -20px;">' + renderEquation(e[0].content, e[0].conditions) + '<br>';
+                if (e[0].conditions) str += '（' + e[0].conditions + '）';
+                str += e[0].descriptions + '<br>';
+                if (isId) {
+                    if (replace) $('#qryInput').val(e[0].content)
+                    $('#addCondition').val(e[0].conditions)
+                    $('#addIdText').val(JSON.parse(bd).content)
+                    $('#addDescription').val(e[0].descriptions)
+                }
+                str += '</div>'
+                $('.res-' + insAfter).append(str)
+                MathJax.typeset()
             } else {
                 let qin = $('#qryInput').val()
                 e = JSON.parse(e)
                 if (!isId || !replace) {
-                    $('.frame')[1].innerHTML = '<span id="qryInputRender">' + (strict ? renderEquation(qin + '=' + $('#qryInput2').val()) : renderEquation(qin)) + ' - 匹配到 ' + e.length + ' 个</span><br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>';
+                    $('.frame')[1].innerHTML = '<span id="qryInputRender">' + renderEquation(strict ? (qin + '=' + $('#qryInput2').val()) : qin) + ' - 匹配到 ' + e.length + ' 个</span><br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>';
                 } else $('.frame')[1].innerHTML = ''
                 var str = ''
                 for (let i = 0; i < e.length; i++) {
-                    str += '<div class="result">' + renderEquation(e[i].content, e[i].conditions) + '<br><span class="label label-default" onclick="$(\'#qryInput\').val(' + e[i].id + ');input2()">' + e[i].id + '</span> ';
+                    str += '<div class="result res-' + i + '">' + renderEquation(e[i].content, e[i].conditions) + '<br><span class="label label-' + (e[i].rel ? (e[i].rel > 0 ? 'warning' : 'success') : 'default') + '" onclick="$(\'#qryInput\').val(' + e[i].id + ');input2()">' + e[i].id + '</span> ';
                     if (e[i].conditions) str += '（' + e[i].conditions + '）';
                     str += e[i].descriptions + '<br>';
                     if (e[i].rel > 0) {
-                        str += '<span class="glyphicon glyphicon-share-alt"></span> <span class="label label-success" onclick="$(\'#qryInput\').val(' + e[i].rel + ');input2()">' + e[i].rel + '</span><br>';
+                        str += `<span class="glyphicon glyphicon-share-alt"></span> <span class="label label-success" onclick="$(this).siblings('.result').length||doQuery(JSON.stringify({content:'${e[i].rel}'}),'id',0,${i})">${e[i].rel}</span><br>`;
                     }
                     if (e[i].rel < 0) {
-                        str += '<span class="glyphicon glyphicon-share-alt"></span> <span class="label label-warning" onclick="$(\'#qryInput\').val(' + (-e[i].rel) + ');input2()">' + (-e[i].rel) + '</span><br>';
+                        str += `<span class="glyphicon glyphicon-share-alt"></span> <span class="label label-warning" onclick="$(this).siblings('.result').length||doQuery(JSON.stringify({content:'${-e[i].rel}'}),'id',0,${i})">${-e[i].rel}</span><br>`;
                     }
                     if (isId) {
                         if (replace) $('#qryInput').val(e[0].content)
@@ -452,12 +473,6 @@ function doQuery(bd, isId = '', replace = 1) {
                     if (j < ions.length - 1) str += '/'
                 }
                 str += '<br>'
-                if (e[i].rel > 0) {
-                    str += '<span class="glyphicon glyphicon-share-alt"></span> <span class="label label-success" onclick="$(\'#qryInput\').val(' + e[i].rel + ');input2()">' + e[i].rel + '</span><br>';
-                }
-                if (e[i].rel < 0) {
-                    str += '<span class="glyphicon glyphicon-share-alt"></span> <span class="label label-warning" onclick="$(\'#qryInput\').val(' + (-e[i].rel) + ');input2()">' + (-e[i].rel) + '</span><br>';
-                }
                 if (isId) {
                     if (replace) $('#qryInput').val(e[0].content)
                     $('#addCondition').val(e[0].conditions)
@@ -559,9 +574,19 @@ function input2() {
         doQuery(JSON.stringify({ content: getRegex() }), '', 2)
     }
     if (nameq == 'eq') {
-        if ($('#qryInputRender')[0]) $('#qryInputRender').html(strict ? renderEquation($('#qryInput').val() + '=' + $('#qryInput2').val()) : renderEquation($('#qryInput').val()))
+        if ($('#qryInputRender')[0]) {
+            if (preview) {
+                $('#qryInputRender').html(renderEquation(strict ? ($('#qryInput').val() + '=' + $('#qryInput2').val()) : ($('#qryInput').val())))
+            } else $('#qryInputRender').text((strict ? ($('#qryInput').val() + '=' + $('#qryInput2').val()) : ($('#qryInput').val())))
+        }
     }
-    else if ($('#qryInputRender-mo')[0]) $('#qryInputRender-mo').html(renderEquation($('#qryInput').val()))
+    else {
+        if ($('#qryInputRender-mo')[0]) {
+            if (preview) {
+                $('#qryInputRender-mo').html(renderEquation($('#qryInput').val()))
+            } else $('#qryInputRender-mo').text($('#qryInput').val())
+        }
+    }
     if (preview) MathJax.typeset()
 }
 
