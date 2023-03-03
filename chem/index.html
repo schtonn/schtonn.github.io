@@ -73,7 +73,7 @@
 
         .label.label-sub:not(:hover) {
             font-size: 10px;
-            opacity: 0.5;
+            opacity: 0.6;
         }
 
         .MathJax {
@@ -227,7 +227,7 @@
             </div>
             <div class="tools">
                 <hr>
-                <div class="well frame"></div>
+                <div class="well frame" id="balFrame"></div>
                 <hr>
             </div>
             <h2>数据库
@@ -244,7 +244,8 @@
                 </div>
                 <button type="button" class="btn btn-default op op-query-eq" style="display: none;" data-toggle="button" onclick="$(this).toggleClass('btn-info');strict=!strict;toggl('查询 <span class=\'glyphicon glyphicon-search\'></span>', strict);input()" id="strict"><span class="glyphicon glyphicon-cog"></span> 限制等号左右</button>
                 <button type="button" class="btn btn-default op op-query-eq" style="display: none;" data-toggle="button" onclick="$(this).toggleClass('btn-info');qryToggleMatch()" id="qryMatch"><span class="glyphicon glyphicon-cog"></span> 匹配元素</button>
-                <button type="button" class="btn btn-default op op-query-mo" style="display: none;" data-toggle="button" onclick="$(this).toggleClass('btn-info');qryToggleMatch()" id="qryIon"><span class="glyphicon glyphicon-cog"></span> 查找离子</button>
+                <button type="button" class="btn btn-default op op-query-mo" style="display: none;" data-toggle="button" onclick="$(this).toggleClass('btn-info');useIon=!useIon;$('.op-ionid').toggle(100);setQry()" id="qryIon"><span class="glyphicon glyphicon-cog"></span> 按离子</button>
+                <button type="button" class="btn btn-default op op-ionid" style="display: none;" data-toggle="button" onclick="$(this).toggleClass('btn-info');useIonId=!useIonId;setQry()" id="qryIon"><span class="glyphicon glyphicon-cog"></span> 按离子编号</button>
             </h2>
             <div class="input-group">
                 <input style="border-bottom-left-radius: 0;" id="qryInput" type="text" class="form-control qryInput" autocomplete="off" oninput="input2()">
@@ -276,27 +277,27 @@
                 <span class="input-group add add-mo">
                     <span class="input-group-addon">离子</span>
                     <span class="form-control ionList" style="color:#999">...</span>
-                    <span class="input-group-btn"><button class="btn btn-default" onclick="getIons();if($('.ionList').text()=='...')$('.ionList').text('查看下方‘离子’页！');$(this).children('span').addClass('glyphicon-chevron-down');$('.frame.active').parent().show();"><span class="glyphicon glyphicon-plus"></span></button></span>
+                    <span class="input-group-btn"><button class="btn btn-default" onclick="getIons();if($('.ionList').text()=='...')$('.ionList').text('查看下方‘离子’页！');$(this).children('span').addClass('glyphicon-chevron-down');$('.frame:not(#balFrame).active').parent().show();"><span class="glyphicon glyphicon-plus"></span></button></span>
                 </span>
                 <span class="input-group add add-mo" style="background-color: white;border-right: 1px solid #ccc;">
                     <span class="input-group-addon">类型</span>
                     <div class="btn-group" data-toggle="buttons">
-                        <label class="btn btn-default type type-单质" onclick="type=$(this).text().replace(/[ \n]/g,'')">
+                        <label class="btn btn-default type type-单质 add add-mo active" onclick="type=$(this).text().replace(/[ \n]/g,'')">
                             <input type="radio"> 单质
                         </label>
-                        <label class="btn btn-default type type-酸 active" onclick="type=$(this).text().replace(/[ \n]/g,'')">
+                        <label class="btn btn-default type type-酸 add add-mo" onclick="type=$(this).text().replace(/[ \n]/g,'')">
                             <input type="radio"> 酸
                         </label>
-                        <label class="btn btn-default type type-碱" onclick="type=$(this).text().replace(/[ \n]/g,'')">
+                        <label class="btn btn-default type type-碱 add add-mo" onclick="type=$(this).text().replace(/[ \n]/g,'')">
                             <input type="radio"> 碱
                         </label>
-                        <label class="btn btn-default type type-盐" onclick="type=$(this).text().replace(/[ \n]/g,'')">
+                        <label class="btn btn-default type type-盐 add add-mo" onclick="type=$(this).text().replace(/[ \n]/g,'')">
                             <input type="radio"> 盐
                         </label>
-                        <label class="btn btn-default type type-氧化物" onclick="type=$(this).text().replace(/[ \n]/g,'')">
+                        <label class="btn btn-default type type-氧化物 add add-mo" onclick="type=$(this).text().replace(/[ \n]/g,'')">
                             <input type="radio"> 氧化物
                         </label>
-                        <label class="btn btn-default type type-氢化物" onclick="type=$(this).text().replace(/[ \n]/g,'')">
+                        <label class="btn btn-default type type-氢化物 add add-mo" onclick="type=$(this).text().replace(/[ \n]/g,'')">
                             <input type="radio"> 氢化物
                         </label>
                     </div>

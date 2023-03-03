@@ -26,7 +26,7 @@ var weighList2 = {
     Fr: 223, Ra: 226.0, Ac: 227.0, Th: 232.0, Pa: 231.0, U: 238.0, Np: 237.0, Pu: 244, Am: 243, Cm: 247, Bk: 247, Cf: 251, Es: 252, Fm: 257, Md: 258, No: 259, Lr: 260, Rf: 261, Db: 262, Sg: 263, Bh: 262, Hs: 265, Mt: 266, Ds: 269, Rg: 272, Cn: 285, Nh: 284, Fl: 289, Mc: 288, Lv: 293, Ts: 291, Og: 294
 }
 
-var bracket = {}, preview = 1, precise = 0, collapse = 0
+var bracket = {}, preview = 1, precise = 0, collapse = 0, useIon = 0, useIonId = 0
 
 function getco(str) {
     var n = str.length, ret = 0
@@ -275,7 +275,7 @@ function balUp() {
 
 //QUERY-------------------------------
 
-var modeq = 'query', nameq = 'eq', strict = false, matchMode = 'mole', namels = ['eq', 'mo', 'io', 'el']
+var modeq = 'query', nameq = 'eq', strict = false, matchMode = 'mole', namels = ['eq', 'mo', 'io', 'el'], ionRegex = ''
 function toggl(str, is = 0) {
     $('#qryBtn').html(str)
     $('.op').hide()
@@ -306,7 +306,14 @@ function setQry() {
         $('.qry-group>label')[1].classList.add('active')
         $('.frame')[2].classList.add('active')
         if (modeq == 'query') {
-            $('#qryInput').attr('placeholder', 'Fe' + '（查询数据库中的分子，也可输入 id）')
+            if (useIon) {
+                if (!useIonId) $('#qryInput').attr('placeholder', 'Fe<3e+>' + '（输入离子查询数据库中的分子，也可输入 id）')
+                else {
+                    $('#qryInput').attr('placeholder', '2,3' + '（输入离子编号查询数据库中的分子，也可输入 id）')
+                    $('.qry-group>label')[2].classList.add('active')
+                    $('.frame')[3].classList.add('active')
+                }
+            } else $('#qryInput').attr('placeholder', 'Fe' + '（查询数据库中的分子，也可输入 id）')
         }
         else if (modeq == 'add') {
             $('#qryInput').attr('placeholder', 'Fe3O4' + '（将分子上传至数据库）')
@@ -315,6 +322,7 @@ function setQry() {
             $('#qryInput').attr('placeholder', '（修改已有分子）')
             $('#addTitle').attr('placeholder', '四氧化三铁')
         }
+        if (useIon) $('.op-ionid').show()
     } else if (nameq == 'io') {
         $('.qry-group>label')[2].classList.add('active')
         $('.frame')[3].classList.add('active')
@@ -334,8 +342,8 @@ function setQry() {
     }
     input2()
     if (modeq == 'upd') inputId()
-    if (collapse) $('.frame:not(.active)').parent().hide(300), $('.frame.active').parent().show(200);
-    else $('.frame').parent().show(300)
+    if (collapse) $('.frame:not(.active)').parent().hide(300), $('.frame.active:not(#balFrame)').parent().show(200);
+    else $('.frame:not(#balFrame)').parent().show(300)
 }
 function replaceRegex(s) {
     return s.replace(/([\+\=\.;])+/g, '$1').replace(/([\(\)])/g, '\\\\$1').replace(/(<\d*)e\+/g, '$1%')
@@ -387,7 +395,7 @@ function getRegex() {
             ret += '.*'
         }
         return ret.replace(/%/g, 'e+')
-    } else return replaceRegex($('#qryInput').val() ? $('#qryInput').val() : $('#qryInput').attr('placeholder').split('（')[0])
+    } else return replaceRegex($('#qryInput').val() ? $('#qryInput').val() : $('#qryInput').attr('placeholder').split('（')[0]).replace(/%/g, 'e+') + '([^a-z]|$)'
 }
 
 function procClass(e) {
@@ -461,7 +469,7 @@ function renderResult(bd, e, isId, replace, insAfter) {
             str += `${e[i].title}${e[i].descriptions ? ' - ' + e[i].descriptions : ''}<span class="pull-right">${e[i].type}</span><br>`
             let ions = JSON.parse(e[i].ions)
             for (let j = 0; j < ions.length; j++) {
-                str += `<span class="ion">${renderEquation(ions[j].c + '~' + ions[j].v)}</span>`
+                str += `<span class="ion"><span class="label label-ion label-sub">${ions[j].id}</span> ${renderEquation(ions[j].c + '~' + ions[j].v)}</span>`
                 if (j < ions.length - 1) str += '/'
             }
             if (ions.length) str += '<br>'
@@ -486,12 +494,16 @@ function renderResult(bd, e, isId, replace, insAfter) {
             if (!isId) $('.frame')[3].innerHTML = '<span id="qryInputRender-io">' + renderEquation(qin) + ' - 匹配到 ' + e.length + ' 个</span><br><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><br>';
             else $('.frame')[3].innerHTML = ''
         }
-        var str = ''
+        var str = '', okstr = ''
+        ionRegex = ''
         for (let i = 0; i < e.length; i++) {
             str += `<div class="result"><span class="count-ion-${e[i].id}"></span>${renderEquation(e[i].content)}<br><span class="label label-ion" onclick="addIon(${e[i].id},'${e[i].content}')">${e[i].id}</span> `;
             str += e[i].title + '<br>';
             ionClass[e[i].id] = e[i].class
-            if (isId) {
+            if (useIonId) {
+                okstr += e[i].content + ' / ';
+                ionRegex += '(?=.*"id":' + e[i].id + ',.*)'
+            } else if (isId) {
                 if (replace) $('#qryInput').val(e[0].content)
                 $('#addTitle').val(e[0].title)
                 $('#addIdText').val(JSON.parse(bd).content)
@@ -504,7 +516,9 @@ function renderResult(bd, e, isId, replace, insAfter) {
             if (qin.match('!') || replace == 2) $('#qryInput').val(e[0].content)
             str += '</div>'
         }
+        ionRegex += '.*'
         if (insAfter == -1) $('.frame')[3].innerHTML += str
+        $('.ok').text(okstr)
     }
     MathJax.typeset()
     return e.length
@@ -531,7 +545,7 @@ function doUpload(bd) {
         if (nameq == 'eq' && modeq == 'upd') inputId()
         else if (!$('#qryInput').val()) return
         else doQuery(JSON.stringify({
-            content: $('#qryInput').val()
+            content: getRegex()
         }))
     })
 }
@@ -584,12 +598,22 @@ async function upload(res) {
 }
 function query() {
     if (modeq == 'query' || modeq == 'add') {
-        var cont = getRegex();
-        if (cont == '') return
-        $('.ok').text(cont);
-        var bd = JSON.stringify({
-            content: cont,
-        })
+        var bd
+        if (nameq == 'mo' && modeq == 'query' && useIonId) {
+            if (ionRegex == '') return
+            bd = JSON.stringify({
+                content: ionRegex,
+                type: 'ions'
+            })
+        } else {
+            var cont = getRegex();
+            $('.ok').text(cont);
+            if (cont == '') return
+            bd = JSON.stringify({
+                content: cont,
+                type: useIon && modeq == 'query' && nameq == 'mo' ? (useIonId ? 'ionid' : 'ions') : 'content'
+            })
+        }
         doQuery(bd).then(res => {
             if (modeq == 'add') {
                 upload(res)
@@ -666,11 +690,21 @@ async function getIons() {
     for (let i in curCount) {
         str += '|' + i
     }
-    bd = JSON.stringify({ content: '^(' + str.slice(1) + ')+(<|[^a-z])' })
+    bd = JSON.stringify({ content: '^((' + str.slice(1) + ')\\d?)+(<|[^a-z])' })
     nameq = 'io'
     await doQuery(bd, '')
     nameq = 'mo'
     $('#qryInputRender-io').append(' - 点击标签以添加')
+}
+async function getOkIons() {
+    let e = $('#qryInput').val()
+    if (e.replace(/[^\d,]/g, '') == e) {
+        e = e.replace(/,/g, "' or id='")
+        bd = JSON.stringify({ content: e })
+        nameq = 'io'
+        await doQuery(bd, 'id', 0)
+        nameq = 'mo'
+    }
 }
 function updateIon() {
     let str = ''
@@ -717,14 +751,18 @@ function checkIon(f = 0) {
 
 function input2() {
     if ((modeq == 'add' || modeq == 'upd') && (nameq == 'mo' || nameq == 'io')) getClass()
-    if (modeq == 'query') {
-        $('.ok').text(getRegex())
-    }
-    if ($('#qryInput').val() && $('#qryInput').val().match(/^\d+!?$/g)) {
-        doQuery(JSON.stringify({ content: $('#qryInput').val().split('!')[0] }), 'id', 0)
-    } else if ($('#qryInput').val().match('!')) {
-        $('#qryInput').val($('#qryInput').val().split('!')[0])
-        doQuery(JSON.stringify({ content: getRegex() }), '', 2)
+    if (nameq == 'mo' && modeq == 'query' && useIonId) {
+        getOkIons()
+    } else {
+        if (modeq == 'query') {
+            $('.ok').text(getRegex())
+        }
+        if ($('#qryInput').val() && $('#qryInput').val().match(/^\d+!?$/g)) {
+            doQuery(JSON.stringify({ content: $('#qryInput').val().split('!')[0] }), 'id', 0)
+        } else if ($('#qryInput').val().match('!')) {
+            $('#qryInput').val($('#qryInput').val().split('!')[0])
+            doQuery(JSON.stringify({ content: getRegex() }), '', 2)
+        }
     }
     if (nameq == 'eq') {
         if ($('#qryInputRender')[0]) {
