@@ -90,7 +90,7 @@
             background-color: rgba(159, 186, 200, 0.1);
         }
 
-        .glyphicon-share-alt {
+        .glyphicon-share-alt:not(.normal) {
             transform: rotateX(180deg);
         }
 
@@ -176,6 +176,10 @@
         .label-ion {
             background-color: #4f95b3;
         }
+
+        .type {
+            border-radius: 0;
+        }
     </style>
     <script id="MathJax-script" src="https://cdn.bootcss.com/mathjax/3.2.0/es5/tex-chtml.js"></script>
     <script src="/js/chem.js"></script>
@@ -205,13 +209,15 @@
                         <input type="radio"> 相对质量
                     </label>
                 </div>
-                <button type="button" class="btn btn-default" style="display: none;" data-toggle="button" onclick="$(this).toggleClass('btn-info');precise=!precise;input()" id="precise"><span class="glyphicon glyphicon-cog"></span> 高精度</button>
-                <a class="btn btn-default tools" href="/chemist">
-                    <span class="glyphicon glyphicon-link"></span> 配平接口
-                </a>
-                <button class="btn btn-default btn-xs pull-right tools" onclick="$('.tools').toggle(300);">
-                    <span class="glyphicon glyphicon-chevron-left"></span> 折叠
-                </button>
+                <span class="tools">
+                    <button type="button" class="btn btn-default" style="display: none;" data-toggle="button" onclick="$(this).toggleClass('btn-info');precise=!precise;input()" id="precise"><span class="glyphicon glyphicon-cog"></span> 高精度</button>
+                    <a class="btn btn-default" href="/chemist">
+                        <span class="glyphicon glyphicon-link"></span> 配平接口
+                    </a>
+                    <button class="btn btn-default btn-xs pull-right" onclick="$('.tools').toggle(300);">
+                        <span class="glyphicon glyphicon-chevron-left"></span> 折叠
+                    </button>
+                </span>
             </h2>
             <div class="input-group tools">
                 <input id="balInput" type="text" class="form-control" oninput="input()" autocomplete="off">
@@ -219,10 +225,11 @@
                     <button type="button" class="btn btn-default" onclick="balance()" id="balBtn">配平</button>
                 </span>
             </div>
-            <hr class="tools">
-            <div class="well frame tools">
+            <div class="tools">
+                <hr>
+                <div class="well frame"></div>
+                <hr>
             </div>
-            <hr class="tools">
             <h2>数据库
                 <div class="btn-group" data-toggle="buttons">
                     <label class="btn btn-default active" onclick="modeq='query';setQry()"><input type="radio">查询</label>
@@ -236,7 +243,7 @@
                     <label class="btn btn-default" onclick="nameq='el';setQry()"><input type="radio">元素</label>
                 </div>
                 <button type="button" class="btn btn-default op op-query-eq" style="display: none;" data-toggle="button" onclick="$(this).toggleClass('btn-info');strict=!strict;toggl('查询 <span class=\'glyphicon glyphicon-search\'></span>', strict);input()" id="strict"><span class="glyphicon glyphicon-cog"></span> 限制等号左右</button>
-                <button type="button" class="btn btn-default op op-query-eq" style="display: none;" data-toggle="button" onclick="$(this).toggleClass('btn-info');qryToggleMatch()" id="qryMatch"><span class="glyphicon glyphicon-cog"></span> 匹配分子</button>
+                <button type="button" class="btn btn-default op op-query-eq" style="display: none;" data-toggle="button" onclick="$(this).toggleClass('btn-info');qryToggleMatch()" id="qryMatch"><span class="glyphicon glyphicon-cog"></span> 匹配元素</button>
                 <button type="button" class="btn btn-default op op-query-mo" style="display: none;" data-toggle="button" onclick="$(this).toggleClass('btn-info');qryToggleMatch()" id="qryIon"><span class="glyphicon glyphicon-cog"></span> 查找离子</button>
             </h2>
             <div class="input-group">
@@ -261,6 +268,7 @@
                 </span>
                 <span class="input-group add add-mo add-io">
                     <span class="input-group-addon">化合价</span>
+                    <span class="input-group-btn add add-mo"><button style="border-radius: 0;margin-right:-1px" class="btn btn-default" onclick="autoClass()" title="根据离子确定化合价"><span class="glyphicon glyphicon-share-alt normal"></span></button></span>
                     <span class="form-control" id="pclass" style="color:#999">...</span>
                     <span class="input-group" id="class">
                     </span>
@@ -268,11 +276,14 @@
                 <span class="input-group add add-mo">
                     <span class="input-group-addon">离子</span>
                     <span class="form-control ionList" style="color:#999">...</span>
-                    <span class="input-group-btn"><button class="btn btn-default" onclick="getIons();if($('.ionList').text()=='...')$('.ionList').text('查看下方‘离子’页！');$(this).children('span').addClass('glyphicon-chevron-down')"><span class="glyphicon glyphicon-plus"></span></button></span>
+                    <span class="input-group-btn"><button class="btn btn-default" onclick="getIons();if($('.ionList').text()=='...')$('.ionList').text('查看下方‘离子’页！');$(this).children('span').addClass('glyphicon-chevron-down');$('.frame.active').parent().show();"><span class="glyphicon glyphicon-plus"></span></button></span>
                 </span>
                 <span class="input-group add add-mo" style="background-color: white;border-right: 1px solid #ccc;">
                     <span class="input-group-addon">类型</span>
                     <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-default type type-单质" onclick="type=$(this).text().replace(/[ \n]/g,'')">
+                            <input type="radio"> 单质
+                        </label>
                         <label class="btn btn-default type type-酸 active" onclick="type=$(this).text().replace(/[ \n]/g,'')">
                             <input type="radio"> 酸
                         </label>
@@ -285,8 +296,8 @@
                         <label class="btn btn-default type type-氧化物" onclick="type=$(this).text().replace(/[ \n]/g,'')">
                             <input type="radio"> 氧化物
                         </label>
-                        <label class="btn btn-default type type-单质" onclick="type=$(this).text().replace(/[ \n]/g,'')">
-                            <input type="radio"> 单质
+                        <label class="btn btn-default type type-氢化物" onclick="type=$(this).text().replace(/[ \n]/g,'')">
+                            <input type="radio"> 氢化物
                         </label>
                     </div>
                 </span>
@@ -297,6 +308,10 @@
             </div>
             <pre class="ok op op-query-eq op-query-mo op-query-io op-query-el" style="font-family: Chalkduster,Consolas;top: -1px;position: relative;border-top-left-radius: 0;border-top-right-radius: 0;"></pre>
             <hr>
+            <button class="btn btn-default btn-xs pull-right" onclick="collapse=!collapse;setQry();$(this).children().toggle(300)">
+                <span><span class="glyphicon glyphicon-chevron-left"></span> 隐藏无关项</span>
+                <span style="display: none;"><span class="glyphicon glyphicon-chevron-right"></span> 显示</span>
+            </button>
             <div class="has">
                 <span onclick="nameq='eq';setQry()">化学式</span>
                 <div class="well frame active">
