@@ -259,7 +259,7 @@
                     <span class="input-group-addon">中文名</span>
                     <input id="addTitle" type="text" class="form-control" autocomplete="off">
                 </span>
-                <span class="input-group add add-mo">
+                <span class="input-group add add-mo add-io">
                     <span class="input-group-addon">化合价</span>
                     <span class="form-control" id="pclass" style="color:#999">...</span>
                     <span class="input-group" id="class">
@@ -267,8 +267,28 @@
                 </span>
                 <span class="input-group add add-mo">
                     <span class="input-group-addon">离子</span>
-                    <span class="form-control ionList">...</span>
+                    <span class="form-control ionList" style="color:#999">...</span>
                     <span class="input-group-btn"><button class="btn btn-default" onclick="getIons();if($('.ionList').text()=='...')$('.ionList').text('查看下方‘离子’页！');$(this).children('span').addClass('glyphicon-chevron-down')"><span class="glyphicon glyphicon-plus"></span></button></span>
+                </span>
+                <span class="input-group add add-mo" style="background-color: white;border-right: 1px solid #ccc;">
+                    <span class="input-group-addon">类型</span>
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-default type type-酸 active" onclick="type=$(this).text().replace(/[ \n]/g,'')">
+                            <input type="radio"> 酸
+                        </label>
+                        <label class="btn btn-default type type-碱" onclick="type=$(this).text().replace(/[ \n]/g,'')">
+                            <input type="radio"> 碱
+                        </label>
+                        <label class="btn btn-default type type-盐" onclick="type=$(this).text().replace(/[ \n]/g,'')">
+                            <input type="radio"> 盐
+                        </label>
+                        <label class="btn btn-default type type-氧化物" onclick="type=$(this).text().replace(/[ \n]/g,'')">
+                            <input type="radio"> 氧化物
+                        </label>
+                        <label class="btn btn-default type type-单质" onclick="type=$(this).text().replace(/[ \n]/g,'')">
+                            <input type="radio"> 单质
+                        </label>
+                    </div>
                 </span>
                 <span class="input-group add add-eq add-mo">
                     <span class="input-group-addon">描述</span>
