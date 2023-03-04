@@ -307,9 +307,9 @@ function setQry() {
         $('.frame')[2].classList.add('active')
         if (modeq == 'query') {
             if (useIon) {
-                if (!useIonId) $('#qryInput').attr('placeholder', 'Fe<3e+>' + '（输入离子查询数据库中的分子，也可输入 id）')
+                if (!useIonId) $('#qryInput').attr('placeholder', 'Fe<3e+>' + '（输入离子查询数据库中的分子）')
                 else {
-                    $('#qryInput').attr('placeholder', '2,3' + '（输入离子编号查询数据库中的分子，也可输入 id）')
+                    $('#qryInput').attr('placeholder', '2,3' + '（输入离子编号查询数据库中的分子）')
                     $('.qry-group>label')[2].classList.add('active')
                     $('.frame')[3].classList.add('active')
                 }
@@ -339,6 +339,9 @@ function setQry() {
     } else {
         $('.qry-group>label')[3].classList.add('active')
         $('.frame')[4].classList.add('active')
+        if (modeq == 'query') {
+            $('#qryInput').attr('placeholder', 'Fe' + '（输入元素获取汇总信息）')
+        }
     }
     input2()
     if (modeq == 'upd') inputId()
@@ -411,6 +414,50 @@ function procClass(e) {
     }
     getClass(1)
 }
+function renderTable(bd, e) {
+    bd = JSON.parse(bd).content.split('(')[0]
+    console.log(bd, e)
+    var uc = [], ut = []
+    for (i = 0; i < e.length; i++) {
+        console.log(JSON.parse(e[i].class).filter(e => e[bd])[0])
+        let k = JSON.parse(e[i].class).filter(e => e[bd])[0][bd]
+        if (!uc.includes(k)) uc.push(k)
+        if (!ut.includes(e[i].type)) ut.push(e[i].type)
+    }
+    uc.sort()
+    ut.sort()
+    console.log(uc, ut)
+    str = '<thead><tr><th>' + bd + '</th>'
+    for (let i = 0; i < ut.length; i++) {
+        str += `<th>${ut[i]}</th>`
+    }
+    str += '</tr></thead><tbody>'
+    for (let i = 0; i < uc.length; i++) {
+        str += `<tr><td>${uc[i]}</td>`
+        for (let j = 0; j < ut.length; j++) {
+            let f = e.filter(e =>
+                JSON.parse(e.class).filter(e => e[bd] == uc[i]).length
+                && e.type == ut[j]
+            )
+            str += '<td>'
+            let g = ''
+            for (let k = 0; k < f.length; k++) {
+                g += `${f[k].content}`
+                if (k < f.length - 1) g += ';'
+                if (k % 5 == 0) {
+                    str += renderEquation(g)
+                    g = ''
+                }
+            }
+            str += renderEquation(g)
+            str += '</td>'
+        }
+        str += '</tr>'
+    }
+    str += '</tbody>'
+    $('.table-el').html(str)
+    console.log(str)
+}
 function renderResult(bd, e, isId, replace, insAfter) {
     let qin = $('#qryInput').val()
     if (e[0] == '!') {
@@ -468,11 +515,13 @@ function renderResult(bd, e, isId, replace, insAfter) {
             str += `<div class="result">${renderEquation(e[i].content)}<br><span class="label label-default" onclick="doQuery(JSON.stringify({content:'${e[i].id}'}),'id',2,-2)">${e[i].id}</span> `;
             str += `${e[i].title}${e[i].descriptions ? ' - ' + e[i].descriptions : ''}<span class="pull-right">${e[i].type}</span><br>`
             let ions = JSON.parse(e[i].ions)
+            str += '<span class="ions">'
             for (let j = 0; j < ions.length; j++) {
                 str += `<span class="ion"><span class="label label-ion label-sub">${ions[j].id}</span> ${renderEquation(ions[j].c + '~' + ions[j].v)}</span>`
                 if (j < ions.length - 1) str += '/'
             }
             if (ions.length) str += '<br>'
+            str += '</span>'
             if (isId) {
                 if (replace) $('#qryInput').val(e[0].content)
                 $('#addTitle').val(e[0].title)
@@ -519,7 +568,7 @@ function renderResult(bd, e, isId, replace, insAfter) {
         ionRegex += '.*'
         if (insAfter == -1) $('.frame')[3].innerHTML += str
         $('.ok').text(okstr)
-    }
+    } else renderTable(bd, e)
     MathJax.typeset()
     return e.length
 }
@@ -554,18 +603,17 @@ async function upload(res) {
     if (nameq == 'eq') {
         $('#balInput').val($('#qryInput').val() ? $('#qryInput').val() : $('#qryInput').attr('placeholder').split('（')[0])
         setBal();
-        balance().then(e => {
-            if (e[0] == '!') return;
-            input();
-            if (!$('#addDescription').val()) return alert('无描述！')
-            if (!confirm(e + (res ? '有相似项，' : '') + '确认上传？')) return
-            $('#qryInput').val(e)
-            bd = {
-                content: $('#qryInput').val(),
-                conditions: $('#addCondition').val(),
-                descriptions: $('#addDescription').val(),
-            }
-        })
+        e = await balance()
+        if (e[0] == '!') return;
+        input();
+        if (!$('#addDescription').val()) return alert('无描述！')
+        if (!confirm(e + (res ? '有相似项，' : '') + '确认上传？')) return
+        $('#qryInput').val(e)
+        bd = {
+            content: $('#qryInput').val(),
+            conditions: $('#addCondition').val(),
+            descriptions: $('#addDescription').val(),
+        }
     } else if (nameq == 'mo') {
         getClass()
         if (!$('#addTitle').val()) return alert('无中文名！')
@@ -698,7 +746,7 @@ async function getIons() {
 }
 async function getOkIons() {
     let e = $('#qryInput').val()
-    if (e.replace(/[^\d,]/g, '') == e) {
+    if (e && e.replace(/[^\d,]/g, '') == e) {
         e = e.replace(/,/g, "' or id='")
         bd = JSON.stringify({ content: e })
         nameq = 'io'
@@ -784,7 +832,6 @@ function getC(str) {
     if (str == 'eq') return 1
     if (str == 'mo') return 2
     if (str == 'io') return 3
-    if (str == 'el') return 4
 }
 
 function inputId() {
@@ -792,7 +839,7 @@ function inputId() {
         content: $('#addIdText').val(),
     })
     if (!$('#addIdText').val()) {
-        $('.frame')[getC(nameq)].innerHTML = '';
+        if (nameq != 'el') $('.frame')[getC(nameq)].innerHTML = '';
         return;
     }
     doQuery(bd, 'id')

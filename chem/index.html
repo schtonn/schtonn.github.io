@@ -180,10 +180,24 @@
         .type {
             border-radius: 0;
         }
+
+        .ions {
+            position: relative;
+            left: 15px;
+        }
+
+        .table {
+            margin-left: 0;
+        }
+
+        .well.extend {
+            position: relative;
+            width: 140%;
+            left: -20%;
+        }
     </style>
     <script id="MathJax-script" src="https://cdn.bootcss.com/mathjax/3.2.0/es5/tex-chtml.js"></script>
     <script src="/js/chem.js"></script>
-
 </head>
 
 <body>
@@ -320,7 +334,11 @@
                 </div>
             </div>
             <div class="has">
-                <span onclick="nameq='mo';setQry()">分子</span>
+                <span onclick="nameq='mo';setQry()">分子
+                    <button class="btn btn-default btn-xs" onclick="$('.ions').toggle()">
+                        <span class="glyphicon glyphicon-chevron-down"></span> 离子组成
+                    </button>
+                </span>
                 <div class="well frame">
                     <span id="qryInputRender-mo">...</span>
                 </div>
@@ -332,9 +350,9 @@
                 </div>
             </div>
             <div class="has">
-                <span onclick="nameq='el';setQry()">元素</span>
-                <div class="well frame">
-                    <span id="qryInputRender-el">...</span>
+                <span onclick="nameq='el';setQry()">元素 </span>
+                <div class="well frame frame-el">
+                    <table class="table table-el"></table>
                 </div>
             </div>
         </div>
